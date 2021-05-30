@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>391482914537-mhk6jm4efd6f8f89pp3unliqt1rcnvku.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.391482914537-mhk6jm4efd6f8f89pp3unliqt1rcnvku</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDcF7BbzvzNSOf7vN7gK7OF9FekRrRwer4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>391482914537</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.Brick-Squad.Gala</string>
+	<key>PROJECT_ID</key>
+	<string>gala-cafb3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gala-cafb3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:391482914537:ios:3339066d06f92789982278</string>
+</dict>
+</plist>
