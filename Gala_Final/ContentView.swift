@@ -10,6 +10,8 @@ import SwiftUICam
 import ElegantPages
 import Pages
 
+//Change to contentView
+
 struct ContentView: View {
     @EnvironmentObject var camera: SwiftUICamModel
     @State var currentPage = 2
