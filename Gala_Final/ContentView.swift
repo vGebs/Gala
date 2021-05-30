@@ -15,7 +15,7 @@ struct ContentView: View {
     @State var currentPage = 2
     @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         ZStack {
             if colorScheme == .dark {
