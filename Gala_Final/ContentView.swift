@@ -10,14 +10,13 @@ import SwiftUICam
 import ElegantPages
 import Pages
 
-//Change to contentView
 
 struct ContentView: View {
     @EnvironmentObject var camera: SwiftUICamModel
     @State var currentPage = 2
     @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
     @Environment(\.colorScheme) var colorScheme
-
+    
     var body: some View {
         ZStack {
             if colorScheme == .dark {
@@ -30,13 +29,13 @@ struct ContentView: View {
                         .frame(width: screenWidth, height: screenHeight * 0.13)
                 }
             }
-//            Pages(currentPage: $currentPage, bounce: false){
-//                ProfileMainView()
-//                ChatsView()
-//                CameraView()
-//                ExploreView()
-//                ShowcaseView()
-//            }
+            //            Pages(currentPage: $currentPage, bounce: false){
+            //                ProfileMainView()
+            //                ChatsView()
+            //                CameraView()
+            //                ExploreView()
+            //                ShowcaseView()
+            //            }
             
             
             ElegantHPages(manager: manager){

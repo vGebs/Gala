@@ -56,11 +56,6 @@ struct ProfileView: View {
                     if (viewModel.showImages && viewModel.images.count > 3) || viewModel.editPressed || viewModel.mode == .createAccount{
                         ShowcaseProfileImageView(viewModel: self.viewModel, from: 3, to: 5)
                     }
-                    
-                    NavigationLink(
-                        destination: LandingPageView(),
-                        isActive: $viewModel.loggedOut
-                    ){  }
                 }
                 .frame(width: screenWidth * 0.95)
                 
@@ -99,11 +94,6 @@ struct ProfileView: View {
                     }
                     
                     if viewModel.mode == .createAccount {
-                        NavigationLink(
-                            destination: ContentView(),
-                            isActive: $viewModel.submitPressed
-                        ){ }
-                        
                         submitChangesButton
                     }
                 }
@@ -135,7 +125,6 @@ struct ProfileView: View {
             .onTapGesture {
                 hideKeyboard()
             }
-            .navigationBarHidden(true)
             
             if viewModel.loading == true {
                 Color.black.opacity(0.4)
@@ -305,7 +294,6 @@ struct ProfileView: View {
             }
         }
         .frame(height: screenHeight * 0.13)
-        .navigationBarBackButtonHidden(true)
     }
     
     var bioText: some View {

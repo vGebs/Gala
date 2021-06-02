@@ -34,7 +34,6 @@ import Combine
             ///Instead compress before pushing to dataBase
         ///2. After user creates and account and fills in profile
             ///Load all needed data and then allow user to enter contentView
-//MARK: - DONE
 
     //Problem:
         //Retain cycles are causing the apps memory to leak
@@ -48,7 +47,7 @@ import Combine
         //ContentView is independent of the Login forms. To see the
             //ContentView, one must pass authentication and then the
                 //ContentView will let the user in by dismissing the signin forms.
-
+//MARK: - DONE
 
     //Problem:
         //Images coming back from FB are not in order
@@ -155,28 +154,7 @@ struct GalaAppp: App {
 
     var body: some Scene {
         WindowGroup {
-            //BaseView2()
-            //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: "23", mode: .createAccount))
-            //SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp))
-//            LandingPageView()
-//                .environmentObject(SwiftUICamModel(volumeCameraButton: false))
-//            ContentView()
-//                .environmentObject(SwiftUICamModel(volumeCameraButton: false))
-
-//            TestPages()
-//                .environmentObject(SwiftUICamModel(volumeCameraButton: false))
-
-            //TestCD()
-            if loggedIn {
-                ContentView()
-                    .environmentObject(SwiftUICamModel(volumeCameraButton: false))
-                    .preferredColorScheme(isDarkMode ? .dark : .light)
-
-            } else {
-                LandingPageView()
-                    .environmentObject(SwiftUICamModel(volumeCameraButton: false))
-                    .preferredColorScheme(isDarkMode ? .dark : .light)
-            }
+            LaunchView()
         }
     }
 }

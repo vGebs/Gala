@@ -208,7 +208,6 @@ final class SigninSignupViewModel: ObservableObject{
                 case .finished:
                     print("Succesfully Signed up")
                     self.login(self.mode)
-                    self.loading = false
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
@@ -235,10 +234,16 @@ final class SigninSignupViewModel: ObservableObject{
             } receiveValue: { _ in
                 switch mode{
                 case .login:
-                    self.enterMainScreenTapped = true
+                    LaunchViewModel.shared.signUpPressed = false
+                    LaunchViewModel.shared.loginPressed = false
+                    LaunchViewModel.shared.allowAccess = true
                     self.loading = false
                 case .signUp:
-                    self.enterProfileTapped = true
+                    LaunchViewModel.shared.profile.name = self.nameText
+                    LaunchViewModel.shared.profile.email = self.emailText
+                    LaunchViewModel.shared.profile.age = self.age
+                    LaunchViewModel.shared.signUpPressed = false
+                    LaunchViewModel.shared.createAccountPressed = true
                     self.loading = false
                 }
             }

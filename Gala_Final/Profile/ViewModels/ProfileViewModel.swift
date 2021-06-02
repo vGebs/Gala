@@ -95,7 +95,6 @@ final class ProfileViewModel: ObservableObject {
     
     @Published var submitPressed = false
     
-    @Published var loggedOut = false
     @Published var loading = false
     
     var mode: Mode
@@ -158,10 +157,10 @@ final class ProfileViewModel: ObservableObject {
             
             guard let currentUser = userService.currentUser?.uid else { return }
             
-            if !self.readCDProfile(id: currentUser) {
+            //if !self.readCDProfile(id: currentUser) {
                 self.readFBProfile(uid: currentUser)
-                print("could not get core data")
-            }
+               // print("could not get core data")
+            //}
         }
         
         $bioCharCount
@@ -326,7 +325,7 @@ final class ProfileViewModel: ObservableObject {
                     UserDefaults.standard.set(false, forKey: "loggedIn")
                     UserDefaults.standard.set("", forKey: "email")
                     UserDefaults.standard.set("", forKey: "password")
-                    self.loggedOut = true
+                    LaunchViewModel.shared.allowAccess = false
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
@@ -375,8 +374,6 @@ extension ProfileViewModel {
         
         //self.loading = false
 //        self.submitPressed = true
-        
-        
     }
     
     private func addProfileText() {
@@ -460,6 +457,8 @@ extension ProfileViewModel {
 //                            self.submitPressed = true
 //                        }
                         self.loading = false
+                        LaunchViewModel.shared.allowAccess = true
+                        LaunchViewModel.shared.createAccountPressed = false
                         self.submitPressed = true
                     }
                 }

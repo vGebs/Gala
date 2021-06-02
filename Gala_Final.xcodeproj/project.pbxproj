@@ -10,6 +10,8 @@
 		CCD9029C10905AC2406C56D1 /* Pods_Gala_Final.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F19D5D36D1ECC22567FE2A /* Pods_Gala_Final.framework */; };
 		FA2D6EDC26435E1600551EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
+		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
+		FA43BE6B2664D89E001D1368 /* AppViewStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6A2664D89E001D1368 /* AppViewStateModel.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
 		FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E12640972300D5D5CB /* ElegantPages */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
@@ -77,6 +79,8 @@
 		C56F8AEE2B0B8E2A0F83940A /* Pods-Gala_Final.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala_Final.debug.xcconfig"; path = "Target Support Files/Pods-Gala_Final/Pods-Gala_Final.debug.xcconfig"; sourceTree = "<group>"; };
 		FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
+		FA43BE6A2664D89E001D1368 /* AppViewStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewStateModel.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -390,6 +394,8 @@
 			children = (
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
+				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
+				FA43BE6A2664D89E001D1368 /* AppViewStateModel.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FA8773FA26409BAD00D5D5CB /* SigninSignup */,
 				FA8773F126409A6900D5D5CB /* Profile */,
@@ -565,6 +571,7 @@
 				FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */,
 				FA8774402640A12500D5D5CB /* ActiveSheetEnum.swift in Sources */,
 				FA87742826409F3C00D5D5CB /* JigJagMomentStackView.swift in Sources */,
+				FA43BE6B2664D89E001D1368 /* AppViewStateModel.swift in Sources */,
 				FA87742426409F0800D5D5CB /* ExploreView.swift in Sources */,
 				FA87742A26409F6700D5D5CB /* JigJagMomentStackVIewLeft.swift in Sources */,
 				FA8773F926409AD400D5D5CB /* ProfileView.swift in Sources */,
@@ -572,6 +579,7 @@
 				FA87741826409E0700D5D5CB /* ConvoPreview.swift in Sources */,
 				FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */,
 				FA87742C26409F8600D5D5CB /* JigJagMomentStackViewRight.swift in Sources */,
+				FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */,
 				FA87742E26409FA300D5D5CB /* MatchesMomentView.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
 				FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */,

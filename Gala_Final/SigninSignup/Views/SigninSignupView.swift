@@ -24,7 +24,7 @@ struct SigninSignupView: View {
     @State var editingPword = false
     @State var editingRePword = false
     @State var showDatePicker = false
-    
+        
 //MARK: - Main Body
     
     var body: some View {
@@ -32,6 +32,22 @@ struct SigninSignupView: View {
             
             ScrollView(showsIndicators: false) {
                 VStack{
+                    
+                    Button(action: {
+                        if self.viewModel.mode == .signUp{
+                            LaunchViewModel.shared.signUpPressed = false
+                        } else {
+                            LaunchViewModel.shared.loginPressed = false
+                        }
+                    }){
+                        HStack {
+                            Image(systemName: "arrow.backward")
+                                .font(.system(size: 25))
+                            Spacer()
+                        }
+                    }
+                    .padding(.leading)
+                    .padding(.bottom, 10)
                     
                     if viewModel.mode == .signUp {
                         title
@@ -64,7 +80,7 @@ struct SigninSignupView: View {
                     
                     actionButton
                 }
-                .offset(y: -screenHeight * 0.04)
+                .offset(y: screenHeight * 0.04)
             }
             .onTapGesture {
                 hideKeyboard()
@@ -193,16 +209,6 @@ struct SigninSignupView: View {
     
     var actionButton: some View{
         VStack{
-            NavigationLink(
-                destination: ProfileView(viewModel: ProfileViewModel(name: viewModel.nameText, age: viewModel.age, email: viewModel.emailText, mode: .createAccount)),
-                isActive: $viewModel.enterProfileTapped
-            ){  }
-            
-            NavigationLink(
-                destination: ContentView(),
-                isActive: $viewModel.enterMainScreenTapped
-            ){  }
-            
             Button(action: {
                 viewModel.tappedActionButton()
             }){
@@ -225,13 +231,13 @@ struct SigninSignupView: View {
 
 //MARK: - Preivew
 
-struct SigninSignupView_Previews: PreviewProvider {
-    static var previews: some View {
-        SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp))
-            .preferredColorScheme(.dark)
-        SigninSignupView(viewModel: SigninSignupViewModel(mode: .login))
-    }
-}
+//struct SigninSignupView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp), createAccountPressed: .constant(false))
+//            .preferredColorScheme(.dark)
+//        SigninSignupView(viewModel: SigninSignupViewModel(mode: .login), createAccountPressed: .constant(false))
+//    }
+//}
 
 
 struct TextFieldView: View {
