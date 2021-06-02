@@ -19,17 +19,20 @@ struct LaunchView: View {
             if viewModel.allowAccess {
                 ContentView()
                     .environmentObject(SwiftUICamModel(volumeCameraButton: false))
+
+            }  else if viewModel.createAccountPressed {
+                ProfileView(viewModel: ProfileViewModel(name: viewModel.profile.name, age: viewModel.profile.age, email: viewModel.profile.email, mode: .createAccount))
+                    .transition(.move(edge: .leading))
+
             } else if viewModel.loginPressed{
                 SigninSignupView(viewModel: SigninSignupViewModel(mode: .login))
-                
+
             } else if viewModel.signUpPressed {
                 SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp))
                 
-            } else if viewModel.createAccountPressed {
-                ProfileView(viewModel: ProfileViewModel(name: viewModel.profile.name, age: viewModel.profile.age, email: viewModel.profile.email, mode: .createAccount))
-                
             } else {
                 LandingPageView()
+                    .transition(.move(edge: .leading))
             }
         }
     }

@@ -35,9 +35,15 @@ struct SigninSignupView: View {
                     
                     Button(action: {
                         if self.viewModel.mode == .signUp{
-                            LaunchViewModel.shared.signUpPressed = false
+                            withAnimation {
+                                LaunchViewModel.shared.signUpPressed = false
+                                LaunchViewModel.shared.onLandingPage = true
+                            }
                         } else {
-                            LaunchViewModel.shared.loginPressed = false
+                            withAnimation {
+                                LaunchViewModel.shared.loginPressed = false
+                                LaunchViewModel.shared.onLandingPage = true
+                            }
                         }
                     }){
                         HStack {

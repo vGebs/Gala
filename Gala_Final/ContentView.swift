@@ -10,7 +10,6 @@ import SwiftUICam
 import ElegantPages
 import Pages
 
-
 struct ContentView: View {
     @EnvironmentObject var camera: SwiftUICamModel
     @State var currentPage = 2
@@ -36,7 +35,6 @@ struct ContentView: View {
             //                ExploreView()
             //                ShowcaseView()
             //            }
-            
             
             ElegantHPages(manager: manager){
                 //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: "23", mode: .profileStandard))

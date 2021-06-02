@@ -13,6 +13,7 @@ class LaunchViewModel: ObservableObject{
     static let shared = LaunchViewModel()
     
     @Published var allowAccess: Bool = UserService.shared.currentUser == nil ? false : true
+    @Published var onLandingPage: Bool = UserService.shared.currentUser == nil ? true : false
     @Published var loginPressed = false
     @Published var signUpPressed = false
     @Published var createAccountPressed = false

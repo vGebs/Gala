@@ -19,13 +19,11 @@ import SwiftUI
 import SwiftUICam
 import Firebase
 import Combine
-
-//MARK: - Next steps
     
-//MARK: - DONE
+//MARK: - DONE -
     ///Right now:
-        ///Read textbook on concurrency
         ///Resequence the app such that the login and data pull is smooth
+///
     ///Problem:
         ///Compressing, pushing and pulling images/video takes too long
 
@@ -47,16 +45,34 @@ import Combine
         //ContentView is independent of the Login forms. To see the
             //ContentView, one must pass authentication and then the
                 //ContentView will let the user in by dismissing the signin forms.
-//MARK: - DONE
+//MARK: - DONE -
 
-    //Problem:
+//MARK: - Next steps -
+
+    //MARK: - Problem:
+        //LaunchViewModel name needs to be changed to AppState.
+    
+    //MARK: - Problem:
+        //ViewModels are not being deinitialized
+
+    //Solution:
+        //Group all viewmodels inside of a class
+        //Call upon the needed viewmodel by making AppState an @ObservedObject.
+
+    //MARK: - Problem:
+        //Toggle Dark/Light mode doesn't work
+
+    //MARK: - Problem:
+        //Make sure if userDefaults loggedIn is still true, then log the userIn
+
+    //MARK: - Problem:
         //Core data models are not being rendered.
 
     //Solution:
         //Make a test file and debug from there.
         //Once core data works, allow user to enter app once core data is done being saved.
 
-    //Problem:
+    //MARK: - Problem:
         //Images coming back from FB are not in order
 
     //Soultions:
@@ -154,8 +170,8 @@ var email = UserDefaults.standard.string(forKey: "email")
 var password = UserDefaults.standard.string(forKey: "password")
 
 @main
-struct GalaAppp: App {
-        
+struct GalaApp: App {
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @AppStorage("isDarkMode") var isDarkMode = true
 

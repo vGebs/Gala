@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import SwiftUI
 
 final class SigninSignupViewModel: ObservableObject{
 
@@ -234,16 +235,21 @@ final class SigninSignupViewModel: ObservableObject{
             } receiveValue: { _ in
                 switch mode{
                 case .login:
-                    LaunchViewModel.shared.signUpPressed = false
-                    LaunchViewModel.shared.loginPressed = false
-                    LaunchViewModel.shared.allowAccess = true
+                    withAnimation {
+                        LaunchViewModel.shared.signUpPressed = false
+                        LaunchViewModel.shared.loginPressed = false
+                        LaunchViewModel.shared.allowAccess = true
+                    }
                     self.loading = false
                 case .signUp:
-                    LaunchViewModel.shared.profile.name = self.nameText
-                    LaunchViewModel.shared.profile.email = self.emailText
-                    LaunchViewModel.shared.profile.age = self.age
-                    LaunchViewModel.shared.signUpPressed = false
-                    LaunchViewModel.shared.createAccountPressed = true
+                    withAnimation {
+                        LaunchViewModel.shared.profile.name = self.nameText
+                        LaunchViewModel.shared.profile.email = self.emailText
+                        LaunchViewModel.shared.profile.age = self.age
+                        LaunchViewModel.shared.signUpPressed = false
+                        LaunchViewModel.shared.createAccountPressed = true
+                    }
+                    
                     self.loading = false
                 }
             }

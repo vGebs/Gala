@@ -64,7 +64,9 @@ struct LandingPageView: View {
 //            isActive: $viewModel.signupButtonPressed
 //        ){
         Button(action: {
-            LaunchViewModel.shared.signUpPressed = true
+            withAnimation {
+                LaunchViewModel.shared.signUpPressed = true
+            }
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
@@ -82,7 +84,9 @@ struct LandingPageView: View {
     var loginButton: some View {
 
         Button(action: {
-            LaunchViewModel.shared.loginPressed = true
+            withAnimation {
+                LaunchViewModel.shared.loginPressed = true
+            }
         }) {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
