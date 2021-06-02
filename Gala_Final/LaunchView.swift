@@ -34,25 +34,3 @@ struct LaunchView: View {
         }
     }
 }
-
-class LaunchViewModel: ObservableObject{
-    
-    static let shared = LaunchViewModel()
-    
-    @Published var allowAccess = false
-    @Published var loginPressed = false
-    @Published var signUpPressed = false
-    @Published var createAccountPressed = false
-    
-    @Published var profile: ProfileViewInfo = ProfileViewInfo(name: "", age: Date(), email: "")
-    
-    struct ProfileViewInfo {
-        var name: String
-        var age: Date
-        var email: String
-    }
-    
-    private init() {
-        
-    }
-}

@@ -50,6 +50,13 @@ import Combine
 //MARK: - DONE
 
     //Problem:
+        //Core data models are not being rendered.
+
+    //Solution:
+        //Make a test file and debug from there.
+        //Once core data works, allow user to enter app once core data is done being saved.
+
+    //Problem:
         //Images coming back from FB are not in order
 
     //Soultions:
