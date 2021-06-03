@@ -6,29 +6,28 @@
 //
 
 import SwiftUI
-import SwiftUICam
 import AVFoundation
 import MediaPlayer
 
 struct CameraView: View {
     
-    @EnvironmentObject var camera: SwiftUICamModel
+    @ObservedObject var camera: CameraViewModel
     let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight * 0.91))
     
     var body: some View{
         ZStack {
-            SwiftUICamPreview(view: view)
+            SwiftUICamPreview(camera: camera, view: view)
                 .ignoresSafeArea(.all, edges: .all)
                 .onTapGesture(count: 2) {
                     camera.toggleCamera()
                 }
                 .shadow(radius: 15)
             
-            DraggableCameraButton()
+            DraggableCameraButton(camera: camera)
                 //.offset(y: -30)
                 .opacity(!camera.picTaken ? 1 : 0)
             
-            PicTakenView()
+            PicTakenView(camera: camera)
                 .opacity(camera.picTaken ? 1 : 0)
 
             Color.white

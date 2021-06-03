@@ -54,14 +54,9 @@ struct ImagePicker: UIViewControllerRepresentable {
                         if let error = error {
                             print(error.localizedDescription)
                         } else {
-//                            let img = newImage as! UIImage
-//                            if let data = img.jpeg(0.2) {
-//                                if let imgg = UIImage(data: data){
-//                                    self.parent.pickerResult.append(ImageModel(image:imgg))
-//                                }
-//                            }
-                            
-                            self.parent.pickerResult.append(ImageModel(image: newImage as! UIImage))
+                            DispatchQueue.main.async {
+                                self.parent.pickerResult.append(ImageModel(image: newImage as! UIImage))
+                            }
                         }
                     }
                 } else {

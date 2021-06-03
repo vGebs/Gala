@@ -6,11 +6,10 @@
 //
 
 import SwiftUI
-import SwiftUICam
 
 struct SwiftUICamPreview: UIViewRepresentable {
     
-    @EnvironmentObject var camera: SwiftUICamModel
+    @ObservedObject var camera: CameraViewModel
     var view: UIView
     
     func makeUIView(context: Context) ->  UIView {

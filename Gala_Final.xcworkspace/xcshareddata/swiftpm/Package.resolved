@@ -45,15 +45,6 @@
           "revision": "1ef0431b971f69c48ca5eb4cdba07f2c5da54c35",
           "version": "3.3.3"
         }
-      },
-      {
-        "package": "SwiftUICam",
-        "repositoryURL": "https://github.com/vGebs/SwiftUICam.git",
-        "state": {
-          "branch": null,
-          "revision": "d95c22901616b6fa8075fe5881aa79e7b60b293d",
-          "version": "1.2.2"
-        }
       }
     ]
   },

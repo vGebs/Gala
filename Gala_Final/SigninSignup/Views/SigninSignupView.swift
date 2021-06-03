@@ -16,7 +16,7 @@ struct SigninSignupView: View {
     
 //MARK: - View State Variables
     
-    @StateObject var viewModel: SigninSignupViewModel
+    @ObservedObject var viewModel: SigninSignupViewModel
     
     @State var editingName = false
     @State var editingEmail = false
@@ -36,13 +36,13 @@ struct SigninSignupView: View {
                     Button(action: {
                         if self.viewModel.mode == .signUp{
                             withAnimation {
-                                LaunchViewModel.shared.signUpPressed = false
-                                LaunchViewModel.shared.onLandingPage = true
+                                AppState.shared.signUpPressed = false
+                                AppState.shared.onLandingPage = true
                             }
                         } else {
                             withAnimation {
-                                LaunchViewModel.shared.loginPressed = false
-                                LaunchViewModel.shared.onLandingPage = true
+                                AppState.shared.loginPressed = false
+                                AppState.shared.onLandingPage = true
                             }
                         }
                     }){
@@ -94,6 +94,7 @@ struct SigninSignupView: View {
             
             if viewModel.loading {
                 Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
                 ProgressView()
             }
         }

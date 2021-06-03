@@ -236,18 +236,18 @@ final class SigninSignupViewModel: ObservableObject{
                 switch mode{
                 case .login:
                     withAnimation {
-                        LaunchViewModel.shared.signUpPressed = false
-                        LaunchViewModel.shared.loginPressed = false
-                        LaunchViewModel.shared.allowAccess = true
+                        AppState.shared.signUpPressed = false
+                        AppState.shared.loginPressed = false
+                        AppState.shared.allowAccess = true
                     }
                     self.loading = false
                 case .signUp:
                     withAnimation {
-                        LaunchViewModel.shared.profile.name = self.nameText
-                        LaunchViewModel.shared.profile.email = self.emailText
-                        LaunchViewModel.shared.profile.age = self.age
-                        LaunchViewModel.shared.signUpPressed = false
-                        LaunchViewModel.shared.createAccountPressed = true
+                        AppState.shared.profileInfo.name = self.nameText
+                        AppState.shared.profileInfo.email = self.emailText
+                        AppState.shared.profileInfo.age = self.age
+                        AppState.shared.signUpPressed = false
+                        AppState.shared.createAccountPressed = true
                     }
                     
                     self.loading = false

@@ -11,7 +11,8 @@ struct LandingPageView: View {
     
 //MARK: - View State Variables
     
-    @StateObject var viewModel = LandingPageViewModel()    
+    //@StateObject var viewModel = LandingPageViewModel()
+    @ObservedObject var viewModel: LandingPageViewModel
     
 //MARK: - Main Body
     
@@ -65,7 +66,7 @@ struct LandingPageView: View {
 //        ){
         Button(action: {
             withAnimation {
-                LaunchViewModel.shared.signUpPressed = true
+                AppState.shared.signUpPressed = true
             }
         }) {
             ZStack {
@@ -85,7 +86,7 @@ struct LandingPageView: View {
 
         Button(action: {
             withAnimation {
-                LaunchViewModel.shared.loginPressed = true
+                AppState.shared.loginPressed = true
             }
         }) {
             ZStack {
@@ -105,6 +106,6 @@ struct LandingPageView: View {
 
 struct LandingPageView_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPageView()
+        LandingPageView(viewModel: LandingPageViewModel())
     }
 }

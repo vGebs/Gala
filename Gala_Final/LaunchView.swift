@@ -8,30 +8,28 @@
 import Foundation
 import SwiftUI
 import Combine
-import SwiftUICam
 
 struct LaunchView: View {
     
-    @ObservedObject var viewModel = LaunchViewModel.shared
+    @ObservedObject var viewModel = AppState.shared
     
     var body: some View {
         ZStack {
             if viewModel.allowAccess {
-                ContentView()
-                    .environmentObject(SwiftUICamModel(volumeCameraButton: false))
+                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!)
 
             }  else if viewModel.createAccountPressed {
-                ProfileView(viewModel: ProfileViewModel(name: viewModel.profile.name, age: viewModel.profile.age, email: viewModel.profile.email, mode: .createAccount))
+                ProfileView(viewModel: viewModel.createProfileVM!)
                     .transition(.move(edge: .leading))
 
             } else if viewModel.loginPressed{
-                SigninSignupView(viewModel: SigninSignupViewModel(mode: .login))
+                SigninSignupView(viewModel: viewModel.loginVM!)
 
             } else if viewModel.signUpPressed {
-                SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp))
+                SigninSignupView(viewModel: viewModel.signUpVM!)
                 
             } else {
-                LandingPageView()
+                LandingPageView(viewModel: viewModel.landingVM!)
                     .transition(.move(edge: .leading))
             }
         }

@@ -6,10 +6,9 @@
 //
 
 import SwiftUI
-import SwiftUICam
 
 struct PicTakenView: View {
-    @EnvironmentObject var camera: SwiftUICamModel
+    @ObservedObject var camera: CameraViewModel
     
     var body: some View {
         VStack{
@@ -72,28 +71,28 @@ struct PicTakenView: View {
     }
 }
 
-struct PicTakenView_Previews: PreviewProvider {
-    static var previews: some View {
-// 12
-        PicTakenView()
-            .previewDevice("iPhone 12")
-        PicTakenView()
-            .previewDevice("iPhone 12 Pro")
-        PicTakenView()
-            .previewDevice("iPhone 12 Pro Max")
-        PicTakenView()
-            .previewDevice("iPhone 12 Mini")
-// 11
-        PicTakenView()
-            .previewDevice("iPhone 11")
-        PicTakenView()
-            .previewDevice("iPhone 11 Pro")
-        PicTakenView()
-            .previewDevice("iPhone 11 Pro Max")
-// 8
-        PicTakenView()
-            .previewDevice("iPhone 8")
-        PicTakenView()
-            .previewDevice("iPhone 8 Plus")
-    }
-}
+//struct PicTakenView_Previews: PreviewProvider {
+//    static var previews: some View {
+//// 12
+//        PicTakenView()
+//            .previewDevice("iPhone 12")
+//        PicTakenView()
+//            .previewDevice("iPhone 12 Pro")
+//        PicTakenView()
+//            .previewDevice("iPhone 12 Pro Max")
+//        PicTakenView()
+//            .previewDevice("iPhone 12 Mini")
+//// 11
+//        PicTakenView()
+//            .previewDevice("iPhone 11")
+//        PicTakenView()
+//            .previewDevice("iPhone 11 Pro")
+//        PicTakenView()
+//            .previewDevice("iPhone 11 Pro Max")
+//// 8
+//        PicTakenView()
+//            .previewDevice("iPhone 8")
+//        PicTakenView()
+//            .previewDevice("iPhone 8 Plus")
+//    }
+//}

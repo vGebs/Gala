@@ -8,7 +8,6 @@
 //Drag button tutorial: https://medium.com/better-programming/swiftui-drag-gesture-2559cf255c5e
 
 import SwiftUI
-import SwiftUICam
 
 struct DraggableCameraButton: View {
     @State private var rectPosition = CGPoint(x: screenWidth / 2, y: screenHeight * 0.84)
@@ -21,7 +20,7 @@ struct DraggableCameraButton: View {
     
     @State private var isEnded = false
     @State private var outOfPosition = false
-    @EnvironmentObject var camera: SwiftUICamModel
+    @ObservedObject var camera: CameraViewModel
     @State var buttonColor = Color.yellow
     
     var body: some View {
@@ -115,12 +114,12 @@ struct DraggableCameraButton: View {
     
 }
 
-struct DraggableCameraButton_Previews: PreviewProvider {
-    static var previews: some View {
-        DraggableCameraButton().previewDevice("iPhone 12 Mini")
-        DraggableCameraButton().previewDevice("iPhone 12 Pro")
-        DraggableCameraButton().previewDevice("iPhone 12 Pro Max")
-        //DraggableCameraButton().previewDevice("iPhone 8")
-        DraggableCameraButton().previewDevice("iPhone 8 Plus")
-    }
-}
+//struct DraggableCameraButton_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DraggableCameraButton().previewDevice("iPhone 12 Mini")
+//        DraggableCameraButton().previewDevice("iPhone 12 Pro")
+//        DraggableCameraButton().previewDevice("iPhone 12 Pro Max")
+//        //DraggableCameraButton().previewDevice("iPhone 8")
+//        DraggableCameraButton().previewDevice("iPhone 8 Plus")
+//    }
+//}

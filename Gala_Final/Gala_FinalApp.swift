@@ -16,7 +16,6 @@ var screenHeight = UIScreen.main.bounds.height
 var compressionQuality: CGFloat = 0.2
 
 import SwiftUI
-import SwiftUICam
 import Firebase
 import Combine
     
@@ -178,6 +177,7 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
+            //ProfileView(viewModel: ProfileViewModel(mode: .createAccount))
         }
     }
 }

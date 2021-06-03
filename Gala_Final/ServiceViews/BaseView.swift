@@ -32,7 +32,7 @@ struct BaseView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: Date(), mode: .profileStandard))
+                        //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: Date(), mode: .profileStandard))
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

@@ -120,6 +120,18 @@ final class ProfileViewModel: ObservableObject {
     
 //MARK: - Initializer
     
+    deinit {
+        print("ProfileViewModel = nil")
+        
+        for i in 0..<profileImage.count {
+            profileImage.remove(at: i)
+        }
+        
+        for i in 0..<images.count {
+            images.remove(at: i)
+        }
+    }
+    
     //Add email to initializer so I can make the profileModel
     //Add default initializers so that we dont have to enter a name, age, or email when using .profileStandard
     init(
@@ -325,7 +337,8 @@ final class ProfileViewModel: ObservableObject {
                     UserDefaults.standard.set(false, forKey: "loggedIn")
                     UserDefaults.standard.set("", forKey: "email")
                     UserDefaults.standard.set("", forKey: "password")
-                    LaunchViewModel.shared.allowAccess = false
+                    AppState.shared.allowAccess = false
+                    AppState.shared.onLandingPage = true
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
@@ -457,8 +470,8 @@ extension ProfileViewModel {
 //                            self.submitPressed = true
 //                        }
                         self.loading = false
-                        LaunchViewModel.shared.allowAccess = true
-                        LaunchViewModel.shared.createAccountPressed = false
+                        AppState.shared.allowAccess = true
+                        AppState.shared.createAccountPressed = false
                         self.submitPressed = true
                     }
                 }

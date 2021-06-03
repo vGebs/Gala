@@ -128,6 +128,7 @@ struct ProfileView: View {
             
             if viewModel.loading == true {
                 Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
                 ProgressView()
             }
         }

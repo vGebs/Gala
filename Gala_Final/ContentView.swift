@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
-import SwiftUICam
 import ElegantPages
 import Pages
 
 struct ContentView: View {
-    @EnvironmentObject var camera: SwiftUICamModel
+    @ObservedObject var camera: CameraViewModel
+    @ObservedObject var profile: ProfileViewModel
+    
+    
     @State var currentPage = 2
     @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
+    
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -38,10 +41,10 @@ struct ContentView: View {
             
             ElegantHPages(manager: manager){
                 //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: "23", mode: .profileStandard))
-                ProfileMainView()
-                ChatsView()
-                CameraView()
-                ExploreView()
+                ProfileMainView(viewModel: profile)
+                BaseView()//ChatsView()
+                CameraView(camera: camera)
+                BaseView()//ExploreView()
                 ShowcaseView()
             }
             .onPageChanged{ page in
@@ -62,9 +65,9 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView(camera: CameraViewModel(volumeCameraButton: false))
+//    }
+//}
 

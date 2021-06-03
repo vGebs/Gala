@@ -13,7 +13,7 @@ struct ProfileMainView: View {
     var optionButtonRight: String = "gearshape"
     var baseColor: Color = .blue
     
-    @StateObject var viewModel = ProfileViewModel(mode: .profileStandard)
+    @ObservedObject var viewModel: ProfileViewModel
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {

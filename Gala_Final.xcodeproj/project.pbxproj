@@ -11,13 +11,13 @@
 		FA2D6EDC26435E1600551EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
-		FA4453522667404E00DA1487 /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4453512667404E00DA1487 /* LaunchViewModel.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
+		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
+		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E12640972300D5D5CB /* ElegantPages */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
 		FA8773E8264097C300D5D5CB /* iTextField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E7264097C300D5D5CB /* iTextField */; };
 		FA8773EB2640992F00D5D5CB /* Pages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773EA2640992F00D5D5CB /* Pages */; };
-		FA8773EE264099E200D5D5CB /* SwiftUICam in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773ED264099E200D5D5CB /* SwiftUICam */; };
 		FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773EF26409A4500D5D5CB /* NavBar.swift */; };
 		FA8773F926409AD400D5D5CB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773F826409AD400D5D5CB /* ProfileView.swift */; };
 		FA8773FE26409BED00D5D5CB /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773FD26409BED00D5D5CB /* LandingView.swift */; };
@@ -80,8 +80,9 @@
 		FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
-		FA4453512667404E00DA1487 /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FA8773FD26409BED00D5D5CB /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
@@ -146,7 +147,6 @@
 			files = (
 				FA8773EB2640992F00D5D5CB /* Pages in Frameworks */,
 				FA8773E8264097C300D5D5CB /* iTextField in Frameworks */,
-				FA8773EE264099E200D5D5CB /* SwiftUICam in Frameworks */,
 				FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */,
 				CCD9029C10905AC2406C56D1 /* Pods_Gala_Final.framework in Frameworks */,
 				FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */,
@@ -201,6 +201,7 @@
 				FA87741B26409E5700D5D5CB /* CameraView.swift */,
 				FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */,
 				FA87741F26409E9000D5D5CB /* PicTakenView.swift */,
+				FA72A17426688949004DEF77 /* CameraViewModel.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -394,8 +395,8 @@
 			children = (
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
+				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
-				FA4453512667404E00DA1487 /* LaunchViewModel.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FA8773FA26409BAD00D5D5CB /* SigninSignup */,
 				FA8773F126409A6900D5D5CB /* Profile */,
@@ -448,7 +449,6 @@
 				FA8773E42640979E00D5D5CB /* iPhoneNumberField */,
 				FA8773E7264097C300D5D5CB /* iTextField */,
 				FA8773EA2640992F00D5D5CB /* Pages */,
-				FA8773ED264099E200D5D5CB /* SwiftUICam */,
 			);
 			productName = Gala_Final;
 			productReference = FAE5E6EE264092D000CC1670 /* Gala_Final.app */;
@@ -482,7 +482,6 @@
 				FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
 				FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */,
 				FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */,
-				FA8773EC264099E200D5D5CB /* XCRemoteSwiftPackageReference "SwiftUICam" */,
 			);
 			productRefGroup = FAE5E6EF264092D000CC1670 /* Products */;
 			projectDirPath = "";
@@ -571,7 +570,6 @@
 				FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */,
 				FA8774402640A12500D5D5CB /* ActiveSheetEnum.swift in Sources */,
 				FA87742826409F3C00D5D5CB /* JigJagMomentStackView.swift in Sources */,
-				FA4453522667404E00DA1487 /* LaunchViewModel.swift in Sources */,
 				FA87742426409F0800D5D5CB /* ExploreView.swift in Sources */,
 				FA87742A26409F6700D5D5CB /* JigJagMomentStackVIewLeft.swift in Sources */,
 				FA8773F926409AD400D5D5CB /* ProfileView.swift in Sources */,
@@ -604,8 +602,10 @@
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,
 				FA8774532640A26000D5D5CB /* ProfileManager.swift in Sources */,
 				FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */,
+				FA72A17326681CAE004DEF77 /* AppState.swift in Sources */,
 				FA87740A26409D1200D5D5CB /* ProfileHeader.swift in Sources */,
 				FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */,
+				FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */,
 				FA87744F2640A20F00D5D5CB /* UserService.swift in Sources */,
 				FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */,
 			);
@@ -832,14 +832,6 @@
 				minimumVersion = 0.1.5;
 			};
 		};
-		FA8773EC264099E200D5D5CB /* XCRemoteSwiftPackageReference "SwiftUICam" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/vGebs/SwiftUICam.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -862,11 +854,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */;
 			productName = Pages;
-		};
-		FA8773ED264099E200D5D5CB /* SwiftUICam */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA8773EC264099E200D5D5CB /* XCRemoteSwiftPackageReference "SwiftUICam" */;
-			productName = SwiftUICam;
 		};
 /* End XCSwiftPackageProductDependency section */
 
