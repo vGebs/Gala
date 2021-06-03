@@ -20,9 +20,7 @@ import SwiftUI
 final class ProfileViewModel: ObservableObject {
     
 //MARK: - General Purpose Variables
-    
-    @AppStorage("isDarkMode") var isDarkMode = true
-    
+        
     private let profileService: ProfileServiceProtocol
     private let profileManager = ProfileManager()
     private let imgService: ProfileImageServiceProtocol
@@ -322,9 +320,9 @@ final class ProfileViewModel: ObservableObject {
         }
     }
     
-    public func toggleDarkMode() {
-        isDarkMode.toggle()
-    }
+//    public func toggleDarkMode() {
+//        isDarkMode.toggle()
+//    }
     
     public func logout(){
         self.userService.logout()

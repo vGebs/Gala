@@ -18,13 +18,17 @@ struct SigninSignupView: View {
     
     @ObservedObject var viewModel: SigninSignupViewModel
     
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
     @State var editingName = false
     @State var editingEmail = false
     @State var editingCellNum = false
     @State var editingPword = false
     @State var editingRePword = false
     @State var showDatePicker = false
-        
+    
+    
+    
 //MARK: - Main Body
     
     var body: some View {
@@ -36,12 +40,12 @@ struct SigninSignupView: View {
                     Button(action: {
                         if self.viewModel.mode == .signUp{
                             withAnimation {
-                                AppState.shared.signUpPressed = false
+                                AppState.shared.signUpPageActive = false
                                 AppState.shared.onLandingPage = true
                             }
                         } else {
                             withAnimation {
-                                AppState.shared.loginPressed = false
+                                AppState.shared.loginPageActive = false
                                 AppState.shared.onLandingPage = true
                             }
                         }
@@ -98,6 +102,7 @@ struct SigninSignupView: View {
                 ProgressView()
             }
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
     
 //MARK: - View Variables

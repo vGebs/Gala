@@ -43,7 +43,7 @@ public class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureD
     }
     
     //Core Functionality
-    public func makeUIView(_ viewBounds: UIView) -> UIView { makeUIView_(viewBounds) }
+    public func makeUIView(_ viewBounds: UIView) -> UIView { makeUIView_(viewBounds) } //Try to move this to init
     public func updateUIView() { updateUIView_() }
     public func takePic(){ prepareToTakePic_() }
     public func retakePic(){ retakePic_() }
@@ -76,8 +76,8 @@ public class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureD
     private var audioLevel : Float = 0.0
     
     deinit {
-        print("Deinitializing camera session")
         session.stopRunning()
+        print("Deinit Camera ViewModel: CameraViewModel.swift")
     }
 }
 

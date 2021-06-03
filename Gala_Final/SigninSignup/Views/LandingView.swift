@@ -28,7 +28,6 @@ struct LandingPageView: View {
                 
                 Spacer()
                 
-                //Instead of navigation link, just flip a bool of a binding and dismiss screen.
                 signupButton
                 
                 loginButton
@@ -60,13 +59,10 @@ struct LandingPageView: View {
     }
     
     var signupButton: some View {
-//        NavigationLink(
-//            destination: SigninSignupView(viewModel: SigninSignupViewModel(mode: .signUp)),
-//            isActive: $viewModel.signupButtonPressed
-//        ){
         Button(action: {
             withAnimation {
-                AppState.shared.signUpPressed = true
+                AppState.shared.onLandingPage = false
+                AppState.shared.signUpPageActive = true
             }
         }) {
             ZStack {
@@ -79,14 +75,14 @@ struct LandingPageView: View {
                     .font(.system(size: 26, weight: .black, design: .rounded))
             }
         }
-        //}
     }
     
     var loginButton: some View {
 
         Button(action: {
             withAnimation {
-                AppState.shared.loginPressed = true
+                AppState.shared.onLandingPage = false
+                AppState.shared.loginPageActive = true
             }
         }) {
             ZStack {

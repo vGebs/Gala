@@ -394,9 +394,9 @@
 			isa = PBXGroup;
 			children = (
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
-				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
+				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FA8773FA26409BAD00D5D5CB /* SigninSignup */,
 				FA8773F126409A6900D5D5CB /* Profile */,

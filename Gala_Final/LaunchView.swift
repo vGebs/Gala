@@ -11,8 +11,8 @@ import Combine
 
 struct LaunchView: View {
     
-    @ObservedObject var viewModel = AppState.shared
-    
+    @StateObject var viewModel = AppState.shared
+
     var body: some View {
         ZStack {
             if viewModel.allowAccess {
@@ -22,10 +22,10 @@ struct LaunchView: View {
                 ProfileView(viewModel: viewModel.createProfileVM!)
                     .transition(.move(edge: .leading))
 
-            } else if viewModel.loginPressed{
+            } else if viewModel.loginPageActive{
                 SigninSignupView(viewModel: viewModel.loginVM!)
 
-            } else if viewModel.signUpPressed {
+            } else if viewModel.signUpPageActive {
                 SigninSignupView(viewModel: viewModel.signUpVM!)
                 
             } else {

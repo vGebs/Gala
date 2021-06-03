@@ -32,25 +32,25 @@ import Combine
         ///2. After user creates and account and fills in profile
             ///Load all needed data and then allow user to enter contentView
 
-    //Problem:
-        //Retain cycles are causing the apps memory to leak
+    ///Problem:
+        ///Retain cycles are causing the apps memory to leak
         
-    //Solution:
-        //Put signIn/Signup in the ContentView and make the ContentView
-            //control the state of authentication & profile creation.
-            //ZStack w the signin on top. Animation to dismiss and deinit
-        //SwiftUI is a function of state. The login and signup view
-            //should depend on the state of the ContentView.
-        //ContentView is independent of the Login forms. To see the
-            //ContentView, one must pass authentication and then the
-                //ContentView will let the user in by dismissing the signin forms.
+    ///Solution:
+        ///Put signIn/Signup in the ContentView and make the ContentView
+            ///control the state of authentication & profile creation.
+            ///ZStack w the signin on top. Animation to dismiss and deinit
+        ///SwiftUI is a function of state. The login and signup view
+            ///should depend on the state of the ContentView.
+        ///ContentView is independent of the Login forms. To see the
+            ///ContentView, one must pass authentication and then the
+                ///ContentView will let the user in by dismissing the signin forms.
+
+        ///MARK: - Problem:
+            ///LaunchViewModel name needs to be changed to AppState.
 //MARK: - DONE -
 
 //MARK: - Next steps -
 
-    //MARK: - Problem:
-        //LaunchViewModel name needs to be changed to AppState.
-    
     //MARK: - Problem:
         //ViewModels are not being deinitialized
 
@@ -172,8 +172,7 @@ var password = UserDefaults.standard.string(forKey: "password")
 struct GalaApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @AppStorage("isDarkMode") var isDarkMode = true
-
+    
     var body: some Scene {
         WindowGroup {
             LaunchView()

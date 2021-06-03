@@ -14,8 +14,9 @@ struct ProfileMainView: View {
     var baseColor: Color = .blue
     
     @ObservedObject var viewModel: ProfileViewModel
-    @Environment(\.colorScheme) var colorScheme
 
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
     var body: some View {
         VStack {
             ZStack{
@@ -26,7 +27,7 @@ struct ProfileMainView: View {
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .foregroundColor(isDarkMode ? .black : .white)
                         .frame(width: screenWidth, height: screenHeight * 0.81)
                         .shadow(radius: 10)
                 }
@@ -57,10 +58,10 @@ struct ProfileMainView: View {
                         Spacer()
                         
                         Menu {
-                            Button(action: { self.viewModel.toggleDarkMode() }){
+                            Button(action: { AppState.shared.toggleDarkMode() }){
                                 HStack{
                                     Image(systemName: "person.fill.xmark")
-                                    Text(self.viewModel.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
+                                    Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
                                 }
                             }
                             
@@ -88,5 +89,6 @@ struct ProfileMainView: View {
             .edgesIgnoringSafeArea(.all)
             Spacer()
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
