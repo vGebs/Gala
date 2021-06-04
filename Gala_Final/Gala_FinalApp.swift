@@ -176,7 +176,6 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
-            //ProfileView(viewModel: ProfileViewModel(mode: .createAccount))
         }
     }
 }

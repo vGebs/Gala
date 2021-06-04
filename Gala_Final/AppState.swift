@@ -16,8 +16,8 @@ class AppState: ObservableObject {
     static let shared = AppState()
     
     //ViewState variables
-    @Published var allowAccess: Bool = UserService.shared.currentUser == nil ? false : true
-    @Published var onLandingPage: Bool = UserService.shared.currentUser == nil ? true : false
+    @Published var allowAccess: Bool = false //UserService.shared.currentUser == nil ? false : true
+    @Published var onLandingPage: Bool = true //UserService.shared.currentUser == nil ? true : false
     @Published var loginPageActive = false
     @Published var signUpPageActive = false
     @Published var createAccountPressed = false
@@ -54,7 +54,7 @@ class AppState: ObservableObject {
 //            .observeAuthChanges()
 //            .map { $0 != nil }
 //            .assign(to: &$allowAccess)
-//
+
 //        UserService.shared
 //            .observeAuthChanges()
 //            .map { $0 == nil }
@@ -97,7 +97,7 @@ class AppState: ObservableObject {
                 if on {
                     return Just(ProfileViewModel(name: self.profileInfo.name, age: self.profileInfo.age, email: self.profileInfo.email, mode: .createAccount)).eraseToAnyPublisher()
                 } else {
-                    print("Setting Create profile VM to nil: AppState.swift")
+                    print("Setting Create profile VM = nil: AppState.swift")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
@@ -108,7 +108,7 @@ class AppState: ObservableObject {
                 if allow {
                     return Just(ProfileViewModel(mode: .profileStandard)).eraseToAnyPublisher()
                 } else {
-                    print("Setting all ContentViews = nil: AppState.swift")
+                    print("Setting Profile Standard = nil: AppState.swift")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }

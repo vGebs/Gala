@@ -14,6 +14,8 @@
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
+		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
+		FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */; };
 		FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E12640972300D5D5CB /* ElegantPages */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
 		FA8773E8264097C300D5D5CB /* iTextField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E7264097C300D5D5CB /* iTextField */; };
@@ -83,6 +85,8 @@
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreLocationExtension.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FA8773FD26409BED00D5D5CB /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
@@ -171,6 +175,14 @@
 				627290E04695ED59BFA7D523 /* Pods-Gala_Final.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FA72A1762669ACED004DEF77 /* General Services */ = {
+			isa = PBXGroup;
+			children = (
+				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
+			);
+			path = "General Services";
 			sourceTree = "<group>";
 		};
 		FA8773F126409A6900D5D5CB /* Profile */ = {
@@ -303,6 +315,7 @@
 				FA87743A2640A0B600D5D5CB /* ViewExtension.swift */,
 				FA87743C2640A0DB00D5D5CB /* ColorExtension.swift */,
 				FA579DC02654ED1D00EFA166 /* UIImage.swift */,
+				FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -335,6 +348,7 @@
 		FA8774492640A1CD00D5D5CB /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FA72A1762669ACED004DEF77 /* General Services */,
 				FA87744B2640A1E000D5D5CB /* External Database */,
 				FA87744A2640A1DA00D5D5CB /* Internal Database */,
 			);
@@ -577,6 +591,7 @@
 				FA87741826409E0700D5D5CB /* ConvoPreview.swift in Sources */,
 				FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */,
 				FA87742C26409F8600D5D5CB /* JigJagMomentStackViewRight.swift in Sources */,
+				FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */,
 				FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */,
 				FA87742E26409FA300D5D5CB /* MatchesMomentView.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
@@ -588,6 +603,7 @@
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA8774392640A09500D5D5CB /* StringExtension.swift in Sources */,
+				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
 				FA87743026409FC700D5D5CB /* MomentView.swift in Sources */,
 				FA87740C26409D3200D5D5CB /* CapsuleButton.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
