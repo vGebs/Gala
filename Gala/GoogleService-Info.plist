@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>364782084031-no0untgp7f162ekhsc0699pkmut8rham.apps.googleusercontent.com</string>
+	<string>815003242301-7ttjb0123tjjq1opko0t5nltd2onask2.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.364782084031-no0untgp7f162ekhsc0699pkmut8rham</string>
+	<string>com.googleusercontent.apps.815003242301-7ttjb0123tjjq1opko0t5nltd2onask2</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBDi3krR92BmiKtDKohm_QbaLpZIVV1aYg</string>
+	<string>AIzaSyAQL6uQSb2u0qgtB4aqSnL5bahl-wrXplg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>364782084031</string>
+	<string>815003242301</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.Brick-Squad.Gala</string>
 	<key>PROJECT_ID</key>
-	<string>gala-12c1e</string>
+	<string>gala-8af33</string>
 	<key>STORAGE_BUCKET</key>
-	<string>gala-12c1e.appspot.com</string>
+	<string>gala-8af33.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:364782084031:ios:53021054485329d4d08b0a</string>
+	<string>1:815003242301:ios:426ce5cdb795f5f1ed3f54</string>
 </dict>
 </plist>

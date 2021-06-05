@@ -206,6 +206,7 @@ final class SigninSignupViewModel: ObservableObject{
                 case let .failure(error):
                     print(error.localizedDescription)
                     self.signUpError = true
+                    self.loading = false
                 case .finished:
                     print("Succesfully Signed up")
                     self.login(self.mode)
@@ -225,6 +226,7 @@ final class SigninSignupViewModel: ObservableObject{
                 case let .failure(error):
                     print(error.localizedDescription)
                     self.loginError = false
+                    self.loading = false
                 case .finished:
                     print("Succesfully Signed in")
                     UserDefaults.standard.set(true, forKey: "loggedIn")
