@@ -108,20 +108,6 @@ class LocationService: NSObject, ObservableObject {
                 }
             }
         }.eraseToAnyPublisher()
-        
-//        let distance = MKDistanceFormatter()
-//
-//        switch distanceType{
-//        case .km:
-//            distance.units = .metric
-//        case .mi:
-//            distance.units = .imperial
-//        case .minutesHours:
-//            print("")
-//        }
-//
-//        distance.unitStyle = .abbreviated
-//        distance.string(fromDistance: <#T##CLLocationDistance#>)
     }
 }
 
@@ -137,7 +123,6 @@ extension LocationService: CLLocationManagerDelegate {
             guard let city = city, let country = country, error == nil else { return }
             self.city = city
             self.country = country
-            //print(city + ", " + country)
         }
     }
 }

@@ -5,8 +5,7 @@
 //  Created by Vaughn on 2021-05-03.
 //
 
-import SwiftUI
-import SwiftUICam
+import SwiftUI //
 
 struct NavBar: View {
     @Binding var pageSelection: Int

@@ -9,9 +9,6 @@ import Combine
 
 final class LandingPageViewModel: ObservableObject{
     
-//    @Published var signupButtonPressed = false
-//    @Published var loginButtonPressed = false
-    
     private(set) var welcomeText: String = "Welcome"
     private(set) var toText: String = " to "
     private(set) var galaText: String = "Gala"

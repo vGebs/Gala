@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CCD9029C10905AC2406C56D1 /* Pods_Gala_Final.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F19D5D36D1ECC22567FE2A /* Pods_Gala_Final.framework */; };
-		FA2D6EDC26435E1600551EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */; };
+		DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */; };
+		FA02BD50266AF1D9004DC234 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA02BD4F266AF1D9004DC234 /* GoogleService-Info.plist */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
@@ -76,10 +76,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		627290E04695ED59BFA7D523 /* Pods-Gala_Final.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala_Final.release.xcconfig"; path = "Target Support Files/Pods-Gala_Final/Pods-Gala_Final.release.xcconfig"; sourceTree = "<group>"; };
-		73F19D5D36D1ECC22567FE2A /* Pods_Gala_Final.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gala_Final.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C56F8AEE2B0B8E2A0F83940A /* Pods-Gala_Final.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala_Final.debug.xcconfig"; path = "Target Support Files/Pods-Gala_Final/Pods-Gala_Final.debug.xcconfig"; sourceTree = "<group>"; };
-		FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gala.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.release.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.release.xcconfig"; sourceTree = "<group>"; };
+		831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.debug.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.debug.xcconfig"; sourceTree = "<group>"; };
+		FA02BD4F266AF1D9004DC234 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		FAA88B1A26492696007F042D /* ShowcaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseCardView.swift; sourceTree = "<group>"; };
 		FAA88B1C26492928007F042D /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		FAA88B1E26492960007F042D /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
-		FAE5E6EE264092D000CC1670 /* Gala_Final.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala_Final.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FAE5E6F5264092D100CC1670 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -152,18 +152,18 @@
 				FA8773EB2640992F00D5D5CB /* Pages in Frameworks */,
 				FA8773E8264097C300D5D5CB /* iTextField in Frameworks */,
 				FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */,
-				CCD9029C10905AC2406C56D1 /* Pods_Gala_Final.framework in Frameworks */,
 				FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */,
+				DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		63DE1EC21C92835A7BE378C6 /* Frameworks */ = {
+		3461F9FBC02935EB68A09EFB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73F19D5D36D1ECC22567FE2A /* Pods_Gala_Final.framework */,
+				1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -171,8 +171,8 @@
 		79D6AE9E810083B04CE6A2E2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C56F8AEE2B0B8E2A0F83940A /* Pods-Gala_Final.debug.xcconfig */,
-				627290E04695ED59BFA7D523 /* Pods-Gala_Final.release.xcconfig */,
+				831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */,
+				4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -389,22 +389,22 @@
 		FAE5E6E5264092D000CC1670 = {
 			isa = PBXGroup;
 			children = (
-				FAE5E6F0264092D000CC1670 /* Gala_Final */,
+				FAE5E6F0264092D000CC1670 /* Gala */,
 				FAE5E6EF264092D000CC1670 /* Products */,
 				79D6AE9E810083B04CE6A2E2 /* Pods */,
-				63DE1EC21C92835A7BE378C6 /* Frameworks */,
+				3461F9FBC02935EB68A09EFB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		FAE5E6EF264092D000CC1670 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FAE5E6EE264092D000CC1670 /* Gala_Final.app */,
+				FAE5E6EE264092D000CC1670 /* Gala.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FAE5E6F0264092D000CC1670 /* Gala_Final */ = {
+		FAE5E6F0264092D000CC1670 /* Gala */ = {
 			isa = PBXGroup;
 			children = (
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
@@ -426,10 +426,10 @@
 				FA8774412640A13C00D5D5CB /* Publishers */,
 				FAE5E6F5264092D100CC1670 /* Assets.xcassets */,
 				FAE5E6FA264092D100CC1670 /* Info.plist */,
-				FA2D6EDB26435E1600551EE3 /* GoogleService-Info.plist */,
+				FA02BD4F266AF1D9004DC234 /* GoogleService-Info.plist */,
 				FAE5E6F7264092D100CC1670 /* Preview Content */,
 			);
-			path = Gala_Final;
+			path = Gala;
 			sourceTree = "<group>";
 		};
 		FAE5E6F7264092D100CC1670 /* Preview Content */ = {
@@ -443,21 +443,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FAE5E6ED264092D000CC1670 /* Gala_Final */ = {
+		FAE5E6ED264092D000CC1670 /* Gala */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FAE5E6FD264092D100CC1670 /* Build configuration list for PBXNativeTarget "Gala_Final" */;
+			buildConfigurationList = FAE5E6FD264092D100CC1670 /* Build configuration list for PBXNativeTarget "Gala" */;
 			buildPhases = (
-				CF33D5BC0951842D9ADCA501 /* [CP] Check Pods Manifest.lock */,
+				0C62EB78CAA67FF2A810CFAC /* [CP] Check Pods Manifest.lock */,
 				FAE5E6EA264092D000CC1670 /* Sources */,
 				FAE5E6EB264092D000CC1670 /* Frameworks */,
 				FAE5E6EC264092D000CC1670 /* Resources */,
-				C766A2C27B13B705947D6490 /* [CP] Embed Pods Frameworks */,
+				F101E3A00A68F64EB8F83EF9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Gala_Final;
+			name = Gala;
 			packageProductDependencies = (
 				FA8773E12640972300D5D5CB /* ElegantPages */,
 				FA8773E42640979E00D5D5CB /* iPhoneNumberField */,
@@ -465,7 +465,7 @@
 				FA8773EA2640992F00D5D5CB /* Pages */,
 			);
 			productName = Gala_Final;
-			productReference = FAE5E6EE264092D000CC1670 /* Gala_Final.app */;
+			productReference = FAE5E6EE264092D000CC1670 /* Gala.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -482,7 +482,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FAE5E6E9264092D000CC1670 /* Build configuration list for PBXProject "Gala_Final" */;
+			buildConfigurationList = FAE5E6E9264092D000CC1670 /* Build configuration list for PBXProject "Gala" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -501,7 +501,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FAE5E6ED264092D000CC1670 /* Gala_Final */,
+				FAE5E6ED264092D000CC1670 /* Gala */,
 			);
 		};
 /* End PBXProject section */
@@ -511,33 +511,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA02BD50266AF1D9004DC234 /* GoogleService-Info.plist in Resources */,
 				FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */,
 				FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */,
-				FA2D6EDC26435E1600551EE3 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		C766A2C27B13B705947D6490 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Gala_Final/Pods-Gala_Final-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Gala_Final/Pods-Gala_Final-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Gala_Final/Pods-Gala_Final-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CF33D5BC0951842D9ADCA501 /* [CP] Check Pods Manifest.lock */ = {
+		0C62EB78CAA67FF2A810CFAC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -552,11 +535,28 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Gala_Final-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Gala-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F101E3A00A68F64EB8F83EF9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Gala/Pods-Gala-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Gala/Pods-Gala-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Gala/Pods-Gala-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -748,21 +748,21 @@
 		};
 		FAE5E6FE264092D100CC1670 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C56F8AEE2B0B8E2A0F83940A /* Pods-Gala_Final.debug.xcconfig */;
+			baseConfigurationReference = 831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Gala_Final/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Gala/Preview Content\"";
 				DEVELOPMENT_TEAM = TBMU9UG97G;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = Gala_Final/Info.plist;
+				INFOPLIST_FILE = Gala/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.Brick-Squad.Gala-Final";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Brick-Squad.Gala";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -771,21 +771,21 @@
 		};
 		FAE5E6FF264092D100CC1670 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 627290E04695ED59BFA7D523 /* Pods-Gala_Final.release.xcconfig */;
+			baseConfigurationReference = 4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Gala_Final/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Gala/Preview Content\"";
 				DEVELOPMENT_TEAM = TBMU9UG97G;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = Gala_Final/Info.plist;
+				INFOPLIST_FILE = Gala/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.Brick-Squad.Gala-Final";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Brick-Squad.Gala";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -795,7 +795,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FAE5E6E9264092D000CC1670 /* Build configuration list for PBXProject "Gala_Final" */ = {
+		FAE5E6E9264092D000CC1670 /* Build configuration list for PBXProject "Gala" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FAE5E6FB264092D100CC1670 /* Debug */,
@@ -804,7 +804,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FAE5E6FD264092D100CC1670 /* Build configuration list for PBXNativeTarget "Gala_Final" */ = {
+		FAE5E6FD264092D100CC1670 /* Build configuration list for PBXNativeTarget "Gala" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FAE5E6FE264092D100CC1670 /* Debug */,

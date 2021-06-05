@@ -27,8 +27,6 @@ struct SigninSignupView: View {
     @State var editingRePword = false
     @State var showDatePicker = false
     
-    
-    
 //MARK: - Main Body
     
     var body: some View {
