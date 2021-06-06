@@ -448,32 +448,39 @@ extension ProfileViewModel {
     //Change this funtion such that all images can be passed to the function
     private func addProfileImages(){
         let allImages = profileImage + images
-        var counter = 0
-        for i in 0..<allImages.count {
-            imgService.uploadProfileImage(img: allImages[i], name: String(i))
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .receive(on: DispatchQueue.main)
-                .sink{ completion in
-                    switch completion {
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                    case .finished:
-                        print("Successfully added photo: ProfileViewModel(addProfileImages())")
-                        counter += 1
+        if allImages.count == 0 {
+            self.loading = false
+            AppState.shared.allowAccess = true
+            AppState.shared.createAccountPressed = false
+            self.submitPressed = true
+        } else {
+            var counter = 0
+            for i in 0..<allImages.count {
+                imgService.uploadProfileImage(img: allImages[i], name: String(i))
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink{ completion in
+                        switch completion {
+                        case let .failure(error):
+                            print(error.localizedDescription)
+                        case .finished:
+                            print("Successfully added photo: ProfileViewModel(addProfileImages())")
+                            counter += 1
+                        }
+                    } receiveValue: { _ in
+                        if counter == (allImages.count - 1){
+    //                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                            //                            self.loading = false
+                            //                            self.submitPressed = true
+                            //                        }
+                            self.loading = false
+                            AppState.shared.allowAccess = true
+                            AppState.shared.createAccountPressed = false
+                            self.submitPressed = true
+                        }
                     }
-                } receiveValue: { _ in
-                    if counter == (allImages.count - 1){
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-//                            self.loading = false
-//                            self.submitPressed = true
-//                        }
-                        self.loading = false
-                        AppState.shared.allowAccess = true
-                        AppState.shared.createAccountPressed = false
-                        self.submitPressed = true
-                    }
-                }
-                .store(in: &cancellables)
+                    .store(in: &cancellables)
+            }
         }
     }
     
