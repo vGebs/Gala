@@ -68,6 +68,7 @@
 		FAA88B1B26492696007F042D /* ShowcaseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1A26492696007F042D /* ShowcaseCardView.swift */; };
 		FAA88B1D26492928007F042D /* SwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1C26492928007F042D /* SwipeView.swift */; };
 		FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1E26492960007F042D /* SwipeViewModel.swift */; };
+		FAD9DB17266C8FE200BC6FDA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
@@ -134,6 +135,7 @@
 		FAA88B1A26492696007F042D /* ShowcaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseCardView.swift; sourceTree = "<group>"; };
 		FAA88B1C26492928007F042D /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		FAA88B1E26492960007F042D /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
+		FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				FA87743E2640A10700D5D5CB /* Public Enums */,
 				FA8774412640A13C00D5D5CB /* Publishers */,
 				FAE5E6F5264092D100CC1670 /* Assets.xcassets */,
+				FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */,
 				FAE5E6FA264092D100CC1670 /* Info.plist */,
 				FAE5E6F7264092D100CC1670 /* Preview Content */,
 			);
@@ -510,6 +513,7 @@
 			files = (
 				FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */,
 				FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */,
+				FAD9DB17266C8FE200BC6FDA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
