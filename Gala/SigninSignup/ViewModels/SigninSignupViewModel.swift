@@ -28,7 +28,7 @@ final class SigninSignupViewModel: ObservableObject{
     private(set) var emailWarning = "Please enter your email"
     private(set) var cellNumWarning = "Please enter your cell number with your area code"
     private(set) var passwordWarning = "Password must be at least 6 characters"
-    private(set) var rePasswordWarning = "Match your password"
+    private(set) var rePasswordWarning = "Password must match"
     
     @Published var enterProfileTapped = false
     @Published var enterMainScreenTapped = false
@@ -166,9 +166,9 @@ final class SigninSignupViewModel: ObservableObject{
     var subtitle: String{
         switch mode {
         case .signUp:
-            return "Sign up with your email & cell phone number"
+            return "Sign up with your email"
         case .login:
-            return "Sign in with your email or cell phone number"
+            return "Sign in with your email"
         }
     }
     
