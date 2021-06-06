@@ -15,6 +15,8 @@ class AppState: ObservableObject {
     //Shared Instance (Singleton)
     static let shared = AppState()
     
+    var location = LocationService.shared
+    
     //ViewState variables
     @Published var allowAccess: Bool = false //UserService.shared.currentUser == nil ? false : true
     @Published var onLandingPage: Bool = true //UserService.shared.currentUser == nil ? true : false

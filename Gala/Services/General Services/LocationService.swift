@@ -39,6 +39,32 @@ class LocationService: NSObject, ObservableObject {
         }
     }
     
+    func getCity() -> AnyPublisher<String, Never> {
+        return Future<String, Never> { promise in
+            return promise(.success(self.city))
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension LocationService: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        guard let location = locations.last else { return }
+        self.coordinates.latitude = location.coordinate.latitude
+        self.coordinates.longitude = location.coordinate.longitude
+        let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        
+        loc.fetchCityAndCountry { city, country, error in
+            guard let city = city, let country = country, error == nil else { return }
+            self.city = city
+            print(self.city)
+            self.country = country
+        }
+    }
+}
+
+extension LocationService {
+    
     enum DistanceType {
         case metric
         case imperial
@@ -108,21 +134,5 @@ class LocationService: NSObject, ObservableObject {
                 }
             }
         }.eraseToAnyPublisher()
-    }
-}
-
-extension LocationService: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        guard let location = locations.last else { return }
-        self.coordinates.latitude = location.coordinate.latitude
-        self.coordinates.longitude = location.coordinate.longitude
-        let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        
-        loc.fetchCityAndCountry { city, country, error in
-            guard let city = city, let country = country, error == nil else { return }
-            self.city = city
-            self.country = country
-        }
     }
 }

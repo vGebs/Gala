@@ -34,6 +34,8 @@ final class SigninSignupViewModel: ObservableObject{
     @Published var enterMainScreenTapped = false
     
     @Published var age = Date()
+    private(set) var cityText = LocationService.shared.city
+    private(set) var countryText = LocationService.shared.country
     @Published var nameText = ""
     @Published var emailText = ""
     @Published var cellNumberText = ""

@@ -24,11 +24,13 @@ final class ProfileViewModel: ObservableObject {
     private let profileService: ProfileServiceProtocol
     private let profileManager = ProfileManager()
     private let imgService: ProfileImageServiceProtocol
-    
     private let userService: UserServiceProtocol = UserService.shared
+    
     private var cancellables: [AnyCancellable] = []
     
     private(set) var nameText: String
+    private(set) var cityText: String = LocationService.shared.city
+    private(set) var countryText: String = LocationService.shared.country
     private(set) var ageText: String
     private var age: Date
     private var email: String
@@ -149,7 +151,7 @@ final class ProfileViewModel: ObservableObject {
         self.mode = mode
         self.profileService = profileService
         self.imgService = imgService
-
+        
         switch mode {
         case .createAccount:
             //creat new user in cd and fb
@@ -172,6 +174,8 @@ final class ProfileViewModel: ObservableObject {
                // print("could not get core data")
             //}
         }
+        
+        
         
         $bioCharCount
             .flatMap { count -> AnyPublisher<String, Never> in
@@ -299,6 +303,8 @@ final class ProfileViewModel: ObservableObject {
                 }
             }
             .assign(to: &$schoolHeader)
+        
+        
     }
     
 //MARK: - Public Methods ------------------------------------------------------------------------------------->

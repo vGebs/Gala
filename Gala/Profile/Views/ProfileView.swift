@@ -26,13 +26,13 @@ struct ProfileView: View {
                         title
                         subtitle
                         ProfilePicturePlaceholder
-                        nameAndAgeText
+                        nameAgeLocation
                     }
                     
                     if viewModel.mode == .profileStandard {
                         Spacer().frame(height: screenHeight * 0.02)
                         ProfilePicturePlaceholder
-                        nameAndAgeText
+                        nameAgeLocation
                         editButton
                     }
                     
@@ -227,11 +227,23 @@ struct ProfileView: View {
         }
     }
     
-    var nameAndAgeText: some View {
-        HStack{
-            Text("\(viewModel.nameText), \(viewModel.ageText)")
-                .font(.system(size: 23, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+    var nameAgeLocation: some View {
+        VStack {
+            HStack{
+                Text("\(viewModel.nameText), \(viewModel.ageText)")
+                    .font(.system(size: 23, weight: .semibold, design: .rounded))
+                    .foregroundColor(.pink)
+            }
+            .padding(.bottom, 3)
+            
+            HStack {
+                Image(systemName: "mappin.and.ellipse")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundColor(.pink)
+                
+                Text("\(viewModel.cityText), \(viewModel.countryText)")
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+            }
         }
     }
     

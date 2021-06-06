@@ -60,6 +60,7 @@ struct SigninSignupView: View {
                     if viewModel.mode == .signUp {
                         title
                         subtitle
+                        locationText
                         agePicker
                         nameTextField
                         emailTextField
@@ -117,6 +118,22 @@ struct SigninSignupView: View {
             .font(.system(size: 25, weight: .semibold, design: .rounded))
             .foregroundColor(.pink)
             .padding(.bottom)
+    }
+    
+    var locationText: some View {
+        HStack{
+            Image(systemName: "mappin.and.ellipse")
+                .foregroundColor(.pink)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .padding(.leading)
+            
+            Spacer()
+            
+            Text("\(viewModel.cityText), \(viewModel.countryText)")
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundColor(.white)
+                .padding(.trailing)
+        }
     }
     
     var agePicker: some View {
