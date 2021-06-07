@@ -241,8 +241,16 @@ struct ProfileView: View {
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundColor(.pink)
                 
-                Text("\(viewModel.cityText), \(viewModel.countryText)")
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                if viewModel.cityText == "" || viewModel.countryText == "" {
+                    
+                    Menu("Add Location"){
+                        Text("iOS Settings > Privacy > Location Services > Gala")
+                    }
+                    
+                } else {
+                    Text("\(viewModel.cityText), \(viewModel.countryText)")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                }
             }
         }
     }

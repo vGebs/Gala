@@ -38,11 +38,9 @@ class LocationService: NSObject, ObservableObject {
             print("Stopped updating location")
         }
     }
-    
-    func getCity() -> AnyPublisher<String, Never> {
-        return Future<String, Never> { promise in
-            return promise(.success(self.city))
-        }.eraseToAnyPublisher()
+
+    func requestLocationAuthorization() {
+        locationManager.requestWhenInUseAuthorization()
     }
 }
 

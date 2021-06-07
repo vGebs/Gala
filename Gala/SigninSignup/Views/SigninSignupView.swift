@@ -127,12 +127,22 @@ struct SigninSignupView: View {
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .padding(.leading)
             
+            Text("Location")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+            
             Spacer()
             
-            Text("\(viewModel.cityText), \(viewModel.countryText)")
-                .font(.system(size: 15, weight: .semibold, design: .rounded))
-                .foregroundColor(.white)
-                .padding(.trailing)
+            if viewModel.cityText == "" || viewModel.countryText == "" {
+                Menu("Add Location"){
+                    Text("iOS Settings > Privacy > Location Services > Gala")
+                }
+                .padding(.trailing, 25)
+            } else {
+                Text("\(viewModel.cityText), \(viewModel.countryText)")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white)
+                    .padding(.trailing, 25)
+            }
         }
     }
     
