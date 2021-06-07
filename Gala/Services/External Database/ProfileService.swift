@@ -51,6 +51,7 @@ class ProfileService: ProfileServiceProtocol {
             self.db.collection("UserProfiles").document(self.currentUID!).setData([
                 "name" : profile.name,
                 "age" : Timestamp(date: profile.birthday),
+                "location" : profile.location,
                 "bio" : bio,
                 "gender" : profile.gender,
                 "sexuality" : profile.sexuality,
@@ -87,6 +88,7 @@ class ProfileService: ProfileServiceProtocol {
                         let profile = ProfileModel(
                             name: profile.name,
                             birthday: profile.birthday,
+                            location: profile.location,
                             id: profile.id,
                             bio: profile.bio,
                             gender: profile.gender,

@@ -11,6 +11,7 @@ import FirebaseFirestoreSwift
 struct ProfileModel: Codable {
     var name: String
     var birthday: Date
+    var location: String
     var id: String
     var bio: String?
     var gender: String
@@ -23,6 +24,7 @@ struct ProfileModel: Codable {
     enum CodingKeys: String, CodingKey{
         case name
         case birthday = "age"
+        case location
         case id
         case bio
         case gender
