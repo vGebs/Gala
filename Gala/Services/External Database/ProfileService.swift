@@ -89,7 +89,7 @@ class ProfileService: ProfileServiceProtocol {
                             name: profile.name,
                             birthday: profile.birthday,
                             location: profile.location,
-                            id: profile.id,
+                            userID: profile.userID,
                             bio: profile.bio,
                             gender: profile.gender,
                             sexuality: profile.sexuality,

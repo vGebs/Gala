@@ -214,7 +214,7 @@ extension ProfileManager {
     
     func fetchProfile(id: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?, [ImageModel]?), Never> {
         return Future<(ProfileModel?, [ImageModel]?, [ImageModel]?), Never>{ promise in
-            var profileText: ProfileModel = ProfileModel(name: "", birthday: Date(), location: "", id: "", bio: "", gender: "", sexuality: "", job: "", school: "")
+            var profileText: ProfileModel = ProfileModel(name: "", birthday: Date(), location: "", userID: "", bio: "", gender: "", sexuality: "", job: "", school: "")
             var mainImages: [ImageModel] = []
             var sideImages: [ImageModel] = []
             
@@ -329,7 +329,7 @@ extension ProfileManager {
             let newProfile = ProfileEntity(context: self.container.viewContext)
             
             newProfile.name = profile.name
-            newProfile.id = profile.id
+            newProfile.id = profile.userID
             newProfile.birthday = profile.birthday
             newProfile.gender = profile.gender
             newProfile.sexuality = profile.sexuality
@@ -450,7 +450,7 @@ extension ProfileManager {
         return Future<ProfileModel?, Never> { promise in
             for profile in self.profiles{
                 if profile.id == id {
-                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), location: profile.location ?? "", id: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
+                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), location: profile.location ?? "", userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
                     promise(.success(prof))
                 }
             }

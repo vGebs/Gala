@@ -416,7 +416,7 @@ extension ProfileViewModel {
             name: nameText,
             birthday: age,
             location: "\(LocationService.shared.city), \(LocationService.shared.country)" ,
-            id: currentUser,
+            userID: currentUser,
             bio: bio,
             gender: selectGenderDropDownText.rawValue,
             sexuality: selectSexualityDropDownText.rawValue,

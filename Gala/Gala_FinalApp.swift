@@ -18,36 +18,6 @@ var compressionQuality: CGFloat = 0.2
 import SwiftUI
 import Firebase
 import Combine
-    
-//MARK: - DONE -
-    ///Right now:
-        ///Resequence the app such that the login and data pull is smooth
-///
-    ///Problem:
-        ///Compressing, pushing and pulling images/video takes too long
-
-    ///Solutions:
-        ///1. Do not compress images when selecting from camera roll
-            ///Instead compress before pushing to dataBase
-        ///2. After user creates and account and fills in profile
-            ///Load all needed data and then allow user to enter contentView
-
-    ///Problem:
-        ///Retain cycles are causing the apps memory to leak
-        
-    ///Solution:
-        ///Put signIn/Signup in the ContentView and make the ContentView
-            ///control the state of authentication & profile creation.
-            ///ZStack w the signin on top. Animation to dismiss and deinit
-        ///SwiftUI is a function of state. The login and signup view
-            ///should depend on the state of the ContentView.
-        ///ContentView is independent of the Login forms. To see the
-            ///ContentView, one must pass authentication and then the
-                ///ContentView will let the user in by dismissing the signin forms.
-
-        ///MARK: - Problem:
-            ///LaunchViewModel name needs to be changed to AppState.
-//MARK: - DONE -
 
 //MARK: - Next steps -
 
@@ -175,7 +145,8 @@ struct GalaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LaunchView()
+            //LaunchView()
+            ExploreView1(viewModel: ExploreViewModel())
         }
     }
 }
