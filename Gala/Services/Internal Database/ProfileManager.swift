@@ -214,7 +214,19 @@ extension ProfileManager {
     
     func fetchProfile(id: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?, [ImageModel]?), Never> {
         return Future<(ProfileModel?, [ImageModel]?, [ImageModel]?), Never>{ promise in
-            var profileText: ProfileModel = ProfileModel(name: "", birthday: Date(), location: "", userID: "", bio: "", gender: "", sexuality: "", job: "", school: "")
+            var profileText: ProfileModel = ProfileModel(
+                name: "",
+                birthday: Date(),
+                city: "",
+                country: "",
+                userID: "",
+                bio: "",
+                gender: "",
+                sexuality: "",
+                job: "",
+                school: ""
+            )
+            
             var mainImages: [ImageModel] = []
             var sideImages: [ImageModel] = []
             
@@ -450,7 +462,7 @@ extension ProfileManager {
         return Future<ProfileModel?, Never> { promise in
             for profile in self.profiles{
                 if profile.id == id {
-                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), location: profile.location ?? "", userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
+                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), city: profile.city ?? "", country: profile.country ?? "", userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
                     promise(.success(prof))
                 }
             }

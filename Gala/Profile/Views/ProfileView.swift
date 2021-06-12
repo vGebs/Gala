@@ -256,7 +256,11 @@ struct ProfileView: View {
     }
     
     var editButton: some View{
-        Button(action: { viewModel.editPressed.toggle() }){
+        Button(action: {
+            //withAnimation {
+                viewModel.editPressed.toggle()
+            //}
+        }){
             HStack {
                 Text(viewModel.editPressed ? "submit changes" : "edit" )
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -646,7 +650,7 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: Date(), mode: .createAccount))
+        ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: Date(), mode: .profileStandard))
     }
 }
 

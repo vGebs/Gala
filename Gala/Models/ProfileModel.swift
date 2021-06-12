@@ -12,7 +12,8 @@ struct ProfileModel: Codable, Identifiable {
     var id = UUID()
     var name: String
     var birthday: Date
-    var location: String
+    var city: String
+    var country: String
     var userID: String
     var bio: String?
     var gender: String
@@ -25,7 +26,8 @@ struct ProfileModel: Codable, Identifiable {
     enum CodingKeys: String, CodingKey{
         case name
         case birthday = "age"
-        case location
+        case city
+        case country
         case userID
         case bio
         case gender

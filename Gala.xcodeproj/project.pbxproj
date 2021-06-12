@@ -73,6 +73,9 @@
 		FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */; };
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
 		FAD9DB21266F16C200BC6FDA /* RecentlyJoinedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB20266F16C200BC6FDA /* RecentlyJoinedViewModel.swift */; };
+		FAD9DB23266F47EA00BC6FDA /* AnimationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB22266F47EA00BC6FDA /* AnimationTest.swift */; };
+		FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */; };
+		FAD9DB272674601600BC6FDA /* AllRecentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB262674601600BC6FDA /* AllRecentsView.swift */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
@@ -144,6 +147,9 @@
 		FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedView.swift; sourceTree = "<group>"; };
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB20266F16C200BC6FDA /* RecentlyJoinedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedViewModel.swift; sourceTree = "<group>"; };
+		FAD9DB22266F47EA00BC6FDA /* AnimationTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationTest.swift; sourceTree = "<group>"; };
+		FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserView.swift; sourceTree = "<group>"; };
+		FAD9DB262674601600BC6FDA /* AllRecentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllRecentsView.swift; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -399,8 +405,11 @@
 		FAD9DB18266EEFAE00BC6FDA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				FAD9DB22266F47EA00BC6FDA /* AnimationTest.swift */,
 				FAD9DB1A266EF4EF00BC6FDA /* ExploreView1.swift */,
 				FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */,
+				FAD9DB262674601600BC6FDA /* AllRecentsView.swift */,
+				FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -595,6 +604,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
+				FAD9DB272674601600BC6FDA /* AllRecentsView.swift in Sources */,
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,
 				FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
@@ -602,6 +612,7 @@
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView1.swift in Sources */,
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,
+				FAD9DB23266F47EA00BC6FDA /* AnimationTest.swift in Sources */,
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
@@ -609,6 +620,7 @@
 				FA87740826409CEA00D5D5CB /* ProfileHeaderTest.swift in Sources */,
 				FA87742626409F2600D5D5CB /* GalaProAdvertisement.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
+				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
 				FA87741026409D8300D5D5CB /* ProfilePreview.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,

@@ -415,7 +415,8 @@ extension ProfileViewModel {
         let profile = ProfileModel(
             name: nameText,
             birthday: age,
-            location: "\(LocationService.shared.city), \(LocationService.shared.country)" ,
+            city: LocationService.shared.city,
+            country: LocationService.shared.country,
             userID: currentUser,
             bio: bio,
             gender: selectGenderDropDownText.rawValue,
