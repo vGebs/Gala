@@ -145,8 +145,8 @@ struct GalaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            //LaunchView()
-            ExploreView1(viewModel: ExploreViewModel())
+            LaunchView()
+            //ExploreView1(viewModel: ExploreViewModel())
         }
     }
 }

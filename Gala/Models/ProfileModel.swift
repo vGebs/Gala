@@ -28,7 +28,7 @@ struct ProfileModel: Codable, Identifiable {
         case birthday = "age"
         case city
         case country
-        case userID
+        case userID = "id"
         case bio
         case gender
         case sexuality

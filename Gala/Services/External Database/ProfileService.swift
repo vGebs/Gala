@@ -58,7 +58,7 @@ class ProfileService: ProfileServiceProtocol {
                 "sexuality" : profile.sexuality,
                 "job" : job,
                 "school" : school,
-                "id" : profile.id
+                "id" : profile.userID
             ]) { err in
                 if let err = err {
                     print("Error writing document: \(err)")
