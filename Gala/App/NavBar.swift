@@ -132,7 +132,7 @@ struct NavBar: View {
                     Color.black
                         .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                     HStack {
-                        Image(systemName: "flame")
+                        Image(systemName: "rectangle.stack.person.crop")
                             .font(.system(size: 21, weight: pageSelection == 4 || elegantPageSelection == 4 ? .light : .light, design: .rounded))
                             .foregroundColor(pageSelection == 4 || elegantPageSelection == 4 ? Color.red : .gray)
                         

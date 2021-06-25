@@ -17,20 +17,21 @@ struct ContentView: View {
     @State var currentPage = 2
     @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
     
-    @Environment(\.colorScheme) var colorScheme
-    
+    //@Environment(\.colorScheme) var colorScheme
+    @AppStorage("isDarkMode") private var isDarkMode = true
+
     var body: some View {
         ZStack {
-            if colorScheme == .dark {
-                Color.black
-            } else {
-                Color.white
-                VStack {
-                    Spacer()
-                    Color.black
-                        .frame(width: screenWidth, height: screenHeight * 0.13)
-                }
-            }
+//            if colorScheme == .dark {
+//                Color.black
+//            } else {
+//                Color.white
+//                VStack {
+//                    Spacer()
+//                    Color.black
+//                        .frame(width: screenWidth, height: screenHeight * 0.13)
+//                }
+//            }
             //            Pages(currentPage: $currentPage, bounce: false){
             //                ProfileMainView()
             //                ChatsView()
@@ -44,7 +45,7 @@ struct ContentView: View {
                 ProfileMainView(viewModel: profile)
                 BaseView()//ChatsView()
                 CameraView(camera: camera)
-                ExploreView(viewModel: explore)
+                ExploreMainView(viewModel: explore)
                 ShowcaseView()
             }
             .onPageChanged{ page in
@@ -60,6 +61,7 @@ struct ContentView: View {
                 .offset(y: screenHeight * 0.44)
                 .opacity(camera.picTaken ? 0 : 1)
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
         .navigationBarHidden(true)
         .edgesIgnoringSafeArea(.all)
     }

@@ -14,6 +14,8 @@ struct ProfileView: View {
 
     @ObservedObject var viewModel: ProfileViewModel
     
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
 //MARK: - Main Body
     
     var body: some View {
@@ -132,6 +134,7 @@ struct ProfileView: View {
                 ProgressView()
             }
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
     
     //MARK: - View Variables

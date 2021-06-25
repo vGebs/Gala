@@ -13,6 +13,8 @@ struct LaunchView: View {
     
     @StateObject var viewModel = AppState.shared
 
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
     var body: some View {
         ZStack {
             if viewModel.allowAccess {
@@ -33,5 +35,6 @@ struct LaunchView: View {
                     .transition(.move(edge: .leading))
             }
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }

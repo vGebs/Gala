@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-class RecentlyJoinedViewModel: ObservableObject {
+class SmallUserViewModel: ObservableObject {
     @Published var profile: ProfileModel
     
     init(profile: ProfileModel){

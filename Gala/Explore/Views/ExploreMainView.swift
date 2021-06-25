@@ -1,19 +1,19 @@
 //
-//  ProfileMainView.swift
-//  Gala_Final
+//  ExploreMainView.swift
+//  Gala
 //
-//  Created by Vaughn on 2021-05-03.
+//  Created by Vaughn on 2021-06-25.
 //
 
 import SwiftUI
 
-struct ProfileMainView: View {
+struct ExploreMainView: View {
     var optionButtonLeft: String = "highlighter"
-    var pageName: String = "Profile"
-    var optionButtonRight: String = "gearshape"
+    var pageName: String = "Explore"
+    var optionButtonRight: String = "line.horizontal.3"
     var baseColor: Color = .blue
     
-    @ObservedObject var viewModel: ProfileViewModel
+    @ObservedObject var viewModel: ExploreViewModel
 
     @AppStorage("isDarkMode") private var isDarkMode = true
     
@@ -31,7 +31,7 @@ struct ProfileMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ProfileView(viewModel: viewModel)
+                        ExploreView(viewModel: viewModel)
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)
@@ -53,27 +53,11 @@ struct ProfileMainView: View {
 
                         Spacer()
                         
-                        Menu {
-                            Button(action: { AppState.shared.toggleDarkMode() }){
-                                HStack{
-                                    Image(systemName: "person.fill.xmark")
-                                    Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
-                                }
-                            }
-                            
-                            Button(action: { self.viewModel.logout() }){
-                                HStack{
-                                    Image(systemName: "person.fill.xmark")
-                                    Text("Log out")
-                                }
-                            }
-                        } label: {
-                            Label("", systemImage: optionButtonRight)
+                        Button(action: { }) {
+                            Image(systemName: optionButtonRight)
+                                .font(.system(size: 22, weight: .regular, design: .rounded))
                                 .foregroundColor(.blue)
-                                .font(.system(size: 20, weight: .regular, design: .rounded))
-
                         }
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                     }
                     .padding()
                     
@@ -88,3 +72,4 @@ struct ProfileMainView: View {
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
+

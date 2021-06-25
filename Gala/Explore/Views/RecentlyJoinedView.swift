@@ -41,24 +41,24 @@ struct RecentlyJoinedView: View {
                                     VStack{
                                         if i == 0 {
                                             SmallUserView(
-                                                viewModel: RecentlyJoinedViewModel(
+                                                viewModel: SmallUserViewModel(
                                                     profile: newUsers[j])
                                             )
                                             .padding(.bottom, 3)
 
                                             SmallUserView(
-                                                viewModel: RecentlyJoinedViewModel(
+                                                viewModel: SmallUserViewModel(
                                                     profile: newUsers[j + 1])
                                             )
                                         } else {
                                             SmallUserView(
-                                                viewModel: RecentlyJoinedViewModel(
+                                                viewModel: SmallUserViewModel(
                                                     profile: newUsers[j + (i * 2)])
                                             )
                                             .padding(.bottom, 3)
                                             
                                             SmallUserView(
-                                                viewModel: RecentlyJoinedViewModel(
+                                                viewModel: SmallUserViewModel(
                                                     profile: newUsers[j + (i * 2) + 1])
                                             )
                                         }

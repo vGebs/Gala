@@ -28,7 +28,7 @@ struct AllRecentsView: View {
                 .frame(width: screenWidth * 0.9)
                 
                 ForEach(allNewUsers){ user in
-                    SmallUserView(viewModel: RecentlyJoinedViewModel(profile: user))
+                    SmallUserView(viewModel: SmallUserViewModel(profile: user))
                         .padding(.bottom, 3)
                         .frame(width: screenWidth)
                 }
