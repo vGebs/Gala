@@ -21,9 +21,7 @@ final class ProfileViewModel: ObservableObject {
     
 //MARK: - General Purpose Variables
         
-    private let profileService: ProfileServiceProtocol
     private let profileManager = ProfileManager()
-    private let imgService: ProfileImageServiceProtocol
     private let userService: UserServiceProtocol = UserService.shared
     
     private var cancellables: [AnyCancellable] = []
@@ -138,9 +136,7 @@ final class ProfileViewModel: ObservableObject {
         name: String = String(),
         age: Date = Date(),
         email: String = String(),
-        mode: Mode,
-        profileService: ProfileServiceProtocol = ProfileService(),
-        imgService: ProfileImageServiceProtocol = ProfileImageService()
+        mode: Mode
     ){
         
 //        self.nameText = name
@@ -149,8 +145,6 @@ final class ProfileViewModel: ObservableObject {
 //        self.email = email
         
         self.mode = mode
-        self.profileService = profileService
-        self.imgService = imgService
         
         switch mode {
         case .createAccount:
@@ -386,14 +380,10 @@ extension ProfileViewModel {
     
     private func createProfile() {
         self.loading = true
-        addProfileText()
-        addProfileImages()
-        
-        //self.loading = false
-//        self.submitPressed = true
+        pushProfile()
     }
     
-    private func addProfileText() {
+    private func pushProfile() {
         var bio = ""
         var job = ""
         var school = ""
@@ -425,8 +415,10 @@ extension ProfileViewModel {
             school: school
         )
 
+        let allImgs = profileImage + images
+        
         //Create Firebase Profile
-        profileService.addProfileText(profile)
+        ProfileService.shared.createProfile(profile, allImages: allImgs)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink{ completion in
@@ -434,7 +426,11 @@ extension ProfileViewModel {
                 case let .failure(error):
                     print(error.localizedDescription)
                 case .finished:
-                    print("Profile Successfully added to firebase: ProfileViewModel(addProfileText())")
+                    print("Profile Successfully added to firebase: ProfileViewModel")
+                    self.loading = false
+                    AppState.shared.allowAccess = true
+                    AppState.shared.createAccountPressed = false
+                    self.submitPressed = true
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
@@ -451,45 +447,6 @@ extension ProfileViewModel {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
-    }
-    
-    //Change this funtion such that all images can be passed to the function
-    private func addProfileImages(){
-        let allImages = profileImage + images
-        if allImages.count == 0 {
-            self.loading = false
-            AppState.shared.allowAccess = true
-            AppState.shared.createAccountPressed = false
-            self.submitPressed = true
-        } else {
-            var counter = 0
-            for i in 0..<allImages.count {
-                imgService.uploadProfileImage(img: allImages[i], name: String(i))
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .receive(on: DispatchQueue.main)
-                    .sink{ completion in
-                        switch completion {
-                        case let .failure(error):
-                            print(error.localizedDescription)
-                        case .finished:
-                            print("Successfully added photo: ProfileViewModel(addProfileImages())")
-                            counter += 1
-                        }
-                    } receiveValue: { _ in
-                        if counter == (allImages.count - 1){
-    //                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                            //                            self.loading = false
-                            //                            self.submitPressed = true
-                            //                        }
-                            self.loading = false
-                            AppState.shared.allowAccess = true
-                            AppState.shared.createAccountPressed = false
-                            self.submitPressed = true
-                        }
-                    }
-                    .store(in: &cancellables)
-            }
-        }
     }
     
     private func readCDProfile(id: String) -> Bool {
@@ -552,7 +509,6 @@ extension ProfileViewModel {
             }
             .store(in: &self.cancellables)
 
-        
         if returnedNil {
             return false
         } else {
@@ -562,7 +518,7 @@ extension ProfileViewModel {
     
     private func readFBProfile(uid: String) {
         
-        profileService.getCurrentUserProfile()
+        ProfileService.shared.getCurrentUserProfile()
             .sink { completion in
                 switch completion {
                 case let .failure(error):
@@ -570,56 +526,37 @@ extension ProfileViewModel {
                 case .finished:
                     print("getting profile from firebase: ProfileViewModel")
                 }
-            } receiveValue: { profile in
-                if let profile = profile {
-                    self.age = profile.birthday
+            } receiveValue: { text, imgs in
+                print("Text from getProfile: \(String(describing: text))")
+
+                if let text = text {
+                    self.age = text.birthday
                     self.ageText = self.age.ageString()
-                    self.nameText = profile.name
-                    self.bioText = profile.bio!
+                    self.nameText = text.name
+                    self.bioText = text.bio!
                     self.selectGenderDropDownText =
-                        "male" == profile.gender || "Male" == profile.gender ? .male : .female
+                        "male" == text.gender || "Male" == text.gender ? .male : .female
                     
-                    if profile.sexuality == "Gay" || profile.sexuality == "gay" {
+                    if text.sexuality == "Gay" || text.sexuality == "gay" {
                         self.selectSexualityDropDownText = .gay
-                    } else if profile.sexuality == "Straight" || profile.sexuality == "straight" {
+                    } else if text.sexuality == "Straight" || text.sexuality == "straight" {
                         self.selectSexualityDropDownText = .straight
                     } else {
                         self.selectSexualityDropDownText = .bisexual
                     }
                     
-                    self.jobText = profile.job!
-                    self.schoolText = profile.school!
+                    self.jobText = text.job!
+                    self.schoolText = text.school!
+                }
+                if let imgs = imgs {
+                    self.profileImage.append(imgs[0])
+                    
+                    for i in 0 ..< imgs.count {
+                        self.images.append(imgs[i])
+                    }
                 }
             }
             .store(in: &cancellables)
-        
-        for i in 0..<7{
-            imgService.getProfileImage(name: String(i))
-                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion{
-                    case let .failure(error):
-                        print(error.localizedDescription)
-                    case .finished:
-                        print("getting images from firebase: ProfileViewModel")
-                    }
-                } receiveValue: { img in
-                    if let img = img {
-                        let image = ImageModel(image: img)
-                        
-                        if i == 0 {
-                            self.profileImage.append(image)
-                        } else {
-                            self.images.append(image)
-                        }
-                        
-                    } else {
-                        print("no image found")
-                    }
-                }
-                .store(in: &cancellables)
-        }
     }
 }
 
@@ -664,47 +601,3 @@ extension ProfileViewModel {
         }
     }
 }
-
-//if let profile = self.profileManager.readProfile(email: email) {
-//    //User is logging back in on same device, get profile from CD, check for nil values
-//    self.nameText = profile.name
-//    self.age = profile.birthday
-//    self.ageText = self.age.ageString()
-//
-//    if profile.bio != "" {
-//        self.bioText = profile.bio!
-//    } else {
-//        self.bioText = ""
-//    }
-//
-//    if profile.gender == "Male" || profile.gender == "male" {
-//        self.selectGenderDropDownText = .male
-//    } else {
-//        self.selectGenderDropDownText = .female
-//    }
-//
-//    if profile.sexuality == "straight" || profile.sexuality == "Straight" {
-//        self.selectSexualityDropDownText = .straight
-//    } else if profile.sexuality == "gay" || profile.sexuality == "Gay"{
-//        self.selectSexualityDropDownText = .gay
-//    } else {
-//        self.selectSexualityDropDownText = .bisexual
-//    }
-//
-//    if profile.job != "" {
-//        self.jobText = profile.job!
-//    } else {
-//        self.jobText = ""
-//    }
-//
-//    if profile.school != "" {
-//        self.schoolText = profile.school!
-//    } else {
-//        self.schoolText = ""
-//    }
-//
-//    return true
-//
-//} else {
-//    return false
-//}

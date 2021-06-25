@@ -21,6 +21,10 @@ class ProfileImageService: ProfileImageServiceProtocol{
     private let storage = Storage.storage()
     private let currentUser = UserService.shared.currentUser?.uid
     
+    static let shared = ProfileImageService()
+    
+    private init() {  }
+    
     func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error> {
         let data = img.image.jpegData(compressionQuality: compressionQuality)!
         let storageRef = storage.reference()
@@ -49,7 +53,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
         return Future<UIImage?, Error> { promise in
             imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
                 if let error = error {
-                    promise(.failure(error))
+                    print("Non lethal fetching error (ImageService): \(error.localizedDescription)")
                 }
                 
                 if let data = data {

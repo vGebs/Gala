@@ -12,7 +12,7 @@ import Pages
 struct ContentView: View {
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var profile: ProfileViewModel
-    
+    @ObservedObject var explore: ExploreViewModel
     
     @State var currentPage = 2
     @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
@@ -44,7 +44,7 @@ struct ContentView: View {
                 ProfileMainView(viewModel: profile)
                 BaseView()//ChatsView()
                 CameraView(camera: camera)
-                BaseView()//ExploreView()
+                ExploreView(viewModel: explore)
                 ShowcaseView()
             }
             .onPageChanged{ page in

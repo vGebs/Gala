@@ -10,6 +10,29 @@ import SwiftUI
 
 class ExploreViewModel: ObservableObject {
     
+    @Published var matchStories: [StoryModel] = [
+        StoryModel(story: UIImage(), name: "1", userID: "123"),
+        StoryModel(story: UIImage(), name: "2", userID: "123"),
+        StoryModel(story: UIImage(), name: "3", userID: "123"),
+        StoryModel(story: UIImage(), name: "4", userID: "123"),
+        StoryModel(story: UIImage(), name: "5", userID: "123"),
+        StoryModel(story: UIImage(), name: "6", userID: "123"),
+        StoryModel(story: UIImage(), name: "7", userID: "123"),
+        StoryModel(story: UIImage(), name: "8", userID: "123"),
+        StoryModel(story: UIImage(), name: "9", userID: "123"),
+        StoryModel(story: UIImage(), name: "10", userID: "123"),
+        StoryModel(story: UIImage(), name: "1", userID: "123"),
+        StoryModel(story: UIImage(), name: "2", userID: "123"),
+        StoryModel(story: UIImage(), name: "3", userID: "123"),
+        StoryModel(story: UIImage(), name: "4", userID: "123"),
+        StoryModel(story: UIImage(), name: "5", userID: "123"),
+        StoryModel(story: UIImage(), name: "6", userID: "123"),
+        StoryModel(story: UIImage(), name: "7", userID: "123"),
+        StoryModel(story: UIImage(), name: "8", userID: "123"),
+        StoryModel(story: UIImage(), name: "9", userID: "123"),
+        StoryModel(story: UIImage(), name: "10", userID: "123")
+    ]
+    
     @Published var recentlyJoinedProfiles: [ProfileModel] = [
         ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
         ProfileModel(name: "joe", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
@@ -28,6 +51,33 @@ class ExploreViewModel: ObservableObject {
     ]
     
     init() {
+        //Fetch Match Stories
+        
         //Fetch recentlyJoinedProfiles in my area
+        
     }
 }
+
+//class ExploreViewModel: ObservableObject {
+//
+//    @Published var recentlyJoinedProfiles: [ProfileModel] = [
+//        ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "joe", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "sam", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "ye", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "yee", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "yeye", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "bb", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "aa", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "qq", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "rr", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "tt", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "yy", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "uu", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
+//        ProfileModel(name: "ii", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R")
+//    ]
+//
+//    init() {
+//        //Fetch recentlyJoinedProfiles in my area
+//    }
+//}

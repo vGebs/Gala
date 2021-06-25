@@ -16,9 +16,9 @@ struct LaunchView: View {
     var body: some View {
         ZStack {
             if viewModel.allowAccess {
-                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!)
+                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!)
 
-            }  else if viewModel.createAccountPressed {
+            } else if viewModel.createAccountPressed {
                 ProfileView(viewModel: viewModel.createProfileVM!)
                     .transition(.move(edge: .leading))
 
