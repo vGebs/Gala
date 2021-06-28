@@ -619,7 +619,7 @@ struct ProfileView: View {
     var schoolText: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 16).stroke(Color.gray)
-            HStack{
+            HStack {
                 Text(viewModel.schoolText)
                     .foregroundColor(.pink)
                     .padding(.leading)
@@ -675,7 +675,6 @@ struct ShowcaseProfileImageView: View {
             ForEach(from...to, id: \.self) { i in
                 if let image = viewModel.getImageItem(at: i){
                     ZStack {
-                        
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.gray, lineWidth: 3)
                             .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
