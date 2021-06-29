@@ -133,7 +133,7 @@ import Combine
     //4. style the cameraView
     //6. screen freezes when user tries to sign up with existing email
     //7. remake the check image stats button that is on every page (top left)
-
+//Test
 var loggedIn = UserDefaults.standard.bool(forKey: "loggedIn")
 var email = UserDefaults.standard.string(forKey: "email")
 var password = UserDefaults.standard.string(forKey: "password")
