@@ -54,9 +54,6 @@ extension ProfileService {
         //Call profileText & addImages
         return Future<Void, Error> { promise in
             
-//            var textAdded = false
-//            var imgsAdded = false
-            
             self.addText(profile)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
@@ -64,25 +61,28 @@ extension ProfileService {
                     case .failure(let error):
                         promise(.failure(error))
                     case .finished:
+                        if allImages.count == 0 {
+                            promise(.success(()))
+                        }
                         print("Successfully added profile text: ProfileService")
                     }
                 } receiveValue: { _ in }
                 .store(in: &self.cancellables)
             
-            self.addImages(allImages)
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        print("Finished adding all images to Firebase: ProfileService")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if allImages.count > 0 {
+                self.addImages(allImages)
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let error):
+                            promise(.failure(error))
+                        case .finished:
+                            print("Finished adding all images to Firebase: ProfileService")
                             promise(.success(()))
                         }
-                    }
-                } receiveValue: { _ in }
-                .store(in: &self.cancellables)
+                    } receiveValue: { _ in }
+                    .store(in: &self.cancellables)
+            }
         }
         .eraseToAnyPublisher()
     }
@@ -102,7 +102,6 @@ extension ProfileService {
                     }
                 } receiveValue: { _ in }
                 .store(in: &self.cancellables)
-            
         }.eraseToAnyPublisher()
     }
     

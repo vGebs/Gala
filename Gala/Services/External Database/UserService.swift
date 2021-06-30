@@ -21,13 +21,13 @@ class UserService: UserServiceProtocol{
     var currentUser: User?
     
     static let shared = UserService()
-    
     private init() {  }
     
     func createAcoountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
         Future<Void, Error> { promise in
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
+                self.currentUser = authResult?.user
                 return promise(.success(()))
             }
         }

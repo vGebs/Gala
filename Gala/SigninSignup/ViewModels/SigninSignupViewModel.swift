@@ -191,7 +191,7 @@ final class SigninSignupViewModel: ObservableObject{
             createAccount()
         
         case .login:
-            login(mode)
+            login()
         }
     }
     
@@ -211,13 +211,21 @@ final class SigninSignupViewModel: ObservableObject{
                     self.loading = false
                 case .finished:
                     print("Succesfully Signed up")
-                    self.login(self.mode)
+                    withAnimation {
+                        AppState.shared.profileInfo.name = self.nameText
+                        AppState.shared.profileInfo.email = self.emailText
+                        AppState.shared.profileInfo.age = self.age
+                        AppState.shared.signUpPageActive = false
+                        AppState.shared.createAccountPressed = true
+                    }
+                    
+                    self.loading = false
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
     }
     
-    private func login(_ mode: Mode){
+    private func login(){
         print("login")
         self.loading = true
         userService.signInWithEmail(email: self.emailText, password: self.passwordText)
@@ -234,28 +242,15 @@ final class SigninSignupViewModel: ObservableObject{
                     UserDefaults.standard.set(true, forKey: "loggedIn")
                     UserDefaults.standard.set(self.emailText, forKey: "email")
                     UserDefaults.standard.set(self.passwordText, forKey: "password")
-                    //self.loading = false
+                //self.loading = false
                 }
             } receiveValue: { _ in
-                switch mode{
-                case .login:
-                    withAnimation {
-                        AppState.shared.signUpPageActive = false
-                        AppState.shared.loginPageActive = false
-                        AppState.shared.allowAccess = true
-                    }
-                    self.loading = false
-                case .signUp:
-                    withAnimation {
-                        AppState.shared.profileInfo.name = self.nameText
-                        AppState.shared.profileInfo.email = self.emailText
-                        AppState.shared.profileInfo.age = self.age
-                        AppState.shared.signUpPageActive = false
-                        AppState.shared.createAccountPressed = true
-                    }
-                    
-                    self.loading = false
+                withAnimation {
+                    AppState.shared.signUpPageActive = false
+                    AppState.shared.loginPageActive = false
+                    AppState.shared.allowAccess = true
                 }
+                self.loading = false
             }
             .store(in: &cancellables)
     }
