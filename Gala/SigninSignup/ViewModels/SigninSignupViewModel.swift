@@ -23,12 +23,12 @@ final class SigninSignupViewModel: ObservableObject{
     private(set) var passwordPlaceholderText = "Password"
     private(set) var reEnterPasswordPlaceholderText = "Re-enter password"
     
-    private(set) var ageWarning = "Must be 18 years of age"
-    private(set) var nameWarning = "Name must have at least 2 characters"
-    private(set) var emailWarning = "Please enter your email"
-    private(set) var cellNumWarning = "Please enter your cell number with your area code"
-    private(set) var passwordWarning = "Password must be at least 6 characters"
-    private(set) var rePasswordWarning = "Password must match"
+    private(set) var ageWarning = "" //Must be 18 years of age
+    private(set) var nameWarning = ""
+    private(set) var emailWarning = ""
+    private(set) var cellNumWarning = ""
+    private(set) var passwordWarning = ""
+    private(set) var rePasswordWarning = ""
     
     @Published var enterProfileTapped = false
     @Published var enterMainScreenTapped = false
@@ -80,6 +80,7 @@ final class SigninSignupViewModel: ObservableObject{
     @Published var loading = false
     
     let mode: Mode
+    let validate: SignInSignUpValidation
     
 //MARK: - Enums
     
@@ -92,43 +93,83 @@ final class SigninSignupViewModel: ObservableObject{
     
     init(mode: Mode){
         self.mode = mode
+        self.validate = SignInSignUpValidation()
         
         switch mode{
         case .signUp:
             
             $age
                 .flatMap{ age -> AnyPublisher<Bool, Never> in
-                    age.isAgeValid()
+                    do {
+                        try self.validate.isAgeValid(age)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.ageWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$ageIsValid)
             
             $nameText
                 .flatMap{ name -> AnyPublisher<Bool, Never> in
-                    name.isNameStringValid()
+                    do {
+                        try self.validate.isNameValid(name)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.nameWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$nameIsValid)
             
             $emailText
                 .flatMap{ email -> AnyPublisher<Bool, Never> in
-                    email.isEmailStringValid()
+                    do {
+                        try self.validate.isEmailValid(email)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.emailWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$emailIsValid)
             
             $passwordText
                 .flatMap{ pword -> AnyPublisher<Bool, Never> in
-                    pword.isPasswordStringValid()
+                    //pword.isPasswordStringValid()
+                    do {
+                        try self.validate.isPasswordValid(pword)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.passwordWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$passwordIsValid)
             
             Publishers.CombineLatest($passwordText, $reEnterPasswordText)
                 .flatMap{ (pword, rPword) -> AnyPublisher<Bool, Never> in
-                    pword.isReEnterPasswordStringValid(rPword)
+                    //pword.isReEnterPasswordStringValid(rPword)
+                    do {
+                        try self.validate.isReEnterPasswordValid(pword, rPword)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.rePasswordWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$rePasswordIsValid)
             
             $cellNumberText
                 .flatMap{ cellNum -> AnyPublisher<Bool, Never> in
-                    cellNum.isCellNumberStringValid()
+                    //cellNum.isCellNumberStringValid()
+                    do {
+                        try self.validate.isCellValid(cellNum)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.cellNumWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$cellNumIsValid)
             
@@ -136,7 +177,13 @@ final class SigninSignupViewModel: ObservableObject{
             
             $emailText
                 .flatMap{ email -> AnyPublisher<Bool, Never> in
-                    email.isEmailStringValid()
+                    do {
+                        try self.validate.isEmailValid(email)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.emailWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$emailIsValid)
             
@@ -148,7 +195,13 @@ final class SigninSignupViewModel: ObservableObject{
             
             $passwordText
                 .flatMap { pword -> AnyPublisher<Bool, Never> in
-                    pword.isPasswordStringValid()
+                    do {
+                        try self.validate.isPasswordValid(pword)
+                        return Just(true).eraseToAnyPublisher()
+                    } catch {
+                        self.passwordWarning = error.localizedDescription
+                        return Just(false).eraseToAnyPublisher()
+                    }
                 }
                 .assign(to: &$passwordIsValid)
         }

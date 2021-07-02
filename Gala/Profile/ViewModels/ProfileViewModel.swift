@@ -169,8 +169,6 @@ final class ProfileViewModel: ObservableObject {
             //}
         }
         
-        
-        
         $bioCharCount
             .flatMap { count -> AnyPublisher<String, Never> in
                 if count > self.maxBioCharCount {
@@ -297,8 +295,6 @@ final class ProfileViewModel: ObservableObject {
                 }
             }
             .assign(to: &$schoolHeader)
-        
-        
     }
     
 //MARK: - Public Methods ------------------------------------------------------------------------------------->

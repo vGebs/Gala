@@ -19,6 +19,7 @@
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
 		FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */; };
+		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
 		FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E12640972300D5D5CB /* ElegantPages */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
 		FA8773E8264097C300D5D5CB /* iTextField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E7264097C300D5D5CB /* iTextField */; };
@@ -44,7 +45,6 @@
 		FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741F26409E9000D5D5CB /* PicTakenView.swift */; };
 		FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774332640A03100D5D5CB /* ShowcaseView.swift */; };
 		FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774362640A07900D5D5CB /* DateExtension.swift */; };
-		FA8774392640A09500D5D5CB /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774382640A09500D5D5CB /* StringExtension.swift */; };
 		FA87743B2640A0B600D5D5CB /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87743A2640A0B600D5D5CB /* ViewExtension.swift */; };
 		FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87743C2640A0DB00D5D5CB /* ColorExtension.swift */; };
 		FA8774402640A12500D5D5CB /* ActiveSheetEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87743F2640A12500D5D5CB /* ActiveSheetEnum.swift */; };
@@ -92,6 +92,7 @@
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreLocationExtension.swift; sourceTree = "<group>"; };
+		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		FA8773FD26409BED00D5D5CB /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
@@ -113,7 +114,6 @@
 		FA87741F26409E9000D5D5CB /* PicTakenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicTakenView.swift; sourceTree = "<group>"; };
 		FA8774332640A03100D5D5CB /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
 		FA8774362640A07900D5D5CB /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
-		FA8774382640A09500D5D5CB /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		FA87743A2640A0B600D5D5CB /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		FA87743C2640A0DB00D5D5CB /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		FA87743F2640A12500D5D5CB /* ActiveSheetEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSheetEnum.swift; sourceTree = "<group>"; };
@@ -187,6 +187,14 @@
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 			);
 			path = "General Services";
+			sourceTree = "<group>";
+		};
+		FA848749268E5E7E009CA4C0 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		FA8773F126409A6900D5D5CB /* Profile */ = {
@@ -265,6 +273,7 @@
 			children = (
 				FA8773FC26409BCA00D5D5CB /* Views */,
 				FA8773FB26409BBE00D5D5CB /* ViewModels */,
+				FA848749268E5E7E009CA4C0 /* Tests */,
 			);
 			path = SigninSignup;
 			sourceTree = "<group>";
@@ -308,7 +317,6 @@
 			isa = PBXGroup;
 			children = (
 				FA8774362640A07900D5D5CB /* DateExtension.swift */,
-				FA8774382640A09500D5D5CB /* StringExtension.swift */,
 				FA87743A2640A0B600D5D5CB /* ViewExtension.swift */,
 				FA87743C2640A0DB00D5D5CB /* ColorExtension.swift */,
 				FA579DC02654ED1D00EFA166 /* UIImage.swift */,
@@ -635,7 +643,7 @@
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
-				FA8774392640A09500D5D5CB /* StringExtension.swift in Sources */,
+				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
 				FA87740C26409D3200D5D5CB /* CapsuleButton.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
