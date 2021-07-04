@@ -6,12 +6,12 @@ target 'Gala' do
   use_frameworks!
 
   # Pods for Gala
-
 	pod 'Mantis', '~> 1.6.0'
 	pod 'Firebase/Analytics'
 	pod 'Firebase/Auth'
 	pod 'Firebase/Firestore'
 	pod 'FirebaseFirestoreSwift'
-	pod 'Firebase/Storage'	
-
+	pod 'Firebase/Storage'
+	pod 'Firebase/Functions'
+	pod 'GeoFire/Utils'
 end
