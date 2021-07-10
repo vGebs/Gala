@@ -217,8 +217,8 @@ extension ProfileManager {
             var profileText: ProfileModel = ProfileModel(
                 name: "",
                 birthday: Date(),
-                city: "",
-                country: "",
+                latitude: 51.5074,
+                longitude: 0.12780,
                 userID: "",
                 bio: "",
                 gender: "",
@@ -462,7 +462,7 @@ extension ProfileManager {
         return Future<ProfileModel?, Never> { promise in
             for profile in self.profiles{
                 if profile.id == id {
-                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), city: profile.city ?? "", country: profile.country ?? "", userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
+                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), latitude: profile.latitude, longitude: profile.longitude, userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
                     promise(.success(prof))
                 }
             }

@@ -22,23 +22,24 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-//            if colorScheme == .dark {
-//                Color.black
-//            } else {
-//                Color.white
-//                VStack {
-//                    Spacer()
-//                    Color.black
-//                        .frame(width: screenWidth, height: screenHeight * 0.13)
-//                }
+            
+//            Pages(currentPage: $currentPage, bounce: false){
+//                ProfileMainView(viewModel: profile)
+//                ChatsView()
+//                CameraView(camera: camera)
+//                ExploreView(viewModel: explore)
+//                ShowcaseView()
 //            }
-            //            Pages(currentPage: $currentPage, bounce: false){
-            //                ProfileMainView()
-            //                ChatsView()
-            //                CameraView()
-            //                ExploreView()
+            
+//            TabView {
+//                ProfileMainView(viewModel: profile)
+//                ChatsView()
+//                CameraView(camera: camera)
+//                ExploreView(viewModel: explore)
             //                ShowcaseView()
             //            }
+            //            .tabViewStyle(PageTabViewStyle())
+            //.indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
             
             ElegantHPages(manager: manager){
                 //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: "23", mode: .profileStandard))

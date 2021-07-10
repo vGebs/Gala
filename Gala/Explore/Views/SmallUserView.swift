@@ -53,7 +53,7 @@ struct SmallUserView: View {
                             }
                         } else {
                             HStack {
-                                Text("\(viewModel.profile.city), \(viewModel.profile.country)")
+                                Text("\(viewModel.profile.latitude), \(viewModel.profile.longitude)")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }
@@ -85,7 +85,7 @@ struct SmallUserView: View {
 
 struct SmallUserView_Previews: PreviewProvider {
     static var previews: some View {
-        SmallUserView(viewModel: SmallUserViewModel(profile: ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "123", bio: "Sup", gender: "Male", sexuality: "Straight", job: "Engg", school: "uofr")))
+        SmallUserView(viewModel: SmallUserViewModel(profile: ProfileModel(name: "Vaughn", birthday: Date(), latitude: 51.012, longitude: 0.0123, userID: "123", bio: "Sup", gender: "Male", sexuality: "Straight", job: "Engg", school: "uofr")))
     }
 }
 

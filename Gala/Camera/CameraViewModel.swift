@@ -36,8 +36,6 @@ public class CameraViewModel: NSObject, ObservableObject, AVCapturePhotoCaptureD
     //Pic Data
     @Published public var image: UIImage?
     
-    
-    
     public init(volumeCameraButton: Bool){
         volumeCameraButtonOn = volumeCameraButton
     }
@@ -366,6 +364,8 @@ extension CameraViewModel {
         do {
             if let videoDevice = videoDevice {
                 let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
+                for outputs in session.outputs{ session.removeOutput(outputs) }
+
                 if session.canAddInput(videoDeviceInput) {
                     session.addInput(videoDeviceInput)
                     self.videoDeviceInput = videoDeviceInput
@@ -498,7 +498,7 @@ extension CameraViewModel {
 //                   audioLevel = audioSession.outputVolume
 //                   print(audioSession.outputVolume)
                 
-            if picTaken == false && onCameraScreen && volumeCameraButtonOn{
+            if picTaken == false && onCameraScreen && volumeCameraButtonOn{ //&& onCameraScreen
                 takePic()
             }
         }

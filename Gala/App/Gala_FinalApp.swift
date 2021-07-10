@@ -147,6 +147,7 @@ struct GalaApp: App {
         WindowGroup {
             LaunchView()
             //ExploreMainView(viewModel: ExploreViewModel())
+            //Test()
         }
     }
 }

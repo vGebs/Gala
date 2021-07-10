@@ -61,13 +61,17 @@
 		FAA88B1B26492696007F042D /* ShowcaseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1A26492696007F042D /* ShowcaseCardView.swift */; };
 		FAA88B1D26492928007F042D /* SwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1C26492928007F042D /* SwipeView.swift */; };
 		FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1E26492960007F042D /* SwipeViewModel.swift */; };
-		FAD9DB17266C8FE200BC6FDA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */; };
 		FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */; };
 		FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */; };
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
 		FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */; };
 		FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */; };
 		FAD9DB272674601600BC6FDA /* AllRecentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB262674601600BC6FDA /* AllRecentsView.swift */; };
+		FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADC115A269790B00070465C /* GoogleService-Info.plist */; };
+		FADC115D269797F20070465C /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC115C269797F20070465C /* Test.swift */; };
+		FADC116026979F770070465C /* PageView in Frameworks */ = {isa = PBXBuildFile; productRef = FADC115F26979F770070465C /* PageView */; };
+		FADC11622698129D0070465C /* RecentlyJoinedUserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* RecentlyJoinedUserService.swift */; };
+		FADC1164269813EC0070465C /* UserSimpleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserSimpleModel.swift */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
@@ -127,13 +131,16 @@
 		FAA88B1A26492696007F042D /* ShowcaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseCardView.swift; sourceTree = "<group>"; };
 		FAA88B1C26492928007F042D /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		FAA88B1E26492960007F042D /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
-		FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedView.swift; sourceTree = "<group>"; };
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserView.swift; sourceTree = "<group>"; };
 		FAD9DB262674601600BC6FDA /* AllRecentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllRecentsView.swift; sourceTree = "<group>"; };
+		FADC115A269790B00070465C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FADC115C269797F20070465C /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		FADC11612698129D0070465C /* RecentlyJoinedUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedUserService.swift; sourceTree = "<group>"; };
+		FADC1163269813EC0070465C /* UserSimpleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSimpleModel.swift; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -151,6 +158,7 @@
 				FA8773E8264097C300D5D5CB /* iTextField in Frameworks */,
 				FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */,
 				FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */,
+				FADC116026979F770070465C /* PageView in Frameworks */,
 				DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,6 +345,7 @@
 			children = (
 				FA8774452640A17900D5D5CB /* ImageModel.swift */,
 				FA8774472640A19B00D5D5CB /* ProfileModel.swift */,
+				FADC1163269813EC0070465C /* UserSimpleModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -367,6 +376,7 @@
 				FA0FCA4326840F5500434561 /* ProfileTextService.swift */,
 				FA87744E2640A20F00D5D5CB /* UserService.swift */,
 				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
+				FADC11612698129D0070465C /* RecentlyJoinedUserService.swift */,
 			);
 			path = "External Database";
 			sourceTree = "<group>";
@@ -391,6 +401,7 @@
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
+				FADC115C269797F20070465C /* Test.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -454,7 +465,7 @@
 				FA87743E2640A10700D5D5CB /* Public Enums */,
 				FA8774412640A13C00D5D5CB /* Publishers */,
 				FAE5E6F5264092D100CC1670 /* Assets.xcassets */,
-				FAD9DB16266C8FE200BC6FDA /* GoogleService-Info.plist */,
+				FADC115A269790B00070465C /* GoogleService-Info.plist */,
 				FAE5E6FA264092D100CC1670 /* Info.plist */,
 				FAE5E6F7264092D100CC1670 /* Preview Content */,
 			);
@@ -492,6 +503,7 @@
 				FA8773E42640979E00D5D5CB /* iPhoneNumberField */,
 				FA8773E7264097C300D5D5CB /* iTextField */,
 				FA8773EA2640992F00D5D5CB /* Pages */,
+				FADC115F26979F770070465C /* PageView */,
 			);
 			productName = Gala_Final;
 			productReference = FAE5E6EE264092D000CC1670 /* Gala.app */;
@@ -525,6 +537,7 @@
 				FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
 				FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */,
 				FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */,
+				FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */,
 			);
 			productRefGroup = FAE5E6EF264092D000CC1670 /* Products */;
 			projectDirPath = "";
@@ -540,9 +553,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */,
 				FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */,
 				FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */,
-				FAD9DB17266C8FE200BC6FDA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +614,7 @@
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,
 				FA0FCA4426840F5500434561 /* ProfileTextService.swift in Sources */,
 				FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */,
+				FADC1164269813EC0070465C /* UserSimpleModel.swift in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */,
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
@@ -616,6 +630,7 @@
 				FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */,
 				FA87741026409D8300D5D5CB /* ProfilePreview.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
+				FADC11622698129D0070465C /* RecentlyJoinedUserService.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,
 				FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */,
 				FA8774402640A12500D5D5CB /* ActiveSheetEnum.swift in Sources */,
@@ -632,6 +647,7 @@
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
+				FADC115D269797F20070465C /* Test.swift in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
@@ -876,6 +892,14 @@
 				minimumVersion = 0.1.5;
 			};
 		};
+		FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Connapptivity/SwiftUI-PageView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -898,6 +922,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */;
 			productName = Pages;
+		};
+		FADC115F26979F770070465C /* PageView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */;
+			productName = PageView;
 		};
 /* End XCSwiftPackageProductDependency section */
 

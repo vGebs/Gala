@@ -28,8 +28,8 @@ class ProfileTextService: ProfileTextServiceProtocol {
             self.db.collection("UserProfiles").document(self.currentUID!).setData([
                 "name" : profile.name,
                 "age" : Timestamp(date: profile.birthday),
-                "city" : profile.city,
-                "country" : profile.country,
+                "latitude" : profile.latitude,
+                "longitude" : profile.longitude,
                 "bio" : profile.bio!,
                 "gender" : profile.gender,
                 "sexuality" : profile.sexuality,
@@ -65,8 +65,8 @@ class ProfileTextService: ProfileTextServiceProtocol {
                         let profileFinal = ProfileModel(
                             name: profile.name,
                             birthday: profile.birthday,
-                            city: profile.city,
-                            country: profile.country,
+                            latitude: profile.latitude,
+                            longitude: profile.longitude,
                             userID: profile.userID,
                             bio: profile.bio,
                             gender: profile.gender,

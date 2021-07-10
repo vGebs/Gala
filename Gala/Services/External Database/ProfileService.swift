@@ -22,8 +22,9 @@ protocol ProfileServiceProtocol {
 //
 class ProfileService: ProfileServiceProtocol {
     
-    private var imgService: ProfileImageService
-    private var profileTextService: ProfileTextService
+    private let imgService: ProfileImageServiceProtocol
+    private let profileTextService: ProfileTextServiceProtocol
+    private let recents: RecentlyJoinedUserServiceProtocol
     
     private var cancellables: [AnyCancellable] = []
     
@@ -31,6 +32,7 @@ class ProfileService: ProfileServiceProtocol {
     private init() {
         imgService = ProfileImageService.shared
         profileTextService = ProfileTextService.shared
+        recents = RecentlyJoinedUserService.shared
     }
     
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
@@ -69,6 +71,18 @@ extension ProfileService {
                 } receiveValue: { _ in }
                 .store(in: &self.cancellables)
             
+            self.addRecent(profile)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .finished:
+                        print("Successfully added new user to recents")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
+
             if allImages.count > 0 {
                 self.addImages(allImages)
                     .subscribe(on: DispatchQueue.global(qos: .userInitiated))
@@ -98,6 +112,36 @@ extension ProfileService {
                         print(error.localizedDescription)
                     case .finished:
                         print("Profile Text Successfully added to firebase: ProfileService)")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
+        }.eraseToAnyPublisher()
+    }
+    
+    private func addRecent(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+        
+        let lat = (round(profile.latitude * 1000) / 1000)
+        let long = (round(profile.longitude * 1000) / 1000)
+        
+        let uSimp = UserSimpleModel(
+            uid: profile.userID,
+            name: profile.name,
+            age: profile.birthday,
+            gender: profile.gender,
+            sexuality: profile.sexuality,
+            longitude: lat,
+            latitude: long
+        )
+        
+        return Future<Void, Error> { promise in
+            self.recents.addNewUser(userSimple: uSimp)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .finished:
                         promise(.success(()))
                     }
                 } receiveValue: { _ in }

@@ -48,8 +48,10 @@ extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         guard let location = locations.last else { return }
+        
         self.coordinates.latitude = location.coordinate.latitude
         self.coordinates.longitude = location.coordinate.longitude
+        
         let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         
         loc.fetchCityAndCountry { city, country, error in
@@ -132,5 +134,20 @@ extension LocationService {
                 }
             }
         }.eraseToAnyPublisher()
+    }
+    
+    func getCityAndCountry(lat: Double, long: Double) -> (String, String) {
+        let loc = CLLocation(latitude: lat, longitude: long)
+        
+        var cityR = ""
+        var countryR = ""
+        
+        loc.fetchCityAndCountry { city, country, error in
+            guard let city = city, let country = country, error == nil else { return }
+            cityR = city
+            countryR = country
+        }
+        
+        return (cityR, countryR)
     }
 }
