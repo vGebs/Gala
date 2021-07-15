@@ -9,9 +9,33 @@ import Combine
 import SwiftUI
 
 class SmallUserViewModel: ObservableObject {
-    @Published var profile: ProfileModel
+    @Published var profile: UserSimpleModel
+    @Published var city: String = ""
+    @Published var country: String = ""
     
-    init(profile: ProfileModel){
+    private var cancellables: [AnyCancellable] = []
+    
+    init(profile: UserSimpleModel){
         self.profile = profile
+        
+        getCityAndCountry()
+    }
+    
+    private func getCityAndCountry() {
+        LocationService.shared.getCityAndCountry(lat: profile.latitude, long: profile.longitude)
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink{ completion in
+                
+            } receiveValue: { tuple in
+                if let city = tuple?.0{
+                    self.city = city
+                }
+                
+                if let country = tuple?.1 {
+                    self.country = country
+                }
+            }
+            .store(in: &self.cancellables)
     }
 }

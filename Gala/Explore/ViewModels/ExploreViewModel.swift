@@ -10,6 +10,9 @@ import SwiftUI
 
 class ExploreViewModel: ObservableObject {
     
+    var recents = RecentlyJoinedUserService.shared
+    var cancellables: [AnyCancellable] = []
+    
     @Published var matchStories: [StoryModel] = [
         StoryModel(story: UIImage(), name: "1", userID: "123"),
         StoryModel(story: UIImage(), name: "2", userID: "123"),
@@ -33,21 +36,38 @@ class ExploreViewModel: ObservableObject {
         StoryModel(story: UIImage(), name: "10", userID: "123")
     ]
     
-    @Published var recentlyJoinedProfiles: [ProfileModel] = [
-        ProfileModel(name: "1", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "2", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "3", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "4", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "5", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "6", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "7", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
-        ProfileModel(name: "8", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight")
-    ]
+    @Published var recentlyJoinedProfiles: [UserSimpleModel] = []
     
     init() {
         //Fetch Match Stories
         
         //Fetch recentlyJoinedProfiles in my area
-        
+        recents.getAllRecents(radiusKM: 50)
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("ExploreViewModel: \(error.localizedDescription)")
+                case .finished:
+                    print("ExploreViewModel: Finished fetching recents nearby")
+                }
+            } receiveValue: { users in
+                self.recentlyJoinedProfiles = users
+                print("ExploreViewModel recents: \(users)")
+            }
+            .store(in: &self.cancellables)
     }
 }
+
+
+//@Published var recentlyJoinedProfiles: [ProfileModel] = [
+//    ProfileModel(name: "1", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "2", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "3", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "4", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "5", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "6", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "7", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight"),
+//    ProfileModel(name: "8", birthday: Date(), latitude: 51.5074, longitude: 0.12780, userID: "1234", gender: "Male", sexuality: "Straight")
+//]

@@ -136,18 +136,20 @@ extension LocationService {
         }.eraseToAnyPublisher()
     }
     
-    func getCityAndCountry(lat: Double, long: Double) -> (String, String) {
-        let loc = CLLocation(latitude: lat, longitude: long)
-        
-        var cityR = ""
-        var countryR = ""
-        
-        loc.fetchCityAndCountry { city, country, error in
-            guard let city = city, let country = country, error == nil else { return }
-            cityR = city
-            countryR = country
-        }
-        
-        return (cityR, countryR)
+    func getCityAndCountry(lat: Double, long: Double) ->AnyPublisher<(String, String)?, Error> {
+        return Future<(String, String)?, Error> { promise in
+            let loc = CLLocation(latitude: lat, longitude: long)
+            
+            loc.fetchCityAndCountry { city, country, error in
+                if let error = error {
+                    promise(.failure(error))
+                }
+                if let city = city, let country = country {
+                    promise(.success((city, country)))
+                } else {
+                    promise(.success(nil))
+                }
+            }
+        }.eraseToAnyPublisher()
     }
 }

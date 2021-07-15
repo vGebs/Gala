@@ -253,7 +253,7 @@ final class SigninSignupViewModel: ObservableObject{
     private func createAccount(){
         print("signup")
         self.loading = true
-        userService.createAcoountWithEmail(email: self.emailText, password: self.passwordText)
+        userService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink{ completion in

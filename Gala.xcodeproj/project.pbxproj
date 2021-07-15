@@ -66,7 +66,6 @@
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
 		FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */; };
 		FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */; };
-		FAD9DB272674601600BC6FDA /* AllRecentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB262674601600BC6FDA /* AllRecentsView.swift */; };
 		FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADC115A269790B00070465C /* GoogleService-Info.plist */; };
 		FADC115D269797F20070465C /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC115C269797F20070465C /* Test.swift */; };
 		FADC116026979F770070465C /* PageView in Frameworks */ = {isa = PBXBuildFile; productRef = FADC115F26979F770070465C /* PageView */; };
@@ -76,6 +75,7 @@
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
 		FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F8264092D100CC1670 /* Preview Assets.xcassets */; };
+		FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -136,7 +136,6 @@
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserView.swift; sourceTree = "<group>"; };
-		FAD9DB262674601600BC6FDA /* AllRecentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllRecentsView.swift; sourceTree = "<group>"; };
 		FADC115A269790B00070465C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FADC115C269797F20070465C /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		FADC11612698129D0070465C /* RecentlyJoinedUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedUserService.swift; sourceTree = "<group>"; };
@@ -147,6 +146,7 @@
 		FAE5E6F5264092D100CC1670 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAE5E6F8264092D100CC1670 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		FAE5E6FA264092D100CC1670 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllRecentsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,9 +372,9 @@
 		FA87744B2640A1E000D5D5CB /* External Database */ = {
 			isa = PBXGroup;
 			children = (
+				FA87744E2640A20F00D5D5CB /* UserService.swift */,
 				FA87744C2640A1F200D5D5CB /* ProfileService.swift */,
 				FA0FCA4326840F5500434561 /* ProfileTextService.swift */,
-				FA87744E2640A20F00D5D5CB /* UserService.swift */,
 				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
 				FADC11612698129D0070465C /* RecentlyJoinedUserService.swift */,
 			);
@@ -412,8 +412,8 @@
 				FA98385F2686834200A76AD5 /* ExploreMainView.swift */,
 				FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */,
 				FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */,
-				FAD9DB262674601600BC6FDA /* AllRecentsView.swift */,
 				FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */,
+				FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */,
 				FA0FCA3D2684048000434561 /* StoriesView.swift */,
 				FA0FCA3F268404A200434561 /* StoryView.swift */,
 			);
@@ -610,7 +610,6 @@
 			files = (
 				FA0FCA40268404A200434561 /* StoryView.swift in Sources */,
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
-				FAD9DB272674601600BC6FDA /* AllRecentsView.swift in Sources */,
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,
 				FA0FCA4426840F5500434561 /* ProfileTextService.swift in Sources */,
 				FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */,
@@ -640,6 +639,7 @@
 				FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */,
 				FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */,
 				FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */,
+				FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
 				FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */,
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,

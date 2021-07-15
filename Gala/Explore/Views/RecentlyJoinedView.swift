@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RecentlyJoinedView: View {
     
-    @Binding var newUsers: [ProfileModel]
+    @Binding var newUsers: [UserSimpleModel]
     @State var showAll = false
     
     var body: some View {
@@ -36,33 +36,12 @@ struct RecentlyJoinedView: View {
                     
                     HStack {
                         TabView {
-                            ForEach(0..<(4)){ i in //newUsers.count / 2
-                                ForEach(0..<1){ j in
-                                    VStack{
-                                        if i == 0 {
-                                            SmallUserView(
-                                                viewModel: SmallUserViewModel(
-                                                    profile: newUsers[j])
-                                            )
-                                            .padding(.bottom, 3)
-
-                                            SmallUserView(
-                                                viewModel: SmallUserViewModel(
-                                                    profile: newUsers[j + 1])
-                                            )
-                                        } else {
-                                            SmallUserView(
-                                                viewModel: SmallUserViewModel(
-                                                    profile: newUsers[j + (i * 2)])
-                                            )
-                                            .padding(.bottom, 3)
-                                            
-                                            SmallUserView(
-                                                viewModel: SmallUserViewModel(
-                                                    profile: newUsers[j + (i * 2) + 1])
-                                            )
-                                        }
-                                    }
+                            ForEach(0..<newUsers.count / 2, id: \.self) { i in
+                                VStack {
+                                    SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
+                                        .padding(.bottom, 3)
+                                    
+                                    SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
                                 }
                             }
                         }
@@ -76,9 +55,9 @@ struct RecentlyJoinedView: View {
                 }
             }
         }
-        .sheet(isPresented: $showAll, content: {
-            AllRecentsView(allNewUsers: $newUsers)
-        })
+//        .sheet(isPresented: $showAll, content: {
+//            AllRecentsView(allNewUsers: $newUsers)
+//        })
         .preferredColorScheme(.dark)
     }
 }
@@ -90,7 +69,7 @@ struct RecentlyJoinedView_Previews: PreviewProvider {
     }
 }
 
-var arr2: [ProfileModel] = [
+var arr2: [UserSimpleModel] = [
 //    ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
 //    ProfileModel(name: "joe", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
 //    ProfileModel(name: "sam", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),

@@ -14,7 +14,7 @@ struct ExploreMainView: View {
     var baseColor: Color = .blue
     
     @ObservedObject var viewModel: ExploreViewModel
-
+    
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     var body: some View {

@@ -10,7 +10,7 @@ import FirebaseAuth
 
 protocol UserServiceProtocol {
     var currentUser: User? { get }
-    func createAcoountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
+    func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
     func signInWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
     func logout() -> AnyPublisher<Void, Error>
     func observeAuthChanges() -> AnyPublisher<User?, Never>
@@ -23,7 +23,7 @@ class UserService: UserServiceProtocol{
     static let shared = UserService()
     private init() {  }
     
-    func createAcoountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
+    func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
         Future<Void, Error> { promise in
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
@@ -38,9 +38,7 @@ class UserService: UserServiceProtocol{
         Future<Void, Error> { promise in
             Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
-                
-                self.currentUser = Auth.auth().currentUser
-                
+                self.currentUser = authResult?.user
                 return promise(.success(()))
             }
         }

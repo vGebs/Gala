@@ -5,6 +5,8 @@
 //  Created by Vaughn on 2021-05-03.
 //
 
+//Should i query firebase directly?: Link https://medium.com/firebase-developers/should-i-query-my-firebase-database-directly-or-use-cloud-functions-fbb3cd14118c
+
 import Combine
 import FirebaseStorage
 import FirebaseFirestore
@@ -14,6 +16,7 @@ protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
     func getCurrentUserProfile() -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>
     func getUserProfile(uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>
+    func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
 
 //MARK: ProfileService
@@ -46,6 +49,11 @@ class ProfileService: ProfileServiceProtocol {
     func getUserProfile(uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error> {
         return getUserProfile_(uid)
     }
+    
+    func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error> {
+        return updateCurrentUserProfile_(profile)
+    }
+
 }
 
 
@@ -121,17 +129,14 @@ extension ProfileService {
     
     private func addRecent(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
         
-        let lat = (round(profile.latitude * 1000) / 1000)
-        let long = (round(profile.longitude * 1000) / 1000)
-        
         let uSimp = UserSimpleModel(
             uid: profile.userID,
             name: profile.name,
             age: profile.birthday,
             gender: profile.gender,
             sexuality: profile.sexuality,
-            longitude: lat,
-            latitude: long
+            longitude: profile.longitude,
+            latitude: profile.latitude
         )
         
         return Future<Void, Error> { promise in
@@ -276,6 +281,16 @@ extension ProfileService {
 extension ProfileService {
     private func getUserProfile_(_ uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error> {
         return Future<(ProfileModel?, [ImageModel]?), Error> { promise in
+            
+        }.eraseToAnyPublisher()
+    }
+}
+
+//MARK: - updateCurrentUserProfile()
+
+extension ProfileService {
+    func updateCurrentUserProfile_(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
             
         }.eraseToAnyPublisher()
     }

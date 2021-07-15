@@ -10,7 +10,7 @@ import SwiftUI
 struct SmallUserView: View {
     
     @StateObject var viewModel: SmallUserViewModel
-    var matched = true
+    var matched = false
     
     var body: some View {
         HStack{
@@ -26,7 +26,7 @@ struct SmallUserView: View {
                 HStack {
                     VStack {
                         HStack {
-                            Text("\(viewModel.profile.name), \(viewModel.profile.birthday.ageString())")
+                            Text("\(viewModel.profile.name), \(viewModel.profile.age.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
                                 .foregroundColor(.pink)
                             Spacer()
@@ -53,7 +53,8 @@ struct SmallUserView: View {
                             }
                         } else {
                             HStack {
-                                Text("\(viewModel.profile.latitude), \(viewModel.profile.longitude)")
+                                Text("\(viewModel.city), \(viewModel.country)")
+
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }
@@ -85,7 +86,7 @@ struct SmallUserView: View {
 
 struct SmallUserView_Previews: PreviewProvider {
     static var previews: some View {
-        SmallUserView(viewModel: SmallUserViewModel(profile: ProfileModel(name: "Vaughn", birthday: Date(), latitude: 51.012, longitude: 0.0123, userID: "123", bio: "Sup", gender: "Male", sexuality: "Straight", job: "Engg", school: "uofr")))
+        SmallUserView(viewModel: SmallUserViewModel(profile: UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 54.22, latitude: 54.22)))
     }
 }
 
