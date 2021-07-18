@@ -9,13 +9,13 @@ import Combine
 import SwiftUI
 
 class SmallUserViewModel: ObservableObject {
-    @Published var profile: UserSimpleModel
+    @Published var profile: UserCore
     @Published var city: String = ""
     @Published var country: String = ""
     
     private var cancellables: [AnyCancellable] = []
     
-    init(profile: UserSimpleModel){
+    init(profile: UserCore){
         self.profile = profile
         
         getCityAndCountry()

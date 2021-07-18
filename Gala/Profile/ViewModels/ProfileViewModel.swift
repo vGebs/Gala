@@ -522,32 +522,33 @@ extension ProfileViewModel {
                 case .finished:
                     print("getting profile from firebase: ProfileViewModel")
                 }
-            } receiveValue: { text, imgs in
-                print("Text from getProfile: \(String(describing: text))")
+            } receiveValue: { core, abt, imgs in
 
-                if let text = text {
-                    self.age = text.birthday
+                if let core = core {
+                    self.age = core.age
                     self.ageText = self.age.ageString()
-                    self.nameText = text.name
-                    self.bioText = text.bio!
-                    self.selectGenderDropDownText =
-                        "male" == text.gender || "Male" == text.gender ? .male : .female
+                    self.nameText = core.name
+                    self.selectGenderDropDownText = "male" == core.gender || "Male" == core.gender ? .male : .female
                     
-                    if text.sexuality == "Gay" || text.sexuality == "gay" {
+                    if core.sexuality == "Gay" || core.sexuality == "gay" {
                         self.selectSexualityDropDownText = .gay
-                    } else if text.sexuality == "Straight" || text.sexuality == "straight" {
+                    } else if core.sexuality == "Straight" || core.sexuality == "straight" {
                         self.selectSexualityDropDownText = .straight
                     } else {
                         self.selectSexualityDropDownText = .bisexual
                     }
-                    
-                    self.jobText = text.job!
-                    self.schoolText = text.school!
                 }
+                
+                if let abt = abt {
+                    self.bioText = abt.bio ?? ""
+                    self.jobText = abt.job ?? ""
+                    self.schoolText = abt.school ?? ""
+                }
+                
                 if let imgs = imgs {
                     self.profileImage.append(imgs[0])
                     
-                    for i in 0 ..< imgs.count {
+                    for i in 1 ..< imgs.count {
                         self.images.append(imgs[i])
                     }
                 }

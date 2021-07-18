@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllRecentsView: View {
-    @Binding var allNewUsers: [UserSimpleModel]
+    @Binding var allNewUsers: [UserCore]
     
     var body: some View {
         VStack {
@@ -41,10 +41,10 @@ struct AllRecentsView: View {
 struct AllRecentsView_Previews: PreviewProvider {
     static var previews: some View {
         AllRecentsView(allNewUsers: .constant([
-            UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
-            UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
-            UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
-            UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44)
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 44, latitude: 44)
         ]))
     }
 }

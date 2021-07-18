@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RecentlyJoinedView: View {
     
-    @Binding var newUsers: [UserSimpleModel]
+    @Binding var newUsers: [UserCore]
     @State var showAll = false
     
     var body: some View {
@@ -69,7 +69,7 @@ struct RecentlyJoinedView_Previews: PreviewProvider {
     }
 }
 
-var arr2: [UserSimpleModel] = [
+var arr2: [UserCore] = [
 //    ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
 //    ProfileModel(name: "joe", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),
 //    ProfileModel(name: "sam", birthday: Date(), city: "Regina", country: "Canada", userID: "1234", bio: "yee", gender: "Male", sexuality: "Straight", job: "Engg", school: "U of R"),

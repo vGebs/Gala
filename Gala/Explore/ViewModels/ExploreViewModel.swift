@@ -10,7 +10,7 @@ import SwiftUI
 
 class ExploreViewModel: ObservableObject {
     
-    var recents = RecentlyJoinedUserService.shared
+    var recents = UserCoreService.shared
     var cancellables: [AnyCancellable] = []
     
     @Published var matchStories: [StoryModel] = [
@@ -36,7 +36,7 @@ class ExploreViewModel: ObservableObject {
         StoryModel(story: UIImage(), name: "10", userID: "123")
     ]
     
-    @Published var recentlyJoinedProfiles: [UserSimpleModel] = []
+    @Published var recentlyJoinedProfiles: [UserCore] = []
     
     init() {
         //Fetch Match Stories

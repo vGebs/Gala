@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import CoreLocation
+import FirebaseFirestoreSwift
 
-struct UserSimpleModel {
+struct UserCore: Codable {
     var uid: String 
     var name: String
     var age: Date
@@ -16,4 +16,14 @@ struct UserSimpleModel {
     var sexuality: String
     var longitude: Double
     var latitude: Double
+    
+    enum CodingKeys: String, CodingKey{
+        case uid
+        case name
+        case age
+        case gender
+        case sexuality
+        case longitude
+        case latitude
+    }
 }

@@ -86,7 +86,7 @@ struct SmallUserView: View {
 
 struct SmallUserView_Previews: PreviewProvider {
     static var previews: some View {
-        SmallUserView(viewModel: SmallUserViewModel(profile: UserSimpleModel(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 54.22, latitude: 54.22)))
+        SmallUserView(viewModel: SmallUserViewModel(profile: UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 54.22, latitude: 54.22)))
     }
 }
 

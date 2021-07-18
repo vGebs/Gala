@@ -14,7 +14,7 @@ import FirebaseFirestoreSwift
 
 protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
-    func getCurrentUserProfile() -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>
+    func getCurrentUserProfile() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
     func getUserProfile(uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
@@ -26,23 +26,23 @@ protocol ProfileServiceProtocol {
 class ProfileService: ProfileServiceProtocol {
     
     private let imgService: ProfileImageServiceProtocol
-    private let profileTextService: ProfileTextServiceProtocol
-    private let recents: RecentlyJoinedUserServiceProtocol
+    private let aboutService: UserAboutServiceProtocol
+    private let coreService: UserCoreServiceProtocol
     
     private var cancellables: [AnyCancellable] = []
     
     static let shared = ProfileService()
     private init() {
         imgService = ProfileImageService.shared
-        profileTextService = ProfileTextService.shared
-        recents = RecentlyJoinedUserService.shared
+        aboutService = UserAboutService.shared
+        coreService = UserCoreService.shared
     }
     
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
         return createProfile_(profile, allImages: allImages)
     }
     
-    func getCurrentUserProfile() -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error> {
+    func getCurrentUserProfile() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
         return getCurrentUserProfile_()
     }
     
@@ -64,7 +64,7 @@ extension ProfileService {
         //Call profileText & addImages
         return Future<Void, Error> { promise in
             
-            self.addText(profile)
+            self.addUserAbout(profile)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -79,7 +79,7 @@ extension ProfileService {
                 } receiveValue: { _ in }
                 .store(in: &self.cancellables)
             
-            self.addRecent(profile)
+            self.addUserCore(profile)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -109,9 +109,9 @@ extension ProfileService {
         .eraseToAnyPublisher()
     }
     
-    private func addText(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
+    private func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
         return Future<Void, Error> { promise in
-            self.profileTextService.addProfileText(profile)
+            self.aboutService.addUserAbout(profile)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink{ completion in
                     switch completion{
@@ -127,9 +127,9 @@ extension ProfileService {
         }.eraseToAnyPublisher()
     }
     
-    private func addRecent(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+    private func addUserCore(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
         
-        let uSimp = UserSimpleModel(
+        let uCore = UserCore(
             uid: profile.userID,
             name: profile.name,
             age: profile.birthday,
@@ -140,7 +140,7 @@ extension ProfileService {
         )
         
         return Future<Void, Error> { promise in
-            self.recents.addNewUser(userSimple: uSimp)
+            self.coreService.addNewUser(core: uCore)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -179,54 +179,76 @@ extension ProfileService {
 
 //MARK: - getCurrentUserProfile()
 extension ProfileService {
-    private func getCurrentUserProfile_() -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>{
-        return Future<(ProfileModel?, [ImageModel]?), Error > { promise in
+    private func getCurrentUserProfile_() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
+        return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
             
-            var profileFinal: ProfileModel? = nil
+            var core: UserCore? = nil
+            var abt: UserAbout? = nil
             var imgsFinal: [ImageModel]? = nil
             
-            self.getCurrentUserText()
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            self.getCurrentUserCore()
+                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                 .sink { completion in
                     switch completion {
                     case .failure(let error):
                         promise(.failure(error))
                     case .finished:
-                        print("Finished fetching current user profile text: ProfileService")
+                        print("ProfileService: Finished fetching UserCore")
                     }
                 } receiveValue: { result in
-                    if let profile = result {
-                        profileFinal = profile
-                        print("ProfileService getting text (profileFinal): \(String(describing: profileFinal))")
+                    if let coreF = result {
+                        core = coreF
+                        print("ProfileService: got UserCore: \(String(describing: abt))")
+                    }
+                }
+                .store(in: &self.cancellables)
+
+            self.getCurrentUserAbout()
+                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .finished:
+                        print("ProfileService: Finished fetching current UserAbout")
+                    }
+                } receiveValue: { result in
+                    if let result = result {
+                        abt = result
+                        print("ProfileService: Got UserAbout: \(String(describing: abt))")
                     }
                 }
                 .store(in: &self.cancellables)
             
             self.getCurrentUserImages()
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                 .sink { completion in
                     switch completion {
                     case .failure(let error):
                         promise(.failure(error))
                     case .finished:
-                        print("Finished fetching user profile Images: ProfileService")
+                        print("ProfileService: Finished fetching user profile Images")
                     }
                 } receiveValue: { result in
-                    print("Result from getCurrentUserImages: \(String(describing: result))")
+                    print("ProfileService: Result from getCurrentUserImages: \(String(describing: result))")
                     if let imgs = result {
                         imgsFinal = imgs
-                        print("ProfileService getting imgs (imgsFinal): \(String(describing: imgsFinal))")
-                        promise(.success((profileFinal, imgsFinal)))
-                    } else {
-                        promise(.success((profileFinal, nil)))
+                        print("ProfileService: Got imgs: \(String(describing: imgsFinal))")
+                        
+                        promise(.success((core, abt, imgsFinal)))
+                        
                     }
                 }
                 .store(in: &self.cancellables)
         }.eraseToAnyPublisher()
     }
     
-    private func getCurrentUserText() -> AnyPublisher<ProfileModel?, Error> {
-        return profileTextService.getCurrentUserProfileText()
+    private func getCurrentUserCore() -> AnyPublisher<UserCore?, Error> {
+        return coreService.getCurrentUserCore()
+    }
+    
+    private func getCurrentUserAbout() -> AnyPublisher<UserAbout?, Error> {
+        return aboutService.getCurrentUserAbout()
     }
     
     private func getCurrentUserImages() -> AnyPublisher<[ImageModel]?, Error> {

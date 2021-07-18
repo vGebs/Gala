@@ -12,20 +12,21 @@ import FirebaseStorage
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-protocol RecentlyJoinedUserServiceProtocol {
-    func addNewUser(userSimple: UserSimpleModel) -> AnyPublisher<Void, Error>
-    func getAllRecents(radiusKM: Double) -> AnyPublisher<[UserSimpleModel], Error>
+protocol UserCoreServiceProtocol {
+    func addNewUser(core: UserCore) -> AnyPublisher<Void, Error>
+    func getCurrentUserCore() -> AnyPublisher<UserCore?, Error>
+    func getAllRecents(radiusKM: Double) -> AnyPublisher<[UserCore], Error>
 }
 
-class RecentlyJoinedUserService: ObservableObject, RecentlyJoinedUserServiceProtocol {
+class UserCoreService: ObservableObject, UserCoreServiceProtocol {
     
     private let db = Firestore.firestore()
     private let currentUID = UserService.shared.currentUser?.uid
         
-    static let shared = RecentlyJoinedUserService()
+    static let shared = UserCoreService()
     private init() {}
     
-    func addNewUser(userSimple: UserSimpleModel) -> AnyPublisher<Void, Error> {
+    func addNewUser(core: UserCore) -> AnyPublisher<Void, Error> {
 //        let lat: Double = (round(LocationService.shared.coordinates.latitude * 10000) / 10000)
 //        let long: Double = (round(LocationService.shared.coordinates.longitude * 10000) / 10000)
         let lat: Double = LocationService.shared.coordinates.latitude
@@ -36,30 +37,63 @@ class RecentlyJoinedUserService: ObservableObject, RecentlyJoinedUserServiceProt
         let hash = GFUtils.geoHash(forLocation: location)
         
         return Future<Void, Error> { promise in
-            self.db.collection("RecentlyJoined").document(self.currentUID!).setData([
-                "name" : userSimple.name,
-                "age" : Timestamp(date: userSimple.age),
+            self.db.collection("UserCore").document(self.currentUID!).setData([
+                "name" : core.name,
+                "age" : Timestamp(date: core.age),
                 "dateJoined" : Date(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
-                "gender" : userSimple.gender,
-                "sexuality" : userSimple.sexuality,
-                "id" : userSimple.uid
+                "gender" : core.gender,
+                "sexuality" : core.sexuality,
+                "id" : core.uid
             ]) { err in
                 if let err = err {
-                    print("RecentlyJoinedUserService: \(err)")
+                    print("UserCoreService: \(err)")
                     promise(.failure(err))
                 } else {
-                    print("RecentlyJoinedUser successfully written: RecentlyJoinedUserService")
+                    print("UserCoreService: new user successfully written")
                     promise(.success(()))
                 }
             }
         }.eraseToAnyPublisher()
     }
     
-    func getAllRecents(radiusKM: Double) -> AnyPublisher<[UserSimpleModel], Error> {
-        return Future<[UserSimpleModel], Error> { promise in
+    func getCurrentUserCore() -> AnyPublisher<UserCore?, Error> {
+        return Future<UserCore?, Error> { promise in
+            let docRef = self.db.collection("UserCore").document(self.currentUID!)
+            
+            docRef.getDocument { (document, error) in
+                
+                if let error = error { promise(.failure(error)) }
+                
+                if let doc = document {
+                    
+                    var age = Date()
+                    
+                    if let date = doc.data()?["age"] as? Timestamp {
+                        age = date.dateValue()
+                    }
+                    
+                    let userCore = UserCore(
+                        uid: doc.data()?["id"] as? String ?? "",
+                        name: doc.data()?["name"] as? String ?? "",
+                        age: age,
+                        gender: doc.data()?["gender"] as? String ?? "",
+                        sexuality: doc.data()?["sexuality"] as? String ?? "",
+                        longitude: doc.data()?["longitude"] as? Double ?? 0,
+                        latitude: doc.data()?["latitude"] as? Double ?? 0
+                    )
+                    promise(.success(userCore))
+                }
+                
+                promise(.success(nil))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func getAllRecents(radiusKM: Double) -> AnyPublisher<[UserCore], Error> {
+        return Future<[UserCore], Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
             let long: Double = LocationService.shared.coordinates.longitude
             
@@ -69,15 +103,15 @@ class RecentlyJoinedUserService: ObservableObject, RecentlyJoinedUserServiceProt
             let queryBounds = GFUtils.queryBounds(forLocation: center, withRadius: radiusInM)
             
             let queries = queryBounds.map { bound -> Query in
-                return self.db.collection("RecentlyJoined")
+                return self.db.collection("UserCore")
                     .order(by: "geoHash")
                     .start(at: [bound.startValue])
                     .end(at: [bound.endValue])
             }
             
-            print("RecentlyJoinedUserService: \(queries.count)")
+            print("UserCoreService: \(queries.count)")
             
-            var results: [UserSimpleModel] = []
+            var results: [UserCore] = []
             
             for i in 0..<queries.count {
                 queries[i].getDocuments { snap, error in
@@ -96,10 +130,8 @@ class RecentlyJoinedUserService: ObservableObject, RecentlyJoinedUserServiceProt
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
                             
-                            let uSimp = UserSimpleModel(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
+                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
                             
-                            print("RecentlyJoinedUserService UserSimple: \(uSimp)")
-
                             results.append(uSimp)
                             
                             if j == (documents.count - 1) {
