@@ -14,11 +14,28 @@ struct SmallUserView: View {
     
     var body: some View {
         HStack{
-            RoundedRectangle(cornerRadius: 5)
-                .stroke()
-                .frame(width: screenWidth / 9, height: screenWidth / 9)
-                .foregroundColor(.blue)
-                .padding(.trailing)
+            ZStack {
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke()
+                    .frame(width: screenWidth / 9, height: screenWidth / 9)
+                    .foregroundColor(.blue)
+                    .padding(.trailing)
+                
+                if viewModel.img == nil {
+                    Image(systemName: "person.fill.questionmark")
+                        .foregroundColor(Color(.systemTeal))
+                        .frame(width: screenWidth / 20, height: screenWidth / 20)
+                        .padding(.trailing)
+                    
+                } else {
+                    Image(uiImage: viewModel.img!)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                        .padding(.trailing)
+                }
+            }
             
             VStack{
                 Divider()
@@ -53,8 +70,11 @@ struct SmallUserView: View {
                             }
                         } else {
                             HStack {
+                                Image(systemName: "mappin.and.ellipse")
+                                    .foregroundColor(.blue)
+                                    .font(.system(size: 8, weight: .semibold, design: .rounded))
+                                
                                 Text("\(viewModel.city), \(viewModel.country)")
-
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }

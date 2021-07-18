@@ -50,7 +50,7 @@
 		FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774472640A19B00D5D5CB /* ProfileModel.swift */; };
 		FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744C2640A1F200D5D5CB /* ProfileService.swift */; };
 		FA87744F2640A20F00D5D5CB /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744E2640A20F00D5D5CB /* UserService.swift */; };
-		FA8774532640A26000D5D5CB /* ProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774522640A26000D5D5CB /* ProfileManager.swift */; };
+		FA8774532640A26000D5D5CB /* ProfilePersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */; };
 		FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA8774542640A2C700D5D5CB /* GalaPersistence.xcdatamodeld */; };
 		FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774582640A39700D5D5CB /* ImagePicker.swift */; };
 		FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745A2640A3B200D5D5CB /* ImageCropper.swift */; };
@@ -121,7 +121,7 @@
 		FA8774472640A19B00D5D5CB /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		FA87744C2640A1F200D5D5CB /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		FA87744E2640A20F00D5D5CB /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
-		FA8774522640A26000D5D5CB /* ProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManager.swift; sourceTree = "<group>"; };
+		FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePersistenceService.swift; sourceTree = "<group>"; };
 		FA8774552640A2C700D5D5CB /* GalaPersistence.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GalaPersistence.xcdatamodel; sourceTree = "<group>"; };
 		FA8774582640A39700D5D5CB /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		FA87745A2640A3B200D5D5CB /* ImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropper.swift; sourceTree = "<group>"; };
@@ -183,6 +183,18 @@
 				4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FA5DC6BA26A4BC8100F9BD86 /* Sub Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */,
+				FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */,
+				FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */,
+				FA0FCA3D2684048000434561 /* StoriesView.swift */,
+				FA0FCA3F268404A200434561 /* StoryView.swift */,
+			);
+			path = "Sub Views";
 			sourceTree = "<group>";
 		};
 		FA72A1762669ACED004DEF77 /* General Services */ = {
@@ -366,7 +378,7 @@
 		FA87744A2640A1DA00D5D5CB /* Internal Database */ = {
 			isa = PBXGroup;
 			children = (
-				FA8774522640A26000D5D5CB /* ProfileManager.swift */,
+				FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */,
 				FA8774542640A2C700D5D5CB /* GalaPersistence.xcdatamodeld */,
 			);
 			path = "Internal Database";
@@ -414,11 +426,7 @@
 			children = (
 				FA98385F2686834200A76AD5 /* ExploreMainView.swift */,
 				FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */,
-				FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */,
-				FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */,
-				FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */,
-				FA0FCA3D2684048000434561 /* StoriesView.swift */,
-				FA0FCA3F268404A200434561 /* StoryView.swift */,
+				FA5DC6BA26A4BC8100F9BD86 /* Sub Views */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -665,7 +673,7 @@
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,
 				FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */,
 				FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */,
-				FA8774532640A26000D5D5CB /* ProfileManager.swift in Sources */,
+				FA8774532640A26000D5D5CB /* ProfilePersistenceService.swift in Sources */,
 				FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */,
 				FA72A17326681CAE004DEF77 /* AppState.swift in Sources */,
 				FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */,

@@ -12,7 +12,7 @@ import FirebaseStorage
 //Rename to ProfileImageService
 protocol ProfileImageServiceProtocol {
     func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error> 
-    func getProfileImage(name: String) -> AnyPublisher<UIImage?, Error>
+    func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error>
     func deleteProfileImage(name: String) ->AnyPublisher<Void, Error>
 }
 
@@ -44,11 +44,11 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    func getProfileImage(name: String) -> AnyPublisher<UIImage?, Error> {
+    func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error> {
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
-        let myProfileRef = profileRef.child(currentUser!)
-        let imgFileRef = myProfileRef.child("\(name).png")
+        let myProfileRef = profileRef.child(id)
+        let imgFileRef = myProfileRef.child("\(index).png")
         
         return Future<UIImage?, Error> { promise in
             imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in

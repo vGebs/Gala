@@ -36,12 +36,21 @@ struct RecentlyJoinedView: View {
                     
                     HStack {
                         TabView {
-                            ForEach(0..<newUsers.count / 2, id: \.self) { i in
+                            ForEach(0..<((newUsers.count + 1) / 2), id: \.self) { i in
                                 VStack {
-                                    SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
-                                        .padding(.bottom, 3)
+                                    if i * 2 < newUsers.count{
+                                        SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
+                                            .padding(.bottom, 3)
+                                    }
                                     
-                                    SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
+                                    if i * 2 + 1 < newUsers.count{
+                                        SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
+                                    }
+                                    
+                                    if i * 2 + 1 == newUsers.count {
+                                        Spacer()
+                                            .frame(height: 50)
+                                    }
                                 }
                             }
                         }

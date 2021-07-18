@@ -12,6 +12,7 @@ class SmallUserViewModel: ObservableObject {
     @Published var profile: UserCore
     @Published var city: String = ""
     @Published var country: String = ""
+    @Published var img: UIImage?
     
     private var cancellables: [AnyCancellable] = []
     
@@ -19,6 +20,7 @@ class SmallUserViewModel: ObservableObject {
         self.profile = profile
         
         getCityAndCountry()
+        getProfileImage()
     }
     
     private func getCityAndCountry() {
@@ -34,6 +36,28 @@ class SmallUserViewModel: ObservableObject {
                 
                 if let country = tuple?.1 {
                     self.country = country
+                }
+            }
+            .store(in: &self.cancellables)
+    }
+    
+    private func getProfileImage() {
+        ProfileImageService.shared.getProfileImage(id: profile.uid, index: "0")
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("SmallUserViewModel: Error fetching profileImg -> \(error)")
+                case .finished:
+                    print("SmallUserViewModel: Finished fetching profile img")
+                }
+            } receiveValue: { img in
+                if let img = img {
+                    print("SmallUserViewModel: \(img)")
+                    self.img = img
+                } else {
+                    print("SmallUserViewModel: img is nil")
                 }
             }
             .store(in: &self.cancellables)

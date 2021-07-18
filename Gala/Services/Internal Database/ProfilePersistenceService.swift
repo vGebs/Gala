@@ -19,7 +19,7 @@ protocol ProfilePersistenceProtocol {
     func deleteProfile(id: String) -> AnyPublisher<Void, Error>
 }
 
-class ProfileManager: ObservableObject, ProfilePersistenceProtocol {
+class ProfilePersistenceService: ObservableObject, ProfilePersistenceProtocol {
     
     //static let shared = ProfileManager()
     
@@ -145,7 +145,7 @@ class ProfileManager: ObservableObject, ProfilePersistenceProtocol {
 
 
 //MARK: - CRUD
-extension ProfileManager {
+extension ProfilePersistenceService {
     
     func createProfile(_ profile: ProfileModel, images: [ImageModel]) -> AnyPublisher<Void, Error>{
         return Future<Void, Error> { promise in
@@ -334,7 +334,7 @@ extension ProfileManager {
 
 
 //MARK: - Helpers
-extension ProfileManager {
+extension ProfilePersistenceService {
     
     private func addTextualElements(profile: ProfileModel) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in

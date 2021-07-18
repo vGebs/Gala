@@ -21,7 +21,7 @@ final class ProfileViewModel: ObservableObject {
     
 //MARK: - General Purpose Variables
         
-    private let profileManager = ProfileManager()
+    private let profileManager = ProfilePersistenceService()
     private let userService: UserServiceProtocol = UserService.shared
     
     private var cancellables: [AnyCancellable] = []
@@ -163,8 +163,8 @@ final class ProfileViewModel: ObservableObject {
             
             guard let currentUser = userService.currentUser?.uid else { return }
             
-            //if !self.readCDProfile(id: currentUser) {
-                self.readFBProfile(uid: currentUser)
+            //if !self.readProfileFromCoreData(id: currentUser) {
+                self.readProfileFromFirebase(uid: currentUser)
                // print("could not get core data")
             //}
         }
@@ -414,7 +414,12 @@ extension ProfileViewModel {
         let allImgs = profileImage + images
         
         //Create Firebase Profile
-        ProfileService.shared.createProfile(profile, allImages: allImgs)
+        pushProfileFirestore(profile, allImgs)
+        //pushProfileToCoreData(profile, allImgs)
+    }
+    
+    private func pushProfileFirestore(_ profile: ProfileModel, _ imgs: [ImageModel]) {
+        ProfileService.shared.createProfile(profile, allImages: imgs)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink{ completion in
@@ -430,8 +435,10 @@ extension ProfileViewModel {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
-        
-        profileManager.createProfile(profile, images: self.profileImage + self.images)
+    }
+    
+    private func pushProfileToCoreData(_ profile: ProfileModel, _ imgs: [ImageModel]) {
+        profileManager.createProfile(profile, images: imgs)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -445,7 +452,7 @@ extension ProfileViewModel {
             .store(in: &cancellables)
     }
     
-    private func readCDProfile(id: String) -> Bool {
+    private func readProfileFromCoreData(id: String) -> Bool {
         
         var returnedNil = false
         
@@ -512,7 +519,7 @@ extension ProfileViewModel {
         }
     }
     
-    private func readFBProfile(uid: String) {
+    private func readProfileFromFirebase(uid: String) {
         
         ProfileService.shared.getCurrentUserProfile()
             .sink { completion in

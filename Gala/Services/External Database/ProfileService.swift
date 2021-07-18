@@ -29,6 +29,8 @@ class ProfileService: ProfileServiceProtocol {
     private let aboutService: UserAboutServiceProtocol
     private let coreService: UserCoreServiceProtocol
     
+    private var currentUID = UserService.shared.currentUser?.uid
+    
     private var cancellables: [AnyCancellable] = []
     
     static let shared = ProfileService()
@@ -257,7 +259,7 @@ extension ProfileService {
             var imgsRecieved = 0
             var imgsNotFound = 0
             for i in 0..<7 {
-                ProfileImageService.shared.getProfileImage(name: String(i))
+                ProfileImageService.shared.getProfileImage(id: self.currentUID!, index: String(i))
                     .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                     .sink { completion in
                         switch completion{
