@@ -25,19 +25,21 @@ protocol ProfileServiceProtocol {
 //
 class ProfileService: ProfileServiceProtocol {
     
-    private let imgService: ProfileImageServiceProtocol
-    private let aboutService: UserAboutServiceProtocol
     private let coreService: UserCoreServiceProtocol
+    private let aboutService: UserAboutServiceProtocol
+    private let imgService: ProfileImageServiceProtocol
+    private let recentService: RecentlyJoinedUserServiceProtocol
     
-    private var currentUID = UserService.shared.currentUser?.uid
+    private var currentUID = AuthService.shared.currentUser?.uid
     
     private var cancellables: [AnyCancellable] = []
     
     static let shared = ProfileService()
     private init() {
-        imgService = ProfileImageService.shared
-        aboutService = UserAboutService.shared
         coreService = UserCoreService.shared
+        aboutService = UserAboutService.shared
+        imgService = ProfileImageService.shared
+        recentService = RecentlyJoinedUserService.shared
     }
     
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
@@ -55,7 +57,6 @@ class ProfileService: ProfileServiceProtocol {
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error> {
         return updateCurrentUserProfile_(profile)
     }
-
 }
 
 
@@ -64,68 +65,23 @@ extension ProfileService {
     
     private func createProfile_(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
         //Call profileText & addImages
-        return Future<Void, Error> { promise in
-            
-            self.addUserAbout(profile)
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        if allImages.count == 0 {
-                            promise(.success(()))
-                        }
-                        print("Successfully added profile text: ProfileService")
-                    }
-                } receiveValue: { _ in }
-                .store(in: &self.cancellables)
-            
-            self.addUserCore(profile)
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        print("Successfully added new user to recents")
-                    }
-                } receiveValue: { _ in }
-                .store(in: &self.cancellables)
-
-            if allImages.count > 0 {
+        return Future<Void,Error> { promise in
+            Publishers.Zip4(
+                self.addUserCore(profile),
+                self.addUserAbout(profile),
+                self.addRecent(profile),
                 self.addImages(allImages)
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            promise(.failure(error))
-                        case .finished:
-                            print("Finished adding all images to Firebase: ProfileService")
-                            promise(.success(()))
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &self.cancellables)
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    private func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
-        return Future<Void, Error> { promise in
-            self.aboutService.addUserAbout(profile)
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .sink{ completion in
-                    switch completion{
-                    case let .failure(error):
-                        promise(.failure(error))
-                        print(error.localizedDescription)
-                    case .finished:
-                        print("Profile Text Successfully added to firebase: ProfileService)")
-                        promise(.success(()))
-                    }
-                } receiveValue: { _ in }
-                .store(in: &self.cancellables)
+            )
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .finished:
+                    print("ProfileService: Finished creating profile")
+                    promise(.success(()))
+                }
+            } receiveValue: { _ in }
+            .store(in: &self.cancellables)
         }.eraseToAnyPublisher()
     }
     
@@ -147,7 +103,53 @@ extension ProfileService {
                 .sink { completion in
                     switch completion {
                     case .failure(let error):
-                        promise(.failure(error))
+                        print("ProfileService: addUserCore failed: \(error.localizedDescription)")
+                        promise(.success(()))
+                    case .finished:
+                        promise(.success(()))
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
+        }.eraseToAnyPublisher()
+    }
+    
+    private func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
+        return Future<Void, Error> { promise in
+            self.aboutService.addUserAbout(profile)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .sink{ completion in
+                    switch completion{
+                    case let .failure(error):
+                        print("ProfileService: addUserAbout failed: \(error.localizedDescription)")
+                        promise(.success(()))
+                    case .finished:
+                        print("Profile Text Successfully added to firebase: ProfileService)")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
+        }.eraseToAnyPublisher()
+    }
+    
+    private func addRecent(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+        let uCore = UserCore(
+            uid: profile.userID,
+            name: profile.name,
+            age: profile.birthday,
+            gender: profile.gender,
+            sexuality: profile.sexuality,
+            longitude: profile.longitude,
+            latitude: profile.latitude
+        )
+        
+        return Future<Void, Error> { promise in
+            self.recentService.addNewUser(core: uCore)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.success(()))
+                        print("ProfileService: addRecent failed: \(error.localizedDescription)")
                     case .finished:
                         promise(.success(()))
                     }
@@ -157,24 +159,7 @@ extension ProfileService {
     }
     
     private func addImages(_ allImages: [ImageModel]) -> AnyPublisher<Void, Error>{
-        return Future<Void, Error> { promise in
-            for i in 0..<allImages.count {
-                self.imgService.uploadProfileImage(img: allImages[i], name: String(i))
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .sink{ completion in
-                        switch completion {
-                        case let .failure(error):
-                            promise(.failure(error))
-                        case .finished:
-                            print("Successfully added photo: ProfileViewModel(addProfileImages())")
-                            if i == (allImages.count - 1){
-                                promise(.success(()))
-                            }
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &self.cancellables)
-            }
-        }.eraseToAnyPublisher()
+        self.imgService.uploadProfileImages(imgs: allImages)
     }
 }
 
@@ -182,71 +167,89 @@ extension ProfileService {
 //MARK: - getCurrentUserProfile()
 extension ProfileService {
     private func getCurrentUserProfile_() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
+        
         return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
-            
-            var core: UserCore? = nil
-            var abt: UserAbout? = nil
-            var imgsFinal: [ImageModel]? = nil
-            
-            self.getCurrentUserCore()
-                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        print("ProfileService: Finished fetching UserCore")
-                    }
-                } receiveValue: { result in
-                    if let coreF = result {
-                        core = coreF
-                        print("ProfileService: got UserCore: \(String(describing: abt))")
-                    }
+            Publishers.Zip3(
+                self.coreService.getUserCore(uid: self.currentUID!),
+                self.aboutService.getCurrentUserAbout(),
+                self.getCurrentUserImages()
+            ).sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("ProfileService: getCurrentUserProfile_() failed: \(error.localizedDescription)")
+                case .finished:
+                    print("ProfileService-getCurrentUserProfile_(): got Current user profile")
                 }
-                .store(in: &self.cancellables)
-
-            self.getCurrentUserAbout()
-                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        print("ProfileService: Finished fetching current UserAbout")
-                    }
-                } receiveValue: { result in
-                    if let result = result {
-                        abt = result
-                        print("ProfileService: Got UserAbout: \(String(describing: abt))")
-                    }
-                }
-                .store(in: &self.cancellables)
-            
-            self.getCurrentUserImages()
-                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                .sink { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        print("ProfileService: Finished fetching user profile Images")
-                    }
-                } receiveValue: { result in
-                    print("ProfileService: Result from getCurrentUserImages: \(String(describing: result))")
-                    if let imgs = result {
-                        imgsFinal = imgs
-                        print("ProfileService: Got imgs: \(String(describing: imgsFinal))")
-                        
-                        promise(.success((core, abt, imgsFinal)))
-                        
-                    }
-                }
-                .store(in: &self.cancellables)
+            } receiveValue: { core, about, imgs in
+                promise(.success((core, about, imgs)))
+            }
+            .store(in: &self.cancellables)
         }.eraseToAnyPublisher()
+        
+//        return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
+//
+//            var core: UserCore? = nil
+//            var abt: UserAbout? = nil
+//            var imgsFinal: [ImageModel]? = nil
+//
+//            self.getCurrentUserCore()
+//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+//                .sink { completion in
+//                    switch completion {
+//                    case .failure(let error):
+//                        promise(.failure(error))
+//                    case .finished:
+//                        print("ProfileService: Finished fetching UserCore")
+//                    }
+//                } receiveValue: { result in
+//                    if let coreF = result {
+//                        core = coreF
+//                        print("ProfileService: got UserCore: \(String(describing: core))")
+//                    }
+//                }
+//                .store(in: &self.cancellables)
+//
+//            self.getCurrentUserAbout()
+//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+//                .sink { completion in
+//                    switch completion {
+//                    case .failure(let error):
+//                        promise(.failure(error))
+//                    case .finished:
+//                        print("ProfileService: Finished fetching current UserAbout")
+//                    }
+//                } receiveValue: { result in
+//                    if let result = result {
+//                        abt = result
+//                        print("ProfileService: Got UserAbout: \(String(describing: abt))")
+//                    }
+//                }
+//                .store(in: &self.cancellables)
+//
+//            self.getCurrentUserImages()
+//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+//                .sink { completion in
+//                    switch completion {
+//                    case .failure(let error):
+//                        promise(.failure(error))
+//                    case .finished:
+//                        print("ProfileService: Finished fetching user profile Images")
+//                    }
+//                } receiveValue: { result in
+//                    print("ProfileService: Result from getCurrentUserImages: \(String(describing: result))")
+//                    if let imgs = result {
+//                        imgsFinal = imgs
+//                        print("ProfileService: Got imgs: \(String(describing: imgsFinal))")
+//
+//                        promise(.success((core, abt, imgsFinal)))
+//                    }
+//                }
+//                .store(in: &self.cancellables)
+//        }.eraseToAnyPublisher()
     }
     
     private func getCurrentUserCore() -> AnyPublisher<UserCore?, Error> {
-        return coreService.getCurrentUserCore()
+        return coreService.getUserCore(uid: currentUID!)
     }
     
     private func getCurrentUserAbout() -> AnyPublisher<UserAbout?, Error> {

@@ -17,7 +17,7 @@ protocol UserAboutServiceProtocol {
 
 class UserAboutService: UserAboutServiceProtocol {
     private let db = Firestore.firestore()
-    private let currentUID: String? = UserService.shared.currentUser?.uid
+    private let currentUID: String? = AuthService.shared.currentUser?.uid
     
     static let shared = UserAboutService()
     
@@ -28,7 +28,7 @@ class UserAboutService: UserAboutServiceProtocol {
             self.db.collection("UserAbout").document(self.currentUID!).setData([
                 "bio" : profile.bio!,
                 "job" : profile.job!,
-                "school" : profile.school!,
+                "school" : profile.school!
             ]) { err in
                 if let err = err {
                     print("UserAboutService: Error writing document: \(err)")

@@ -33,4 +33,11 @@ extension Date {
         
         return String(age.year!)
     }
+    
+    func formatDate() -> String {
+        let format = DateFormatter()
+        format.dateFormat = "yyyy/MM/dd"
+        return format.string(from: self)
+    }
 }
+

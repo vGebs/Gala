@@ -11,7 +11,8 @@ import FirebaseStorage
 
 //Rename to ProfileImageService
 protocol ProfileImageServiceProtocol {
-    func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error> 
+    func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error>
+    func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error>
     func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error>
     func deleteProfileImage(name: String) ->AnyPublisher<Void, Error>
 }
@@ -19,9 +20,10 @@ protocol ProfileImageServiceProtocol {
 class ProfileImageService: ProfileImageServiceProtocol{
     
     private let storage = Storage.storage()
-    private let currentUser = UserService.shared.currentUser?.uid
+    private let currentUser = AuthService.shared.currentUser?.uid
     
     static let shared = ProfileImageService()
+    private var cancellables: [AnyCancellable] = []
     
     private init() {  }
     
@@ -40,6 +42,27 @@ class ProfileImageService: ProfileImageServiceProtocol{
                 } else {
                     return promise(.success(()))
                 }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            for i in 0..<imgs.count {
+                self.uploadProfileImage(img: imgs[i], name: String(i))
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let error):
+                            print("ImageService-uploadProfileImages index: \(String(i)) failed: \(error.localizedDescription)")
+                        case .finished:
+                            print("ImageService-uploadProfile: image i=\(String(i)) successfully added")
+                            if i == (imgs.count - 1){
+                                promise(.success(()))
+                            }
+                        }
+                    } receiveValue: { _ in }
+                    .store(in: &self.cancellables)
             }
         }.eraseToAnyPublisher()
     }

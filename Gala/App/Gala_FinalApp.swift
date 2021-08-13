@@ -154,7 +154,7 @@ struct GalaApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate{
     
-    var userService = UserService.shared
+    var userService = AuthService.shared
     private var cancellables: [AnyCancellable] = []
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {

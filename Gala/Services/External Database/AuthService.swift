@@ -8,20 +8,23 @@
 import Combine
 import FirebaseAuth
 
-protocol UserServiceProtocol {
+protocol AuthServiceProtocol {
     var currentUser: User? { get }
+    
     func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
-    func signInWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
+    func signIn(email: String, password: String) -> AnyPublisher<UserCore?, Error>
     func logout() -> AnyPublisher<Void, Error>
     func observeAuthChanges() -> AnyPublisher<User?, Never>
 }
 
-class UserService: UserServiceProtocol{
+class AuthService: AuthServiceProtocol{
 
     var currentUser: User?
     
-    static let shared = UserService()
-    private init() {  }
+    private var cancellables: [AnyCancellable] = []
+    
+    static let shared = AuthService()
+    private init() { }
     
     func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
         Future<Void, Error> { promise in
@@ -34,15 +37,24 @@ class UserService: UserServiceProtocol{
         .eraseToAnyPublisher()
     }
 
-    func signInWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
+    func signIn(email: String, password: String) -> AnyPublisher<UserCore?, Error> {
+        self.signInWithEmail(email, password)
+            .flatMap{ user in
+                UserCoreService.shared.getUserCore(uid: user.uid)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    private func signInWithEmail(_ email: String, _ password: String) -> AnyPublisher<User, Error> {
+        Future<User, Error> { promise in
             Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
-                self.currentUser = authResult?.user
-                return promise(.success(()))
+                if let auth = authResult {
+                    self.currentUser = auth.user
+                    promise(.success(auth.user))
+                }
             }
-        }
-        .eraseToAnyPublisher()
+        }.eraseToAnyPublisher()
     }
     
     func logout() -> AnyPublisher<Void, Error> {
@@ -60,5 +72,11 @@ class UserService: UserServiceProtocol{
     
     func observeAuthChanges() -> AnyPublisher<User?, Never> {
         Publishers.AuthPublisher().eraseToAnyPublisher()
+    }
+}
+
+extension AuthService {
+    private enum UserCoreServiceError: Error {
+        case emptyUserCore
     }
 }

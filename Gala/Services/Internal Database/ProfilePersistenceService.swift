@@ -171,7 +171,7 @@ extension ProfilePersistenceService {
             
             for i in 0..<images.count {
                 if i == 0 {
-                    self.addMainImage(img: images[i], id: UserService.shared.currentUser!.uid)
+                    self.addMainImage(img: images[i], id: AuthService.shared.currentUser!.uid)
                         .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                         .receive(on: DispatchQueue.global(qos: .userInitiated))
                         .sink { completion in
@@ -186,7 +186,7 @@ extension ProfilePersistenceService {
                         } receiveValue: { _ in }
                         .store(in: &self.cancellables)
                 } else {
-                    self.addSideImage(img: images[i], id: UserService.shared.currentUser!.uid)
+                    self.addSideImage(img: images[i], id: AuthService.shared.currentUser!.uid)
                         .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                         .receive(on: DispatchQueue.global(qos: .userInitiated))
                         .sink { completion in

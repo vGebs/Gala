@@ -13,7 +13,7 @@ final class SigninSignupViewModel: ObservableObject{
 
 //MARK: - General Purpose Variables
     
-    private let userService = UserService.shared
+    private let userService = AuthService.shared
     private var cancellables: [AnyCancellable] = []
 
     private(set) var agePlaceholderText = "Birthday"
@@ -264,15 +264,14 @@ final class SigninSignupViewModel: ObservableObject{
                     self.loading = false
                 case .finished:
                     print("Succesfully Signed up")
+                    self.loading = false
                     withAnimation {
                         AppState.shared.profileInfo.name = self.nameText
                         AppState.shared.profileInfo.email = self.emailText
                         AppState.shared.profileInfo.age = self.age
-                        AppState.shared.signUpPageActive = false
                         AppState.shared.createAccountPressed = true
+                        AppState.shared.signUpPageActive = false
                     }
-                    
-                    self.loading = false
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
@@ -281,7 +280,7 @@ final class SigninSignupViewModel: ObservableObject{
     private func login(){
         print("login")
         self.loading = true
-        userService.signInWithEmail(email: self.emailText, password: self.passwordText)
+        userService.signIn(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -298,12 +297,12 @@ final class SigninSignupViewModel: ObservableObject{
                 //self.loading = false
                 }
             } receiveValue: { _ in
+                self.loading = false
                 withAnimation {
                     AppState.shared.signUpPageActive = false
                     AppState.shared.loginPageActive = false
                     AppState.shared.allowAccess = true
                 }
-                self.loading = false
             }
             .store(in: &cancellables)
     }

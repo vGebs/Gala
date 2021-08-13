@@ -19,6 +19,7 @@ class SmallUserViewModel: ObservableObject {
     init(profile: UserCore){
         self.profile = profile
         
+        
         getCityAndCountry()
         getProfileImage()
     }
@@ -27,8 +28,13 @@ class SmallUserViewModel: ObservableObject {
         LocationService.shared.getCityAndCountry(lat: profile.latitude, long: profile.longitude)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
-            .sink{ completion in
-                
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("SmallUserViewModel: \(error)")
+                case .finished:
+                    print("SmallUserViewModel: Finished getting city and country")
+                }
             } receiveValue: { tuple in
                 if let city = tuple?.0{
                     self.city = city

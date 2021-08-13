@@ -22,7 +22,7 @@ final class ProfileViewModel: ObservableObject {
 //MARK: - General Purpose Variables
         
     private let profileManager = ProfilePersistenceService()
-    private let userService: UserServiceProtocol = UserService.shared
+    private var userService: AuthServiceProtocol = AuthService.shared
     
     private var cancellables: [AnyCancellable] = []
     
@@ -532,6 +532,8 @@ extension ProfileViewModel {
             } receiveValue: { core, abt, imgs in
 
                 if let core = core {
+                    //Assign Core profile to UserService
+                    
                     self.age = core.age
                     self.ageText = self.age.ageString()
                     self.nameText = core.name
