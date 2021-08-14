@@ -42,24 +42,24 @@ class ExploreViewModel: ObservableObject {
         //Fetch Match Stories
         print("ExploreViewModel: beginning to fetch Recents")
         //Fetch recentlyJoinedProfiles in my area
-//        recents.getRecents()
-//            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-//            .receive(on: DispatchQueue.main)
-//            .sink { completion in
-//                switch completion {
-//                case .failure(let error):
-//                    print("ExploreViewModel: \(error.localizedDescription)")
-//                case .finished:
-//                    print("ExploreViewModel: Finished fetching recents nearby")
-//                }
-//            } receiveValue: { users in
-//                if let users = users {
-//                    self.recentlyJoinedProfiles = users
-//                    print("ExploreViewModel recents: \(users)")
-//                } else {
-//                    print("ExploreViewModel recents: nil")
-//                }
-//            }
-//            .store(in: &self.cancellables)
+        recents.getRecents()
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("ExploreViewModel: \(error.localizedDescription)")
+                case .finished:
+                    print("ExploreViewModel: Finished fetching recents nearby")
+                }
+            } receiveValue: { [weak self] users in
+                if let users = users {
+                    self?.recentlyJoinedProfiles = users
+                    print("ExploreViewModel recents: \(users)")
+                } else {
+                    print("ExploreViewModel recents: nil")
+                }
+            }
+            .store(in: &self.cancellables)
     }
 }

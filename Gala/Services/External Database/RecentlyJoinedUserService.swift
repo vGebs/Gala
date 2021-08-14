@@ -80,498 +80,187 @@ extension RecentlyJoinedUserService {
         case biFemale
     }
     
-    private func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
-        //print("RecentlyJoinedUserService: \(String(describing: userCore))")
-        if userCore?.gender == "male" {
-            if userCore?.sexuality == "straight" {
-                print("RecentlyJoinedUserService: Straight male")
-                return .straightMale
-            
-            } else if userCore?.sexuality == "gay"{
-                return .gayMale
-                
-            } else {
-                return .biMale
-            }
-        } else {
-            if userCore?.sexuality == "straight" {
-                return .straightFemale
-                
-            } else if userCore?.sexuality == "gay"{
-                return .gayFemale
-                
-            } else {
-                return .biFemale
-            }
-        }
-    }
+    
     
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
         
         return Future<[UserCore]?, Error> { promise in
-            
-            var userCore1: [UserCore]? = nil
-            var error1: Error? = nil
-            
-            var userCore2: [UserCore]? = nil
-            var error2: Error? = nil
 
-            var userCore3: [UserCore]? = nil
-            var error3: Error? = nil
-
-            var userCore4: [UserCore]? = nil
-            var error4: Error? = nil
-
-            print("RecentlyJoinedUserService: Entered getRecents_()")
+            //print("RecentlyJoinedUserService: Entered getRecents_()")
             
             switch sexaulityAndGender {
 
             case .straightMale:
                 //Get straight and bi women
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error1 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching straight females")
-                        }
-                    } receiveValue: { straightFemales in
-                        if let straightFemales = straightFemales {
-                            userCore1 = straightFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyStraightFemale
-                            error1 = error
-                        }
+                Publishers.Zip(
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for straight male: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for straight males")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error2 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual females")
-                        }
-                    } receiveValue: { biFemales in
-                        if let biFemales = biFemales {
-                            userCore2 = biFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiFemale
-                            error2 = error
-                        }
+                } receiveValue: { straightFemales, biFemales in
+                    var final: [UserCore] = []
+                    if let sF = straightFemales {
+                        print("RecentlyJoinedUserService:sf\(String(describing: sF))")
+                        final += sF
                     }
-                    .store(in: &self.cancellables)
-                
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                
-                if userCore1 != nil && userCore2 != nil {
-                    let users: [UserCore] = userCore1! + userCore2!
-                    promise(.success(users))
-                } else if userCore1 != nil && userCore2 == nil {
-                    promise(.success(userCore1))
-                } else if userCore1 == nil && userCore2 != nil {
-                    promise(.success(userCore2))
-                } else {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_StraightMale
-                    promise(.failure(error))
+                    if let bF = biFemales {
+                        print("RecentlyJoinedUserService:bf\(String(describing: bF))")
+                        final += bF
+                    }
+                    print(final)
+                    promise(.success(final))
                 }
+                .store(in: &self.cancellables)
                 
             case .gayMale:
                 //Get gay men and bi men
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error1 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching gay males")
-                        }
-                    } receiveValue: { gayMales in
-                        if let gayMales = gayMales {
-                            userCore1 = gayMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyGayMale
-                            error1 = error
-                        }
+                Publishers.Zip(
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for gay male: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for gay males")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error2 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual males")
-                        }
-                    } receiveValue: { biMales in
-                        if let biMales = biMales {
-                            userCore2 = biMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiMale
-                            error2 = error
-                        }
+                } receiveValue: { gayMales, biMales in
+                    var final: [UserCore] = []
+                    if let gM = gayMales {
+                        final += gM
                     }
-                    .store(in: &self.cancellables)
-
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                
-                if userCore1 != nil && userCore2 != nil {
-                    let users: [UserCore] = userCore1! + userCore2!
-                    promise(.success(users))
-                } else if userCore1 != nil && userCore2 == nil {
-                    promise(.success(userCore1))
-                } else if userCore1 == nil && userCore2 != nil {
-                    promise(.success(userCore2))
-                } else {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_GayMale
-                    promise(.failure(error))
+                    if let bM = biMales {
+                        final += bM
+                    }
+                    promise(.success(final))
                 }
+                .store(in: &self.cancellables)
                 
             case .biMale:
                 //Get straight women, bi women, gay men, bi men.
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error1 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching straight females")
-                        }
-                    } receiveValue: { straightFemales in
-                        if let straightFemales = straightFemales {
-                            userCore1 = straightFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyStraightFemale
-                            error1 = error
-                        }
+                Publishers.Zip4(
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for bi male: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for bi males")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error2 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual females")
-                        }
-                    } receiveValue: { biFemales in
-                        if let biFemales = biFemales {
-                            userCore2 = biFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiFemale
-                            error2 = error
-                        }
+                } receiveValue: { sF, bF, gM, bM in
+                    var final: [UserCore] = []
+                    if let sF = sF {
+                        final += sF
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error3 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching gay males")
-                        }
-                    } receiveValue: { gayMales in
-                        if let gayMales = gayMales {
-                            userCore3 = gayMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyGayMale
-                            error3 = error
-                        }
+                    if let bF = bF {
+                        final += bF
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                            error4 = error
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual males")
-                        }
-                    } receiveValue: { biMales in
-                        if let biMales = biMales {
-                            userCore4 = biMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiMale
-                            error4 = error
-                        }
+                    if let gM = gM {
+                        final += gM
                     }
-                    .store(in: &self.cancellables)
-                
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                while userCore3 == nil && error3 == nil {}
-                while userCore4 == nil && error4 == nil {}
-                
-                var users: [UserCore] = []
-                
-                if userCore1 != nil {
-                    users += userCore1!
+                    if let bM = bM {
+                        final += bM
+                    }
+                    promise(.success(final))
                 }
-                
-                if userCore2 != nil {
-                    users += userCore2!
-                }
-                
-                if userCore3 != nil {
-                    users += userCore3!
-                }
-                
-                if userCore4 != nil {
-                    users += userCore4!
-                }
-                
-                if users.count == 0 {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_BiMale
-                    promise(.failure(error))
-                } else {
-                    promise(.success(users))
-                }
-                
-
+                .store(in: &self.cancellables)
+               
             case .straightFemale:
                 //Get straight and bi men
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching straight males")
-                        }
-                    } receiveValue: { straightMales in
-                        if let straightMales = straightMales {
-                            userCore1 = straightMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyStraightMale
-                            error1 = error
-                        }
+                Publishers.Zip(
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for straight female: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for straight female")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual males")
-                        }
-                    } receiveValue: { biMales in
-                        if let biMales = biMales {
-                            userCore2 = biMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiMale
-                            error2 = error
-                        }
+                } receiveValue: { sM, bM in
+                    var final: [UserCore] = []
+                    if let sM = sM {
+                        final += sM
                     }
-                    .store(in: &self.cancellables)
-                
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                
-                if userCore1 != nil && userCore2 != nil {
-                    let users: [UserCore] = userCore1! + userCore2!
-                    promise(.success(users))
-                } else if userCore1 != nil && userCore2 == nil {
-                    promise(.success(userCore1))
-                } else if userCore1 == nil && userCore2 != nil {
-                    promise(.success(userCore2))
-                } else {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_StraightFemale
-                    promise(.failure(error))
+                    if let bM = bM {
+                        final += bM
+                    }
+                    promise(.success(final))
                 }
-
+                .store(in: &self.cancellables)
+                
             case .gayFemale:
                 //Get gay women and bi women
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching gay females")
-                        }
-                    } receiveValue: { gayFemales in
-                        if let gayFemales = gayFemales{
-                            userCore1 = gayFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyGayFemale
-                            error1 = error
-                        }
+                Publishers.Zip(
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for gay female: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for gay female")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual females")
-                        }
-                    } receiveValue: { biFemales in
-                        if let biFemales = biFemales {
-                            userCore2 = biFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiFemale
-                            error2 = error
-                        }
+                } receiveValue: { gF, bF in
+                    var final: [UserCore] = []
+                    if let gF = gF {
+                        final += gF
                     }
-                    .store(in: &self.cancellables)
-                
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                
-                if userCore1 != nil && userCore2 != nil {
-                    let users: [UserCore] = userCore1! + userCore2!
-                    promise(.success(users))
-                } else if userCore1 != nil && userCore2 == nil {
-                    promise(.success(userCore1))
-                } else if userCore1 == nil && userCore2 != nil {
-                    promise(.success(userCore2))
-                } else {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_GayFemale
-                    promise(.failure(error))
+                    if let bF = bF {
+                        final += bF
+                    }
+                    promise(.success(final))
                 }
+                .store(in: &self.cancellables)
 
             case .biFemale:
                 //Get straight men, bi men, gay women, bi women
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching straight males")
-                        }
-                    } receiveValue: { straightMales in
-                        if let straightMales = straightMales {
-                            userCore1 = straightMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyStraightMale
-                            error1 = error
-                        }
+                Publishers.Zip4(
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("RecentlyJoinedUserService-getRecents_(): Failed to load users for bi female: \(error.localizedDescription)")
+                    case .finished:
+                        print("RecentlyJoinedUserService-getRecents_(): Finished fetching users for bi female")
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual males")
-                        }
-                    } receiveValue: { biMales in
-                        if let biMales = biMales {
-                            userCore2 = biMales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiMale
-                            error2 = error
-                        }
+                } receiveValue: { sM, bM, gF, bF in
+                    var final: [UserCore] = []
+                    if let sM = sM {
+                        final += sM
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching gay females")
-                        }
-                    } receiveValue: { gayFemales in
-                        if let gayFemales = gayFemales {
-                            userCore3 = gayFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyGayFemale
-                            error3 = error
-                        }
+                    if let bM = bM {
+                        final += bM
                     }
-                    .store(in: &self.cancellables)
-                
-                self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("RecentlyJoinedService: \(error)")
-                        case .finished:
-                            print("RecentlyJoinedService: Finished fetching bisexual females")
-                        }
-                    } receiveValue: { biFemales in
-                        if let biFemales = biFemales {
-                            userCore4 = biFemales
-                        } else {
-                            let error: RecentlyJoinedError = .returnedEmptyBiFemale
-                            error4 = error
-                        }
+                    if let gF = gF {
+                        final += gF
                     }
-                    .store(in: &self.cancellables)
-                
-                while userCore1 == nil && error1 == nil {}
-                while userCore2 == nil && error2 == nil {}
-                while userCore3 == nil && error3 == nil {}
-                while userCore4 == nil && error4 == nil {}
-                
-                var users: [UserCore] = []
-                
-                if userCore1 != nil {
-                    users += userCore1!
+                    if let bF = bF {
+                        final += bF
+                    }
+                    promise(.success(final))
                 }
-                
-                if userCore2 != nil {
-                    users += userCore2!
-                }
-                
-                if userCore3 != nil {
-                    users += userCore3!
-                }
-                
-                if userCore4 != nil {
-                    users += userCore4!
-                }
-                
-                if users.count == 0 {
-                    let error: RecentlyJoinedError = .failedToLoadUsers_BiFemale
-                    promise(.failure(error))
-                } else {
-                    promise(.success(users))
-                }
+                .store(in: &self.cancellables)
+
             }
         }.eraseToAnyPublisher()
     }
@@ -602,47 +291,104 @@ extension RecentlyJoinedUserService {
                     .whereField("sexuality", isEqualTo: forSexuality)
                     .limit(to: 40)
             }
-            
-            print("UserCoreService: \(queries.count)")
-            
+                        
             var results: [UserCore] = []
+            var finished = 0
             for i in 0..<queries.count {
-                queries[i].getDocuments { snap, error in
-                    if let documents = snap?.documents {
-                        for j in 0..<documents.count {
+                self.getDocs(query: queries[i], ageMinString: ageMinString, ageMaxString: ageMaxString)
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let error):
+                            print("RJUS: \(error.localizedDescription)")
+                        case .finished:
+                            print("RJUS: Finished getting docs for query: \(String(i))")
+                            finished += 1
+                        }
+                    } receiveValue: { users in
+                        if let users = users {
+                            results += users
+                            print("RJUS: users: \(results)")
+                        }
+                        
+                        if finished == queries.count - 1 {
+                            print("RJUS: results: \(results)")
+                            promise(.success(results))
+                        }
+                    }
+                    .store(in: &self.cancellables)
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func getDocs(query: Query, ageMinString: String, ageMaxString: String) -> AnyPublisher<[UserCore]?, Error> {
+        return Future<[UserCore]?, Error> { promise in
+            var results: [UserCore] = []
+            query.getDocuments { snap, error in
+                if let documents = snap?.documents {
+                    if documents.count == 0 {
+                        promise(.success(nil))
+                    }
+                    
+                    for j in 0..<documents.count {
+                        
+                        let date = documents[j].data()["age"] as? String ?? ""
+                        let format = DateFormatter()
+                        format.dateFormat = "yyyy/MM/dd"
+                        let age = format.date(from: date)!
+                        
+                        if date <= ageMinString && date >= ageMaxString {
+                            let gender = documents[j].data()["gender"] as? String ?? ""
+                            let id = documents[j].data()["id"] as? String ?? ""
+                            let lat = documents[j].data()["latitude"] as? Double ?? 0
+                            let lng = documents[j].data()["longitude"] as? Double ?? 0
+                            let name = documents[j].data()["name"] as? String ?? ""
+                            let sexuality = documents[j].data()["sexuality"] as? String ?? ""
                             
-                            let date = documents[j].data()["age"] as? String ?? ""
-                            let format = DateFormatter()
-                            format.dateFormat = "yyyy/MM/dd"
-                            let age = format.date(from: date)!
-
-                            if date <= ageMinString && date >= ageMaxString {
-                                let gender = documents[j].data()["gender"] as? String ?? ""
-                                let id = documents[j].data()["id"] as? String ?? ""
-                                let lat = documents[j].data()["latitude"] as? Double ?? 0
-                                let lng = documents[j].data()["longitude"] as? Double ?? 0
-                                let name = documents[j].data()["name"] as? String ?? ""
-                                let sexuality = documents[j].data()["sexuality"] as? String ?? ""
-
-                                let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
-                                
-                                results.append(uSimp)
-                            }
+                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
+                            results.append(uSimp)
                             
-                            if j == (documents.count - 1) {
+                            if j == (documents.count - 1){
                                 promise(.success(results))
                             }
                         }
-                    } else {
-                        print("Unable to fetch snapshot data. \(String(describing: error))")
-                        promise(.failure(error!))
                     }
+                } else {
+                    print("Unable to fetch snapshot data. \(String(describing: error))")
+                    promise(.failure(error!))
                 }
             }
         }.eraseToAnyPublisher()
     }
 }
 
+extension RecentlyJoinedUserService {
+    private func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
+        //print("RecentlyJoinedUserService: \(String(describing: userCore))")
+        if userCore?.gender == "male" {
+            if userCore?.sexuality == "straight" {
+                print("RecentlyJoinedUserService: Straight male")
+                return .straightMale
+            
+            } else if userCore?.sexuality == "gay"{
+                return .gayMale
+                
+            } else {
+                return .biMale
+            }
+        } else {
+            if userCore?.sexuality == "straight" {
+                return .straightFemale
+                
+            } else if userCore?.sexuality == "gay"{
+                return .gayFemale
+                
+            } else {
+                return .biFemale
+            }
+        }
+    }
+}
 
 extension RecentlyJoinedUserService {
     private enum RecentlyJoinedError: Error {

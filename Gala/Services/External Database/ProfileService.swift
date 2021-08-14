@@ -185,67 +185,6 @@ extension ProfileService {
             }
             .store(in: &self.cancellables)
         }.eraseToAnyPublisher()
-        
-//        return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
-//
-//            var core: UserCore? = nil
-//            var abt: UserAbout? = nil
-//            var imgsFinal: [ImageModel]? = nil
-//
-//            self.getCurrentUserCore()
-//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-//                .sink { completion in
-//                    switch completion {
-//                    case .failure(let error):
-//                        promise(.failure(error))
-//                    case .finished:
-//                        print("ProfileService: Finished fetching UserCore")
-//                    }
-//                } receiveValue: { result in
-//                    if let coreF = result {
-//                        core = coreF
-//                        print("ProfileService: got UserCore: \(String(describing: core))")
-//                    }
-//                }
-//                .store(in: &self.cancellables)
-//
-//            self.getCurrentUserAbout()
-//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-//                .sink { completion in
-//                    switch completion {
-//                    case .failure(let error):
-//                        promise(.failure(error))
-//                    case .finished:
-//                        print("ProfileService: Finished fetching current UserAbout")
-//                    }
-//                } receiveValue: { result in
-//                    if let result = result {
-//                        abt = result
-//                        print("ProfileService: Got UserAbout: \(String(describing: abt))")
-//                    }
-//                }
-//                .store(in: &self.cancellables)
-//
-//            self.getCurrentUserImages()
-//                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-//                .sink { completion in
-//                    switch completion {
-//                    case .failure(let error):
-//                        promise(.failure(error))
-//                    case .finished:
-//                        print("ProfileService: Finished fetching user profile Images")
-//                    }
-//                } receiveValue: { result in
-//                    print("ProfileService: Result from getCurrentUserImages: \(String(describing: result))")
-//                    if let imgs = result {
-//                        imgsFinal = imgs
-//                        print("ProfileService: Got imgs: \(String(describing: imgsFinal))")
-//
-//                        promise(.success((core, abt, imgsFinal)))
-//                    }
-//                }
-//                .store(in: &self.cancellables)
-//        }.eraseToAnyPublisher()
     }
     
     private func getCurrentUserCore() -> AnyPublisher<UserCore?, Error> {
@@ -281,13 +220,13 @@ extension ProfileService {
                                 let tempArr = [image]
                                 profileImgs = tempArr
                                 imgsRecieved += 1
-                                print("img received: \(imgsRecieved)")
+                                //print("img received: \(imgsRecieved)")
                             } else {
                                 profileImgs?.append(image)
                                 imgsRecieved += 1
-                                print("img received: \(imgsRecieved)")
+                                //print("img received: \(imgsRecieved)")
                             }
-                            print("Describing profile images: \(String(describing: profileImgs))")
+                            //print("Describing profile images: \(String(describing: profileImgs))")
                         } else {
                             print("no image found")
                             imgsNotFound += 1
@@ -295,7 +234,7 @@ extension ProfileService {
                         }
                         
                         if (imgsRecieved + imgsNotFound) == 7 {
-                            print("total search for images: \(imgsRecieved + imgsNotFound)")
+                            //print("total search for images: \(imgsRecieved + imgsNotFound)")
                             promise(.success(profileImgs))
                         }
                     }
