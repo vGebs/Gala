@@ -11,7 +11,7 @@ struct SmallUserView: View {
     
     @StateObject var viewModel: SmallUserViewModel
     var matched = false
-    
+    @State var pressed = false
     var body: some View {
         HStack{
             ZStack {
@@ -46,6 +46,7 @@ struct SmallUserView: View {
                             Text("\(viewModel.profile.name), \(viewModel.profile.age.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
                                 .foregroundColor(.pink)
+                            
                             Spacer()
                         }
                         
@@ -81,20 +82,16 @@ struct SmallUserView: View {
                         }
                     }
                     
-                    
-                    Button(action: {
-                        
-                    }){
-                        if matched {
-                            Image(systemName: "camera")
-                                .font(.system(size: 15, weight: .medium, design: .rounded))
-                        } else {
-                            Image(systemName: "ellipsis")
+                    if matched {
+                        Image(systemName: "camera")
+                            .font(.system(size: 15, weight: .medium, design: .rounded))
+                    } else {
+                        Button(action: { self.pressed.toggle() }){
+                            Image(systemName: self.pressed ? "hourglass.badge.plus" : "plus.app")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
-                        }
+                        } 
                     }
                 }
-                
                 Spacer()
             }
             

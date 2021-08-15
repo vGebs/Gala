@@ -22,7 +22,9 @@ struct StoriesView: View {
             TabView{
                 ForEach(0..<stories.count / 5){ i in //stories, id: \.id
                     HStack{
-                        StoryView(story: stories[i * 5])
+                        Button(action: {}){
+                            StoryView(story: stories[i * 5])
+                        }
                         StoryView(story: stories[i * 5 + 1])
                         StoryView(story: stories[i * 5 + 2])
                         StoryView(story: stories[i * 5 + 3])

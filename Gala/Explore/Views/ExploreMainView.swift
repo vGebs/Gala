@@ -20,6 +20,7 @@ struct ExploreMainView: View {
     var body: some View {
         VStack {
             ZStack{
+                
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)

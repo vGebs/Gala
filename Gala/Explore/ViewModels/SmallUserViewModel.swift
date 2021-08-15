@@ -19,7 +19,6 @@ class SmallUserViewModel: ObservableObject {
     init(profile: UserCore){
         self.profile = profile
         
-        
         getCityAndCountry()
         getProfileImage()
     }

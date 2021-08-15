@@ -80,8 +80,6 @@ extension RecentlyJoinedUserService {
         case biFemale
     }
     
-    
-    
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()

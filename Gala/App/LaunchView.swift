@@ -17,6 +17,7 @@ struct LaunchView: View {
     
     var body: some View {
         ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
             if viewModel.allowAccess {
                 ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!)
 
@@ -31,7 +32,7 @@ struct LaunchView: View {
                 SigninSignupView(viewModel: viewModel.signUpVM!)
                 
             } else {
-                LandingPageView(viewModel: viewModel.landingVM!)
+                LandingView()
                     .transition(.move(edge: .leading))
             }
         }

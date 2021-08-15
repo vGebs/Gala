@@ -20,6 +20,7 @@ struct ProfileMainView: View {
     var body: some View {
         VStack {
             ZStack{
+                Color.black.edgesIgnoringSafeArea(.all)
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)

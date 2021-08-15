@@ -20,6 +20,7 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
             ScrollView {
                 VStack{
                     
@@ -160,16 +161,17 @@ struct ProfileView: View {
             }
             
             if let profilePic = viewModel.getProfilePic() {
-                Circle()
+                RoundedRectangle(cornerRadius: 5)
                     .stroke(Color.gray, lineWidth: 3)
                 
                 Image(uiImage: profilePic)
                     .resizable()
                     .scaledToFill()
                     .frame(width: screenWidth / 3.3, height: screenWidth / 3.3)
-                    .clipped()
-                    .clipShape(Circle())
-                
+                    //.clipped()
+                    //.clipShape(RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/))
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+
                 VStack{
                     Spacer()
                     HStack{
@@ -193,7 +195,7 @@ struct ProfileView: View {
                             .foregroundColor(Color(.systemTeal))
                     }
                     
-                    Circle()
+                    RoundedRectangle(cornerRadius: 5)
                         .stroke(Color.gray)
                 }
             }
@@ -636,18 +638,33 @@ struct ProfileView: View {
         }){
             ZStack{
                 RoundedRectangle(cornerRadius: 16)
-                    .foregroundColor(Color(.systemPink))
+                    .stroke(lineWidth: 3.5)
+                    .foregroundColor(Color.blue)
                 
-                Text(viewModel.submitButtonText)
-                    .font(.system(size: 18, weight: .black, design: .rounded))
-                    .foregroundColor(.white)
-                    .padding()
+                HStack {
+                    Spacer()
+                    if !viewModel.isValid {
+                        Image(systemName: "lock")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(.pink)
+                    } else {
+                        Image(systemName: "lock.open")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(.pink)
+                    }
+                    
+                    Text(viewModel.submitButtonText)
+                        .font(.system(size: 18, weight: .black, design: .rounded))
+                        .foregroundColor(.white)
+                        .padding(.vertical)
+                    Spacer()
+                }
 
             }
         }
         .disabled(!viewModel.isValid)
         .opacity(viewModel.isValid ? 1 : 0.4)
-        .padding()
+        .padding(.vertical)
     }
 }
 

@@ -41,10 +41,12 @@ struct RecentlyJoinedView: View {
                                     if i * 2 < newUsers.count{
                                         SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
                                             .padding(.bottom, 3)
+                                        
                                     }
                                     
                                     if i * 2 + 1 < newUsers.count{
                                         SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
+                                        
                                     }
                                     
                                     if i * 2 + 1 == newUsers.count {

@@ -34,7 +34,7 @@ class AppState: ObservableObject {
     }
     
     //Auth ViewModels
-    @Published var landingVM: LandingPageViewModel?
+    //@Published var landingVM: LandingPageViewModel?
     @Published var loginVM: SigninSignupViewModel?
     @Published var signUpVM: SigninSignupViewModel?
     @Published var createProfileVM: ProfileViewModel?
@@ -62,19 +62,20 @@ class AppState: ObservableObject {
 //            .map { $0 == nil }
 //            .assign(to: &$onLandingPage)
         
-        $onLandingPage
-            .flatMap{ on -> AnyPublisher<LandingPageViewModel?, Never> in
-                if on {
-                    return Just(LandingPageViewModel()).eraseToAnyPublisher()
-                } else {
-                    print("Setting Landing VM to nil: AppState.swift")
-                    return Just(nil).eraseToAnyPublisher()
-                }
-            }.assign(to: &$landingVM)
+//        $onLandingPage
+//            .flatMap{ on -> AnyPublisher<LandingPageViewModel?, Never> in
+//                if on {
+//                    return Just(LandingPageViewModel()).eraseToAnyPublisher()
+//                } else {
+//                    print("Setting Landing VM to nil: AppState.swift")
+//                    return Just(nil).eraseToAnyPublisher()
+//                }
+//            }.assign(to: &$landingVM)
         
         $loginPageActive
             .flatMap{ on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
+                    self.onLandingPage = false
                     return Just(SigninSignupViewModel(mode: .login)).eraseToAnyPublisher()
                 } else {
                     print("Setting Login VM to nil: AppState.swift")
@@ -86,6 +87,7 @@ class AppState: ObservableObject {
         $signUpPageActive
             .flatMap { on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
+                    self.onLandingPage = false
                     return Just(SigninSignupViewModel(mode: .signUp)).eraseToAnyPublisher()
                 } else {
                     print("Setting Signup VM to nil: AppState.swift")

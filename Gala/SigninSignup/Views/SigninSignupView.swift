@@ -31,7 +31,7 @@ struct SigninSignupView: View {
     
     var body: some View {
         ZStack {
-            
+            Color.black.edgesIgnoringSafeArea(.all)
             ScrollView(showsIndicators: false) {
                 VStack{
                     
@@ -251,12 +251,28 @@ struct SigninSignupView: View {
             }){
                 ZStack{
                     RoundedRectangle(cornerRadius: 16)
-                        .foregroundColor(Color.pink)
+                        .stroke(lineWidth: 3.5)
+                        .foregroundColor(Color.blue)
                     
-                    Text(viewModel.buttonText)
-                        .font(.system(size: 18, weight: .black, design: .rounded))
-                        .foregroundColor(.white)
-                        .padding()
+                    HStack {
+                        Spacer()
+                        if !viewModel.isValid {
+                            Image(systemName: "lock")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.pink)
+                        } else {
+                            Image(systemName: "lock.open")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.pink)
+                        }
+                        
+                        
+                        Text(viewModel.buttonText)
+                            .font(.system(size: 18, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                            .padding(.vertical)
+                        Spacer()
+                    }
                 }
             }
             .disabled(!self.viewModel.isValid)

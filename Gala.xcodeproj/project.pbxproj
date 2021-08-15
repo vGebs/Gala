@@ -15,6 +15,8 @@
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
+		FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */; };
+		FA58F53926C884B200AE3B7C /* LandingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53826C884B200AE3B7C /* LandingView2.swift */; };
 		FA5DC6BC26A53CFB00F9BD86 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5DC6BB26A53CFB00F9BD86 /* SliderView.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
@@ -93,6 +95,8 @@
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		FA58F53826C884B200AE3B7C /* LandingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView2.swift; sourceTree = "<group>"; };
 		FA5DC6BB26A53CFB00F9BD86 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
@@ -310,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				FA8773FD26409BED00D5D5CB /* LandingView.swift */,
+				FA58F53826C884B200AE3B7C /* LandingView2.swift */,
 				FA87740126409C2B00D5D5CB /* SigninSignupView.swift */,
 			);
 			path = Views;
@@ -341,6 +346,7 @@
 				FA579DC02654ED1D00EFA166 /* UIImage.swift */,
 				FA72A1792669C5B9004DEF77 /* CoreLocationExtension.swift */,
 				FA76E30826B34733009A650D /* IntExtension.swift */,
+				FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -641,6 +647,7 @@
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */,
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,
+				FA58F53926C884B200AE3B7C /* LandingView2.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
 				FAA88B1D26492928007F042D /* SwipeView.swift in Sources */,
@@ -663,6 +670,7 @@
 				FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */,
 				FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */,
 				FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */,
+				FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
 				FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */,
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,
