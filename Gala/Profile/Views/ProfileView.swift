@@ -150,7 +150,7 @@ struct ProfileView: View {
         Text(viewModel.subtitle)
             .multilineTextAlignment(.center)
             .font(.system(size: 25, weight: .semibold, design: .rounded))
-            .foregroundColor(Color.pink)
+            .foregroundColor(Color.primary)
             .padding(.bottom)
     }
     
@@ -162,7 +162,7 @@ struct ProfileView: View {
             
             if let profilePic = viewModel.getProfilePic() {
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(Color.gray, lineWidth: 3)
+                    .stroke(Color.accent, lineWidth: 3)
                 
                 Image(uiImage: profilePic)
                     .resizable()
@@ -196,7 +196,7 @@ struct ProfileView: View {
                     }
                     
                     RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray)
+                        .stroke(Color.accent)
                 }
             }
         }
@@ -237,14 +237,14 @@ struct ProfileView: View {
             HStack{
                 Text("\(viewModel.nameText), \(viewModel.ageText)")
                     .font(.system(size: 23, weight: .semibold, design: .rounded))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
             }
             .padding(.bottom, 3)
             
             HStack {
                 Image(systemName: "mappin.and.ellipse")
                     .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                 
                 if viewModel.cityText == "" || viewModel.countryText == "" {
                     
@@ -269,18 +269,21 @@ struct ProfileView: View {
             HStack {
                 Text(viewModel.editPressed ? "submit changes" : "edit" )
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(.buttonPrimary)
                 
                 Image(systemName: viewModel.editPressed ? "lock.open" : "lock")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(.buttonPrimary)
             }
-        }.padding(.top, 5)
+        }
+        .padding(.top, 5)
     }
     
     var bioHeader: some View {
         HStack {
             Image(systemName: "person.crop.circle")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink) //Color(hex: "000080")
+                .foregroundColor(.primary) //Color(hex: "000080")
             
             Text(viewModel.bioHeader)
                 .multilineTextAlignment(.center)
@@ -290,7 +293,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showBio ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showBio.toggle()
                     }
@@ -301,7 +304,7 @@ struct ProfileView: View {
     
     var bioTextField: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 16).stroke(Color.gray)
+            RoundedRectangle(cornerRadius: 16).stroke(Color.accent)
             
             VStack {
                 TextEditor(text: $viewModel.bioText)
@@ -309,7 +312,7 @@ struct ProfileView: View {
                         self.viewModel.bioCharCount = value.count
                     }
                     //.font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .padding(.top, 5)
                     .frame(width: screenWidth * 0.87, height: screenHeight * 0.095)
                 
@@ -328,14 +331,14 @@ struct ProfileView: View {
     
     var bioText: some View {
         ZStack{
-            RoundedRectangle(cornerRadius: 16).stroke(Color(.gray))
+            RoundedRectangle(cornerRadius: 16).stroke(Color.accent)
                 .frame(width: screenWidth * 0.95)
 
             VStack{
                 HStack{
                     Text(viewModel.bioText)
                         .multilineTextAlignment(.leading)
-                        .foregroundColor(.pink)
+                        .foregroundColor(.primary)
                     Spacer()
                 }
                 Spacer()
@@ -350,7 +353,7 @@ struct ProfileView: View {
         HStack {
             Image(systemName: "rectangle.stack.person.crop")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
 
             Text(viewModel.pictureHeader)
                 .multilineTextAlignment(.center)
@@ -361,7 +364,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showImages ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showImages.toggle()
                     }
@@ -380,7 +383,7 @@ struct ProfileView: View {
                     .font(.system(size: 25, weight: .bold, design: .rounded))
             }
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.gray)
+                .stroke(Color.accent)
                 .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
         }
     }
@@ -389,7 +392,7 @@ struct ProfileView: View {
         ZStack {
             
             Circle()
-                .stroke(Color.gray, lineWidth: 3)
+                .stroke(Color.accent, lineWidth: 3)
 
             Circle()
                 .foregroundColor(Color.white.opacity(0.5))
@@ -406,7 +409,7 @@ struct ProfileView: View {
         HStack{
             Image(systemName: "figure.walk")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
             
             Text(viewModel.chooseGenderHeader)
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -417,7 +420,7 @@ struct ProfileView: View {
     var selectGenderDropDown: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 15).stroke()
-                .foregroundColor(.gray)
+                .foregroundColor(.accent)
                 .frame(width: screenWidth * 0.32, height: screenHeight * 0.03)
             
             if viewModel.mode == .createAccount || viewModel.editPressed{
@@ -431,7 +434,7 @@ struct ProfileView: View {
             } else {
                 Text(viewModel.selectGenderDropDownText.rawValue.capitalized)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
             }
         }
         .padding(.top)
@@ -457,7 +460,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showGender ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showGender.toggle()
                     }
@@ -470,7 +473,7 @@ struct ProfileView: View {
         HStack{
             Image(systemName: "figure.wave")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
 
             Text(viewModel.chooseSexualityHeader)
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -481,7 +484,7 @@ struct ProfileView: View {
     var selectSexualityDropDown: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 15).stroke()
-                .foregroundColor(.gray)
+                .foregroundColor(.accent)
                 .frame(width: screenWidth * 0.32, height: screenHeight * 0.03)
             
             if viewModel.mode == .createAccount || viewModel.editPressed{
@@ -495,7 +498,7 @@ struct ProfileView: View {
             } else {
                 Text(viewModel.selectSexualityDropDownText.rawValue.capitalized)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
             }
         }
         .padding(.top)
@@ -504,7 +507,7 @@ struct ProfileView: View {
     var sexualityText: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 15).stroke()
-                .foregroundColor(.gray)
+                .foregroundColor(.accent)
                 .frame(width: screenWidth * 0.4, height: screenHeight * 0.03)
         }
     }
@@ -529,7 +532,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showSexuality ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showSexuality.toggle()
                     }
@@ -542,7 +545,7 @@ struct ProfileView: View {
         HStack{
             Image(systemName: "briefcase")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
 
             
             Text(viewModel.jobHeader)
@@ -553,7 +556,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showJob ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showJob.toggle()
                     }
@@ -568,18 +571,18 @@ struct ProfileView: View {
     var jobTextField: some View {
         iTextField("", text: $viewModel.jobText, isEditing: $editingJob)
             .onReturn { self.editingSchool = true}
-            .foregroundColor(.pink)
+            .foregroundColor(.primary)
             .padding()
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
         
     }
     
     var jobText: some View {
         ZStack{
-            RoundedRectangle(cornerRadius: 16).stroke(Color.gray)
+            RoundedRectangle(cornerRadius: 16).stroke(Color.accent)
             HStack{
                 Text(viewModel.jobText)
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .padding(.leading)
                 Spacer()
             }
@@ -591,7 +594,7 @@ struct ProfileView: View {
         HStack{
             Image(systemName: "pencil.and.outline")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
             
             Text(viewModel.schoolHeader)
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -601,7 +604,7 @@ struct ProfileView: View {
             if viewModel.editPressed {
                 Image(systemName: viewModel.showSchool ? "checkmark.rectangle" : "rectangle")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.buttonPrimary)
                     .onTapGesture {
                         viewModel.showSchool.toggle()
                     }
@@ -613,17 +616,17 @@ struct ProfileView: View {
     var schoolTextField: some View {
         iTextField("", text: $viewModel.schoolText, isEditing: $editingSchool)
             .onReturn { self.editingSchool = false }
-            .foregroundColor(.pink)
+            .foregroundColor(.primary)
             .padding()
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
     }
     
     var schoolText: some View {
         ZStack{
-            RoundedRectangle(cornerRadius: 16).stroke(Color.gray)
+            RoundedRectangle(cornerRadius: 16).stroke(Color.accent)
             HStack {
                 Text(viewModel.schoolText)
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .padding(.leading)
                 Spacer()
             }
@@ -639,18 +642,18 @@ struct ProfileView: View {
             ZStack{
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(lineWidth: 3.5)
-                    .foregroundColor(Color.blue)
+                    .foregroundColor(Color.buttonPrimary)
                 
                 HStack {
                     Spacer()
                     if !viewModel.isValid {
                         Image(systemName: "lock")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.pink)
+                            .foregroundColor(.primary)
                     } else {
                         Image(systemName: "lock.open")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.pink)
+                            .foregroundColor(.primary)
                     }
                     
                     Text(viewModel.submitButtonText)
@@ -693,7 +696,7 @@ struct ShowcaseProfileImageView: View {
                 if let image = viewModel.getImageItem(at: i){
                     ZStack {
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.gray, lineWidth: 3)
+                            .stroke(Color.accent, lineWidth: 3)
                             .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
                         if viewModel.mode == .createAccount || viewModel.editPressed{
                             
@@ -731,7 +734,7 @@ struct ShowcaseProfileImageView: View {
                                         ZStack {
                                             
                                             Circle()
-                                                .stroke(Color.gray, lineWidth: 3)
+                                                .stroke(Color.accent, lineWidth: 3)
                                             
                                             Circle()
                                                 .foregroundColor(Color.white.opacity(0.5))
@@ -768,7 +771,7 @@ struct ShowcaseProfileImageView: View {
         ZStack {
             
             Circle()
-                .stroke(Color.gray, lineWidth: 3)
+                .stroke(Color.accent, lineWidth: 3)
 
             Circle()
                 .foregroundColor(Color.white.opacity(0.5))
@@ -794,7 +797,7 @@ struct ShowcaseProfileImageView: View {
             }
             
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.gray)
+                .stroke(Color.accent)
                 .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
         }
     }

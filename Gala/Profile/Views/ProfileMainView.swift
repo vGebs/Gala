@@ -11,7 +11,6 @@ struct ProfileMainView: View {
     var optionButtonLeft: String = "highlighter"
     var pageName: String = "Profile"
     var optionButtonRight: String = "gearshape"
-    var baseColor: Color = .blue
     
     @ObservedObject var viewModel: ProfileViewModel
 
@@ -43,14 +42,14 @@ struct ProfileMainView: View {
                         Button(action: { }) {
                             Image(systemName: optionButtonLeft)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
-                                .foregroundColor(.blue)
+                                .foregroundColor(.buttonPrimary)
                         }
                         
                         Spacer()
                         
                         Text(pageName)
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.pink)
+                            .foregroundColor(.primary)
 
                         Spacer()
                         
@@ -70,7 +69,7 @@ struct ProfileMainView: View {
                             }
                         } label: {
                             Label("", systemImage: optionButtonRight)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.buttonPrimary)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
 
                         }

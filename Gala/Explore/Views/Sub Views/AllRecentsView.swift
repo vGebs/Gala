@@ -14,13 +14,13 @@ struct AllRecentsView: View {
         VStack {
     
             RoundedRectangle(cornerRadius: 2)
-                .foregroundColor(.gray)
+                .foregroundColor(.accent)
                 .frame(width: screenWidth / 4, height: screenHeight / 400)
                 .padding(.top, 15)
     
             ScrollView(showsIndicators: false){
                 HStack{
-                    Text("Recently Joined")
+                    Text("Newcomers")
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                     Spacer()
                 }

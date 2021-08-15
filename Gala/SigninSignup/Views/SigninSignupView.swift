@@ -70,10 +70,10 @@ struct SigninSignupView: View {
                             HStack{
                                 Image(systemName: "exclamationmark.circle")
                                     .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(.primary)
                                 
                                 Text(viewModel.signUpErrorMessage)
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(.primary)
                             }
                         }
                         //cellNumberTextField
@@ -116,14 +116,14 @@ struct SigninSignupView: View {
         Text(viewModel.subtitle)
             .multilineTextAlignment(.center)
             .font(.system(size: 25, weight: .semibold, design: .rounded))
-            .foregroundColor(.pink)
+            .foregroundColor(.primary)
             .padding(.bottom)
     }
     
     var locationText: some View {
         HStack{
             Image(systemName: "mappin.and.ellipse")
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .padding(.leading)
             
@@ -149,7 +149,7 @@ struct SigninSignupView: View {
     var agePicker: some View {
         HStack{
             Image(systemName: "calendar")
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .padding(.leading)
             
@@ -167,6 +167,7 @@ struct SigninSignupView: View {
                     Text(viewModel.ageWarning)
                 } label: {
                     Label("", systemImage: "exclamationmark.circle")
+                        .foregroundColor(.buttonPrimary)
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .padding(.trailing)
@@ -252,18 +253,18 @@ struct SigninSignupView: View {
                 ZStack{
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(lineWidth: 3.5)
-                        .foregroundColor(Color.blue)
+                        .foregroundColor(Color.buttonPrimary)
                     
                     HStack {
                         Spacer()
                         if !viewModel.isValid {
                             Image(systemName: "lock")
                                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .foregroundColor(.pink)
+                                .foregroundColor(.primary)
                         } else {
                             Image(systemName: "lock.open")
                                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .foregroundColor(.pink)
+                                .foregroundColor(.primary)
                         }
                         
                         
@@ -314,7 +315,7 @@ struct TextFieldView: View {
         VStack {
             HStack {
                 Image(systemName: imageString)
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                 
                 Text(title)
@@ -326,6 +327,7 @@ struct TextFieldView: View {
                         Text(warning)
                     } label: {
                         Label("", systemImage: "exclamationmark.circle")
+                            .foregroundColor(.buttonPrimary)
                     }
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                 }
@@ -334,14 +336,14 @@ struct TextFieldView: View {
             
             if phoneOrTextfield == .phone{
                 iPhoneNumberField("", text: $outputText, isEditing: $editing)
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .onReturn{ _ in self.isGoingToEdit = true }
                     .flagHidden(false)
                     //.flagSelectable(true)
                     .font(.system(size: 16, weight: .medium, design: .rounded))
                     .padding()
                     .cornerRadius(16)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
                     .padding(.horizontal, 15)
                     .autocapitalization(.none)
             } else {
@@ -350,10 +352,10 @@ struct TextFieldView: View {
                     .isSecure(isSecureField)
                     .disableAutocorrection(true)
                     .fontFromUIFont(.systemFont(ofSize: 16, weight: .medium))
-                    .foregroundColor(.pink)
+                    .foregroundColor(.primary)
                     .padding()
                     .cornerRadius(16)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
                     .padding(.horizontal, 15)
                     .autocapitalization(.none)
             }

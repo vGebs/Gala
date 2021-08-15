@@ -11,6 +11,9 @@ struct LandingView: View {
     @State var opacity: Double = 0
     @State var opacity2: Double = 1
     @AppStorage("isDarkMode") private var isDarkMode = true
+    @State var color1 = Color.primary
+    @State var color2 = Color.buttonPrimary
+    @State var rotation = 0.0
     var body: some View {
         ZStack{
             Color.black.edgesIgnoringSafeArea(.all)
@@ -27,14 +30,29 @@ struct LandingView: View {
             }
 
             RoundedRectangle(cornerRadius: 40).stroke(lineWidth: 5)
-                .foregroundColor(.pink)
+                .foregroundColor(Color.accent)
                 .frame(width: screenWidth - 1, height: screenHeight - 1)
                 .edgesIgnoringSafeArea(.all)
             
             RoundedRectangle(cornerRadius: 23).stroke(lineWidth: 5)
-                .foregroundColor(.pink)
+                .foregroundColor(Color.accent)
                 .frame(width: screenWidth * 0.56, height: screenHeight * 0.062)
                 .offset(y: -screenHeight / 2)
+            
+            ZStack{
+//                Image(systemName: "ticket")
+//                    .font(.system(size: 100, weight: .thin, design: .rounded))
+//                    .foregroundColor(.buttonPrimary)
+                
+                Image(systemName: "map.fill")
+                    .font(.system(size: 90, weight: .thin, design: .rounded))
+                    .foregroundColor(.primary)
+                    
+                Text("Gala")
+                    .font(.system(size: 30, weight: .black, design: .rounded)) //size 15
+                    .foregroundColor(.buttonPrimary)
+            }
+            .offset(y: -screenHeight * 0.12)
             
             VStack {
                 Button(action: {
@@ -48,14 +66,14 @@ struct LandingView: View {
                             .edgesIgnoringSafeArea(.all)
                         
                         RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 3)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.buttonPrimary)
                             .edgesIgnoringSafeArea(.all)
                         
                         HStack {
                             Spacer()
                             Image(systemName: "newspaper")
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(.pink)
+                                .foregroundColor(Color.primary)
                             
                             Text("Sign up")
                                 .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -79,14 +97,14 @@ struct LandingView: View {
                             .edgesIgnoringSafeArea(.all)
                         
                         RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 3)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.buttonPrimary)
                             .edgesIgnoringSafeArea(.all)
                         
                         HStack {
                             Spacer()
                             Image(systemName: "lock")
                                 .font(.system(size: 25, weight: .bold, design: .rounded))
-                                .foregroundColor(.pink)
+                                .foregroundColor(Color.primary)
                             
                             Text("Log in")
                                 .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -116,7 +134,7 @@ struct FlashingGala: View {
         Text("Gala")
             .font(.system(size: 30, weight: .black, design: .rounded))
             .frame(width: 90, height: 40)
-            .foregroundColor(.pink)
+            .foregroundColor(Color.buttonPrimary)
             .opacity(opacity)
             .animation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true))
             .onAppear{
@@ -131,7 +149,7 @@ struct FlashingGalaInverse: View {
         Text("Gala")
             .font(.system(size: 30, weight: .black, design: .rounded))
             .frame(width: 90, height: 40)
-            .foregroundColor(.pink)
+            .foregroundColor(Color.primary)
             .opacity(opacity)
             .animation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true))
             .onAppear{

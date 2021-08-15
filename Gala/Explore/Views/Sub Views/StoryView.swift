@@ -14,13 +14,13 @@ struct StoryView: View {
         VStack{
             RoundedRectangle(cornerRadius: 5)
                 .stroke()
-                .foregroundColor(.blue)
+                .foregroundColor(.buttonPrimary)
                 .frame(width: screenWidth / 7, height: screenWidth / 7)
             
             Text(story.name)
                 .multilineTextAlignment(.center)
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundColor(.pink)
+                .foregroundColor(.primary)
         }
         .frame(width: screenWidth / 6)
     }

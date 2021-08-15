@@ -17,7 +17,7 @@ struct RecentlyJoinedView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     HStack {
-                        Text("Recently Joined")
+                        Text("Newcomers")
                             .font(.system(size: 25, weight: .bold, design: .rounded))
                         
                         Spacer()
@@ -41,7 +41,6 @@ struct RecentlyJoinedView: View {
                                     if i * 2 < newUsers.count{
                                         SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
                                             .padding(.bottom, 3)
-                                        
                                     }
                                     
                                     if i * 2 + 1 < newUsers.count{
@@ -101,7 +100,7 @@ struct MyDivider: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 5)
             .frame(width: screenWidth * 0.9, height: screenHeight / 800)
-            .foregroundColor(.gray)
+            .foregroundColor(.accent)
             .padding(.top, 5)
             .offset(y: -screenHeight * 0.017)
     }

@@ -369,19 +369,24 @@ extension RecentlyJoinedUserService {
                 return .straightMale
             
             } else if userCore?.sexuality == "gay"{
+                print("RecentlyJoinedUserService: Gay male")
                 return .gayMale
                 
             } else {
+                print("RecentlyJoinedUserService: Bisexual male")
                 return .biMale
             }
         } else {
             if userCore?.sexuality == "straight" {
+                print("RecentlyJoinedUserService: Straight Female")
                 return .straightFemale
                 
             } else if userCore?.sexuality == "gay"{
+                print("RecentlyJoinedUserService: Gay Female")
                 return .gayFemale
                 
             } else {
+                print("RecentlyJoinedUserService: Bisexual Female")
                 return .biFemale
             }
         }

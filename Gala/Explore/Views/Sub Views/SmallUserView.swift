@@ -45,7 +45,7 @@ struct SmallUserView: View {
                         HStack {
                             Text("\(viewModel.profile.name), \(viewModel.profile.age.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
-                                .foregroundColor(.pink)
+                                .foregroundColor(.primary)
                             
                             Spacer()
                         }
@@ -54,11 +54,11 @@ struct SmallUserView: View {
                             HStack {
                                 Image(systemName: "arrowtriangle.right")
                                     .font(.system(size: 12, weight: .regular, design: .rounded))
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(.primary)
                                 
                                 Text("Opened")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(.primary)
                                 
                                 Image(systemName: "circlebadge.fill")
                                     //.resizable()
@@ -85,10 +85,12 @@ struct SmallUserView: View {
                     if matched {
                         Image(systemName: "camera")
                             .font(.system(size: 15, weight: .medium, design: .rounded))
+                            .foregroundColor(.buttonPrimary)
                     } else {
                         Button(action: { self.pressed.toggle() }){
                             Image(systemName: self.pressed ? "hourglass.badge.plus" : "plus.app")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
+                                .foregroundColor(.buttonPrimary)
                         } 
                     }
                 }
@@ -106,51 +108,3 @@ struct SmallUserView_Previews: PreviewProvider {
         SmallUserView(viewModel: SmallUserViewModel(profile: UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", longitude: 54.22, latitude: 54.22)))
     }
 }
-
-//struct SmallUserView: View {
-//
-//    @StateObject var viewModel: RecentlyJoinedViewModel
-//
-//    var body: some View {
-//        HStack{
-//            RoundedRectangle(cornerRadius: 5)
-//                .stroke()
-//                .frame(width: screenWidth / 9, height: screenWidth / 9)
-//                .foregroundColor(.blue)
-//                .padding(.trailing)
-//
-//            VStack{
-//                Divider()
-//                Spacer()
-//                HStack {
-//                    Text("\(viewModel.profile.name), \(viewModel.profile.birthday.ageString())")
-//                        .font(.system(size: 17, weight: .medium, design: .rounded))
-//                        .foregroundColor(.pink)
-//                    Spacer()
-//                }
-//
-//                HStack {
-//                    Text("\(viewModel.profile.city), \(viewModel.profile.country)")
-//                        .font(.system(size: 13, weight: .regular, design: .rounded))
-//                    Spacer()
-//                }
-//                Spacer()
-//            }
-//            Spacer()
-//
-//            Button(action: {
-//
-//            }){
-//                Image(systemName: "ellipsis")
-//                    .font(.system(size: 18, weight: .medium, design: .rounded))
-//            }
-//        }
-//        .frame(width: screenWidth * 0.85, height: screenWidth / 9)
-//    }
-//}
-//
-//struct NewUserView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SmallUserView(viewModel: RecentlyJoinedViewModel(profile: ProfileModel(name: "Vaughn", birthday: Date(), city: "Regina", country: "Canada", userID: "123", bio: "Sup", gender: "Male", sexuality: "Straight", job: "Engg", school: "uofr")))
-//    }
-//}
