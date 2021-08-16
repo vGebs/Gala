@@ -37,6 +37,12 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         
         let hash = GFUtils.geoHash(forLocation: location)
         
+        if core.uid == currentUID {
+            print("UserCoreService-addNewUser: Setting currentUserCore")
+            self.currentUserCore = core
+            print("CurrentUserCore: \(String(describing: self.currentUserCore))")
+        }
+        
         return Future<Void, Error> { promise in
             self.db.collection("UserCore").document(self.currentUID!).setData([
                 "name" : core.name,

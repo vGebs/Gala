@@ -344,12 +344,15 @@ extension RecentlyJoinedUserService {
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
                             
                             let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
-                            results.append(uSimp)
+                            if id != self.currentUID {
+                                results.append(uSimp)
+                            }
                             
                             if j == (documents.count - 1){
                                 promise(.success(results))
                             }
                         }
+                        
                     }
                 } else {
                     print("Unable to fetch snapshot data. \(String(describing: error))")
@@ -362,13 +365,13 @@ extension RecentlyJoinedUserService {
 
 extension RecentlyJoinedUserService {
     private func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
-        //print("RecentlyJoinedUserService: \(String(describing: userCore))")
-        if userCore?.gender == "male" {
-            if userCore?.sexuality == "straight" {
+        print("RecentlyJoinedUserService: \(String(describing: UserCoreService.shared.currentUserCore?.sexuality))")
+        if UserCoreService.shared.currentUserCore?.gender == "male" {
+            if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
                 print("RecentlyJoinedUserService: Straight male")
                 return .straightMale
             
-            } else if userCore?.sexuality == "gay"{
+            } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
                 print("RecentlyJoinedUserService: Gay male")
                 return .gayMale
                 
@@ -377,11 +380,11 @@ extension RecentlyJoinedUserService {
                 return .biMale
             }
         } else {
-            if userCore?.sexuality == "straight" {
+            if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
                 print("RecentlyJoinedUserService: Straight Female")
                 return .straightFemale
                 
-            } else if userCore?.sexuality == "gay"{
+            } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
                 print("RecentlyJoinedUserService: Gay Female")
                 return .gayFemale
                 

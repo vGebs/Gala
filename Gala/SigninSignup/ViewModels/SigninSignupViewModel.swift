@@ -13,7 +13,7 @@ final class SigninSignupViewModel: ObservableObject{
 
 //MARK: - General Purpose Variables
     
-    private let userService = AuthService.shared
+    private let authService = AuthService.shared
     private var cancellables: [AnyCancellable] = []
 
     private(set) var agePlaceholderText = "Birthday"
@@ -253,7 +253,7 @@ final class SigninSignupViewModel: ObservableObject{
     private func createAccount(){
         print("signup")
         self.loading = true
-        userService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
+        authService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink{ completion in
@@ -280,7 +280,7 @@ final class SigninSignupViewModel: ObservableObject{
     private func login(){
         print("login")
         self.loading = true
-        userService.signIn(email: self.emailText, password: self.passwordText)
+        authService.signIn(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
