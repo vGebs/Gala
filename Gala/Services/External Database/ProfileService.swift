@@ -93,6 +93,8 @@ extension ProfileService {
             age: profile.birthday,
             gender: profile.gender,
             sexuality: profile.sexuality,
+            ageMinPref: profile.ageMinPref,
+            ageMaxPref: profile.ageMaxPref,
             longitude: profile.longitude,
             latitude: profile.latitude
         )
@@ -138,6 +140,8 @@ extension ProfileService {
             age: profile.birthday,
             gender: profile.gender,
             sexuality: profile.sexuality,
+            ageMinPref: profile.ageMinPref,
+            ageMaxPref: profile.ageMaxPref,
             longitude: profile.longitude,
             latitude: profile.latitude
         )

@@ -52,6 +52,8 @@ extension RecentlyJoinedUserService {
                 "longitude" : long,
                 "gender" : core.gender,
                 "sexuality" : core.sexuality,
+                "ageMinPref" : core.ageMinPref,
+                "ageMaxPref" : core.ageMaxPref,
                 "id" : core.uid
             ]) { err in
                 if let err = err {
@@ -342,8 +344,10 @@ extension RecentlyJoinedUserService {
                             let lng = documents[j].data()["longitude"] as? Double ?? 0
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
+                            let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
+                            let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
                             
-                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, longitude: lng, latitude: lat)
+                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, longitude: lng, latitude: lat)
                             if id != self.currentUID {
                                 results.append(uSimp)
                             }

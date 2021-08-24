@@ -409,6 +409,8 @@ extension ProfileViewModel {
             bio: bio,
             gender: selectGenderDropDownText.rawValue,
             sexuality: selectSexualityDropDownText.rawValue,
+            ageMinPref: Int(min(slider.lowHandle.currentValue, slider.highHandle.currentValue)),
+            ageMaxPref: Int(max(slider.lowHandle.currentValue, slider.highHandle.currentValue)),
             job: job,
             school: school
         )

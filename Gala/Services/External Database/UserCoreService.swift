@@ -53,6 +53,8 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                 "longitude" : long,
                 "gender" : core.gender,
                 "sexuality" : core.sexuality,
+                "ageMinPref" : core.ageMinPref,
+                "ageMaxPref" : core.ageMaxPref,
                 "id" : core.uid
             ]) { err in
                 if let err = err {
@@ -91,6 +93,8 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                         age: age,
                         gender: doc.data()?["gender"] as? String ?? "",
                         sexuality: doc.data()?["sexuality"] as? String ?? "",
+                        ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
+                        ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
                         longitude: doc.data()?["longitude"] as? Double ?? 0,
                         latitude: doc.data()?["latitude"] as? Double ?? 0
                     )

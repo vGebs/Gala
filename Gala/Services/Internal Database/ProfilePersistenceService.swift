@@ -223,6 +223,8 @@ extension ProfilePersistenceService {
                 bio: "",
                 gender: "",
                 sexuality: "",
+                ageMinPref: 18,
+                ageMaxPref: 20,
                 job: "",
                 school: ""
             )
@@ -462,7 +464,7 @@ extension ProfilePersistenceService {
         return Future<ProfileModel?, Never> { promise in
             for profile in self.profiles{
                 if profile.id == id {
-                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), latitude: profile.latitude, longitude: profile.longitude, userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", job: profile.job ?? "", school: profile.school ?? "")
+                    let prof = ProfileModel(name: profile.name ?? "", birthday: profile.birthday ?? Date(), latitude: profile.latitude, longitude: profile.longitude, userID: profile.id ?? "", bio: profile.bio ?? "", gender: profile.gender ?? "", sexuality: profile.sexuality ?? "", ageMinPref: 18, ageMaxPref: 24, job: profile.job ?? "", school: profile.school ?? "")
                     promise(.success(prof))
                 }
             }
