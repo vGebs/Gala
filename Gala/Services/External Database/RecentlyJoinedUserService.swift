@@ -85,6 +85,8 @@ extension RecentlyJoinedUserService {
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
+        let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
+        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
         
         return Future<[UserCore]?, Error> { promise in
 
@@ -95,8 +97,8 @@ extension RecentlyJoinedUserService {
             case .straightMale:
                 //Get straight and bi women
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -123,8 +125,8 @@ extension RecentlyJoinedUserService {
             case .gayMale:
                 //Get gay men and bi men
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -148,10 +150,10 @@ extension RecentlyJoinedUserService {
             case .biMale:
                 //Get straight women, bi women, gay men, bi men.
                 Publishers.Zip4(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -181,8 +183,8 @@ extension RecentlyJoinedUserService {
             case .straightFemale:
                 //Get straight and bi men
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -206,8 +208,8 @@ extension RecentlyJoinedUserService {
             case .gayFemale:
                 //Get gay women and bi women
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -231,10 +233,10 @@ extension RecentlyJoinedUserService {
             case .biFemale:
                 //Get straight men, bi men, gay women, bi women
                 Publishers.Zip4(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: 18, ageMax: 24),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: 18, ageMax: 24)
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -417,5 +419,7 @@ extension RecentlyJoinedUserService {
         case returnedEmptyStraightFemale
         case returnedEmptyGayFemale
         case returnedEmptyBiFemale
+        
+        case CurrentUserCoreEmpty
     }
 }
