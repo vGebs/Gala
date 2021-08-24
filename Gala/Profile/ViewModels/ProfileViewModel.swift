@@ -42,6 +42,8 @@ final class ProfileViewModel: ObservableObject {
     @Published var schoolHeader = "Where have you studied?"
     private(set) var submitButtonText = "Submit!"
     
+    @ObservedObject var slider = CustomSlider(start: 18, end: 99)
+    
     private(set) var maxBioCharCount = 150
     
     @Published var editPressed = false

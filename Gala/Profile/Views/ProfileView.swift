@@ -72,6 +72,20 @@ struct ProfileView: View {
                         chooseSexuality
                     }
                     
+                    if viewModel.mode == .createAccount || viewModel.editPressed {
+                        HStack{
+                            Image(systemName: "person.and.arrow.left.and.arrow.right")
+                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .foregroundColor(.primary)
+                            
+                            Text("Age preference")
+                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                            Spacer()
+                        }
+                        .padding(.top)
+                        SliderView(slider: viewModel.slider)
+                    }
+                    
                     if (viewModel.showJob && viewModel.jobText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {
                         jobHeader
                         

@@ -1,107 +1,207 @@
 //
-//  LandingView.swift
-//  Gala_Final
+//  LandingView2.swift
+//  Gala
 //
-//  Created by Vaughn on 2021-05-03.
+//  Created by Vaughn on 2021-08-14.
 //
 
 import SwiftUI
 
-struct LandingPageView: View {
-    
-//MARK: - View State Variables
-    
-    //@StateObject var viewModel = LandingPageViewModel()
-    @ObservedObject var viewModel: LandingPageViewModel
-    
-//MARK: - Main Body
-    
+struct LandingView: View {
+    @State var opacity: Double = 0
+    @State var opacity2: Double = 1
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    @State var color1 = Color.primary
+    @State var color2 = Color.buttonPrimary
+    @State var rotation = 0.0
     var body: some View {
-        ZStack {
-            Color.black
-            
-            VStack{
+        ZStack{
+            Color.black.edgesIgnoringSafeArea(.all)
+            VStack {
+                galaThreeHStack(opacity: $opacity, opacity2: $opacity2)
                 Spacer()
-                    .frame(height: screenHeight * 0.2)
-                
-                title
-                
+                galaThreeHStackInverse(opacity: $opacity, opacity2: $opacity2)
                 Spacer()
-                
-                signupButton
-                
-                loginButton
+                galaThreeHStack(opacity: $opacity, opacity2: $opacity2)
+                Spacer()
+                galaThreeHStackInverse(opacity: $opacity, opacity2: $opacity2)
+                Spacer()
+                galaThreeHStack(opacity: $opacity, opacity2: $opacity2)
             }
-            .frame(width: screenWidth, height: screenHeight) //Color.red, Color.red.opacity(0.8)
-            .background(LinearGradient(gradient: Gradient(colors: [Color.pink, Color.pink.opacity(0.8), .black]), startPoint: .topLeading, endPoint: .bottom))
-            .edgesIgnoringSafeArea(.all)
-        }
-        .edgesIgnoringSafeArea(.all)
-        
-    }
 
-//MARK: - View Variables
-    
-    var title: some View{
-        VStack {
-            Text(viewModel.welcomeText)
-                .foregroundColor(.white)
-                .padding()
+            RoundedRectangle(cornerRadius: 40).stroke(lineWidth: 5)
+                .foregroundColor(Color.accent)
+                .frame(width: screenWidth - 1, height: screenHeight - 1)
+                .edgesIgnoringSafeArea(.all)
             
-            Text(viewModel.toText)
-                .foregroundColor(.white)
+            RoundedRectangle(cornerRadius: 23).stroke(lineWidth: 5)
+                .foregroundColor(Color.accent)
+                .frame(width: screenWidth * 0.56, height: screenHeight * 0.062)
+                .offset(y: -screenHeight / 2)
             
-            Text(viewModel.galaText)
-                .foregroundColor(.white)
-                .padding()
-        }
-        .font(.system(size: 60, weight: .bold, design: .rounded))
-    }
-    
-    var signupButton: some View {
-        Button(action: {
-            withAnimation {
-                AppState.shared.onLandingPage = false
-                AppState.shared.signUpPageActive = true
-            }
-        }) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(Color.yellow)
-                    .frame(width: screenWidth * 0.7, height: screenHeight * 0.1, alignment: .center)
+            ZStack{
+//                Image(systemName: "ticket")
+//                    .font(.system(size: 100, weight: .thin, design: .rounded))
+//                    .foregroundColor(.buttonPrimary)
                 
-                Text(viewModel.signupButtonText)
-                    .foregroundColor(.black)
-                    .font(.system(size: 26, weight: .black, design: .rounded))
+                Image(systemName: "map.fill")
+                    .font(.system(size: 90, weight: .thin, design: .rounded))
+                    .foregroundColor(.primary)
+                    
+                Text("Gala")
+                    .font(.system(size: 30, weight: .black, design: .rounded)) //size 15
+                    .foregroundColor(.buttonPrimary)
             }
-        }
-    }
-    
-    var loginButton: some View {
-
-        Button(action: {
-            withAnimation {
-                AppState.shared.onLandingPage = false
-                AppState.shared.loginPageActive = true
-            }
-        }) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(Color.yellow.opacity(0.8))
-                    .frame(width: screenWidth * 0.7, height: screenHeight * 0.1, alignment: .center)
+            .offset(y: -screenHeight * 0.12)
+            
+            VStack {
+                Button(action: {
+                    withAnimation {
+                        AppState.shared.onLandingPage = false
+                        AppState.shared.signUpPageActive = true
+                    }
+                }){
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 3)
+                            .foregroundColor(.buttonPrimary)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        HStack {
+                            Spacer()
+                            Image(systemName: "newspaper")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(Color.primary)
+                            
+                            Text("Sign up")
+                                .font(.system(size: 30, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                            Spacer()
+                        }
+                    }
+                }
+                .frame(width: screenWidth * 0.6, height: screenHeight * 0.1)
+                .foregroundColor(.black)
+                .padding(.bottom)
                 
-                Text(viewModel.loginButtonText)
-                    .foregroundColor(.white)
-                    .font(.system(size: 24, weight: .black, design: .rounded))
+                Button(action: {
+                    withAnimation {
+                        AppState.shared.onLandingPage = false
+                        AppState.shared.loginPageActive = true
+                    }
+                }){
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 3)
+                            .foregroundColor(.buttonPrimary)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        HStack {
+                            Spacer()
+                            Image(systemName: "lock")
+                                .font(.system(size: 25, weight: .bold, design: .rounded))
+                                .foregroundColor(Color.primary)
+                            
+                            Text("Log in")
+                                .font(.system(size: 30, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                            Spacer()
+                        }
+                    }
+                }
+                .frame(width: screenWidth * 0.6, height: screenHeight * 0.1)
+                .foregroundColor(.black)
             }
+            .offset(y: screenHeight * 0.33)
         }
-        .padding()
-        .padding(.bottom, 25)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
-struct LandingPageView_Previews: PreviewProvider {
+struct LandingView2_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPageView(viewModel: LandingPageViewModel())
+        LandingView()
+    }
+}
+
+struct FlashingGala: View {
+    @Binding var opacity: Double
+    var body: some View {
+        Text("Gala")
+            .font(.system(size: 30, weight: .black, design: .rounded))
+            .frame(width: 90, height: 40)
+            .foregroundColor(Color.buttonPrimary)
+            .opacity(opacity)
+            .animation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true))
+            .onAppear{
+                opacity = 1
+            }
+    }
+}
+
+struct FlashingGalaInverse: View {
+    @Binding var opacity: Double
+    var body: some View {
+        Text("Gala")
+            .font(.system(size: 30, weight: .black, design: .rounded))
+            .frame(width: 90, height: 40)
+            .foregroundColor(Color.primary)
+            .opacity(opacity)
+            .animation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true))
+            .onAppear{
+                opacity = 0
+            }
+    }
+}
+
+struct galaThreeHStack: View {
+    @Binding var opacity: Double
+    @Binding var opacity2: Double
+    @State var posX = 0
+    
+    var body: some View {
+        HStack {
+            FlashingGala(opacity: $opacity)
+            Spacer()
+            FlashingGalaInverse(opacity: $opacity2)
+            Spacer()
+            FlashingGala(opacity: $opacity)
+            Spacer()
+            FlashingGalaInverse(opacity: $opacity2)
+        }
+        .frame(width: screenWidth * 1.2)
+        .offset(x: CGFloat(posX))
+        .animation(Animation.easeInOut(duration: 5).repeatForever(autoreverses: true))
+        .onAppear{
+            posX += 140
+        }
+    }
+}
+
+struct galaThreeHStackInverse: View {
+    @Binding var opacity: Double
+    @Binding var opacity2: Double
+    @State var posX = 0
+    
+    var body: some View {
+        HStack {
+            FlashingGalaInverse(opacity: $opacity2)
+            Spacer()
+            FlashingGala(opacity: $opacity)
+            Spacer()
+            FlashingGalaInverse(opacity: $opacity2)
+            Spacer()
+            FlashingGala(opacity: $opacity)
+        }
+        .frame(width: screenWidth * 1.2)
+        .offset(x: CGFloat(posX))
+        .animation(Animation.easeInOut(duration: 5).repeatForever(autoreverses: true))
+        .onAppear{
+            posX -= 140
+        }
     }
 }
