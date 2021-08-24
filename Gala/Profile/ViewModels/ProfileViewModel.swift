@@ -560,11 +560,9 @@ extension ProfileViewModel {
                         
                     self.slider.lowHandle.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
                     self.slider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
-                    
-                    let sliderWidth = screenWidth * 0.65
-                    let lineWidth: CGFloat = 3
-                    self.slider.lowHandle.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0)*sliderWidth, y: lineWidth / 2)
-                    self.slider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0)*sliderWidth, y: lineWidth / 2)
+                                        
+                    self.slider.lowHandle.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self.slider.lowHandle.sliderWidth, y: self.slider.lowHandle.sliderHeight / 2)
+                    self.slider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self.slider.highHandle.sliderWidth, y: self.slider.highHandle.sliderHeight / 2)
                 }
                 
                 if let abt = abt {
