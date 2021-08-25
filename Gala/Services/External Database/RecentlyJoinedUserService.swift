@@ -293,7 +293,7 @@ extension RecentlyJoinedUserService {
                     .whereField("sexuality", isEqualTo: forSexuality)
                     .limit(to: 40)
             }
-                        
+            
             var results: [UserCore] = []
             var finished = 0
             for i in 0..<queries.count {
@@ -339,15 +339,21 @@ extension RecentlyJoinedUserService {
                         format.dateFormat = "yyyy/MM/dd"
                         let age = format.date(from: date)!
                         
-                        if date <= ageMinString && date >= ageMaxString {
+                        let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
+                        let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
+                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
+                        
+                        if date <= ageMinString &&
+                            date >= ageMaxString &&
+                            ((ageMinPref - 1) <= myAge! &&
+                            (ageMaxPref + 1) >= myAge!) || ageMaxPref == myAge! || ageMaxPref == myAge!
+                        {
                             let gender = documents[j].data()["gender"] as? String ?? ""
                             let id = documents[j].data()["id"] as? String ?? ""
                             let lat = documents[j].data()["latitude"] as? Double ?? 0
                             let lng = documents[j].data()["longitude"] as? Double ?? 0
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
-                            let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
-                            let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
                             
                             let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, longitude: lng, latitude: lat)
                             if id != self.currentUID {
