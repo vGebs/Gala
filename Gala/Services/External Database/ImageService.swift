@@ -48,21 +48,25 @@ class ProfileImageService: ProfileImageServiceProtocol{
     
     func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            for i in 0..<imgs.count {
-                self.uploadProfileImage(img: imgs[i], name: String(i))
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("ImageService-uploadProfileImages index: \(String(i)) failed: \(error.localizedDescription)")
-                        case .finished:
-                            print("ImageService-uploadProfile: image i=\(String(i)) successfully added")
-                            if i == (imgs.count - 1){
-                                promise(.success(()))
+            if imgs.count == 0 {
+                promise(.success(()))
+            } else {
+                for i in 0..<imgs.count {
+                    self.uploadProfileImage(img: imgs[i], name: String(i))
+                        .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                        .sink { completion in
+                            switch completion {
+                            case .failure(let error):
+                                print("ImageService-uploadProfileImages index: \(String(i)) failed: \(error.localizedDescription)")
+                            case .finished:
+                                print("ImageService-uploadProfile: image i=\(String(i)) successfully added")
+                                if i == (imgs.count - 1){
+                                    promise(.success(()))
+                                }
                             }
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &self.cancellables)
+                        } receiveValue: { _ in }
+                        .store(in: &self.cancellables)
+                }
             }
         }.eraseToAnyPublisher()
     }

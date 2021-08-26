@@ -163,7 +163,7 @@ extension ProfileService {
     }
     
     private func addImages(_ allImages: [ImageModel]) -> AnyPublisher<Void, Error>{
-        self.imgService.uploadProfileImages(imgs: allImages)
+        return self.imgService.uploadProfileImages(imgs: allImages)
     }
 }
 
