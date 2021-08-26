@@ -42,7 +42,8 @@ final class ProfileViewModel: ObservableObject {
     @Published var schoolHeader = "Where have you studied?"
     private(set) var submitButtonText = "Submit!"
     
-    @ObservedObject var slider = CustomSlider(start: 18, end: 99)
+    @ObservedObject var doubleKnobSlider = CustomSlider(start: 18, end: 99, doubleKnob: true)
+    @ObservedObject var singleKnobSlider = CustomSlider(start: 1, end: 250, doubleKnob: false)
     
     private(set) var maxBioCharCount = 150
     
@@ -409,8 +410,8 @@ extension ProfileViewModel {
             bio: bio,
             gender: selectGenderDropDownText.rawValue,
             sexuality: selectSexualityDropDownText.rawValue,
-            ageMinPref: Int(min(slider.lowHandle.currentValue, slider.highHandle.currentValue)),
-            ageMaxPref: Int(max(slider.lowHandle.currentValue, slider.highHandle.currentValue)),
+            ageMinPref: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
+            ageMaxPref: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
             job: job,
             school: school
         )
@@ -558,11 +559,11 @@ extension ProfileViewModel {
                     let ageMinPrefPercent = Double((core.ageMinPref - ageMin)) / Double(range)
                     let ageMaxPrefPercent = Double((core.ageMaxPref - ageMin)) / Double(range)
                         
-                    self.slider.lowHandle.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
-                    self.slider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
+                    self.doubleKnobSlider.lowHandle!.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
+                    self.doubleKnobSlider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
                                         
-                    self.slider.lowHandle.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self.slider.lowHandle.sliderWidth, y: self.slider.lowHandle.sliderHeight / 2)
-                    self.slider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self.slider.highHandle.sliderWidth, y: self.slider.highHandle.sliderHeight / 2)
+                    self.doubleKnobSlider.lowHandle!.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self.doubleKnobSlider.lowHandle!.sliderWidth, y: self.doubleKnobSlider.lowHandle!.sliderHeight / 2)
+                    self.doubleKnobSlider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self.doubleKnobSlider.highHandle.sliderWidth, y: self.doubleKnobSlider.highHandle.sliderHeight / 2)
                 }
                 
                 if let abt = abt {

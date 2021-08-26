@@ -24,7 +24,6 @@
 		FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */; };
 		FA76E30926B34733009A650D /* IntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76E30826B34733009A650D /* IntExtension.swift */; };
 		FA777D2526CE0D86007C53F5 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2426CE0D86007C53F5 /* Slider.swift */; };
-		FA777D2726CE1869007C53F5 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2626CE1869007C53F5 /* TestView.swift */; };
 		FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2826CE219F007C53F5 /* SliderView.swift */; };
 		FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */; };
 		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
@@ -84,6 +83,8 @@
 		FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F8264092D100CC1670 /* Preview Assets.xcassets */; };
 		FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */; };
 		FAEDCFE626A1420500A2C4A1 /* UserAbout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEDCFE526A1420500A2C4A1 /* UserAbout.swift */; };
+		FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD431426D7012700C535D2 /* CustomSlider.swift */; };
+		FAFD431926D75FA700C535D2 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD431826D75FA700C535D2 /* TestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,7 +107,6 @@
 		FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedUserService.swift; sourceTree = "<group>"; };
 		FA76E30826B34733009A650D /* IntExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtension.swift; sourceTree = "<group>"; };
 		FA777D2426CE0D86007C53F5 /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
-		FA777D2626CE1869007C53F5 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		FA777D2826CE219F007C53F5 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderHandle.swift; sourceTree = "<group>"; };
 		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
@@ -163,6 +163,8 @@
 		FAE5E6FA264092D100CC1670 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllRecentsView.swift; sourceTree = "<group>"; };
 		FAEDCFE526A1420500A2C4A1 /* UserAbout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAbout.swift; sourceTree = "<group>"; };
+		FAFD431426D7012700C535D2 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
+		FAFD431826D75FA700C535D2 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -421,7 +423,6 @@
 				FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */,
 				FA87745E2640A3F700D5D5CB /* BaseView.swift */,
 				FA8774602640A41300D5D5CB /* BaseView2.swift */,
-				FA777D2626CE1869007C53F5 /* TestView.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
 			);
 			path = ServiceViews;
@@ -515,7 +516,9 @@
 			children = (
 				FA777D2826CE219F007C53F5 /* SliderView.swift */,
 				FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */,
+				FAFD431426D7012700C535D2 /* CustomSlider.swift */,
 				FA777D2426CE0D86007C53F5 /* Slider.swift */,
+				FAFD431826D75FA700C535D2 /* TestView.swift */,
 			);
 			path = Slider;
 			sourceTree = "<group>";
@@ -673,6 +676,7 @@
 				FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */,
 				FA87741026409D8300D5D5CB /* ProfilePreview.swift in Sources */,
 				FA76E30926B34733009A650D /* IntExtension.swift in Sources */,
+				FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
 				FADC11622698129D0070465C /* UserCoreService.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,
@@ -691,7 +695,6 @@
 				FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */,
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
-				FA777D2726CE1869007C53F5 /* TestView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
 				FADC115D269797F20070465C /* Test.swift in Sources */,
@@ -704,6 +707,7 @@
 				FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
 				FAA88B1B26492696007F042D /* ShowcaseCardView.swift in Sources */,
+				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87741226409DC300D5D5CB /* ChatsView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,

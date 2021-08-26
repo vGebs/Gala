@@ -15,12 +15,22 @@ struct SliderView: View {
             ZStack{
                 RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 1)
                     .foregroundColor(.accent)
-                
-                Text("\(Int(min(slider.lowHandle.currentValue, slider.highHandle.currentValue)))y")
-                    .font(.system(size: 15, weight: .regular, design: .rounded))
-                    .foregroundColor(.primary)
+                if slider.doubleKnob {
+                    Text("\(Int(min(slider.lowHandle!.currentValue, slider.highHandle.currentValue)))y")
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .foregroundColor(.primary)
+                } else {
+                    Text("\( Int(slider.highHandle.currentValue))km")
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .foregroundColor(.primary)
+                }
             }
-            .frame(width: screenWidth * 0.09, height: screenWidth * 0.07)
+            .frame(
+                width:
+                    slider.doubleKnob ? screenWidth * 0.09 : screenWidth * 0.14,
+                height:
+                    screenWidth * 0.07
+            )
             
             Spacer()
             
@@ -32,9 +42,12 @@ struct SliderView: View {
                         //Path between both handles
                         SliderPathBetweenView(slider: slider)
                         
-                        //Low Handle
-                        SliderHandleView(handle: slider.lowHandle)
-                            .highPriorityGesture(slider.lowHandle.sliderDragGesture)
+                        if slider.doubleKnob {
+                            //Low Handle
+                            SliderHandleView(handle: slider.lowHandle!)
+                                .highPriorityGesture(slider.lowHandle!.sliderDragGesture)
+                        }
+                        
                         
                         //High Handle
                         SliderHandleView(handle: slider.highHandle)
@@ -47,12 +60,20 @@ struct SliderView: View {
             ZStack{
                 RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 1)
                     .foregroundColor(.accent)
-                
-                Text("\(Int(max(slider.highHandle.currentValue, slider.lowHandle.currentValue)))y")
-                    .font(.system(size: 15, weight: .regular, design: .rounded))
-                    .foregroundColor(.primary)
+                if slider.doubleKnob {
+                    Text("\(Int(max(slider.highHandle.currentValue, slider.lowHandle!.currentValue)))y")
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .foregroundColor(.primary)
+                }
             }
-            .frame(width: screenWidth * 0.09, height: screenWidth * 0.07)
+            .frame(
+                width:
+                    screenWidth * 0.09,
+                height:
+                    screenWidth * 0.07
+            )
+            .opacity(slider.doubleKnob ? 1 : 0)
+            
         }
         .frame(width: screenWidth * 0.95)
     }
@@ -77,7 +98,12 @@ struct SliderPathBetweenView: View {
     
     var body: some View {
         Path { path in
-            path.move(to: slider.lowHandle.currentLocation)
+            if slider.doubleKnob {
+                path.move(to: slider.lowHandle!.currentLocation)
+            } else {
+                path.move(to:CGPoint(x: (CGFloat(0.0)/1.0) * slider.highHandle.sliderWidth, y: slider.highHandle.sliderHeight / 2))
+            }
+            
             path.addLine(to: slider.highHandle.currentLocation)
         }
         .stroke(Color.buttonPrimary, lineWidth: slider.lineWidth)

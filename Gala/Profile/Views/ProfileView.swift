@@ -83,7 +83,21 @@ struct ProfileView: View {
                             Spacer()
                         }
                         .padding(.top)
-                        SliderView(slider: viewModel.slider)
+                        SliderView(slider: viewModel.doubleKnobSlider)
+                    }
+                    
+                    if viewModel.mode == .createAccount || viewModel.editPressed {
+                        HStack{
+                            Image(systemName: "car")
+                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .foregroundColor(.primary)
+                            
+                            Text("Travel Distance")
+                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                            Spacer()
+                        }
+                        .padding(.top)
+                        SliderView(slider: viewModel.singleKnobSlider)
                     }
                     
                     if (viewModel.showJob && viewModel.jobText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {
