@@ -22,6 +22,7 @@ struct UserCore: Codable {
     var sexuality: String
     var ageMinPref: Int
     var ageMaxPref: Int
+    var willingToTravel: Int
     var longitude: Double
     var latitude: Double
     
@@ -33,6 +34,7 @@ struct UserCore: Codable {
         case sexuality
         case ageMinPref
         case ageMaxPref
+        case willingToTravel
         case longitude
         case latitude
     }

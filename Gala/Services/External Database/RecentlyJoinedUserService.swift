@@ -54,6 +54,7 @@ extension RecentlyJoinedUserService {
                 "sexuality" : core.sexuality,
                 "ageMinPref" : core.ageMinPref,
                 "ageMaxPref" : core.ageMaxPref,
+                "willingToTravel" : core.willingToTravel,
                 "id" : core.uid
             ]) { err in
                 if let err = err {
@@ -87,6 +88,7 @@ extension RecentlyJoinedUserService {
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
         let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
         let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
+        let travelDistance = UserCoreService.shared.currentUserCore?.willingToTravel
         
         return Future<[UserCore]?, Error> { promise in
 
@@ -97,8 +99,8 @@ extension RecentlyJoinedUserService {
             case .straightMale:
                 //Get straight and bi women
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -125,8 +127,8 @@ extension RecentlyJoinedUserService {
             case .gayMale:
                 //Get gay men and bi men
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -150,10 +152,10 @@ extension RecentlyJoinedUserService {
             case .biMale:
                 //Get straight women, bi women, gay men, bi men.
                 Publishers.Zip4(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -183,8 +185,8 @@ extension RecentlyJoinedUserService {
             case .straightFemale:
                 //Get straight and bi men
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -208,8 +210,8 @@ extension RecentlyJoinedUserService {
             case .gayFemale:
                 //Get gay women and bi women
                 Publishers.Zip(
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -233,10 +235,10 @@ extension RecentlyJoinedUserService {
             case .biFemale:
                 //Get straight men, bi men, gay women, bi women
                 Publishers.Zip4(
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
-                    self.getRecents(forRadiusKM: 50, forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getRecents(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
                 )
                 .sink { completion in
                     switch completion {
@@ -354,8 +356,9 @@ extension RecentlyJoinedUserService {
                             let lng = documents[j].data()["longitude"] as? Double ?? 0
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
+                            let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
                             
-                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, longitude: lng, latitude: lat)
+                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, willingToTravel: willingToTravel, longitude: lng, latitude: lat)
                             if id != self.currentUID {
                                 results.append(uSimp)
                             }

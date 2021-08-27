@@ -41,10 +41,10 @@ struct AllRecentsView: View {
 struct AllRecentsView_Previews: PreviewProvider {
     static var previews: some View {
         AllRecentsView(allNewUsers: .constant([
-            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, longitude: 44, latitude: 44),
-            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, longitude: 44, latitude: 44),
-            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, longitude: 44, latitude: 44),
-            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
+            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
         ]))
     }
 }

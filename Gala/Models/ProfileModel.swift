@@ -22,6 +22,7 @@ struct ProfileModel: Codable, Identifiable {
     var sexuality: String
     var ageMinPref: Int
     var ageMaxPref: Int
+    var willingToTravel: Int
     var job: String?
     var school: String?
     //var images: [ImageModel]?
@@ -40,6 +41,7 @@ struct ProfileModel: Codable, Identifiable {
         case sexuality
         case ageMinPref
         case ageMaxPref
+        case willingToTravel
         case job
         case school
     }

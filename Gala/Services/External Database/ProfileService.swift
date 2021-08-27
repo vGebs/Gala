@@ -95,6 +95,7 @@ extension ProfileService {
             sexuality: profile.sexuality,
             ageMinPref: profile.ageMinPref,
             ageMaxPref: profile.ageMaxPref,
+            willingToTravel: profile.willingToTravel,
             longitude: profile.longitude,
             latitude: profile.latitude
         )
@@ -142,6 +143,7 @@ extension ProfileService {
             sexuality: profile.sexuality,
             ageMinPref: profile.ageMinPref,
             ageMaxPref: profile.ageMaxPref,
+            willingToTravel: profile.willingToTravel,
             longitude: profile.longitude,
             latitude: profile.latitude
         )

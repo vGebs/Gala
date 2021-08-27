@@ -42,8 +42,8 @@ final class ProfileViewModel: ObservableObject {
     @Published var schoolHeader = "Where have you studied?"
     private(set) var submitButtonText = "Submit!"
     
-    @ObservedObject var doubleKnobSlider = CustomSlider(start: 18, end: 99, doubleKnob: true)
-    @ObservedObject var singleKnobSlider = CustomSlider(start: 1, end: 250, doubleKnob: false)
+    @Published var doubleKnobSlider = CustomSlider(start: 18, end: 99, doubleKnob: true)
+    @Published var singleKnobSlider = CustomSlider(start: 1, end: 250, doubleKnob: false)
     
     private(set) var maxBioCharCount = 150
     
@@ -412,6 +412,7 @@ extension ProfileViewModel {
             sexuality: selectSexualityDropDownText.rawValue,
             ageMinPref: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
             ageMaxPref: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
+            willingToTravel: Int(singleKnobSlider.highHandle.currentValue),
             job: job,
             school: school
         )
