@@ -25,17 +25,21 @@ class UserAboutService: UserAboutServiceProtocol {
 
     func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            self.db.collection("UserAbout").document(self.currentUID!).setData([
-                "bio" : profile.bio!,
-                "job" : profile.job!,
-                "school" : profile.school!
-            ]) { err in
-                if let err = err {
-                    print("UserAboutService: Error writing document: \(err)")
-                    promise(.failure(err))
-                } else {
-                    print("UserAboutService: Document successfully written!")
-                    promise(.success(()))
+            if profile.bio == "" && profile.job == "" && profile.school == "" {
+                promise(.success(()))
+            } else {
+                self.db.collection("UserAbout").document(self.currentUID!).setData([
+                    "bio" : profile.bio!,
+                    "job" : profile.job!,
+                    "school" : profile.school!
+                ]) { err in
+                    if let err = err {
+                        print("UserAboutService: Error writing document: \(err)")
+                        promise(.failure(err))
+                    } else {
+                        print("UserAboutService: Document successfully written!")
+                        promise(.success(()))
+                    }
                 }
             }
         }
