@@ -152,4 +152,15 @@ extension LocationService {
             }
         }.eraseToAnyPublisher()
     }
+    
+    func getTravelDistance(to: CLLocation) -> Int {
+        let lon = (UserCoreService.shared.currentUserCore?.longitude)!
+        let lat = (UserCoreService.shared.currentUserCore?.latitude)!
+        
+        let myLocation = CLLocation(latitude: lat, longitude: lon)
+        
+        let distance = myLocation.distance(from: to) / 1000
+        
+        return Int(distance)
+    }
 }

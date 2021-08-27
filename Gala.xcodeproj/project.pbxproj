@@ -85,6 +85,7 @@
 		FAEDCFE626A1420500A2C4A1 /* UserAbout.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEDCFE526A1420500A2C4A1 /* UserAbout.swift */; };
 		FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD431426D7012700C535D2 /* CustomSlider.swift */; };
 		FAFD431926D75FA700C535D2 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD431826D75FA700C535D2 /* TestView.swift */; };
+		FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -165,6 +166,7 @@
 		FAEDCFE526A1420500A2C4A1 /* UserAbout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAbout.swift; sourceTree = "<group>"; };
 		FAFD431426D7012700C535D2 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		FAFD431826D75FA700C535D2 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
+		FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDistance.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,6 +439,7 @@
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FADC115C269797F20070465C /* Test.swift */,
+				FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -701,6 +704,7 @@
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
+				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,

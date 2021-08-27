@@ -345,18 +345,25 @@ extension RecentlyJoinedUserService {
                         let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
                         let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
                         
+                        let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
+                        let lat = documents[j].data()["latitude"] as? Double ?? 0
+                        let lng = documents[j].data()["longitude"] as? Double ?? 0
+                        
                         if date <= ageMinString &&
                             date >= ageMaxString &&
-                            ((ageMinPref - 1) <= myAge! &&
-                            (ageMaxPref + 1) >= myAge!) || ageMaxPref == myAge! || ageMaxPref == myAge!
+                            (((ageMinPref - 1) <= myAge! &&
+                            (ageMaxPref + 1) >= myAge!) ||
+                                ageMaxPref == myAge! ||
+                                ageMaxPref == myAge!) // Willing = 7, distance = 4
+                            && willingToTravel >= LocationService.shared.getTravelDistance(to: CLLocation(latitude: lat, longitude: lng))
                         {
                             let gender = documents[j].data()["gender"] as? String ?? ""
                             let id = documents[j].data()["id"] as? String ?? ""
-                            let lat = documents[j].data()["latitude"] as? Double ?? 0
-                            let lng = documents[j].data()["longitude"] as? Double ?? 0
+//                            let lat = documents[j].data()["latitude"] as? Double ?? 0
+//                            let lng = documents[j].data()["longitude"] as? Double ?? 0
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
-                            let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
+//                            let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
                             
                             let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, willingToTravel: willingToTravel, longitude: lng, latitude: lat)
                             if id != self.currentUID {
