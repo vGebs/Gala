@@ -6,44 +6,25 @@
 //
 
 import SwiftUI
-import PageView
+
+var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]
 
 struct Test: View {
-    @State var currentPage = 1
+    @State var offset: CGFloat = 0
+    
     var body: some View {
-//        TabView {
-//            Text("First")
-//            Text("Second")
-//            Text("Third")
-//            Text("Fourth")
-//        }
-//        .tabViewStyle(PageTabViewStyle())
-//        .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
-        ZStack {
-            PageView(pageCount: 3, currentIndex: $currentPage) {
-                ZStack {
-                    Color.red
-                    Text("1")
-                }
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: screenWidth, height: screenHeight)
+        
+        GeometryReader { proxy in
+            let rect = proxy.frame(in: .global)
+            
+            ScrollableTabBar(tabs: tabs, rect: rect, offset: $offset) {
                 
-                ZStack {
-                    Color.blue
-                    Text("2")
-                }
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: screenWidth, height: screenHeight)
-                
-                ZStack {
-                    Color.yellow
-                    Text("3")
-                }
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: screenWidth, height: screenHeight)
+//                HStack(spacing: 0){
+//                    ProfileMainView(viewModel: <#T##ProfileViewModel#>)
+//                }
             }
-            .hideIndicator(true)
-        }.edgesIgnoringSafeArea(.all)
+        }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 
