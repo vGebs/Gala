@@ -26,11 +26,10 @@
 		FA777D2526CE0D86007C53F5 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2426CE0D86007C53F5 /* Slider.swift */; };
 		FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2826CE219F007C53F5 /* SliderView.swift */; };
 		FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */; };
+		FA7E3B1E26DEB64700A6653C /* ChatsView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */; };
 		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
-		FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E12640972300D5D5CB /* ElegantPages */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
 		FA8773E8264097C300D5D5CB /* iTextField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E7264097C300D5D5CB /* iTextField */; };
-		FA8773EB2640992F00D5D5CB /* Pages in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773EA2640992F00D5D5CB /* Pages */; };
 		FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773EF26409A4500D5D5CB /* NavBar.swift */; };
 		FA8773F926409AD400D5D5CB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773F826409AD400D5D5CB /* ProfileView.swift */; };
 		FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8773FF26409C0600D5D5CB /* LandingPageViewModel.swift */; };
@@ -64,7 +63,6 @@
 		FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745E2640A3F700D5D5CB /* BaseView.swift */; };
 		FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774602640A41300D5D5CB /* BaseView2.swift */; };
 		FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA98385F2686834200A76AD5 /* ExploreMainView.swift */; };
-		FAA88B1B26492696007F042D /* ShowcaseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1A26492696007F042D /* ShowcaseCardView.swift */; };
 		FAA88B1D26492928007F042D /* SwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1C26492928007F042D /* SwipeView.swift */; };
 		FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1E26492960007F042D /* SwipeViewModel.swift */; };
 		FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */; };
@@ -74,7 +72,6 @@
 		FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */; };
 		FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADC115A269790B00070465C /* GoogleService-Info.plist */; };
 		FADC115D269797F20070465C /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC115C269797F20070465C /* Test.swift */; };
-		FADC116026979F770070465C /* PageView in Frameworks */ = {isa = PBXBuildFile; productRef = FADC115F26979F770070465C /* PageView */; };
 		FADC11622698129D0070465C /* UserCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* UserCoreService.swift */; };
 		FADC1164269813EC0070465C /* UserCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserCore.swift */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
@@ -111,6 +108,7 @@
 		FA777D2426CE0D86007C53F5 /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		FA777D2826CE219F007C53F5 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderHandle.swift; sourceTree = "<group>"; };
+		FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView2.swift; sourceTree = "<group>"; };
 		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -145,7 +143,6 @@
 		FA87745E2640A3F700D5D5CB /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		FA8774602640A41300D5D5CB /* BaseView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView2.swift; sourceTree = "<group>"; };
 		FA98385F2686834200A76AD5 /* ExploreMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreMainView.swift; sourceTree = "<group>"; };
-		FAA88B1A26492696007F042D /* ShowcaseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseCardView.swift; sourceTree = "<group>"; };
 		FAA88B1C26492928007F042D /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		FAA88B1E26492960007F042D /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
@@ -176,11 +173,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA8773EB2640992F00D5D5CB /* Pages in Frameworks */,
 				FA8773E8264097C300D5D5CB /* iTextField in Frameworks */,
-				FA8773E22640972300D5D5CB /* ElegantPages in Frameworks */,
 				FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */,
-				FADC116026979F770070465C /* PageView in Frameworks */,
 				DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,7 +270,6 @@
 			isa = PBXGroup;
 			children = (
 				FA8774332640A03100D5D5CB /* ShowcaseView.swift */,
-				FAA88B1A26492696007F042D /* ShowcaseCardView.swift */,
 				FAA88B1C26492928007F042D /* SwipeView.swift */,
 				FAA88B1E26492960007F042D /* SwipeViewModel.swift */,
 			);
@@ -341,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				FA87741126409DC300D5D5CB /* ChatsView.swift */,
+				FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */,
 				FA87741726409E0700D5D5CB /* ConvoPreview.swift */,
 			);
 			path = Views;
@@ -548,11 +542,8 @@
 			);
 			name = Gala;
 			packageProductDependencies = (
-				FA8773E12640972300D5D5CB /* ElegantPages */,
 				FA8773E42640979E00D5D5CB /* iPhoneNumberField */,
 				FA8773E7264097C300D5D5CB /* iTextField */,
-				FA8773EA2640992F00D5D5CB /* Pages */,
-				FADC115F26979F770070465C /* PageView */,
 			);
 			productName = Gala_Final;
 			productReference = FAE5E6EE264092D000CC1670 /* Gala.app */;
@@ -582,11 +573,8 @@
 			);
 			mainGroup = FAE5E6E5264092D000CC1670;
 			packageReferences = (
-				FA8773E02640972300D5D5CB /* XCRemoteSwiftPackageReference "ElegantPages" */,
 				FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
 				FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */,
-				FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */,
-				FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */,
 			);
 			productRefGroup = FAE5E6EF264092D000CC1670 /* Products */;
 			projectDirPath = "";
@@ -676,6 +664,7 @@
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
 				FAA88B1D26492928007F042D /* SwipeView.swift in Sources */,
+				FA7E3B1E26DEB64700A6653C /* ChatsView2.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
 				FA0FCA3E2684048000434561 /* StoriesView.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
@@ -714,7 +703,6 @@
 				FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */,
 				FAFD434526DADBCF00C535D2 /* Pager.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
-				FAA88B1B26492696007F042D /* ShowcaseCardView.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87741226409DC300D5D5CB /* ChatsView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
@@ -920,14 +908,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		FA8773E02640972300D5D5CB /* XCRemoteSwiftPackageReference "ElegantPages" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ThasianX/ElegantPages";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.2;
-			};
-		};
 		FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MojtabaHs/iPhoneNumberField.git";
@@ -944,30 +924,9 @@
 				minimumVersion = 0.0.8;
 			};
 		};
-		FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nachonavarro/Pages";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.5;
-			};
-		};
-		FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Connapptivity/SwiftUI-PageView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		FA8773E12640972300D5D5CB /* ElegantPages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA8773E02640972300D5D5CB /* XCRemoteSwiftPackageReference "ElegantPages" */;
-			productName = ElegantPages;
-		};
 		FA8773E42640979E00D5D5CB /* iPhoneNumberField */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */;
@@ -977,16 +936,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */;
 			productName = iTextField;
-		};
-		FA8773EA2640992F00D5D5CB /* Pages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FA8773E92640992F00D5D5CB /* XCRemoteSwiftPackageReference "Pages" */;
-			productName = Pages;
-		};
-		FADC115F26979F770070465C /* PageView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FADC115E26979F770070465C /* XCRemoteSwiftPackageReference "SwiftUI-PageView" */;
-			productName = PageView;
 		};
 /* End XCSwiftPackageProductDependency section */
 

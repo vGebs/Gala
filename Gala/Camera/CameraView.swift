@@ -23,9 +23,9 @@ struct CameraView: View {
                 }
                 .shadow(radius: 15)
             
-            DraggableCameraButton(camera: camera)
-                //.offset(y: -30)
-                .opacity(!camera.picTaken ? 1 : 0)
+//            DraggableCameraButton(camera: camera)
+//                //.offset(y: -30)
+//                .opacity(!camera.picTaken ? 1 : 0)
             
             PicTakenView(camera: camera)
                 .opacity(camera.picTaken ? 1 : 0)

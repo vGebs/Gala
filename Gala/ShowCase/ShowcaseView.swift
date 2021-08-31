@@ -8,47 +8,87 @@
 import SwiftUI
 
 struct ShowcaseView: View {
+    var optionButtonLeft: String = "shuffle"
+    var pageName: String = "Showcase"
+    var optionButtonRight: String = "square.stack"
+    
+    //@ObservedObject var viewModel: ProfileViewModel
+
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
     var body: some View {
         VStack {
             ZStack{
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.green)
-                    .offset(y: -10)
-                
+                Color.black.edgesIgnoringSafeArea(.all)
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundColor(.white)
+                        .foregroundColor(isDarkMode ? .black : .white)
                         .frame(width: screenWidth, height: screenHeight * 0.81)
                         .shadow(radius: 10)
                 }
-                Text("Coming Soon")
-                    .font(.system(size: 35, weight: .bold, design: .rounded))
-                    .foregroundColor(.green)
+                
+                VStack {
+                    Spacer()
+                    ScrollView(showsIndicators: false) {
+                        //ProfileView(viewModel: viewModel)
+                    }
+                    .frame(width: screenWidth, height: screenHeight * 0.81)
+                    .cornerRadius(20)
+                }
+                
                 VStack {
                     HStack {
                         Button(action: { }) {
-                            ProfilePreview()
-//                            Image(systemName: "line.horizontal.3.decrease")
-//                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                                .foregroundColor(.white)
+                            Image(systemName: optionButtonLeft)
+                                .font(.system(size: 20, weight: .regular, design: .rounded))
+                                .foregroundColor(.buttonPrimary)
                         }
                         
                         Spacer()
                         
-                        Text("Showcase")
+                        Text(pageName)
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
 
                         Spacer()
                         
-                        Button(action: { }) {
-                            Image(systemName: "line.horizontal.3.decrease")
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
+                        Menu {
+                            Button(action: { //AppState.shared.toggleDarkMode()
+                            }){
+                                HStack{
+                                    Image(systemName: "calendar")
+                                    Text("Sort by age")
+                                }
+                            }
+                            
+                            Button(action: {
+                                
+                            }){
+                                HStack{
+                                    Image(systemName: "mappin.and.ellipse")
+                                    Text("Sort by distance")
+                                }
+                            }
+                            
+                            Button(action: {
+                                
+                            }){
+                                HStack{
+                                    Image(systemName: "clock")
+                                    Text("Sort by most recent")
+                                }
+                            }
+                        } label: {
+                            Label("", systemImage: optionButtonRight)
+                                .foregroundColor(.buttonPrimary)
+                                .font(.system(size: 20, weight: .regular, design: .rounded))
+
                         }
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                     }
                     .padding()
+                    
                     Spacer()
                 }
                 .padding(.top, screenHeight * 0.0385)
@@ -57,6 +97,7 @@ struct ShowcaseView: View {
             .edgesIgnoringSafeArea(.all)
             Spacer()
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 

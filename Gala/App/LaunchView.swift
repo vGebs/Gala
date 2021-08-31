@@ -14,12 +14,13 @@ struct LaunchView: View {
     @StateObject var viewModel = AppState.shared
 
     @AppStorage("isDarkMode") private var isDarkMode = true
+    @State var offset: CGFloat = screenWidth * 2
     
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
             if viewModel.allowAccess {
-                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!)
+                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!, offset: $offset)
 
             } else if viewModel.createAccountPressed {
                 ProfileView(viewModel: viewModel.createProfileVM!)

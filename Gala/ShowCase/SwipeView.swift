@@ -5,14 +5,17 @@
 //  Created by Vaughn on 2021-05-10.
 //
 
-import Foundation
 import SwiftUI
 
 struct SwipeView: View {
     
     var body: some View {
         ZStack{
-            ShowcaseCardView()
+            //ShowcaseCardView()
+            
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: screenWidth * 0.85, height: screenHeight * 0.6)
+                .foregroundColor(.accent)
         }
     }
 }

@@ -252,7 +252,7 @@ struct SigninSignupView: View {
             }){
                 ZStack{
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(lineWidth: 3.5)
+                        .stroke(lineWidth: 2.5)
                         .foregroundColor(Color.buttonPrimary)
                     
                     HStack {

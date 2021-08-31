@@ -81,6 +81,7 @@ extension RecentlyJoinedUserService {
         case straightFemale
         case gayFemale
         case biFemale
+        
     }
     
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {

@@ -14,13 +14,10 @@ struct ContentView: View {
     @ObservedObject var profile: ProfileViewModel
     @ObservedObject var explore: ExploreViewModel
     
-    @State var currentPage = 2
-    @State var manager = ElegantPagesManager(startingPage: 2, pageTurnType: .regularDefault)
-    
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") private var isDarkMode = true
 
-    @State var offset: CGFloat = screenWidth * 2
+    @Binding var offset: CGFloat
     
     var body: some View {
         ZStack {
@@ -32,7 +29,7 @@ struct ContentView: View {
                     
                     HStack(spacing: 0){
                         ProfileMainView(viewModel: profile)
-                        BaseView()//ChatsView()
+                        ChatsView2()
                         CameraView(camera: camera)
                         ExploreMainView(viewModel: explore)
                         ShowcaseView()
@@ -40,33 +37,18 @@ struct ContentView: View {
                 }
             }
             .edgesIgnoringSafeArea(.all)
-            .overlay(
-                NavBar(pageSelection: $currentPage, elegantPageSelection: $manager.currentPage)
+//            .overlay(
+//                NavBar(offset: $offset)
+//                    .opacity(camera.picTaken ? 0 : 1)
+//                    .padding(.bottom, screenHeight * 0.03),
+//                alignment: .bottom
+//            )
+            VStack{
+                Spacer()
+                NavBar(offset: $offset)
                     .opacity(camera.picTaken ? 0 : 1)
-                    .padding(.bottom, screenHeight * 0.03),
-                alignment: .bottom
-            )
-            
-//            ElegantHPages(manager: manager){
-//                //ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: "23", mode: .profileStandard))
-//                ProfileMainView(viewModel: profile)
-//                BaseView()//ChatsView()
-//                CameraView(camera: camera)
-//                ExploreMainView(viewModel: explore)
-//                ShowcaseView()
-//            }
-//            .onPageChanged{ page in
-//                currentPage = page
-//                if currentPage == 2 {
-//                    camera.onCameraScreen = true
-//                } else {
-//                    camera.onCameraScreen = false
-//                }
-//            }
-            
-//            NavBar(pageSelection: $currentPage, elegantPageSelection: $manager.currentPage)
-//                .offset(y: screenHeight * 0.44)
-//                .opacity(camera.picTaken ? 0 : 1)
+                    .padding(.bottom, screenHeight * 0.03)
+            }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .navigationBarHidden(true)
