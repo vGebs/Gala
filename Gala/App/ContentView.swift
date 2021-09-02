@@ -29,7 +29,7 @@ struct ContentView: View {
                     
                     HStack(spacing: 0){
                         ProfileMainView(viewModel: profile)
-                        ChatsView2()
+                        ChatsView()
                         CameraView(camera: camera)
                         ExploreMainView(viewModel: explore)
                         ShowcaseView()
@@ -37,18 +37,18 @@ struct ContentView: View {
                 }
             }
             .edgesIgnoringSafeArea(.all)
-//            .overlay(
-//                NavBar(offset: $offset)
-//                    .opacity(camera.picTaken ? 0 : 1)
-//                    .padding(.bottom, screenHeight * 0.03),
-//                alignment: .bottom
-//            )
-            VStack{
-                Spacer()
+            .overlay(
                 NavBar(offset: $offset)
                     .opacity(camera.picTaken ? 0 : 1)
-                    .padding(.bottom, screenHeight * 0.03)
-            }
+                    .padding(.bottom, screenHeight * 0.03),
+                alignment: .bottom
+            )
+//            VStack{
+//                Spacer()
+//                NavBar(offset: $offset)
+//                    .opacity(camera.picTaken ? 0 : 1)
+//                    .padding(.bottom, screenHeight * 0.03)
+//            }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .navigationBarHidden(true)

@@ -1,85 +1,82 @@
 //
-//  ChatsView.swift
-//  Gala_Final
+//  ChatsView2.swift
+//  Gala
 //
-//  Created by Vaughn on 2021-05-03.
+//  Created by Vaughn on 2021-08-31.
 //
 
 import SwiftUI
 
 struct ChatsView: View {
-    @State private var chatsToggle = true
+    var optionButtonLeft: String = "magnifyingglass"
+    var pageName: String = "Chats"
+    var optionButtonRight: String = "square.and.pencil"
+    
+    //@ObservedObject var viewModel: ProfileViewModel
 
+    @AppStorage("isDarkMode") private var isDarkMode = true
+    
     var body: some View {
         VStack {
             ZStack{
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(Color(#colorLiteral(red: 1, green: 0.6, blue: 0.6, alpha: 1)))
-                    .offset(y: -10)
-                
+                Color.black.edgesIgnoringSafeArea(.all)
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundColor(.white)
+                        .foregroundColor(isDarkMode ? .black : .white)
                         .frame(width: screenWidth, height: screenHeight * 0.81)
                         .shadow(radius: 10)
                 }
                 
-                VStack{
+                VStack {
                     Spacer()
-                    ScrollView(showsIndicators: false){
-                        ForEach(arr.indices) { i in
-                            if i == 0 {
-                                arr[i]
-                                    .padding(.top, 5)
-                            } else if i == arr.count - 1 {
-                                arr[i]
-                                    .padding(.bottom, 10)
-                            } else {
-                                arr[i]
-                            }
-                        }
+                    ScrollView(showsIndicators: false) {
+                        //ProfileView(viewModel: viewModel)
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)
                 }
                 
                 VStack {
-                    HStack{
+                    HStack {
                         Button(action: { }) {
-                            ProfilePreview()
-//                            Image(systemName: "magnifyingglass")
-//                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                                .foregroundColor(.white)
+                            Image(systemName: optionButtonLeft)
+                                .font(.system(size: 20, weight: .regular, design: .rounded))
+                                .foregroundColor(.buttonPrimary)
                         }
+                        
                         Spacer()
-                        Text("Chats")
-                            .font(.system(size: chatsToggle ? 20 : 12, weight: chatsToggle ? .semibold : .medium, design: .rounded))
-                            .foregroundColor(chatsToggle ? .white: .white)
-                            .onTapGesture {
-                                chatsToggle = true
+                        
+                        Text(pageName)
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                            .foregroundColor(.primary)
+
+                        Spacer()
+                        
+                        Menu {
+                            Button(action: { //AppState.shared.toggleDarkMode()
+                            }){
+                                HStack{
+                                    Image(systemName: "person.fill.xmark")
+                                    Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
+                                }
                             }
-                        Image(systemName: "decrease.quotelevel")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .opacity(chatsToggle ? 1 : 0)
-                        Spacer()
-                        Text("New Matches")
-                            .font(.system(size: !chatsToggle ? 20 : 12, weight: !chatsToggle ? .semibold : .medium, design: .rounded))
-                            .foregroundColor(.white)
-                            .onTapGesture {
-                                chatsToggle = false
+                            
+                            Button(action: {
+                                
+                            }){
+                                HStack{
+                                    Image(systemName: "person.fill.xmark")
+                                    Text("Log out")
+                                }
                             }
-                        Image(systemName: "decrease.quotelevel")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .opacity(!chatsToggle ? 1 : 0)
-                        Spacer()
-                        Button(action: { }) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
+                        } label: {
+                            Label("", systemImage: optionButtonRight)
+                                .foregroundColor(.buttonPrimary)
+                                .font(.system(size: 20, weight: .regular, design: .rounded))
+
                         }
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                     }
                     .padding()
                     
@@ -91,31 +88,12 @@ struct ChatsView: View {
             .edgesIgnoringSafeArea(.all)
             Spacer()
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
-struct ChatsView_Previews: PreviewProvider {
+struct ChatsView2_Previews: PreviewProvider {
     static var previews: some View {
         ChatsView()
     }
 }
-
-var arr = [
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView(),
-    ConvoPreviewView()
-]

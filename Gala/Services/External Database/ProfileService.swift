@@ -14,8 +14,8 @@ import FirebaseFirestoreSwift
 
 protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
-    func getCurrentUserProfile() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
-    func getUserProfile(uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error>
+    func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
+    //func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
 
@@ -46,11 +46,7 @@ class ProfileService: ProfileServiceProtocol {
         return createProfile_(profile, allImages: allImages)
     }
     
-    func getCurrentUserProfile() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
-        return getCurrentUserProfile_()
-    }
-    
-    func getUserProfile(uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error> {
+    func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
         return getUserProfile_(uid)
     }
     
@@ -170,21 +166,21 @@ extension ProfileService {
 }
 
 
-//MARK: - getCurrentUserProfile()
+//MARK: - getUserProfile()
 extension ProfileService {
-    private func getCurrentUserProfile_() -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
+    private func getUserProfile_(_ uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
         
         return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
             Publishers.Zip3(
-                self.coreService.getUserCore(uid: self.currentUID!),
-                self.aboutService.getCurrentUserAbout(),
-                self.getCurrentUserImages()
+                self.coreService.getUserCore(uid: uid),
+                self.aboutService.getUserAbout(uid: uid),
+                self.getUserImages(uid: uid)
             ).sink { completion in
                 switch completion {
                 case .failure(let error):
-                    print("ProfileService: getCurrentUserProfile_() failed: \(error.localizedDescription)")
+                    print("ProfileService: getUserProfile_() failed: \(error.localizedDescription)")
                 case .finished:
-                    print("ProfileService-getCurrentUserProfile_(): got Current user profile")
+                    print("ProfileService-getUserProfile_(): got user profile")
                 }
             } receiveValue: { core, about, imgs in
                 promise(.success((core, about, imgs)))
@@ -193,21 +189,13 @@ extension ProfileService {
         }.eraseToAnyPublisher()
     }
     
-    private func getCurrentUserCore() -> AnyPublisher<UserCore?, Error> {
-        return coreService.getUserCore(uid: currentUID!)
-    }
-    
-    private func getCurrentUserAbout() -> AnyPublisher<UserAbout?, Error> {
-        return aboutService.getCurrentUserAbout()
-    }
-    
-    private func getCurrentUserImages() -> AnyPublisher<[ImageModel]?, Error> {
+    private func getUserImages(uid: String) -> AnyPublisher<[ImageModel]?, Error> {
         return Future<[ImageModel]?, Error> { promise in
             var profileImgs: [ImageModel]? = nil
             var imgsRecieved = 0
             var imgsNotFound = 0
             for i in 0..<7 {
-                ProfileImageService.shared.getProfileImage(id: self.currentUID!, index: String(i))
+                ProfileImageService.shared.getProfileImage(id: uid, index: String(i))
                     .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                     .sink { completion in
                         switch completion{
@@ -246,14 +234,6 @@ extension ProfileService {
                     }
                     .store(in: &self.cancellables)
             }
-        }.eraseToAnyPublisher()
-    }
-}
-
-extension ProfileService {
-    private func getUserProfile_(_ uid: String) -> AnyPublisher<(ProfileModel?, [ImageModel]?), Error> {
-        return Future<(ProfileModel?, [ImageModel]?), Error> { promise in
-            
         }.eraseToAnyPublisher()
     }
 }

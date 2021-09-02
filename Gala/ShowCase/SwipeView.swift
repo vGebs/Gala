@@ -9,13 +9,25 @@ import SwiftUI
 
 struct SwipeView: View {
     
+    @State private var offset: CGSize = .zero
+    
     var body: some View {
         ZStack{
             //ShowcaseCardView()
-            
             RoundedRectangle(cornerRadius: 10)
+                //.stroke(lineWidth: 2)
                 .frame(width: screenWidth * 0.85, height: screenHeight * 0.6)
                 .foregroundColor(.accent)
+                .offset(offset)
+                .gesture(
+                    DragGesture()
+                        .onChanged{ value in
+                            self.offset = value.translation
+                        }
+                        .onEnded{ value in
+                            self.offset = .zero
+                        }
+                )
         }
     }
 }

@@ -12,7 +12,7 @@ import FirebaseFirestoreSwift
 
 protocol UserAboutServiceProtocol {
     func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>
-    func getCurrentUserAbout() -> AnyPublisher<UserAbout?, Error>
+    func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error>
 }
 
 class UserAboutService: UserAboutServiceProtocol {
@@ -46,9 +46,9 @@ class UserAboutService: UserAboutServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func getCurrentUserAbout() -> AnyPublisher<UserAbout?, Error> {
+    func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error> {
         Future<UserAbout?, Error> { promise in
-            let docRef = self.db.collection("UserAbout").document(self.currentUID!)
+            let docRef = self.db.collection("UserAbout").document(uid)
             
             docRef.getDocument { (document, error) in
                 let result = Result {

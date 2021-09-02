@@ -26,7 +26,8 @@
 		FA777D2526CE0D86007C53F5 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2426CE0D86007C53F5 /* Slider.swift */; };
 		FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2826CE219F007C53F5 /* SliderView.swift */; };
 		FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */; };
-		FA7E3B1E26DEB64700A6653C /* ChatsView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */; };
+		FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B1D26DEB64700A6653C /* ChatsView.swift */; };
+		FA7E3B2026DECAAE00A6653C /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B1F26DECAAE00A6653C /* CardView.swift */; };
 		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
 		FA8773E8264097C300D5D5CB /* iTextField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E7264097C300D5D5CB /* iTextField */; };
@@ -38,7 +39,6 @@
 		FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87740526409CAE00D5D5CB /* ProfileViewModel.swift */; };
 		FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87740D26409D6000D5D5CB /* ProfileMainView.swift */; };
 		FA87741026409D8300D5D5CB /* ProfilePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87740F26409D8300D5D5CB /* ProfilePreview.swift */; };
-		FA87741226409DC300D5D5CB /* ChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741126409DC300D5D5CB /* ChatsView.swift */; };
 		FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741526409DE900D5D5CB /* ChatsViewModel.swift */; };
 		FA87741826409E0700D5D5CB /* ConvoPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741726409E0700D5D5CB /* ConvoPreview.swift */; };
 		FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741926409E3A00D5D5CB /* CameraPreview.swift */; };
@@ -108,7 +108,8 @@
 		FA777D2426CE0D86007C53F5 /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		FA777D2826CE219F007C53F5 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		FA777D2A26CE21F3007C53F5 /* SliderHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderHandle.swift; sourceTree = "<group>"; };
-		FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView2.swift; sourceTree = "<group>"; };
+		FA7E3B1D26DEB64700A6653C /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
+		FA7E3B1F26DECAAE00A6653C /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
 		FA8773F826409AD400D5D5CB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -118,7 +119,6 @@
 		FA87740526409CAE00D5D5CB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		FA87740D26409D6000D5D5CB /* ProfileMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileMainView.swift; sourceTree = "<group>"; };
 		FA87740F26409D8300D5D5CB /* ProfilePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePreview.swift; sourceTree = "<group>"; };
-		FA87741126409DC300D5D5CB /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
 		FA87741526409DE900D5D5CB /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
 		FA87741726409E0700D5D5CB /* ConvoPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPreview.swift; sourceTree = "<group>"; };
 		FA87741926409E3A00D5D5CB /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
@@ -272,6 +272,7 @@
 				FA8774332640A03100D5D5CB /* ShowcaseView.swift */,
 				FAA88B1C26492928007F042D /* SwipeView.swift */,
 				FAA88B1E26492960007F042D /* SwipeViewModel.swift */,
+				FA7E3B1F26DECAAE00A6653C /* CardView.swift */,
 			);
 			path = ShowCase;
 			sourceTree = "<group>";
@@ -333,8 +334,7 @@
 		FA87741426409DD900D5D5CB /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FA87741126409DC300D5D5CB /* ChatsView.swift */,
-				FA7E3B1D26DEB64700A6653C /* ChatsView2.swift */,
+				FA7E3B1D26DEB64700A6653C /* ChatsView.swift */,
 				FA87741726409E0700D5D5CB /* ConvoPreview.swift */,
 			);
 			path = Views;
@@ -664,7 +664,7 @@
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
 				FAA88B1D26492928007F042D /* SwipeView.swift in Sources */,
-				FA7E3B1E26DEB64700A6653C /* ChatsView2.swift in Sources */,
+				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
 				FA0FCA3E2684048000434561 /* StoriesView.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
@@ -691,6 +691,7 @@
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
+				FA7E3B2026DECAAE00A6653C /* CardView.swift in Sources */,
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
 				FADC115D269797F20070465C /* Test.swift in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
@@ -704,7 +705,6 @@
 				FAFD434526DADBCF00C535D2 /* Pager.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
-				FA87741226409DC300D5D5CB /* ChatsView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,
 				FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */,

@@ -27,15 +27,15 @@ struct ShowcaseView: View {
                         .frame(width: screenWidth, height: screenHeight * 0.81)
                         .shadow(radius: 10)
                 }
-                
-                VStack {
+                VStack{
                     Spacer()
-                    ScrollView(showsIndicators: false) {
-                        //ProfileView(viewModel: viewModel)
+                    VStack {
+                        SwipeView()
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)
                 }
+                
                 
                 VStack {
                     HStack {

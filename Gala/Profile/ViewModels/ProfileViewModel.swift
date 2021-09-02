@@ -527,7 +527,7 @@ extension ProfileViewModel {
     
     private func readProfileFromFirebase(uid: String) {
         
-        ProfileService.shared.getCurrentUserProfile()
+        ProfileService.shared.getUserProfile(uid: (UserCoreService.shared.currentUserCore?.uid)!)
             .sink { completion in
                 switch completion {
                 case let .failure(error):

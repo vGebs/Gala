@@ -146,6 +146,8 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
+            //CardView()
+            //SwipeView()
             //TestView()
             //TestDistance()
             //ExploreMainView(viewModel: ExploreViewModel())
