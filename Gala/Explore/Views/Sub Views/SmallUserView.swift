@@ -12,6 +12,7 @@ struct SmallUserView: View {
     @StateObject var viewModel: SmallUserViewModel
     var matched = false
     @State var pressed = false
+    
     var body: some View {
         HStack{
             ZStack {
@@ -87,8 +88,16 @@ struct SmallUserView: View {
                             .font(.system(size: 15, weight: .medium, design: .rounded))
                             .foregroundColor(.buttonPrimary)
                     } else {
-                        Button(action: { self.pressed.toggle() }){
-                            Image(systemName: self.pressed ? "hourglass.badge.plus" : "plus.app")
+                        Button(action: {
+                            if self.pressed == false {
+                                self.viewModel.likeUser()
+                                self.pressed.toggle()
+                            } else {
+                                self.viewModel.unLikeUser()
+                                self.pressed.toggle()
+                            }
+                        }){
+                            Image(systemName: self.pressed ? "checkmark" : "plus.app")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
                         } 

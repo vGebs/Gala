@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ChatsView: View {
     var optionButtonLeft: String = "magnifyingglass"
@@ -14,6 +15,10 @@ struct ChatsView: View {
     
     //@ObservedObject var viewModel: ProfileViewModel
 
+    private var cancellables: [AnyCancellable] = []
+    
+    @StateObject var viewModel = ChatsViewModel()
+    
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     var body: some View {
@@ -32,6 +37,11 @@ struct ChatsView: View {
                     Spacer()
                     ScrollView(showsIndicators: false) {
                         //ProfileView(viewModel: viewModel)
+                        Button(action: {
+                            self.viewModel.doo()
+                        }){
+                            Text("GetMyLikes")
+                        }
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

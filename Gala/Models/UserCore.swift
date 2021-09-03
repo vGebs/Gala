@@ -39,3 +39,8 @@ struct UserCore: Codable {
         case latitude
     }
 }
+
+struct InComingUserCore {
+    var userCore: UserCore
+    var liked: Bool
+}

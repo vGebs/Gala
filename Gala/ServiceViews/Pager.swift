@@ -8,7 +8,7 @@
 import SwiftUI
 
 //We are going to create our own view using ViewBuilders
-struct ScrollableTabBar<Content: View>: UIViewRepresentable {
+struct Pager<Content: View>: UIViewRepresentable {
     
     //To store our SwiftUIView
     var content: Content
@@ -34,7 +34,7 @@ struct ScrollableTabBar<Content: View>: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        return ScrollableTabBar.Coordinator(parent: self)
+        return Pager.Coordinator(parent: self)
     }
     
     func makeUIView(context: Context) -> UIScrollView {
@@ -85,9 +85,9 @@ struct ScrollableTabBar<Content: View>: UIViewRepresentable {
     //Delegate function to get offset
     class Coordinator: NSObject, UIScrollViewDelegate {
         
-        var parent: ScrollableTabBar
+        var parent: Pager
         
-        init(parent: ScrollableTabBar) {
+        init(parent: Pager) {
             self.parent = parent
         }
         

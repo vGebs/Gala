@@ -23,6 +23,42 @@ class SmallUserViewModel: ObservableObject {
         getProfileImage()
     }
     
+    func likeUser() {
+        LikesService.shared.likeUser(uid: profile.uid)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("SmallUserViewModel: Failed to like user")
+                    print("SmallUserViewModel-Error: \(error.localizedDescription)")
+                
+                case .finished:
+                    print("SmallUserViewModel: Liked user with id: \(self.profile.uid)")
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &self.cancellables)
+    }
+    
+    func unLikeUser() {
+        LikesService.shared.unLikeUser(uid: profile.uid)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("SmallUserViewModel: Failed to unlike user")
+                    print("SmallUserViewModel-Error: \(error.localizedDescription)")
+                    
+                case .finished:
+                    print("SmallUserViewModel: Unlikes user with id: \(self.profile.uid)")
+                }
+            } receiveValue: { _ in
+                
+            }
+            .store(in: &self.cancellables)
+    }
+    
     private func getCityAndCountry() {
         LocationService.shared.getCityAndCountry(lat: profile.latitude, long: profile.longitude)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))

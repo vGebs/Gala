@@ -17,48 +17,41 @@ struct ContentView: View {
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") private var isDarkMode = true
 
-    @Binding var offset: CGFloat
+    @State var offset: CGFloat = screenWidth * 2
     
     var body: some View {
-        ZStack {
+        
+        GeometryReader { proxy in
+            let rect = proxy.frame(in: .global)
             
-            GeometryReader { proxy in
-                let rect = proxy.frame(in: .global)
+            Pager(tabs: tabs, rect: rect, offset: $offset) {
                 
-                ScrollableTabBar(tabs: tabs, rect: rect, offset: $offset) {
-                    
-                    HStack(spacing: 0){
-                        ProfileMainView(viewModel: profile)
-                        ChatsView()
-                        CameraView(camera: camera)
-                        ExploreMainView(viewModel: explore)
-                        ShowcaseView()
-                    }
+                HStack(spacing: 0){
+                    ProfileMainView(viewModel: profile)
+                    ChatsView()
+                    CameraView(camera: camera)
+                    ExploreMainView(viewModel: explore)
+                    ShowcaseView()
                 }
             }
-            .edgesIgnoringSafeArea(.all)
-            .overlay(
-                NavBar(offset: $offset)
-                    .opacity(camera.picTaken ? 0 : 1)
-                    .padding(.bottom, screenHeight * 0.03),
-                alignment: .bottom
-            )
-//            VStack{
-//                Spacer()
-//                NavBar(offset: $offset)
-//                    .opacity(camera.picTaken ? 0 : 1)
-//                    .padding(.bottom, screenHeight * 0.03)
-//            }
         }
-        .preferredColorScheme(isDarkMode ? .dark : .light)
-        .navigationBarHidden(true)
         .edgesIgnoringSafeArea(.all)
+        .overlay(
+            NavBar(offset: $offset)
+                .opacity(camera.picTaken ? 0 : 1)
+                .padding(.bottom, screenHeight * 0.03),
+            alignment: .bottom
+        )
+        .preferredColorScheme(isDarkMode ? .dark : .light)
+        .edgesIgnoringSafeArea(.all)
+        
+        //            VStack{
+        //                Spacer()
+        //                NavBar(offset: $offset)
+        //                    .opacity(camera.picTaken ? 0 : 1)
+        //                    .padding(.bottom, screenHeight * 0.03)
+        //            }
     }
 }
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView(camera: CameraViewModel(volumeCameraButton: false))
-//    }
-//}
-
+var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]

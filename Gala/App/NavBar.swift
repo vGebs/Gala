@@ -11,14 +11,14 @@ struct NavBar: View {
     
     @Binding var offset: CGFloat
     @Environment(\.colorScheme) var colorScheme
-
+    
     var body: some View {
-            
+        
         ZStack {
             Color.black
             
             HStack{
-        //ProfileView
+                //ProfileView
                 ZStack {
                     Color.black
                         .frame(width: screenWidth / 5.5, height: screenWidth / 8)
@@ -37,10 +37,12 @@ struct NavBar: View {
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
-                    if self.offset != 0 {
-                        simpleSuccess()
+                    withAnimation {
+                        if self.offset != 0 {
+                            simpleSuccess()
+                        }
+                        self.offset = 0
                     }
-                    self.offset = 0
                 }
                     
                 Spacer()
@@ -62,11 +64,12 @@ struct NavBar: View {
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
-                    
-                    if self.offset != screenWidth {
-                        simpleSuccess()
+                    withAnimation{
+                        if self.offset != screenWidth {
+                            simpleSuccess()
+                        }
+                        self.offset = screenWidth
                     }
-                    self.offset = screenWidth
                 }
 
                 Spacer()
@@ -89,10 +92,12 @@ struct NavBar: View {
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
-                    if self.offset != screenWidth * 2 {
-                        simpleSuccess()
+                    withAnimation{
+                        if self.offset != screenWidth * 2 {
+                            simpleSuccess()
+                        }
+                        self.offset = screenWidth * 2
                     }
-                    self.offset = screenWidth * 2
                 }
                     
                 Spacer()
@@ -115,10 +120,12 @@ struct NavBar: View {
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
-                    if self.offset != screenWidth * 3 {
-                        simpleSuccess()
+                    withAnimation {
+                        if self.offset != screenWidth * 3 {
+                            simpleSuccess()
+                        }
+                        self.offset = screenWidth * 3
                     }
-                    self.offset = screenWidth * 3
                 }
                     
                 Spacer()
@@ -140,10 +147,12 @@ struct NavBar: View {
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
-                    if self.offset != screenWidth * 4 {
-                        simpleSuccess()
+                    withAnimation {
+                        if self.offset != screenWidth * 4 {
+                            simpleSuccess()
+                        }
+                        self.offset = screenWidth * 4
                     }
-                    self.offset = screenWidth * 4
                 }
             }
         }

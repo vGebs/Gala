@@ -61,5 +61,13 @@ class ExploreViewModel: ObservableObject {
                 }
             }
             .store(in: &self.cancellables)
+        
+        
     }
 }
+
+//We need to fetch all recents, as well as all of our likes
+//We need to then cross reference them
+//If we pulled a user we already liked, we need to either:
+//  1. Not show them
+//  2. Be able to unlike them

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]
 
 struct Test: View {
     @State var offset: CGFloat = 0
@@ -16,8 +15,8 @@ struct Test: View {
         
         GeometryReader { proxy in
             let rect = proxy.frame(in: .global)
-            
-            ScrollableTabBar(tabs: tabs, rect: rect, offset: $offset) {
+           
+            Pager(tabs: tabs, rect: rect, offset: $offset) {
                 
 //                HStack(spacing: 0){
 //                    ProfileMainView(viewModel: <#T##ProfileViewModel#>)

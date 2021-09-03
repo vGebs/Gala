@@ -440,3 +440,29 @@ extension RecentlyJoinedUserService {
         case CurrentUserCoreEmpty
     }
 }
+
+
+// Option 1:
+// UserCore (in root)
+//
+//The user creates an account                               *1 write*
+//When the user needs to pull recently joined users         *1 read*
+//  they need to query all users in the area and then
+//  check for the dateJoined
+//                          log(1,000,000)
+//Because we cannot query for date directly with the
+//  current setup, this is extremely inefficient
+//  because we are getting a lot of other data we dont need
+
+// Option 2:
+// RecentlyJoined (in root)
+//
+//The user creates an account; pushes to UserCore &         *2 writes*
+//  RecentlyJoined
+//Add a listener that checks every minute to see if         *1 read/ min*
+//  any new users are expired (1 week)
+//
+//This setup will be more efficient at pulling users
+//  but will be more expensive $$$.
+//
+// Option 2 is the winner.
