@@ -11,6 +11,7 @@ import SwiftUI
 class ExploreViewModel: ObservableObject {
     
     var recents = RecentlyJoinedUserService.shared
+    var likeService = LikesService.shared
     var cancellables: [AnyCancellable] = []
     
     @Published var matchStories: [StoryModel] = [
@@ -42,32 +43,46 @@ class ExploreViewModel: ObservableObject {
         //Fetch Match Stories
         print("ExploreViewModel: beginning to fetch Recents")
         //Fetch recentlyJoinedProfiles in my area
-        recents.getRecents()
-            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let error):
-                    print("ExploreViewModel: \(error.localizedDescription)")
-                case .finished:
-                    print("ExploreViewModel: Finished fetching recents nearby")
-                }
-            } receiveValue: { [weak self] users in
-                if let users = users {
-                    self?.recentlyJoinedProfiles = users
-                    print("ExploreViewModel recents: \(users)")
-                } else {
-                    print("ExploreViewModel recents: nil")
-                }
+        Publishers.Zip(
+            recents.getRecents(),
+            likeService.getPeopleILiked()
+        )
+        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+        .sink { completion in
+            switch completion {
+            case .failure(let err):
+                print("ExploreViewModel: failed to load recents")
+                print("ExploreViewModel-Error: \(err)")
+            case .finished:
+                print("ExploreViewModel: Got recents")
             }
-            .store(in: &self.cancellables)
-        
-        
+        } receiveValue: { [weak self] recents, iLiked in
+            var final: [UserCore] = []
+            if let recents = recents {
+                for i in 0..<recents.count {
+                    print("ExploreViewModel-Recents: \(recents[i])")
+                    if iLiked.count > 0 {
+                        for j in 0..<iLiked.count {
+                            if recents[i].uid != iLiked[j].like.likedUID {
+                                final.append(recents[i])
+                                print("finalll: \(final)")
+                            }
+                        }
+                        self?.recentlyJoinedProfiles = final
+                    } else {
+                        self?.recentlyJoinedProfiles = recents
+                    }
+                }
+            } else {
+                print("ExploreViewModel recents: nil")
+            }
+        }
+        .store(in: &self.cancellables)
     }
 }
 
 //We need to fetch all recents, as well as all of our likes
 //We need to then cross reference them
 //If we pulled a user we already liked, we need to either:
-//  1. Not show them
+//  1. Not show them **WE WILL DO THIS**
 //  2. Be able to unlike them
