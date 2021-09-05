@@ -19,7 +19,7 @@ struct ExploreView: View {
             MyDivider()
                 .offset(y: screenHeight * 0.01)
 
-            RecentlyJoinedView(newUsers: $viewModel.recentlyJoinedProfiles)
+            RecentlyJoinedView(viewModel: viewModel.recentlyJoinedViewModel)
             MyDivider()
         }
     }

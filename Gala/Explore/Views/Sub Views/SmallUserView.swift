@@ -9,8 +9,11 @@ import SwiftUI
 
 struct SmallUserView: View {
     
-    @StateObject var viewModel: SmallUserViewModel
+    @ObservedObject var viewModel: RecentlyJoinedViewModel
+    @ObservedObject var user: SmallUserViewModel
+    
     var matched = false
+    
     @State var pressed = false
     
     var body: some View {
@@ -22,14 +25,14 @@ struct SmallUserView: View {
                     .foregroundColor(.blue)
                     .padding(.trailing)
                 
-                if viewModel.img == nil {
+                if user.img == nil {
                     Image(systemName: "person.fill.questionmark")
                         .foregroundColor(Color(.systemTeal))
                         .frame(width: screenWidth / 20, height: screenWidth / 20)
                         .padding(.trailing)
                     
                 } else {
-                    Image(uiImage: viewModel.img!)
+                    Image(uiImage: user.img!)
                         .resizable()
                         .scaledToFill()
                         .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
@@ -44,7 +47,7 @@ struct SmallUserView: View {
                 HStack {
                     VStack {
                         HStack {
-                            Text("\(viewModel.profile.name), \(viewModel.profile.age.ageString())")
+                            Text("\(user.profile.name), \(user.profile.age.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
                                 .foregroundColor(.primary)
                             
@@ -76,7 +79,7 @@ struct SmallUserView: View {
                                     .foregroundColor(.blue)
                                     .font(.system(size: 8, weight: .semibold, design: .rounded))
                                 
-                                Text("\(viewModel.city), \(viewModel.country)")
+                                Text("\(user.city), \(user.country)")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }
@@ -90,14 +93,17 @@ struct SmallUserView: View {
                     } else {
                         Button(action: {
                             if self.pressed == false {
-                                self.viewModel.likeUser()
+                                self.viewModel.likeUser(with: user.profile.uid)
                                 self.pressed.toggle()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
+                                    self.pressed.toggle()
+                                }
                             } else {
-                                self.viewModel.unLikeUser()
+                                //self.viewModel.unLikeUser(with: user.profile.uid)
                                 self.pressed.toggle()
                             }
                         }){
-                            Image(systemName: self.pressed ? "checkmark" : "plus.app")
+                            Image(systemName: self.pressed ? "heart.fill" : "plus.app")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
                         } 
@@ -114,6 +120,6 @@ struct SmallUserView: View {
 
 struct SmallUserView_Previews: PreviewProvider {
     static var previews: some View {
-        SmallUserView(viewModel: SmallUserViewModel(profile: UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 22, longitude: 54.22, latitude: 54.22)))
+        SmallUserView(viewModel: RecentlyJoinedViewModel(), user: SmallUserViewModel(profile: UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 30, willingToTravel: 30, longitude: 50.0, latitude: 50.0)))
     }
 }
