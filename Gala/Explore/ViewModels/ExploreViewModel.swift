@@ -38,6 +38,7 @@ class ExploreViewModel: ObservableObject {
     
     
     init() {
+        //matchStories = MatchStoryViewModel()
         recentlyJoinedViewModel = RecentlyJoinedViewModel()
     }
 }

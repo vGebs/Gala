@@ -98,9 +98,6 @@ struct SmallUserView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
                                     self.pressed.toggle()
                                 }
-                            } else {
-                                //self.viewModel.unLikeUser(with: user.profile.uid)
-                                self.pressed.toggle()
                             }
                         }){
                             Image(systemName: self.pressed ? "heart.fill" : "plus.app")

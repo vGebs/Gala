@@ -67,9 +67,9 @@ struct RecentlyJoinedView: View {
                 }
             }
         }
-//        .sheet(isPresented: $showAll, content: {
-//            AllRecentsView(allNewUsers: $newUsers)
-//        })
+        .sheet(isPresented: $showAll, content: {
+            AllRecentsView(viewModel: viewModel)
+        })
         .preferredColorScheme(.dark)
     }
 }
