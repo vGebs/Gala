@@ -30,7 +30,6 @@ class LikesService: LikesServiceProtocol {
 
     private init() {}
     
-    
     func likeUser(uid: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [

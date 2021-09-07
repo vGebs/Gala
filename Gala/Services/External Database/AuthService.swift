@@ -28,9 +28,9 @@ class AuthService: AuthServiceProtocol{
     
     func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
         Future<Void, Error> { promise in
-            Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
                 if let error = error { return promise(.failure(error)) }
-                self.currentUser = authResult?.user
+                self?.currentUser = authResult?.user
                 return promise(.success(()))
             }
         }
@@ -47,10 +47,10 @@ class AuthService: AuthServiceProtocol{
     
     private func signInWithEmail(_ email: String, _ password: String) -> AnyPublisher<User, Error> {
         Future<User, Error> { promise in
-            Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
                 if let error = error { return promise(.failure(error)) }
                 if let auth = authResult {
-                    self.currentUser = auth.user
+                    self?.currentUser = auth.user
                     promise(.success(auth.user))
                 }
             }

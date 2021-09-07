@@ -73,7 +73,7 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         return Future<UserCore?, Error> { promise in
             let docRef = self.db.collection("UserCore").document(uid)
             
-            docRef.getDocument { (document, error) in
+            docRef.getDocument { [weak self] (document, error) in
                 
                 if let error = error { promise(.failure(error)) }
                 
@@ -101,10 +101,10 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                         latitude: doc.data()?["latitude"] as? Double ?? 0
                     )
                     print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
-                    print("UserCoreService: setting CurrentUserCore: \(String(describing: self.currentUID))")
-                    if uid == self.currentUID{
-                        self.currentUserCore = userCore
-                        print("UserCoreService: setting CurrentUserCore: \(String(describing: self.currentUserCore))")
+                    print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUID))")
+                    if uid == self?.currentUID{
+                        self?.currentUserCore = userCore
+                        print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUserCore))")
                     }
                     
                     promise(.success(userCore))

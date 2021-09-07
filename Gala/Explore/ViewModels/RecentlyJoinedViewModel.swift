@@ -24,6 +24,7 @@ class RecentlyJoinedViewModel: ObservableObject {
             likeService.getPeopleILiked()
         )
         .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+        
         .sink { completion in
             switch completion {
             case .failure(let err):
@@ -36,13 +37,19 @@ class RecentlyJoinedViewModel: ObservableObject {
             var final: [SmallUserViewModel] = []
             if let recents = recents {
                 if iLiked.count > 0 {
-                    for i in 0..<recents.count {
-                        for j in 0..<iLiked.count {
-                            if recents[i].uid != iLiked[j].like.likedUID {
-                                final.append(SmallUserViewModel(profile: recents[i]))
+                    let final: [SmallUserViewModel] = recents
+                        .enumerated()
+                        .filter { user in
+                            var dontAdd = false
+                            for i in 0..<iLiked.count {
+                                if user.element.uid == iLiked[i].like.likedUID {
+                                    dontAdd = true
+                                }
                             }
+                            
+                            return dontAdd == false
                         }
-                    }
+                        .map { SmallUserViewModel(profile: $0.element) }
                     self?.users = final
                 } else {
                     for i in 0..<recents.count {
