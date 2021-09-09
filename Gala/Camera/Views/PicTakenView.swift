@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PicTakenView: View {
     @ObservedObject var camera: CameraViewModel
+    @Binding var sendPressed: Bool
     
     var body: some View {
         VStack{
@@ -45,7 +46,9 @@ struct PicTakenView: View {
                 
                 Spacer()
                 
-                Button(action: {  }){
+                Button(action: {
+                    self.sendPressed = true
+                }){
                     ZStack {
                         Capsule()
                             .frame(width: screenWidth / 3.5, height: screenWidth / 10)

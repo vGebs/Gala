@@ -244,7 +244,7 @@ extension CameraViewModel{
                 self.session.removeInput(input)
             }
 
-            self.addInputs()
+            self.setUp()
 
             self.session.startRunning()
         }

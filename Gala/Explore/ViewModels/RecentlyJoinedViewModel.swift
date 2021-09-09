@@ -24,7 +24,6 @@ class RecentlyJoinedViewModel: ObservableObject {
             likeService.getPeopleILiked()
         )
         .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-        
         .sink { completion in
             switch completion {
             case .failure(let err):
