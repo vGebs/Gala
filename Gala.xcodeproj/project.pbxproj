@@ -34,7 +34,7 @@
 		FA7E3B2826E43F4600A6653C /* RecentlyJoinedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2726E43F4600A6653C /* RecentlyJoinedViewModel.swift */; };
 		FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2B26E8003E00A6653C /* StoryService.swift */; };
 		FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */; };
-		FA7E3B3026E8073300A6653C /* StoryImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2F26E8073300A6653C /* StoryImageService.swift */; };
+		FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2F26E8073300A6653C /* StoryContentService.swift */; };
 		FA7E3B3226E808CF00A6653C /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3126E808CF00A6653C /* StoryModel.swift */; };
 		FA7E3B3626EACF2200A6653C /* SendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3526EACF2200A6653C /* SendView.swift */; };
 		FA7E3B3826EAD18D00A6653C /* SendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3726EAD18D00A6653C /* SendViewModel.swift */; };
@@ -126,7 +126,7 @@
 		FA7E3B2726E43F4600A6653C /* RecentlyJoinedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedViewModel.swift; sourceTree = "<group>"; };
 		FA7E3B2B26E8003E00A6653C /* StoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryService.swift; sourceTree = "<group>"; };
 		FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMetaService.swift; sourceTree = "<group>"; };
-		FA7E3B2F26E8073300A6653C /* StoryImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryImageService.swift; sourceTree = "<group>"; };
+		FA7E3B2F26E8073300A6653C /* StoryContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryContentService.swift; sourceTree = "<group>"; };
 		FA7E3B3126E808CF00A6653C /* StoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
 		FA7E3B3526EACF2200A6653C /* SendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendView.swift; sourceTree = "<group>"; };
 		FA7E3B3726EAD18D00A6653C /* SendViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewModel.swift; sourceTree = "<group>"; };
@@ -453,7 +453,7 @@
 				FA7E3B2326E1F28300A6653C /* LikesService.swift */,
 				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
 				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
-				FA7E3B2F26E8073300A6653C /* StoryImageService.swift */,
+				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
 			);
 			path = "External Database";
 			sourceTree = "<group>";
@@ -750,7 +750,7 @@
 				FA7E3B3826EAD18D00A6653C /* SendViewModel.swift in Sources */,
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
-				FA7E3B3026E8073300A6653C /* StoryImageService.swift in Sources */,
+				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,
 				FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */,

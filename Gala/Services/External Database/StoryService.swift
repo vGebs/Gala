@@ -25,7 +25,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     
     private let storage = Storage.storage()
     private let storyMetaService = StoryMetaService.shared
-    private let storyImageService = StoryImageService.shared
+    private let storyContentService = StoryContentService.shared
     
     private var cancellables: [AnyCancellable] = []
     
@@ -55,7 +55,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         return Future<Void, Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.postStory(story: story.meta),
-                self.storyImageService.postStory(story: story.image)
+                self.storyContentService.postStory(story: story.image)
             )
             .flatMap{ _ -> AnyPublisher<[StoryWithDocID], Error> in
                 self.getMyStories()
@@ -81,7 +81,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         return Future<Void, Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.deleteStory(storyID: storyID),
-                self.storyImageService.deleteStory(storyID: storyID)
+                self.storyContentService.deleteStory(storyID: storyID)
             )
             .sink { completion in
                 switch completion {
@@ -118,7 +118,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         return Future<[Story], Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.getStories(),
-                self.storyImageService.getStories()
+                self.storyContentService.getStories()
             )
             .sink { completion in
                 switch completion {
@@ -140,7 +140,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         return Future<[StoryWithDocID], Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.getMyStories(),
-                self.storyImageService.getMyStories()
+                self.storyContentService.getMyStories()
             )
             .sink { completion in
                 switch completion {
