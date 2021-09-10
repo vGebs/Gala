@@ -24,6 +24,12 @@ struct SendView: View {
                     Text("Post")
                 }
                 .padding()
+                
+                Button(action: { viewModel.getMyStories() }){
+                    Text("Get my stories")
+                }
+                .padding()
+                
             }
         }
     }

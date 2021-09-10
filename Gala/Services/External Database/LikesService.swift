@@ -168,9 +168,6 @@ class LikesService: LikesServiceProtocol {
     }
 }
 
-extension LikesService {
-    
-}
 
 //NOTE: These solutions do not take into account loading user images
 // ASIDE: we are going to assume there is:

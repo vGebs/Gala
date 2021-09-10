@@ -57,9 +57,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                 self.storyMetaService.postStory(story: story.meta),
                 self.storyContentService.postStory(story: story.image)
             )
-            .flatMap{ _ -> AnyPublisher<[StoryWithDocID], Error> in
-                self.getMyStories()
-            }
+            .flatMap{ _ in self.getMyStories() }
             .sink { completion in
                 switch completion {
                 case .failure(let err):

@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct Story {
-    var meta: StoryMeta
-    var image: UIImage
-}
-
 struct StoryMeta {
-    var uid: String
     var postID: String
     var timeAndDatePosted: String
+    var userCore: UserCore
 }
 
 struct StoryMetaWithDocID {
     var meta: StoryMeta
     var docID: String
+}
+
+struct Story {
+    var meta: StoryMeta
+    var image: UIImage
 }
 
 struct StoryWithDocID {

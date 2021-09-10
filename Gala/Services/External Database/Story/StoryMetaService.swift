@@ -16,7 +16,7 @@ class StoryMetaService: ObservableObject {
     private let db = Firestore.firestore()
     
     private var currentUserCore = UserCoreService.shared.currentUserCore!
-
+    
     static let shared = StoryMetaService()
     private init() {}
     
@@ -33,9 +33,9 @@ class StoryMetaService: ObservableObject {
             //Because we need to query these posts, we need to also add the current UserCore
             self.db.collection("Stories").addDocument(data: [ //(uid, postID, time posted, message, etc.)
                 "userCore" : [
-                    "uid" : story.uid,
+                    "uid" : story.userCore.uid,
                     "name" : currentUserCore.name,
-                    "birthday" : currentUserCore.age,
+                    "birthday" : currentUserCore.age.formatDate(),
                     "gender" : currentUserCore.gender,
                     "sexuality" : currentUserCore.sexuality,
                     "agePref" : [
@@ -94,27 +94,60 @@ class StoryMetaService: ObservableObject {
     func getMyStories() -> AnyPublisher<[StoryMetaWithDocID], Error> {
         return Future<[StoryMetaWithDocID], Error> { promise in
             let currrentUID = UserCoreService.shared.currentUserCore?.uid
-            self.db.collection("Stories").whereField("uid", isEqualTo: currrentUID!)
-                .getDocuments { snapshot, err in
+            self.db.collection("Stories").whereField("userCore.uid", isEqualTo: currrentUID!)
+                .getDocuments { snap, err in
                     if let err = err {
                         print("StoryMetaService: Failed to get MyStroies")
                         promise(.failure(err))
-                    }
-                    
-                    if let snap = snapshot {
-                        for document in snap.documents {
-                            print("\(document.documentID) => \(document.data())")
-                        }
-                        
-                        let meta: [StoryMetaWithDocID] = []
-                        promise(.success(meta))
-                        
                     } else {
-                        let meta: [StoryMetaWithDocID] = []
-                        promise(.success(meta))
+                        
+                        var final: [StoryMetaWithDocID] = []
+                        
+                        for doc in snap!.documents {
+                            print("\(doc.documentID) => \(doc.data())")
+                            
+                            let fireUserCore = (doc.data()["userCore"] as? [String : Any])!
+                            let fireAgePref = (fireUserCore["agePref"] as? [String: Any])!
+                            let fireLocation = (fireUserCore["location"] as? [String: Any])!
+                            
+                            let date = fireUserCore["birthday"] as? String ?? ""
+                            let format = DateFormatter()
+                            format.dateFormat = "yyyy/MM/dd"
+                            
+                            let age = format.date(from: date)!
+                            
+                            let uc = UserCore(
+                                uid: fireUserCore["uid"] as? String ?? "",
+                                name: fireUserCore["name"] as? String ?? "",
+                                age: age,
+                                gender: fireUserCore["gender"] as? String ?? "",
+                                sexuality: fireUserCore["sexuality"] as? String ?? "",
+                                ageMinPref: fireAgePref["min"] as? Int ?? 18,
+                                ageMaxPref: fireAgePref["max"] as? Int ?? 99,
+                                willingToTravel: fireUserCore["willingToTravel"] as? Int ?? 150,
+                                longitude: fireLocation["longitude"] as? Double ?? 0.0,
+                                latitude: fireLocation["latitude"] as? Double ?? 0.0
+                            )
+                            
+                            let meta = StoryMeta(
+                                postID: doc.data()["postID"] as? String ?? "",
+                                timeAndDatePosted: doc.data()["timeAndDatePosted"] as? String ?? "",
+                                userCore: uc
+                            )
+                            
+                            let metaWDoc = StoryMetaWithDocID(
+                                meta: meta,
+                                docID: doc.documentID
+                            )
+                            print("MetaWDoc: \(metaWDoc)")
+                            final.append(metaWDoc)
+                        }
+                        print("StoryMetaService-getMyStories: \(final)")
+                        promise(.success(final))
                     }
                 }
-        }.eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
     
     func getStories() -> AnyPublisher<[StoryMeta], Error> {

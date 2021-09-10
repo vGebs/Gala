@@ -33,7 +33,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.locationManager.stopUpdatingLocation()
             print("Stopped updating location")
         }

@@ -35,7 +35,7 @@
 		FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2B26E8003E00A6653C /* StoryService.swift */; };
 		FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */; };
 		FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2F26E8073300A6653C /* StoryContentService.swift */; };
-		FA7E3B3226E808CF00A6653C /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3126E808CF00A6653C /* StoryModel.swift */; };
+		FA7E3B3226E808CF00A6653C /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3126E808CF00A6653C /* Story.swift */; };
 		FA7E3B3626EACF2200A6653C /* SendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3526EACF2200A6653C /* SendView.swift */; };
 		FA7E3B3826EAD18D00A6653C /* SendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3726EAD18D00A6653C /* SendViewModel.swift */; };
 		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
@@ -127,7 +127,7 @@
 		FA7E3B2B26E8003E00A6653C /* StoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryService.swift; sourceTree = "<group>"; };
 		FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMetaService.swift; sourceTree = "<group>"; };
 		FA7E3B2F26E8073300A6653C /* StoryContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryContentService.swift; sourceTree = "<group>"; };
-		FA7E3B3126E808CF00A6653C /* StoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
+		FA7E3B3126E808CF00A6653C /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
 		FA7E3B3526EACF2200A6653C /* SendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendView.swift; sourceTree = "<group>"; };
 		FA7E3B3726EAD18D00A6653C /* SendViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewModel.swift; sourceTree = "<group>"; };
 		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
@@ -259,6 +259,28 @@
 				FA7E3B3726EAD18D00A6653C /* SendViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		FA7E3B3926EAD72200A6653C /* Story */ = {
+			isa = PBXGroup;
+			children = (
+				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
+				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
+				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
+			);
+			path = Story;
+			sourceTree = "<group>";
+		};
+		FA7E3B3A26EAD74000A6653C /* Profile Related */ = {
+			isa = PBXGroup;
+			children = (
+				FA87744C2640A1F200D5D5CB /* ProfileService.swift */,
+				FADC11612698129D0070465C /* UserCoreService.swift */,
+				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
+				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
+				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
+			);
+			path = "Profile Related";
 			sourceTree = "<group>";
 		};
 		FA848749268E5E7E009CA4C0 /* Tests */ = {
@@ -417,7 +439,7 @@
 				FADC1163269813EC0070465C /* UserCore.swift */,
 				FAEDCFE526A1420500A2C4A1 /* UserAbout.swift */,
 				FA7E3B2526E1F40700A6653C /* Like.swift */,
-				FA7E3B3126E808CF00A6653C /* StoryModel.swift */,
+				FA7E3B3126E808CF00A6653C /* Story.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -445,15 +467,9 @@
 			isa = PBXGroup;
 			children = (
 				FA87744E2640A20F00D5D5CB /* AuthService.swift */,
-				FA87744C2640A1F200D5D5CB /* ProfileService.swift */,
-				FADC11612698129D0070465C /* UserCoreService.swift */,
-				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
-				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
-				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
+				FA7E3B3A26EAD74000A6653C /* Profile Related */,
 				FA7E3B2326E1F28300A6653C /* LikesService.swift */,
-				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
-				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
-				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
+				FA7E3B3926EAD72200A6653C /* Story */,
 			);
 			path = "External Database";
 			sourceTree = "<group>";
@@ -712,7 +728,7 @@
 				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
 				FAA88B1D26492928007F042D /* SwipeView.swift in Sources */,
 				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
-				FA7E3B3226E808CF00A6653C /* StoryModel.swift in Sources */,
+				FA7E3B3226E808CF00A6653C /* Story.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
 				FA0FCA3E2684048000434561 /* StoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,

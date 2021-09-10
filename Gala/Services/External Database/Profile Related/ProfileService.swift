@@ -78,7 +78,8 @@ extension ProfileService {
                 }
             } receiveValue: { _ in }
             .store(in: &self.cancellables)
-        }.eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
     
     private func addUserCore(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
