@@ -15,10 +15,6 @@ protocol StoryServiceProtocol {
     //User actions
     func postStory(story: Story) -> AnyPublisher<Void, Error>
     func deleteStory(storyID: String) -> AnyPublisher<Void, Error>
-    
-    //For user interactivity
-    func getStories() -> AnyPublisher<[Story], Error>
-    func getMyStories() -> AnyPublisher<[StoryWithDocID], Error>
 }
 
 class StoryService: ObservableObject, StoryServiceProtocol {
@@ -29,12 +25,12 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     
     private var cancellables: [AnyCancellable] = []
     
-    @Published private(set) var myStories: [StoryWithDocID] = []
+    @Published private(set) var myStories: [StoryMeta] = []
     
     static let shared = StoryService()
     private init() {
         //Fetch myStories
-        self.getMyStories()
+        storyMetaService.getMyStories()
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -57,7 +53,6 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                 self.storyMetaService.postStory(story: story.meta),
                 self.storyContentService.postStory(story: story.image)
             )
-            .flatMap{ _ in self.getMyStories() }
             .sink { completion in
                 switch completion {
                 case .failure(let err):
@@ -67,8 +62,8 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     print("StoryService: Successfully posted story")
                     promise(.success(()))
                 }
-            } receiveValue: { [weak self] myStories in
-                self?.myStories = myStories
+            } receiveValue: { [weak self] _ in
+                self?.myStories.append(story.meta)
             }
             .store(in: &self.cancellables)
         }
@@ -93,7 +88,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
             } receiveValue: { [weak self] _, _ in
                 if let myStories = self?.myStories {
                     for i in 0..<myStories.count {
-                        if myStories[i].story.meta.postID == storyID {
+                        if myStories[i].postID_timeAndDatePosted == storyID {
                             self?.myStories.remove(at: i)
                             break
                         }
@@ -103,68 +98,4 @@ class StoryService: ObservableObject, StoryServiceProtocol {
             .store(in: &self.cancellables)
         }.eraseToAnyPublisher()
     }
-    
-    func getStories() -> AnyPublisher<[Story], Error> {
-        //Zip will not work, we need to fetch all story texts
-        //  first and then fetch the images one by one and link those
-        //  images to the story meta
-        //
-        //Wait zip may work
-        //  We just need to loop through and match the results,
-        //  make a Story object using the meta and UIImage
-        //
-        return Future<[Story], Error> { promise in
-            Publishers.Zip(
-                self.storyMetaService.getStories(),
-                self.storyContentService.getStories()
-            )
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("StoryService: Failed to fetch stories")
-                    promise(.failure(err))
-                case .finished:
-                    print("StoryService: Successfully fetched stories")
-                }
-            } receiveValue: { text, images in
-                //match the meta with the image
-            }
-            .store(in: &self.cancellables)
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    func getMyStories() -> AnyPublisher<[StoryWithDocID], Error> {
-        return Future<[StoryWithDocID], Error> { promise in
-            Publishers.Zip(
-                self.storyMetaService.getMyStories(),
-                self.storyContentService.getMyStories()
-            )
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("StoryService: Failed to fetch my stories")
-                    promise(.failure(err))
-                case .finished:
-                    print("StoryService: Successfully fetched my stroies")
-                }
-            } receiveValue: { text, images in
-                
-            }
-            .store(in: &self.cancellables)
-        }
-        .eraseToAnyPublisher()
-    }
 }
-
-//Storage Options
-
-//Option 1
-//
-// Firebase Storage
-// Root -> Stories -> UID -> userStories (name of file: uid + timestamp [i.e., 123__2021__06_12__6_00])
-//
-// Firestore
-// Root -> Stories -> random docID -> (uid, postID, time posted, message, etc.)
-//
-

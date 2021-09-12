@@ -17,12 +17,12 @@ class SendViewModel: ObservableObject {
     init() {}
     
     func postStory() {
+        
         let storyMeta = StoryMeta(
-            postID: "123",
-            timeAndDatePosted: "\(Date())",
+            postID_timeAndDatePosted: "\(Date())",
             userCore: currentUserCore
         )
-        
+
         storyMetaService.postStory(story: storyMeta)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -32,7 +32,7 @@ class SendViewModel: ObservableObject {
                     print("SendViewModel: Failed to post story")
                     print("SendViewModel-Error: \(err.localizedDescription)")
                 case .finished:
-                    print("SendViewModel: Successfully posted story with ID: \(storyMeta.postID)")
+                    print("SendViewModel: Successfully posted story with ID: \(storyMeta.postID_timeAndDatePosted)")
                 }
             } receiveValue: { _ in }
             .store(in: &self.cancellables)
