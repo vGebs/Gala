@@ -14,13 +14,15 @@ struct ExploreView: View {
     
     var body: some View {
         ScrollView(showsIndicators: false){
-            StoriesView(stories: $viewModel.matchStories)
+            MatchStoriesView(stories: $viewModel.matchStories)
                 .offset(y: screenHeight * 0.01)
             MyDivider()
                 .offset(y: screenHeight * 0.01)
 
             RecentlyJoinedView(viewModel: viewModel.recentlyJoinedViewModel)
             MyDivider()
+            
+            StoriesView()
         }
     }
 }

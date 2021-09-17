@@ -10,6 +10,7 @@ import SwiftUI
 
 class SendViewModel: ObservableObject {
     
+    private var storyService: StoryService = StoryService.shared
     private var storyMetaService: StoryMetaService = StoryMetaService.shared
     private var currentUserCore: UserCore = UserCoreService.shared.currentUserCore!
     private var cancellables: [AnyCancellable] = []
@@ -17,13 +18,9 @@ class SendViewModel: ObservableObject {
     init() {}
     
     func postStory() {
-        
-        let storyMeta = StoryMeta(
-            postID_timeAndDatePosted: "\(Date())",
-            userCore: currentUserCore
-        )
 
-        storyMetaService.postStory(story: storyMeta)
+        let date = Date()
+        storyService.postStory(postID_date: date, asset: UIImage())
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -32,7 +29,7 @@ class SendViewModel: ObservableObject {
                     print("SendViewModel: Failed to post story")
                     print("SendViewModel-Error: \(err.localizedDescription)")
                 case .finished:
-                    print("SendViewModel: Successfully posted story with ID: \(storyMeta.postID_timeAndDatePosted)")
+                    print("SendViewModel: Successfully posted story with ID: \(date)")
                 }
             } receiveValue: { _ in }
             .store(in: &self.cancellables)
@@ -50,8 +47,31 @@ class SendViewModel: ObservableObject {
                 case .finished:
                     print("SendViewModel: Successfully got recents")
                 }
-            } receiveValue: { storyMeta in
-                
+            } receiveValue: { storyIds in
+                for id in storyIds {
+                    print("ID: \(id)")
+                }
             }.store(in: &self.cancellables)
+    }
+    
+    func deleteStory() {
+        let id = storyService.postIDs[0]
+        storyService.deleteStory(storyID: id)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("SendViewModel: Failed to delete post w/ id: \(id)")
+                    print("SendViewModel-Error: \(err.localizedDescription)")
+                case .finished:
+                    print("SendViewModel: Successfully deleted post w/ id: \(id)")
+                }
+            } receiveValue: {[unowned self] _ in
+                for id in self.storyService.postIDs {
+                    print("ID11: \(id)")
+                }
+            }
+            .store(in: &self.cancellables)
     }
 }

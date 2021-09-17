@@ -13,8 +13,8 @@ import FirebaseStorage
 //This protocol will have to be expanded once video is working
 protocol StoryServiceProtocol {
     //User actions
-    func postStory(story: Story) -> AnyPublisher<Void, Error>
-    func deleteStory(storyID: String) -> AnyPublisher<Void, Error>
+    func postStory(postID_date: Date, asset: UIImage) -> AnyPublisher<Void, Error>
+    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error>
 }
 
 class StoryService: ObservableObject, StoryServiceProtocol {
@@ -25,7 +25,8 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     
     private var cancellables: [AnyCancellable] = []
     
-    @Published private(set) var myStories: [StoryMeta] = []
+    //Post IDs are just a timestamp
+    @Published private(set) var postIDs: [Date] = []
     
     static let shared = StoryService()
     private init() {
@@ -41,17 +42,17 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                 case .finished:
                     print("StoryService: Successfully recieved my Stories")
                 }
-            } receiveValue: { [weak self] myStories in
-                self?.myStories = myStories
+            } receiveValue: { [weak self] myStoryIDs in
+                self?.postIDs = myStoryIDs
             }
             .store(in: &self.cancellables)
     }
     
-    func postStory(story: Story) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, asset: UIImage) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             Publishers.Zip(
-                self.storyMetaService.postStory(story: story.meta),
-                self.storyContentService.postStory(story: story.image)
+                self.storyMetaService.postStory(postID_date: postID_date),
+                self.storyContentService.postStory(story: asset)
             )
             .sink { completion in
                 switch completion {
@@ -63,14 +64,14 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     promise(.success(()))
                 }
             } receiveValue: { [weak self] _ in
-                self?.myStories.append(story.meta)
+                self?.postIDs.append(postID_date)
             }
             .store(in: &self.cancellables)
         }
         .eraseToAnyPublisher()
     }
     
-    func deleteStory(storyID: String) -> AnyPublisher<Void, Error> {
+    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.deleteStory(storyID: storyID),
@@ -86,16 +87,15 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     promise(.success(()))
                 }
             } receiveValue: { [weak self] _, _ in
-                if let myStories = self?.myStories {
-                    for i in 0..<myStories.count {
-                        if myStories[i].postID_timeAndDatePosted == storyID {
-                            self?.myStories.remove(at: i)
-                            break
-                        }
+                for i in 0..<(self?.postIDs.count)!{
+                    if self?.postIDs[i] == storyID {
+                        self?.postIDs.remove(at: i)
+                        break
                     }
                 }
             }
             .store(in: &self.cancellables)
-        }.eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StoryView: View {
+struct MatchesStoryView: View {
     var story: StoryModel
     
     var body: some View {
@@ -26,8 +26,8 @@ struct StoryView: View {
     }
 }
 
-struct StoryView_Previews: PreviewProvider {
+struct MatchesStoryView_Previews: PreviewProvider {
     static var previews: some View {
-        StoryView(story: StoryModel(story: UIImage(), name: "Lawrence Geber", userID: "123"))
+        MatchesStoryView(story: StoryModel(story: UIImage(), name: "Lawrence", userID: "123"))
     }
 }

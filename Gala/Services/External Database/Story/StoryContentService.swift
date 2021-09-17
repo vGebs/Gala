@@ -21,24 +21,18 @@ class StoryContentService: ObservableObject {
     
     func postStory(story: UIImage) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            
+            promise(.success(()))
         }.eraseToAnyPublisher()
     }
     
-    func deleteStory(storyID: String) -> AnyPublisher<Void, Error> {
+    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            
+            promise(.success(()))
         }.eraseToAnyPublisher()
     }
     
-    func getStories() -> AnyPublisher<[UIImage], Error> {
-        return Future<[UIImage], Error> { promise in
-            
-        }.eraseToAnyPublisher()
-    }
-    
-    func getMyStories() -> AnyPublisher<[UIImage], Error> {
-        return Future<[UIImage], Error> { promise in
+    func getStory(id: Date) -> AnyPublisher<UIImage, Error> {
+        return Future<UIImage, Error> { promise in
             
         }.eraseToAnyPublisher()
     }

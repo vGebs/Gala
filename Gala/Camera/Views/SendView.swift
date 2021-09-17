@@ -30,6 +30,10 @@ struct SendView: View {
                 }
                 .padding()
                 
+                Button(action: { viewModel.deleteStory() }){
+                    Text("Delete first story")
+                }
+                .padding()
             }
         }
     }

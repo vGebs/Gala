@@ -20,45 +20,15 @@ class StoryMetaService: ObservableObject {
     static let shared = StoryMetaService()
     private init() {}
     
-    //Some major changes:
-    //  What we're going to do:
-    //      - Going to fetch stories (meta) and then push that object into another object.
-    //          When the new object is initialized, it will take the storyID's and
-    //          And fetch the content, similar to the RecentlyJoined/SmallUserViewModel
-    //      - This new object will hold the StoryMeta and an array of images/videos/assets
-    //
-    //  So when posting a story we need to:
-    //      1. Check to see if the current myStories array is empty
-    //          a) If empty, we push a brand new story
-    //          b) If not empty, we add the new stories timestamp to the storyID's array
-    //      2. Everytime we make a post we add it to the current Story Array (after success confirmation).
-    //          We will not need to query the db(like we're doing rn) because we already have all the info we need.
-    //          i.e., we already have the docID which is the currentUser ID.
-    //          Therefore we no longer need StoryMetaWDocID model
-    //
-    //  PS. -> The content (image/video) will be placed in firebase storage in location:
-    //              Stories -> uid folder -> timestamp for asset (timestamp will be the storyID)
-    //
-    //  Aside:
-    //      We will likely not need the functions 'getStories' & 'getMyStories' from StoryServie
-    //          anymore. Because in order to get the images we first need the meta, which will be
-    //          pushed to the new object we have not yet made (similar to Recentlyjoined/SmallUserViewModel).
-    //
-    //      The only functions in StoryService will be 'postStory' & 'deleteStory'.
-    //
-    //  Question:
-    //      Should we keep the 'myStories' array in StoryMetaService or StoryService?
-    //
-    
-    func postStory(story: StoryMeta) -> AnyPublisher<Void, Error> {
-        if StoryService.shared.myStories.count == 0 {
-            return self.pushFirstStory(story)
+    func postStory(postID_date: Date) -> AnyPublisher<Void, Error> {
+        if StoryService.shared.postIDs.count == 0{
+            return self.pushFirstStory(postID_date)
         } else {
-            return self.pushAnotherStory(story)
+            return self.pushAnotherStory(postID_date)
         }
     }
     
-    func pushFirstStory(_ story: StoryMeta) -> AnyPublisher<Void, Error> {
+    private func pushFirstStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -71,7 +41,7 @@ class StoryMetaService: ObservableObject {
             //Because we need to query these posts, we need to also add the current UserCore
             self.db.collection("Stories").document(currentUserCore.uid).setData([
                 "userCore" : [
-                    "uid" : story.userCore.uid,
+                    "uid" : currentUserCore.uid,
                     "name" : currentUserCore.name,
                     "birthday" : currentUserCore.age.formatDate(),
                     "gender" : currentUserCore.gender,
@@ -87,7 +57,7 @@ class StoryMetaService: ObservableObject {
                         "latitude" : currentUserCore.latitude,
                     ]
                 ],
-                "postIDs" : [story.postID_timeAndDatePosted]
+                "postIDs" : [postID_date]
             ]) { err in
                 if let err = err {
                     print("StoryMetaService: Failed to post story meta")
@@ -100,7 +70,7 @@ class StoryMetaService: ObservableObject {
         }.eraseToAnyPublisher()
     }
     
-    func pushAnotherStory(_ story: StoryMeta) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -112,88 +82,74 @@ class StoryMetaService: ObservableObject {
             
             self.db.collection("Stories").document(currentUserCore.uid)
                 .updateData([
-                    "postIDs" : FieldValue.arrayUnion([story.postID_timeAndDatePosted]),
+                    "postIDs" : FieldValue.arrayUnion([postID_date]),
                     "userCore.location.geoHash" : hash,
                     "userCore.location.latitude" : lat,
                     "userCore.location.longitude" : long
-                ])
+                ]) { err in
+                    if let err = err {
+                        print("StoryMetaService: Failed to push another story w/ id: \(postID_date)")
+                        promise(.failure(err))
+                    } else {
+                        print("StoryMetaService: Successfully pushed another story w/ id: \(postID_date)")
+                        promise(.success(()))
+                    }
+                }
         }.eraseToAnyPublisher()
     }
     
-    func deleteStory(storyID: String) -> AnyPublisher<Void, Error> {
+    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            var postDocID: String?
-            
-            for story in StoryService.shared.myStories {
-                if story.postID_timeAndDatePosted == storyID {
-                    postDocID = story.postID_timeAndDatePosted
-                }
-            }
-            
-            if let docID = postDocID {
-                self.db.collection("Stories").document(docID)
+            let currentUser = UserCoreService.shared.currentUserCore!
+            if StoryService.shared.postIDs.count == 1 {
+                self.db.collection("Stories").document(currentUser.uid)
                     .delete() { err in
                         if let err = err {
-                            print("StoryMetaService: Failed to delete story meta")
+                            print("StoryMetaService: Failed to delete post")
                             promise(.failure(err))
                         } else {
-                            print("StoryMetaService: Successfully deleted story meta")
+                            print("StoryMetaService: Successfully deleted story")
                             promise(.success(()))
                         }
                     }
             } else {
-                promise(.success(()))
+                self.db.collection("Stories").document(currentUser.uid)
+                    .updateData([
+                        "postIDs" : FieldValue.arrayRemove([storyID])
+                    ]) { err in
+                        if let err = err {
+                            print("StoryMetaService: Failed to delete Story")
+                            promise(.failure(err))
+                        } else {
+                            print("StoryMetaService: Successfully deleted story")
+                            promise(.success(()))
+                        }
+                    }
             }
         }
         .eraseToAnyPublisher()
     }
     
-    func getMyStories() -> AnyPublisher<[StoryMeta], Error> {
-        return Future<[StoryMeta], Error> { promise in
-            let currrentUID = UserCoreService.shared.currentUserCore?.uid
-            self.db.collection("Stories").whereField("userCore.uid", isEqualTo: currrentUID!)
-                .getDocuments { snap, err in
+    func getMyStories() -> AnyPublisher<[Date], Error> {
+        let currrentUser = UserCoreService.shared.currentUserCore!
+        return Future<[Date], Error>{ promise in
+            self.db.collection("Stories").document(currrentUser.uid)
+                .getDocument { snap, err in
                     if let err = err {
-                        print("StoryMetaService: Failed to get MyStroies")
+                        print("StoryMetaService: Failed to fetch stories")
                         promise(.failure(err))
-                    } else {
-                        
-                        var final: [StoryMeta] = []
-                        
-                        for doc in snap!.documents {
-                            print("\(doc.documentID) => \(doc.data())")
-                            
-                            let fireUserCore = (doc.data()["userCore"] as? [String : Any])!
-                            let fireAgePref = (fireUserCore["agePref"] as? [String: Any])!
-                            let fireLocation = (fireUserCore["location"] as? [String: Any])!
-                            
-                            let date = fireUserCore["birthday"] as? String ?? ""
-                            let format = DateFormatter()
-                            format.dateFormat = "yyyy/MM/dd"
-                            
-                            let age = format.date(from: date)!
-                            
-                            let uc = UserCore(
-                                uid: fireUserCore["uid"] as? String ?? "",
-                                name: fireUserCore["name"] as? String ?? "",
-                                age: age,
-                                gender: fireUserCore["gender"] as? String ?? "",
-                                sexuality: fireUserCore["sexuality"] as? String ?? "",
-                                ageMinPref: fireAgePref["min"] as? Int ?? 18,
-                                ageMaxPref: fireAgePref["max"] as? Int ?? 99,
-                                willingToTravel: fireUserCore["willingToTravel"] as? Int ?? 150,
-                                longitude: fireLocation["longitude"] as? Double ?? 0.0,
-                                latitude: fireLocation["latitude"] as? Double ?? 0.0
-                            )
-                            
-                            let meta = StoryMeta(
-                                postID_timeAndDatePosted: doc.data()["postIDs"] as? String ?? "",
-                                userCore: uc
-                            )
-                            
-                            final.append(meta)
+                    } else if let snap = snap {
+                        var final: [Date] = []
+                        if let ids = snap.data()?["postIDs"] as? [Any] {
+                            for i in 0..<ids.count {
+                                let id = ids[i] as? Timestamp
+                                let idd = id?.dateValue()
+                                if let id_ = idd {
+                                    final.append(id_)
+                                }
+                            }
                         }
-                        print("StoryMetaService-getMyStories: \(final)")
+                        print("PostIDs: \(final)")
                         promise(.success(final))
                     }
                 }

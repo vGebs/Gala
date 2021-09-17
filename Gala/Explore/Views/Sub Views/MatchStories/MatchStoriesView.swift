@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StoriesView: View {
+struct MatchStoriesView: View {
     @Binding var stories: [StoryModel]
     
     var body: some View {
@@ -23,12 +23,12 @@ struct StoriesView: View {
                 ForEach(0..<stories.count / 5){ i in //stories, id: \.id
                     HStack{
                         Button(action: {}){
-                            StoryView(story: stories[i * 5])
+                            MatchesStoryView(story: stories[i * 5])
                         }
-                        StoryView(story: stories[i * 5 + 1])
-                        StoryView(story: stories[i * 5 + 2])
-                        StoryView(story: stories[i * 5 + 3])
-                        StoryView(story: stories[i * 5 + 4])
+                        MatchesStoryView(story: stories[i * 5 + 1])
+                        MatchesStoryView(story: stories[i * 5 + 2])
+                        MatchesStoryView(story: stories[i * 5 + 3])
+                        MatchesStoryView(story: stories[i * 5 + 4])
                     }
                     .frame(width: screenWidth * 0.9)
                     .padding(.bottom, 10)
@@ -40,9 +40,9 @@ struct StoriesView: View {
     }
 }
 
-struct StoriesView_Previews: PreviewProvider {
+struct MatchStoriesView_Previews: PreviewProvider {
     static var previews: some View {
-        StoriesView(stories: .constant([StoryModel(story: UIImage(), name: "1", userID: "123"),
+        MatchStoriesView(stories: .constant([StoryModel(story: UIImage(), name: "1", userID: "123"),
                                         StoryModel(story: UIImage(), name: "2", userID: "123"),
                                         StoryModel(story: UIImage(), name: "3", userID: "123"),
                                         StoryModel(story: UIImage(), name: "4", userID: "123"),

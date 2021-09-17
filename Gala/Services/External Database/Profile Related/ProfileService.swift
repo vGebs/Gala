@@ -15,7 +15,6 @@ import FirebaseFirestoreSwift
 protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
     func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
-    //func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
 

@@ -146,15 +146,7 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
-            //RecentsView()
-            //CardView()
-            //SwipeView()
-            //TestView()
-            //TestDistance()
-            //ExploreMainView(viewModel: ExploreViewModel())
-            //Test()
-            //SmallUserView(viewModel: SmallUserViewModel(profile: UserCore(uid: "1", name: "Vaughn", age: Date(), gender: "male", sexuality: "straight", longitude: 22.2, latitude: 22.2)))
-            //LandingView()
+            //StoriesView()
         }
     }
 }
