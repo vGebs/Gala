@@ -8,6 +8,7 @@
 import Foundation
 
 struct Like {
+    var dateOfLike: Date
     var likerUID: String
     var likedUID: String
     

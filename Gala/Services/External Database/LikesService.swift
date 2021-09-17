@@ -33,6 +33,7 @@ class LikesService: LikesServiceProtocol {
     func likeUser(uid: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
+                "dateOfLike" : Date(),
                 "likerUID" : self.currentUserCore.uid,
                 "likedUID" : uid,
                 "nameOfLiker" : self.currentUserCore.name,
@@ -112,7 +113,11 @@ class LikesService: LikesServiceProtocol {
                         var inComingLikes: [InComingLike] = []
                         
                         for doc in snapshot!.documents {
+                            let date = doc.data()["dateOfLike"] as? Timestamp
+                            let d = date?.dateValue()
+                            
                             let like = Like(
+                                dateOfLike: d!,
                                 likerUID: doc.data()["likerUID"] as? String ?? "",
                                 likedUID: doc.data()["likedUID"] as? String ?? "",
                                 nameOfLiker: doc.data()["nameOfLiker"] as? String ?? "",
