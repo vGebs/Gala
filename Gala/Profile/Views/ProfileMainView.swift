@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileMainView: View {
-    var optionButtonLeft: String = "highlighter"
+    var optionButtonLeft: String = "rectangle.stack.person.crop"
     var pageName: String = "Profile"
     var optionButtonRight: String = "gearshape"
     
@@ -71,7 +71,6 @@ struct ProfileMainView: View {
                             Label("", systemImage: optionButtonRight)
                                 .foregroundColor(.buttonPrimary)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
-
                         }
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                     }

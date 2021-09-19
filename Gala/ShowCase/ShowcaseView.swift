@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ShowcaseView: View {
-    var optionButtonLeft: String = "shuffle"
+    var optionButtonLeft: String = "rectangle.stack.person.crop"
     var pageName: String = "Showcase"
     var optionButtonRight: String = "square.stack"
     
@@ -77,6 +77,15 @@ struct ShowcaseView: View {
                                 HStack{
                                     Image(systemName: "clock")
                                     Text("Sort by most recent")
+                                }
+                            }
+                            
+                            Button(action: {
+                                
+                            }){
+                                HStack{
+                                    Image(systemName: "shuffle")
+                                    Text("Shuffle")
                                 }
                             }
                         } label: {

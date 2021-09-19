@@ -17,6 +17,7 @@
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
 		FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */; };
 		FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53826C884B200AE3B7C /* LandingView.swift */; };
+		FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -110,6 +111,7 @@
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FA58F53826C884B200AE3B7C /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOptionsView.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				FA87741F26409E9000D5D5CB /* PicTakenView.swift */,
 				FA7E3B3526EACF2200A6653C /* SendView.swift */,
 				FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */,
+				FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -747,6 +750,7 @@
 				FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */,
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */,
+				FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */,
 				FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */,
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,

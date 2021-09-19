@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExploreMainView: View {
-    var optionButtonLeft: String = "highlighter"
+    var optionButtonLeft: String = "rectangle.stack.person.crop"
     var pageName: String = "Explore"
     var optionButtonRight: String = "line.horizontal.3"
     var baseColor: Color = .blue

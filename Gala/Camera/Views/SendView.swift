@@ -13,7 +13,7 @@ struct SendView: View {
     var body: some View {
         ZStack {
             Color.black
-                .edgesIgnoringSafeArea(.top)
+                .edgesIgnoringSafeArea(.all)
             VStack {
                 Button(action: { sendPressed.toggle() }){
                     Text("back")

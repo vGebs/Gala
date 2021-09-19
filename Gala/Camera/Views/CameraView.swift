@@ -26,34 +26,60 @@ struct CameraView: View {
                 .shadow(radius: 15)
             
             VStack {
+                header
+                
                 Spacer()
-                Button(action: { self.camera.takePic()} ){
-                    ZStack{
-                        
-                        RoundedRectangle(cornerRadius: 10)
-                            //.frame(width: screenWidth / 9.5, height: screenWidth / 9.5)
-                            .foregroundColor(.white)
-                            .opacity(0.2)
-                        
-                        RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 3)
-                            .foregroundColor(.buttonPrimary)
-                    }
-                }
-                .frame(width: screenWidth / 6.5, height: screenWidth / 6.5)
-                .opacity(!camera.picTaken ? 1 : 0)
-                .padding(.bottom, screenHeight * 0.08)
+                
+                cameraButton
             }
-            
+
             PicTakenView(camera: camera, sendPressed: $sendPressed)
-                .opacity(camera.picTaken && !sendPressed ? 1 : 0)
-            
-            SendView(sendPressed: $sendPressed)
-                .opacity(sendPressed ? 1 : 0)
+                .opacity(camera.picTaken ? 1 : 0)
             
             Color.white
                 .edgesIgnoringSafeArea(.all)
                 .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
         }
+    }
+    
+    var cameraButton: some View {
+        Button(action: { self.camera.takePic()} ){
+            ZStack{
+                
+                RoundedRectangle(cornerRadius: 22)
+                    .foregroundColor(.white)
+                    .opacity(0.05)
+                
+                RoundedRectangle(cornerRadius: 22).stroke(lineWidth: 7)
+                    .foregroundColor(.buttonPrimary)
+            }
+        }
+        .frame(width: screenWidth / 6.5, height: screenWidth / 6.5)
+        .opacity(!camera.picTaken ? 1 : 0)
+        .padding(.bottom, screenHeight * 0.08)
+    }
+    
+    var header: some View {
+        HStack {
+            
+            VStack {
+                Button(action: {}){
+                    Image(systemName: "rectangle.stack.person.crop")
+                        .font(.system(size: 20, weight: .regular, design: .rounded))
+                        .foregroundColor(.buttonPrimary)
+                }
+                .padding(.leading)
+                Spacer()
+            }
+            
+            Spacer()
+            
+            CameraOptionsView(camera: camera)
+                .padding(.trailing)
+        }
+        .padding(.top, screenHeight * 0.01)
+        .frame(height: screenHeight / 12)
+        .opacity(!camera.picTaken ? 1 : 0)
     }
 }
 

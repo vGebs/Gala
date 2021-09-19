@@ -15,13 +15,22 @@ struct PicTakenView: View {
         VStack{
             HStack{
                 Button(action: { camera.retakePic() }){
-
+//                    ZStack {
+//                        Circle()
+//                            .frame(width: screenWidth * 0.08, height: screenWidth * 0.08)
+//                            .foregroundColor(.black)
+//
+//                        Circle().stroke()
+//                            .frame(width: screenWidth * 0.08, height: screenWidth * 0.08)
+//                            .foregroundColor(.buttonPrimary)
+                    
                     Image(systemName: "xmark")
-                        .font(.system(size: 25, weight: .medium, design: .rounded))
-                        .foregroundColor(.white)
-                        .padding(.leading, screenWidth / 14)
-                        .padding(.top, screenWidth / 5.5)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.buttonPrimary)
+                    //}
                 }
+                .padding(.leading, screenWidth * 0.045)
+                .padding(.top, screenWidth * 0.06)
                 
                 Spacer()
             }
@@ -34,14 +43,31 @@ struct PicTakenView: View {
                 }){
                     ZStack {
                         Capsule()
+                            .stroke()
                             .frame(width: screenWidth / 7, height: screenWidth / 10)
-                            .foregroundColor(Color.gray.opacity(0.7))
+                            .foregroundColor(.buttonPrimary)
 
                         Image(systemName: camera.picSaved ? "checkmark" : "tray.and.arrow.down")
                             .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                     }
-                    .padding(.leading)
+                    .padding(.leading, screenWidth * 0.01)
+                }
+                
+                Button(action: {
+                    
+                }) {
+                    ZStack {
+                        Capsule()
+                            .stroke()
+                            .frame(width: screenWidth / 7, height: screenWidth / 10)
+                            .foregroundColor(.buttonPrimary)
+
+                        Image(systemName: "doc.badge.plus")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.leading, screenWidth * 0.01)
                 }
                 
                 Spacer()
@@ -51,24 +77,28 @@ struct PicTakenView: View {
                 }){
                     ZStack {
                         Capsule()
+                            .stroke()
                             .frame(width: screenWidth / 3.5, height: screenWidth / 10)
-                            .foregroundColor(.yellow)
+                            .foregroundColor(.buttonPrimary)
                             //.opacity(0.8)
                         
                         HStack {
                             Text("Send")
                                 .font(.system(size: 18, weight: .medium))
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 18, weight: .medium))
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                         }
                     }
-                    .padding(.trailing)
+                    .padding(.trailing, screenWidth * 0.01)
                 }
                 
             }
             .padding(.bottom, screenWidth / 13)
+        }
+        .sheet(isPresented: $sendPressed) {
+            SendView(sendPressed: $sendPressed)
         }
         .edgesIgnoringSafeArea(.bottom)
     }
