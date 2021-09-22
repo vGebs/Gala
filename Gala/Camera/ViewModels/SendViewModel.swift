@@ -74,4 +74,22 @@ class SendViewModel: ObservableObject {
             }
             .store(in: &self.cancellables)
     }
+    
+    func getTimeOfDay() {
+        VibesService.shared.getPostableVibes()
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink{ completion in
+                switch completion {
+                case .failure(let err):
+                    print("SendViewModel: Failed to get titles for the day and period")
+                    print("SendViewModel-Error: \(err.localizedDescription)")
+                case .finished:
+                    print("SendViewModel: Successfully fetched titles for the day and period")
+                }
+            } receiveValue: { titles in
+                print(titles)
+            }
+            .store(in: &self.cancellables)
+    }
 }

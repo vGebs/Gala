@@ -18,6 +18,8 @@
 		FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */; };
 		FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53826C884B200AE3B7C /* LandingView.swift */; };
 		FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */; };
+		FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D526FA605700B77D30 /* VibesService.swift */; };
+		FA67C6D826FA7A8300B77D30 /* TestWeekday.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D726FA7A8300B77D30 /* TestWeekday.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -112,6 +114,8 @@
 		FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FA58F53826C884B200AE3B7C /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOptionsView.swift; sourceTree = "<group>"; };
+		FA67C6D526FA605700B77D30 /* VibesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesService.swift; sourceTree = "<group>"; };
+		FA67C6D726FA7A8300B77D30 /* TestWeekday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestWeekday.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -269,6 +273,7 @@
 				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
 				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
 				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
+				FA67C6D526FA605700B77D30 /* VibesService.swift */,
 			);
 			path = Story;
 			sourceTree = "<group>";
@@ -522,6 +527,7 @@
 			isa = PBXGroup;
 			children = (
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
+				FA67C6D726FA7A8300B77D30 /* TestWeekday.swift */,
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
@@ -739,6 +745,7 @@
 			files = (
 				FA7E3B4126EF15CB00A6653C /* StoriesView.swift in Sources */,
 				FA0FCA40268404A200434561 /* MatchesStoryView.swift in Sources */,
+				FA67C6D826FA7A8300B77D30 /* TestWeekday.swift in Sources */,
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,
 				FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */,
@@ -800,6 +807,7 @@
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
+				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,
 				FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */,

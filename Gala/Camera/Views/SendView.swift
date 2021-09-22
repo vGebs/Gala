@@ -34,6 +34,11 @@ struct SendView: View {
                     Text("Delete first story")
                 }
                 .padding()
+                
+                Button(action: { viewModel.getTimeOfDay() }){
+                    Text("Get time of day")
+                }
+                .padding()
             }
         }
     }
