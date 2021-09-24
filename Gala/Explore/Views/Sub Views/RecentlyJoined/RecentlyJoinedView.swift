@@ -15,56 +15,54 @@ struct RecentlyJoinedView: View {
     
     var body: some View {
         ZStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    HStack {
-                        Text("Newcomers")
-                            .font(.system(size: 25, weight: .bold, design: .rounded))
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            self.showAll = true
-                        }) {
-                            Text("See All")
-                                .font(.system(size: 16, weight: .medium, design: .rounded))
-                        }
-                        .frame(height: screenWidth * 0.1)
-                    }
-                    .frame(width: screenWidth * 0.9)
-                    .padding(.leading)
-                    .padding(.trailing)
+            VStack {
+                HStack {
+                    Text("Newcomers")
+                        .font(.system(size: 25, weight: .bold, design: .rounded))
                     
-                    HStack {
-                        TabView {
-                            ForEach(0..<((viewModel.users.count + 1) / 2), id: \.self) { i in
-                                VStack {
-                                    if i * 2 < viewModel.users.count {
-                                        //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
-                                        SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2])
-                                            .padding(.bottom, 3)
-                                    }
-                                    
-                                    if i * 2 + 1 < viewModel.users.count {
-                                        //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
-                                        SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2 + 1])
-                                    }
-                                    
-                                    if i * 2 + 1 == viewModel.users.count {
-                                        Spacer()
-                                            .frame(height: 50)
-                                    }
+                    Spacer()
+                    
+                    Button(action: {
+                        self.showAll = true
+                    }) {
+                        Text("See All")
+                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                    }
+                    .frame(height: screenWidth * 0.1)
+                }
+                .frame(width: screenWidth * 0.9)
+                .padding(.leading)
+                .padding(.trailing)
+                
+                HStack {
+                    TabView {
+                        ForEach(0..<((viewModel.users.count + 1) / 2), id: \.self) { i in
+                            VStack {
+                                if i * 2 < viewModel.users.count {
+                                    //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
+                                    SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2])
+                                        .padding(.bottom, 3)
+                                }
+                                
+                                if i * 2 + 1 < viewModel.users.count {
+                                    //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
+                                    SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2 + 1])
+                                }
+                                
+                                if i * 2 + 1 == viewModel.users.count {
+                                    Spacer()
+                                        .frame(height: 50)
                                 }
                             }
                         }
-                        .offset(y: -screenHeight * 0.017)
-                        .frame(width: screenWidth, height: screenHeight / 7.5)
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
+                    .offset(y: -screenHeight * 0.017)
                     .frame(width: screenWidth, height: screenHeight / 7.5)
-                    
-                    Spacer()
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
+                .frame(width: screenWidth, height: screenHeight / 7.5)
+                
+                Spacer()
             }
         }
         .sheet(isPresented: $showAll, content: {

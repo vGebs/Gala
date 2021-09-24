@@ -9,25 +9,16 @@ import SwiftUI
 
 struct PicTakenView: View {
     @ObservedObject var camera: CameraViewModel
+    @StateObject var sendVM = SendViewModel()
     @Binding var sendPressed: Bool
     
     var body: some View {
         VStack{
             HStack{
                 Button(action: { camera.retakePic() }){
-//                    ZStack {
-//                        Circle()
-//                            .frame(width: screenWidth * 0.08, height: screenWidth * 0.08)
-//                            .foregroundColor(.black)
-//
-//                        Circle().stroke()
-//                            .frame(width: screenWidth * 0.08, height: screenWidth * 0.08)
-//                            .foregroundColor(.buttonPrimary)
-                    
                     Image(systemName: "xmark")
                         .font(.system(size: 24, weight: .bold, design: .rounded))
                         .foregroundColor(.buttonPrimary)
-                    //}
                 }
                 .padding(.leading, screenWidth * 0.045)
                 .padding(.top, screenWidth * 0.06)
@@ -74,6 +65,12 @@ struct PicTakenView: View {
                 
                 Button(action: {
                     self.sendPressed = true
+                    if sendVM.vibes.count == 0 ||
+                        sendVM.currentPeriod != sendVM.getTimeOfDay() ||
+                        sendVM.currentDay != Date().dayOfWeek()! ||
+                        sendVM.currentDay == nil || sendVM.currentPeriod == nil {
+                        self.sendVM.getPostableVibes()
+                    }
                 }){
                     ZStack {
                         Capsule()
@@ -98,7 +95,8 @@ struct PicTakenView: View {
             .padding(.bottom, screenWidth / 13)
         }
         .sheet(isPresented: $sendPressed) {
-            SendView(sendPressed: $sendPressed)
+            //SendViewTest(sendPressed: $sendPressed)
+            SendView(isPresented: $sendPressed, camera: camera, viewModel: sendVM)
         }
         .edgesIgnoringSafeArea(.bottom)
     }

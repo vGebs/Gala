@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct SendView: View {
+struct SendViewTest: View {
     @Binding var sendPressed: Bool
-    @StateObject var viewModel: SendViewModel = SendViewModel()
+    @StateObject var viewModel: SendViewModelTest = SendViewModelTest()
     var body: some View {
         ZStack {
             Color.black
@@ -46,6 +46,6 @@ struct SendView: View {
 
 struct SendView_Previews: PreviewProvider {
     static var previews: some View {
-        SendView(sendPressed: .constant(true))
+        SendViewTest(sendPressed: .constant(true))
     }
 }

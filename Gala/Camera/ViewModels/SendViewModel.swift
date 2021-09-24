@@ -2,94 +2,76 @@
 //  SendViewModel.swift
 //  Gala
 //
-//  Created by Vaughn on 2021-09-09.
+//  Created by Vaughn on 2021-09-23.
 //
 
-import Combine
 import SwiftUI
+import Combine
 
-class SendViewModel: ObservableObject {
+protocol SendViewModelProtocol {
+    var vibes: [String] { get }
     
-    private var storyService: StoryService = StoryService.shared
-    private var storyMetaService: StoryMetaService = StoryMetaService.shared
-    private var currentUserCore: UserCore = UserCoreService.shared.currentUserCore!
+    func postStory(pic: UIImage)
+    func send()
+}
+
+class SendViewModel: ObservableObject, SendViewModelProtocol {
+    @Published private(set) var vibes: [String] = []
     private var cancellables: [AnyCancellable] = []
+    @Published var selected: String = ""
+    @Published var currentDay: String?
+    @Published var currentPeriod: String?
     
-    init() {}
-    
-    func postStory() {
-
-        let date = Date()
-        storyService.postStory(postID_date: date, asset: UIImage())
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("SendViewModel: Failed to post story")
-                    print("SendViewModel-Error: \(err.localizedDescription)")
-                case .finished:
-                    print("SendViewModel: Successfully posted story with ID: \(date)")
-                }
-            } receiveValue: { _ in }
-            .store(in: &self.cancellables)
+    init() {
+        currentDay = Date().dayOfWeek()!
     }
     
-    func getMyStories() {
-        storyMetaService.getMyStories()
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("SendViewModel: Failed to get recents")
-                    print("SendViewModel-Error: \(err.localizedDescription)")
-                case .finished:
-                    print("SendViewModel: Successfully got recents")
-                }
-            } receiveValue: { storyIds in
-                for id in storyIds {
-                    print("ID: \(id)")
-                }
-            }.store(in: &self.cancellables)
-    }
-    
-    func deleteStory() {
-        let id = storyService.postIDs[0]
-        storyService.deleteStory(storyID: id)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("SendViewModel: Failed to delete post w/ id: \(id)")
-                    print("SendViewModel-Error: \(err.localizedDescription)")
-                case .finished:
-                    print("SendViewModel: Successfully deleted post w/ id: \(id)")
-                }
-            } receiveValue: {[unowned self] _ in
-                for id in self.storyService.postIDs {
-                    print("ID11: \(id)")
-                }
-            }
-            .store(in: &self.cancellables)
-    }
-    
-    func getTimeOfDay() {
-        VibesService.shared.getPostableVibes()
+    func getPostableVibes() {
+        let day = Date().dayOfWeek()!
+        let period = getTimeOfDay()
+        currentPeriod = period
+        VibesService.shared.getPostableVibes(dayOfWeek: day, period: period)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
-            .sink{ completion in
+            .sink { completion in
                 switch completion {
                 case .failure(let err):
-                    print("SendViewModel: Failed to get titles for the day and period")
+                    print("SendViewModel: Failed to fetch postable vibes")
                     print("SendViewModel-Error: \(err.localizedDescription)")
                 case .finished:
-                    print("SendViewModel: Successfully fetched titles for the day and period")
+                    print("SendViewModel: Successfully fetched postable vibes")
                 }
-            } receiveValue: { titles in
-                print(titles)
+            } receiveValue: { [weak self] vibes in
+                self?.vibes = vibes
             }
             .store(in: &self.cancellables)
+    }
+    
+    func getTimeOfDay() -> String {
+        let date = Date() // save date, so all components use the same date
+        let calendar = Calendar.current // or e.g. Calendar(identifier: .persian)
+
+        let hour = calendar.component(.hour, from: date)
+
+        if hour >= 5 && hour < 12 {
+            return "Morning"
+        } else if hour >= 12 && hour < 17 {
+            return "Afternoon"
+        } else if hour >= 17 && hour < 22 {
+            return "Evening"
+        } else if hour >= 22 {
+            return "Night"
+        } else if hour < 5 {
+            return "Night"
+        }
+        return ""
+    }
+    
+    func postStory(pic: UIImage) {
+        
+    }
+    
+    func send() {
+        
     }
 }
