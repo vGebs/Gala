@@ -13,92 +13,110 @@ struct PicTakenView: View {
     @Binding var sendPressed: Bool
     
     var body: some View {
-        VStack{
-            HStack{
-                Button(action: { camera.retakePic() }){
-                    Image(systemName: "xmark")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(.buttonPrimary)
+        ZStack{
+            VStack{
+                if camera.image != nil {
+                    Image(uiImage: camera.image!)
+                        .resizable()
+                        .scaledToFill()
+                        //.aspectRatio(contentMode: .fit)
+                        .frame(width: screenWidth, height: screenHeight * 0.91)
+                        .cornerRadius(20)
+                        .edgesIgnoringSafeArea(.all)
                 }
-                .padding(.leading, screenWidth * 0.045)
-                .padding(.top, screenWidth * 0.06)
                 
                 Spacer()
             }
-            Spacer()
-            HStack{
-                Button(action: {
-                    if !self.camera.picSaved{
-                        camera.savePic()
-                    }
-                }){
-                    ZStack {
-                        Capsule()
-                            .stroke()
-                            .frame(width: screenWidth / 7, height: screenWidth / 10)
+            .edgesIgnoringSafeArea(.all)
+            
+            VStack{
+                HStack{
+                    Button(action: { camera.retakePic() }){
+                        Image(systemName: "xmark")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
                             .foregroundColor(.buttonPrimary)
-
-                        Image(systemName: camera.picSaved ? "checkmark" : "tray.and.arrow.down")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.primary)
                     }
-                    .padding(.leading, screenWidth * 0.01)
-                }
-                
-                Button(action: {
+                    .padding(.leading, screenWidth * 0.045)
+                    .padding(.top, screenWidth * 0.13)
                     
-                }) {
-                    ZStack {
-                        Capsule()
-                            .stroke()
-                            .frame(width: screenWidth / 7, height: screenWidth / 10)
-                            .foregroundColor(.buttonPrimary)
-
-                        Image(systemName: "doc.badge.plus")
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.primary)
-                    }
-                    .padding(.leading, screenWidth * 0.01)
+                    Spacer()
                 }
-                
                 Spacer()
-                
-                Button(action: {
-                    self.sendPressed = true
-                    if sendVM.vibes.count == 0 ||
-                        sendVM.currentPeriod != sendVM.getTimeOfDay() ||
-                        sendVM.currentDay != Date().dayOfWeek()! ||
-                        sendVM.currentDay == nil || sendVM.currentPeriod == nil {
-                        self.sendVM.getPostableVibes()
-                    }
-                }){
-                    ZStack {
-                        Capsule()
-                            .stroke()
-                            .frame(width: screenWidth / 3.5, height: screenWidth / 10)
-                            .foregroundColor(.buttonPrimary)
-                            //.opacity(0.8)
-                        
-                        HStack {
-                            Text("Send")
-                                .font(.system(size: 18, weight: .medium))
-                                .foregroundColor(.primary)
-                            Image(systemName: "chevron.right")
+                HStack{
+                    Button(action: {
+    //                    if !self.camera.picSaved{
+    //                        camera.savePic()
+    //                    }
+                    }){
+                        ZStack {
+                            Capsule()
+                                .stroke()
+                                .frame(width: screenWidth / 7, height: screenWidth / 10)
+                                .foregroundColor(.buttonPrimary)
+
+                            Image(systemName: "tray.and.arrow.down") // camera.picSaved ? "checkmark" :
                                 .font(.system(size: 18, weight: .medium))
                                 .foregroundColor(.primary)
                         }
+                        .padding(.leading, screenWidth * 0.01)
                     }
-                    .padding(.trailing, screenWidth * 0.01)
+                    
+                    Button(action: {
+                        
+                    }) {
+                        ZStack {
+                            Capsule()
+                                .stroke()
+                                .frame(width: screenWidth / 7, height: screenWidth / 10)
+                                .foregroundColor(.buttonPrimary)
+
+                            Image(systemName: "doc.badge.plus")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.primary)
+                        }
+                        .padding(.leading, screenWidth * 0.01)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        self.sendPressed = true
+                        if sendVM.vibes.count == 0 ||
+                            sendVM.currentPeriod != sendVM.getTimeOfDay() ||
+                            sendVM.currentDay != Date().dayOfWeek()! ||
+                            sendVM.currentDay == nil || sendVM.currentPeriod == nil {
+                            self.sendVM.getPostableVibes()
+                        }
+                    }){
+                        ZStack {
+                            Capsule()
+                                .stroke()
+                                .frame(width: screenWidth / 3.5, height: screenWidth / 10)
+                                .foregroundColor(.buttonPrimary)
+                                //.opacity(0.8)
+                            
+                            HStack {
+                                Text("Send")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.primary)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        .padding(.trailing, screenWidth * 0.01)
+                    }
+                    
                 }
-                
+                .padding(.bottom, screenWidth / 13)
             }
-            .padding(.bottom, screenWidth / 13)
+            .sheet(isPresented: $sendPressed) {
+                //SendViewTest(sendPressed: $sendPressed)
+                SendView(isPresented: $sendPressed, camera: camera, viewModel: sendVM)
+            }
+            .edgesIgnoringSafeArea(.bottom)
         }
-        .sheet(isPresented: $sendPressed) {
-            //SendViewTest(sendPressed: $sendPressed)
-            SendView(isPresented: $sendPressed, camera: camera, viewModel: sendVM)
-        }
-        .edgesIgnoringSafeArea(.bottom)
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

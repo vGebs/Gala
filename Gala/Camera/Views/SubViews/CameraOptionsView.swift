@@ -21,7 +21,10 @@ struct CameraOptionsView: View {
             VStack{
                 Spacer()
                 
-                Button(action: { camera.toggleCamera() }){
+                Button(action: {
+                    //camera.toggleCamera()
+                    
+                }){
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(.system(size: 18, weight: .medium, design: .rounded))
                         .foregroundColor(.buttonPrimary)
@@ -29,8 +32,11 @@ struct CameraOptionsView: View {
                 
                 Spacer()
                 
-                Button(action: { camera.flashEnabled.toggle()}) {
-                    Image(systemName: camera.flashEnabled ? "bolt.fill" : "bolt.slash.fill")
+                Button(action: {
+                    //camera.flashEnabled.toggle()
+                    
+                }) {
+                    Image(systemName: "bolt.fill") //camera.flashEnabled ?  : "bolt.slash.fill"
                         .font(.system(size: 18, weight: .medium, design: .rounded))
                         .foregroundColor(.buttonPrimary)
                 }

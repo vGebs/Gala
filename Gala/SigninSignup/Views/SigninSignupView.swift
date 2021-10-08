@@ -347,17 +347,28 @@ struct TextFieldView: View {
                     .padding(.horizontal, 15)
                     .autocapitalization(.none)
             } else {
-                iTextField("", text: $outputText, isEditing: $editing)
-                    .onReturn{ self.isGoingToEdit = true }
-                    .isSecure(isSecureField)
-                    .disableAutocorrection(true)
-                    .fontFromUIFont(.systemFont(ofSize: 16, weight: .medium))
-                    .foregroundColor(.primary)
-                    .padding()
-                    .cornerRadius(16)
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
-                    .padding(.horizontal, 15)
-                    .autocapitalization(.none)
+                if isSecureField {
+                    SecureField("", text: $outputText)
+                        .foregroundColor(.primary)
+                        .padding()
+                        .cornerRadius(16)
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
+                        .padding(.horizontal, 15)
+                        .autocapitalization(.none)
+                } else {
+                    TextField("", text: $outputText)
+    //                iTextField("", text: $outputText, isEditing: $editing)
+    //                    .onReturn{ self.isGoingToEdit = true }
+    //                    .isSecure(isSecureField)
+    //                    .disableAutocorrection(true)
+    //                    .fontFromUIFont(.systemFont(ofSize: 16, weight: .medium))
+                        .foregroundColor(.primary)
+                        .padding()
+                        .cornerRadius(16)
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
+                        .padding(.horizontal, 15)
+                        .autocapitalization(.none)
+                }
             }
         }
     }

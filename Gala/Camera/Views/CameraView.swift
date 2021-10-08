@@ -21,7 +21,7 @@ struct CameraView: View {
             SwiftUICamPreview(camera: camera, view: view)
                 .ignoresSafeArea(.all, edges: .all)
                 .onTapGesture(count: 2) {
-                    camera.toggleCamera()
+                    //camera.toggleCamera()
                 }
                 .shadow(radius: 15)
             
@@ -34,16 +34,16 @@ struct CameraView: View {
             }
 
             PicTakenView(camera: camera, sendPressed: $sendPressed)
-                .opacity(camera.picTaken ? 1 : 0)
+                .opacity(camera.image != nil ? 1 : 0)
             
-            Color.white
-                .edgesIgnoringSafeArea(.all)
-                .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
+//            Color.white
+//                .edgesIgnoringSafeArea(.all)
+//                .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
         }
     }
     
     var cameraButton: some View {
-        Button(action: { self.camera.takePic()} ){
+        Button(action: { self.camera.capturePhoto()} ){
             ZStack{
                 
                 RoundedRectangle(cornerRadius: 22)
@@ -55,7 +55,7 @@ struct CameraView: View {
             }
         }
         .frame(width: screenWidth / 6.5, height: screenWidth / 6.5)
-        .opacity(!camera.picTaken ? 1 : 0)
+        .opacity(camera.image == nil ? 1 : 0)
         .padding(.bottom, screenHeight * 0.08)
     }
     
@@ -79,7 +79,7 @@ struct CameraView: View {
         }
         .padding(.top, screenHeight * 0.01)
         .frame(height: screenHeight / 12)
-        .opacity(!camera.picTaken ? 1 : 0)
+        .opacity(camera.image == nil ? 1 : 0)
     }
 }
 

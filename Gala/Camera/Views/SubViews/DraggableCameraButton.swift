@@ -37,16 +37,16 @@ struct DraggableCameraButton: View {
                         .font(Font.system(size: 20, weight: .light))
                         .foregroundColor(.yellow)
                         .onTapGesture {
-                            camera.toggleCamera()
+                            //camera.toggleCamera()
                         }
                     
                     Spacer()
-                    Image(systemName: camera.flashEnabled ? "bolt" : "bolt.slash")
-                        .font(Font.system(size: 20, weight: .light))
-                        .foregroundColor(.yellow)
-                        .onTapGesture {
-                            camera.flashEnabled.toggle()
-                        }
+//                    Image(systemName: camera.flashEnabled ? "bolt" : "bolt.slash")
+//                        .font(Font.system(size: 20, weight: .light))
+//                        .foregroundColor(.yellow)
+//                        .onTapGesture {
+//                            //camera.flashEnabled.toggle()
+//                        }
                     Spacer()
                 }
                 .frame(width: screenWidth / 10, height: screenHeight / 10)
@@ -78,7 +78,7 @@ struct DraggableCameraButton: View {
             }
             .position(rectPosition)
             .onTapGesture {
-                camera.takePic()
+                camera.capturePhoto()
             }
             .gesture(DragGesture().onChanged({ value in
                 self.rectPosition = value.location

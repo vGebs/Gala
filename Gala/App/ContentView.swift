@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import ElegantPages
-import Pages
 
 struct ContentView: View {
     @ObservedObject var camera: CameraViewModel
@@ -38,7 +36,7 @@ struct ContentView: View {
         .edgesIgnoringSafeArea(.all)
         .overlay(
             NavBar(offset: $offset)
-                .opacity(camera.picTaken ? 0 : 1)
+                .opacity(camera.image != nil ? 0 : 1)
                 .padding(.bottom, screenHeight * 0.03),
             alignment: .bottom
         )

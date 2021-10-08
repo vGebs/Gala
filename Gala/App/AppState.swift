@@ -121,7 +121,7 @@ class AppState: ObservableObject {
         $allowAccess
             .flatMap { allow -> AnyPublisher<CameraViewModel?, Never> in
                 if allow {
-                    return Just(CameraViewModel(volumeCameraButton: false)).eraseToAnyPublisher()
+                    return Just(CameraViewModel()).eraseToAnyPublisher() //volumeCameraButton: false
                 } else {
                     print("Setting Camera VM to nil: AppState.swift")
                     return Just(nil).eraseToAnyPublisher()
