@@ -534,6 +534,10 @@ import CoreLocation
 
 class CameraViewModel: ObservableObject {
     
+    @Published public var picSaved = false
+    @Published public var flashEnabled = false
+    @Published public var image: UIImage?
+
     public var camFlipEnabled: Bool
     public var recordActionEnabled: Bool
     public var cameraButtonEnabled: Bool
@@ -543,7 +547,6 @@ class CameraViewModel: ObservableObject {
     public var photoQualityPrioritization: Bool
     //public var photoData
     
-    @Published public var image: UIImage?
     
     let locationManager = CLLocationManager()
     
@@ -939,6 +942,17 @@ extension CameraViewModel {
 }
 
 extension CameraViewModel {
+    
+    func savePic(){
+        if let image = self.image{
+            
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            
+            print("saved Successfully....")
+            picSaved = true
+        }
+    }
+    
     func capturePhoto() {
         /*
          Retrieve the video preview layer's video orientation on the main queue before
@@ -956,7 +970,11 @@ extension CameraViewModel {
             }
             
             if self.videoDeviceInput.device.isFlashAvailable {
-                photoSettings.flashMode = .auto
+                if self.flashEnabled {
+                    photoSettings.flashMode = .on
+                } else {
+                    photoSettings.flashMode = .off
+                }
             }
             
             photoSettings.isHighResolutionPhotoEnabled = true
@@ -977,12 +995,12 @@ extension CameraViewModel {
             
             let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, willCapturePhotoAnimation: {
                 // Flash the screen to signal that AVCam took a photo.
-                DispatchQueue.main.async {
-                    self.preview.opacity = 0
-                    UIView.animate(withDuration: 0.25) {
-                        self.preview.opacity = 1
-                    }
-                }
+//                DispatchQueue.main.async {
+//                    self.preview.opacity = 0
+//                    UIView.animate(withDuration: 0.25) {
+//                        self.preview.opacity = 1
+//                    }
+//                }
             }, completionHandler: { photoCaptureProcessor in
                 
                 if let data = photoCaptureProcessor.photoData {
@@ -1014,6 +1032,7 @@ extension CameraViewModel {
     
     public func retakePic() {
         self.image = nil
+        self.picSaved = false
     }
 }
 

@@ -14,20 +14,21 @@ struct PicTakenView: View {
     
     var body: some View {
         ZStack{
-            VStack{
-                if camera.image != nil {
+            if camera.image != nil {
+                VStack{
                     Image(uiImage: camera.image!)
                         .resizable()
                         .scaledToFill()
-                        //.aspectRatio(contentMode: .fit)
+                    //.aspectRatio(contentMode: .fit)
                         .frame(width: screenWidth, height: screenHeight * 0.91)
                         .cornerRadius(20)
                         .edgesIgnoringSafeArea(.all)
+                    
+                    
+                    Spacer()
                 }
-                
-                Spacer()
+                .edgesIgnoringSafeArea(.all)
             }
-            .edgesIgnoringSafeArea(.all)
             
             VStack{
                 HStack{
@@ -44,9 +45,9 @@ struct PicTakenView: View {
                 Spacer()
                 HStack{
                     Button(action: {
-    //                    if !self.camera.picSaved{
-    //                        camera.savePic()
-    //                    }
+                        if !self.camera.picSaved{
+                            camera.savePic()
+                        }
                     }){
                         ZStack {
                             Capsule()
@@ -54,7 +55,7 @@ struct PicTakenView: View {
                                 .frame(width: screenWidth / 7, height: screenWidth / 10)
                                 .foregroundColor(.buttonPrimary)
 
-                            Image(systemName: "tray.and.arrow.down") // camera.picSaved ? "checkmark" :
+                            Image(systemName: camera.picSaved ? "checkmark" : "tray.and.arrow.down")
                                 .font(.system(size: 18, weight: .medium))
                                 .foregroundColor(.primary)
                         }

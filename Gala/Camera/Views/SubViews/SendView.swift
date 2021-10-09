@@ -44,13 +44,6 @@ struct SendView: View {
                                     }
                                 }
                         }
-                        if camera.image != nil {
-                            Image(uiImage: camera.image!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: screenWidth / 5, height: screenWidth / 3)
-                        }
-                        
                         
                         Spacer()
                     }

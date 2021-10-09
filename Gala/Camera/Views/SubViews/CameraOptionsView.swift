@@ -33,10 +33,9 @@ struct CameraOptionsView: View {
                 Spacer()
                 
                 Button(action: {
-                    //camera.flashEnabled.toggle()
-                    
+                    camera.flashEnabled.toggle()
                 }) {
-                    Image(systemName: "bolt.fill") //camera.flashEnabled ?  : "bolt.slash.fill"
+                    Image(systemName: camera.flashEnabled ? "bolt.fill" : "bolt.slash.fill" )
                         .font(.system(size: 18, weight: .medium, design: .rounded))
                         .foregroundColor(.buttonPrimary)
                 }
