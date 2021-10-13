@@ -815,6 +815,28 @@ class CameraViewModel: ObservableObject {
         }
     }
     
+    public func tearDownCamera() {
+        sessionQueue.async {
+            if self.setupResult == .success {
+                self.session.stopRunning()
+                self.isSessionRunning = self.session.isRunning
+                self.removeObservers()
+            }
+        }
+    }
+    
+    public func buildCam() {
+        sessionQueue.async {
+            // remove and re-add inputs and outputs
+            for input in self.session.inputs {
+                self.session.removeInput(input)
+            }
+            self.configureSession()
+            
+            self.session.startRunning()
+        }
+    }
+    
     @objc
     func subjectAreaDidChange(notification: NSNotification) {
         let devicePoint = CGPoint(x: 0.5, y: 0.5)

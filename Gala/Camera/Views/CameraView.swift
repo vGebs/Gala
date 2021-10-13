@@ -29,6 +29,15 @@ struct CameraView: View {
                 header
                 
                 Spacer()
+                Button(action: {camera.buildCam()}){
+                    Text("Build cam")
+                }
+                .padding()
+                
+                Button(action: {camera.tearDownCamera()}){
+                    Text("Tear down cam")
+                }
+                .padding()
                 
                 cameraButton
             }
