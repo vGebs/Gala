@@ -25,10 +25,18 @@ struct SendView: View {
                 ScrollView(showsIndicators: false) {
                     VStack{
                         HStack{
-                            Text("Post to Currated List")
+                            Text("Post story to Currated List")
                                 .foregroundColor(.white)
-                                .font(.system(size: 25, weight: .bold, design: .rounded))
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
                             Spacer()
+                            
+                            Menu {
+                                Text("A post to a currated list will be seen by your matches")
+                            } label: {
+                                Label("", systemImage: "exclamationmark.circle")
+                                    .foregroundColor(.buttonPrimary)
+                            }
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
                         }
                         .padding(.top, 3)
                         .frame(width: screenWidth * 0.9)
@@ -44,6 +52,14 @@ struct SendView: View {
                                     }
                                 }
                         }
+                        
+                        HStack{
+                            Text("Post story to your matches")
+                                .foregroundColor(.white)
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
+                            Spacer()
+                        }
+                        .padding(.top)
                         
                         Spacer()
                     }

@@ -16,11 +16,14 @@ protocol SendViewModelProtocol {
 }
 
 class SendViewModel: ObservableObject, SendViewModelProtocol {
-    @Published private(set) var vibes: [String] = []
-    private var cancellables: [AnyCancellable] = []
+    
     @Published var selected: String = ""
     @Published var currentDay: String?
     @Published var currentPeriod: String?
+    
+    @Published private(set) var vibes: [String] = []
+    
+    private var cancellables: [AnyCancellable] = []
     
     init() {
         currentDay = Date().dayOfWeek()!

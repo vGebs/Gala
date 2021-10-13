@@ -21,7 +21,7 @@ struct CameraView: View {
             SwiftUICamPreview(camera: camera, view: view)
                 .ignoresSafeArea(.all, edges: .all)
                 .onTapGesture(count: 2) {
-                    //camera.toggleCamera()
+                    camera.toggleCamera()
                 }
                 .shadow(radius: 15)
             

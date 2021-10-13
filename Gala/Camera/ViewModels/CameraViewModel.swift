@@ -588,6 +588,13 @@ class CameraViewModel: ObservableObject {
         case off
     }
     
+    private enum CurrentCamera {
+        case front
+        case back
+    }
+    
+    private var currentCamera: CurrentCamera = .front
+    
     private var livePhotoMode: LivePhotoMode = .off
     private var depthDataDeliveryMode: DepthDataDeliveryMode = .off
     private var photoQualityPrioritizationMode: AVCapturePhotoOutput.QualityPrioritization = .balanced
@@ -651,6 +658,8 @@ class CameraViewModel: ObservableObject {
         }
     }
     
+    private var photoOutputEnabled = false
+    
     // Call this on the session queue.
     /// - Tag: ConfigureSession
     private func configureSession() {
@@ -671,21 +680,20 @@ class CameraViewModel: ObservableObject {
         do {
             var defaultVideoDevice: AVCaptureDevice?
             
-            // Choose the back dual camera, if available, otherwise default to a wide angle camera.
-            if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                // If the rear wide angle camera isn't available, default to the front wide angle camera.
-                defaultVideoDevice = frontCameraDevice
-            }
-            else if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                // If a rear dual wide camera is not available, default to the rear wide angle camera.
-                defaultVideoDevice = backCameraDevice
-            }
-            else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
-                defaultVideoDevice = dualCameraDevice
-            }
-            else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
-                // If a rear dual camera is not available, default to the rear dual wide camera.
-                defaultVideoDevice = dualWideCameraDevice
+            if self.currentCamera == .front {
+                if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                    defaultVideoDevice = frontCameraDevice
+                }
+            } else {
+                if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    defaultVideoDevice = backCameraDevice
+                }
+                else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
+                    defaultVideoDevice = dualCameraDevice
+                }
+                else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
+                    defaultVideoDevice = dualWideCameraDevice
+                }
             }
             
             guard let videoDevice = defaultVideoDevice else {
@@ -694,10 +702,15 @@ class CameraViewModel: ObservableObject {
                 session.commitConfiguration()
                 return
             }
+            
             let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
             
             if session.canAddInput(videoDeviceInput) {
-                session.addInput(videoDeviceInput)
+                print(videoDeviceInput)
+                if let _ = self.videoDeviceInput {
+                    session.removeInput(self.videoDeviceInput)
+                }
+                session.addInput(videoDeviceInput) //Breaking here
                 self.videoDeviceInput = videoDeviceInput
                 
             } else {
@@ -728,24 +741,27 @@ class CameraViewModel: ObservableObject {
         }
         
         // Add the photo output.
-        if session.canAddOutput(photoOutput) {
-            session.addOutput(photoOutput)
-            
-            photoOutput.isHighResolutionCaptureEnabled = true
-            photoOutput.isLivePhotoCaptureEnabled = photoOutput.isLivePhotoCaptureSupported
-            photoOutput.isDepthDataDeliveryEnabled = photoOutput.isDepthDataDeliverySupported
-            photoOutput.isPortraitEffectsMatteDeliveryEnabled = photoOutput.isPortraitEffectsMatteDeliverySupported
-            photoOutput.enabledSemanticSegmentationMatteTypes = photoOutput.availableSemanticSegmentationMatteTypes
-            photoOutput.maxPhotoQualityPrioritization = .quality
-            livePhotoMode = photoOutput.isLivePhotoCaptureSupported ? .on : .off
-            depthDataDeliveryMode = photoOutput.isDepthDataDeliverySupported ? .on : .off
-            photoQualityPrioritizationMode = .balanced
-            
-        } else {
-            print("Could not add photo output to the session")
-            setupResult = .configurationFailed
-            session.commitConfiguration()
-            return
+        if !photoOutputEnabled {
+            if session.canAddOutput(photoOutput) {
+                session.addOutput(photoOutput)
+                
+                photoOutput.isHighResolutionCaptureEnabled = true
+                photoOutput.isLivePhotoCaptureEnabled = photoOutput.isLivePhotoCaptureSupported
+                photoOutput.isDepthDataDeliveryEnabled = photoOutput.isDepthDataDeliverySupported
+                photoOutput.isPortraitEffectsMatteDeliveryEnabled = photoOutput.isPortraitEffectsMatteDeliverySupported
+                photoOutput.enabledSemanticSegmentationMatteTypes = photoOutput.availableSemanticSegmentationMatteTypes
+                photoOutput.maxPhotoQualityPrioritization = .quality
+                livePhotoMode = photoOutput.isLivePhotoCaptureSupported ? .on : .off
+                depthDataDeliveryMode = photoOutput.isDepthDataDeliverySupported ? .on : .off
+                photoQualityPrioritizationMode = .balanced
+                
+                photoOutputEnabled = true
+            } else {
+                print("Could not add photo output to the session")
+                setupResult = .configurationFailed
+                session.commitConfiguration()
+                return
+            }
         }
         
         session.commitConfiguration()
@@ -761,16 +777,41 @@ class CameraViewModel: ObservableObject {
                 
             case .notAuthorized:
                 DispatchQueue.main.async {
-                    let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
-                    
+                    print("AVCam doesn't have permission to use the camera, please change privacy settings")
                 }
                 
             case .configurationFailed:
                 DispatchQueue.main.async {
-                    let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                    
+                    print("Alert message when something goes wrong during capture session configuration")
                 }
             }
+        }
+    }
+    
+    func toggleCamera() {
+        guard session.isRunning == true else {
+            return
+        }
+        
+        switch currentCamera {
+        case .front:
+            currentCamera = .back
+        case .back:
+            currentCamera = .front
+        }
+        
+        
+        sessionQueue.async {
+            self.session.stopRunning()
+
+            // remove and re-add inputs and outputs
+            for input in self.session.inputs {
+                self.session.removeInput(input)
+            }
+            self.removeObservers()
+            self.configureSession()
+            
+            self.session.startRunning()
         }
     }
     
@@ -1005,9 +1046,14 @@ extension CameraViewModel {
                 
                 if let data = photoCaptureProcessor.photoData {
                     let image = UIImage(data: data)!
-                    let ciImage: CIImage = CIImage(cgImage: image.cgImage!).oriented(forExifOrientation: 6)
-                    let flippedImage = ciImage.transformed(by: CGAffineTransform(scaleX: -1, y: 1))
-                    self.image = UIImage.convert(from: flippedImage)
+                    
+                    if self.currentCamera == .front {
+                        let ciImage: CIImage = CIImage(cgImage: image.cgImage!).oriented(forExifOrientation: 6)
+                        let flippedImage = ciImage.transformed(by: CGAffineTransform(scaleX: -1, y: 1))
+                        self.image = UIImage.convert(from: flippedImage)
+                    } else {
+                        self.image = image
+                    }
 
                     print("Got photo")
                 } else {
