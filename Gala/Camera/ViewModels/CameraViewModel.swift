@@ -4,6 +4,7 @@
 //
 //  Created by Vaughn on 2021-06-02.
 //
+//AVCam tutorial: https://developer.apple.com/documentation/avfoundation/cameras_and_media_capture/avcam_building_a_camera_app
 
 import AVFoundation
 import SwiftUI
@@ -54,7 +55,7 @@ class CameraViewModel: ObservableObject {
     
     
     // MARK: - Capturing Photos
-    
+    private var cameraIsBuilt = false
     private let photoOutput = AVCapturePhotoOutput()
     private var photoOutputEnabled = false
     private var movieFileOutput: AVCaptureMovieFileOutput?
@@ -297,6 +298,7 @@ extension CameraViewModel {
             switch self.setupResult {
             case .success:
                 // Only setup observers and start the session if setup succeeded.
+                self.cameraIsBuilt = true
                 self.addObservers()
                 self.session.startRunning()
                 self.isSessionRunning = self.session.isRunning
@@ -459,24 +461,29 @@ extension CameraViewModel {
     }
     
     private func tearDownCamera_() {
-        sessionQueue.async {
-            if self.setupResult == .success {
-                self.session.stopRunning()
-                self.isSessionRunning = self.session.isRunning
-                self.removeObservers()
+        if cameraIsBuilt {
+            sessionQueue.async {
+                if self.setupResult == .success {
+                    self.cameraIsBuilt = false
+                    self.session.stopRunning()
+                    self.isSessionRunning = self.session.isRunning
+                    self.removeObservers()
+                }
             }
         }
     }
     
     private func buildCam_() {
-        sessionQueue.async {
-            // remove and re-add inputs and outputs
-            for input in self.session.inputs {
-                self.session.removeInput(input)
+        if !cameraIsBuilt{
+            sessionQueue.async {
+                // remove and re-add inputs and outputs
+                for input in self.session.inputs {
+                    self.session.removeInput(input)
+                }
+                self.configureSession()
+                
+                self.session.startRunning()
             }
-            self.configureSession()
-            
-            self.session.startRunning()
         }
     }
 }

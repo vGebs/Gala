@@ -22,8 +22,7 @@ struct CameraOptionsView: View {
                 Spacer()
                 
                 Button(action: {
-                    //camera.toggleCamera()
-                    
+                    camera.toggleCamera()
                 }){
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(.system(size: 18, weight: .medium, design: .rounded))
