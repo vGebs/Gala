@@ -29,7 +29,7 @@ struct CameraView: View {
                 header
                 
                 Spacer()
-                Button(action: {camera.buildCam()}){
+                Button(action: {camera.buildCamera()}){
                     Text("Build cam")
                 }
                 .padding()
@@ -52,7 +52,7 @@ struct CameraView: View {
     }
     
     var cameraButton: some View {
-        Button(action: { self.camera.capturePhoto()} ){
+        Button(action: { self.camera.capturePhoto() }){
             ZStack{
                 
                 RoundedRectangle(cornerRadius: 22)
@@ -91,4 +91,3 @@ struct CameraView: View {
         .opacity(camera.image == nil ? 1 : 0)
     }
 }
-

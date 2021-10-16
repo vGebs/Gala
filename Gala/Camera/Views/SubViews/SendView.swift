@@ -73,7 +73,7 @@ struct SendView: View {
                 Spacer()
                 Button(action: {
                     self.viewModel.postStory(pic: camera.image!)
-                    self.camera.retakePic()
+                    self.camera.deleteAsset()
                     self.viewModel.selected = ""
                     self.isPresented = false
                 }){

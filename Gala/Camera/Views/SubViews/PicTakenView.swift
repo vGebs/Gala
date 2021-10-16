@@ -32,7 +32,7 @@ struct PicTakenView: View {
             
             VStack{
                 HStack{
-                    Button(action: { camera.retakePic() }){
+                    Button(action: { camera.deleteAsset() }){
                         Image(systemName: "xmark")
                             .font(.system(size: 24, weight: .bold, design: .rounded))
                             .foregroundColor(.buttonPrimary)
@@ -45,8 +45,8 @@ struct PicTakenView: View {
                 Spacer()
                 HStack{
                     Button(action: {
-                        if !self.camera.picSaved{
-                            camera.savePic()
+                        if !self.camera.photoSaved{
+                            camera.saveAsset()
                         }
                     }){
                         ZStack {
@@ -55,7 +55,7 @@ struct PicTakenView: View {
                                 .frame(width: screenWidth / 7, height: screenWidth / 10)
                                 .foregroundColor(.buttonPrimary)
 
-                            Image(systemName: camera.picSaved ? "checkmark" : "tray.and.arrow.down")
+                            Image(systemName: camera.photoSaved ? "checkmark" : "tray.and.arrow.down")
                                 .font(.system(size: 18, weight: .medium))
                                 .foregroundColor(.primary)
                         }

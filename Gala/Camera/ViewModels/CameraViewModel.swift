@@ -10,30 +10,56 @@ import AVFoundation
 import SwiftUI
 import Combine
 
-class CameraViewModel: ObservableObject {
+protocol CameraViewModelProtocol {
+    //View builder
+    func makeUIView(_ viewBounds: UIView) -> UIView
+    
+    //Core Functions
+    func capturePhoto()
+    func captureVideo() //To do
+    func deleteAsset()
+    func saveAsset()
+    func toggleCamera()
+    
+    var flashEnabled: Bool { get set }
+    
+    var image: UIImage? { get }
+    
+    //State functions
+    func tearDownCamera()
+    func buildCamera()
+}
+
+class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     
     // MARK: - General Purpose Public variables
     
-    @Published public var picSaved = false
+    @Published public private(set) var photoSaved = false
     @Published public var flashEnabled = false
-    @Published public var image: UIImage?
+    @Published public private(set) var image: UIImage?
 
     
-    //MARK: - Core Functionality
+    //MARK: - ViewBuilder
     
     //Call makeUIView inside of your UIViewRepresentable struct
     public func makeUIView(_ viewBounds: UIView) -> UIView { makeUIView_(viewBounds) }
     
+    
+    //MARK: - Core Functions
+    
     public func capturePhoto() { capturePhoto_() }
-    public func retakePic(){ retakePic_() }
-    public func savePic(){ savePic_() }
+    public func captureVideo() {  }
+    public func deleteAsset(){ deleteAsset_() }
+    public func saveAsset(){ saveAsset_() }
     public func toggleCamera(){ toggleCamera_() }
     
+    
+    //MARK: - State Functions
     //Tear down camera when camera is not in use
     public func tearDownCamera() { tearDownCamera_() }
     
     //Build camera once it is needed again
-    public func buildCam() { buildCam_() }
+    public func buildCamera() { buildCamera_() }
 
     
     // MARK: - Session Management
@@ -190,7 +216,9 @@ class CameraViewModel: ObservableObject {
     }
 }
 
+
 //MARK: - Initializer helpers --------------------------------------------------------------------------------->
+
 extension CameraViewModel {
     private func selectCamera() -> AVCaptureDevice? {
         var defaultVideoDevice: AVCaptureDevice?
@@ -213,6 +241,7 @@ extension CameraViewModel {
         
         return defaultVideoDevice
     }
+    
     private func addVideoInput() {
         /*
          Do not create an AVCaptureMovieFileOutput when setting up the session because
@@ -305,17 +334,18 @@ extension CameraViewModel {
                 
             case .notAuthorized:
                 DispatchQueue.main.async {
-                    print("AVCam doesn't have permission to use the camera, please change privacy settings")
+                    print("Gala doesn't have permission to use the camera, please change privacy settings")
                 }
                 
             case .configurationFailed:
                 DispatchQueue.main.async {
-                    print("Alert message when something goes wrong during capture session configuration")
+                    print("Camera configuration failed, please relaunch app")
                 }
             }
         }
     }
 }
+
 
 // MARK: - Core Functionality --------------------------------------------------------------------------------->
 
@@ -326,7 +356,7 @@ extension CameraViewModel {
             preview = AVCaptureVideoPreviewLayer(session: session)
             preview.frame = viewBounds.frame
 
-            // Your Own Properties...
+            //Properties
             preview.videoGravity = .resizeAspectFill
             preview.cornerRadius = 20
             preview.masksToBounds = true
@@ -418,18 +448,18 @@ extension CameraViewModel {
         }
     }
     
-    private func retakePic_() {
+    private func deleteAsset_() {
         self.image = nil
-        self.picSaved = false
+        self.photoSaved = false
     }
     
-    private func savePic_(){
+    private func saveAsset_(){
         if let image = self.image{
             
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
             
             print("saved Successfully....")
-            picSaved = true
+            photoSaved = true
         }
     }
     
@@ -473,7 +503,7 @@ extension CameraViewModel {
         }
     }
     
-    private func buildCam_() {
+    private func buildCamera_() {
         if !cameraIsBuilt{
             sessionQueue.async {
                 // remove and re-add inputs and outputs
@@ -487,6 +517,7 @@ extension CameraViewModel {
         }
     }
 }
+
 
 // MARK: - KVO & Notifications --------------------------------------------------------------------------------->
 

@@ -42,14 +42,6 @@ class PhotoCaptureProcessor: NSObject {
         //self.photoProcessingHandler = photoProcessingHandler
     }
     
-    public func getImageData() -> Data? {
-        if let photoData = photoData {
-            return photoData
-        } else {
-            return nil
-        }
-    }
-    
     private func didFinish() {
 //        if let livePhotoCompanionMoviePath = livePhotoCompanionMovieURL?.path {
 //            if FileManager.default.fileExists(atPath: livePhotoCompanionMoviePath) {
@@ -135,36 +127,5 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             didFinish()
             return
         }
-
-//        PHPhotoLibrary.requestAuthorization { status in
-//            if status == .authorized {
-//                PHPhotoLibrary.shared().performChanges({
-//                    let options = PHAssetResourceCreationOptions()
-//                    let creationRequest = PHAssetCreationRequest.forAsset()
-//                    options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
-//                    creationRequest.addResource(with: .photo, data: photoData, options: options)
-//
-//                    // Specify the location the photo was taken
-//                    creationRequest.location = self.location
-//
-//                    if let livePhotoCompanionMovieURL = self.livePhotoCompanionMovieURL {
-//                        let livePhotoCompanionMovieFileOptions = PHAssetResourceCreationOptions()
-//                        livePhotoCompanionMovieFileOptions.shouldMoveFile = true
-//                        creationRequest.addResource(with: .pairedVideo,
-//                                                    fileURL: livePhotoCompanionMovieURL,
-//                                                    options: livePhotoCompanionMovieFileOptions)
-//                    }
-//                }, completionHandler: { _, error in
-//                    if let error = error {
-//                        print("Error occurred while saving photo to photo library: \(error)")
-//                    }
-//
-//                    self.didFinish()
-//                }
-//                )
-//            } else {
-//                self.didFinish()
-//            }
-//        }
     }
 }
