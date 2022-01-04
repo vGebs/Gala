@@ -8,7 +8,6 @@
 import Combine
 import SwiftUI
 import FirebaseFirestore
-import FirebaseStorage
 
 //This protocol will have to be expanded once video is working
 protocol StoryServiceProtocol {
@@ -19,7 +18,6 @@ protocol StoryServiceProtocol {
 
 class StoryService: ObservableObject, StoryServiceProtocol {
     
-    private let storage = Storage.storage()
     private let storyMetaService = StoryMetaService.shared
     private let storyContentService = StoryContentService.shared
     
@@ -49,10 +47,11 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     }
     
     func postStory(postID_date: Date, asset: UIImage) -> AnyPublisher<Void, Error> {
+                
         return Future<Void, Error> { promise in
             Publishers.Zip(
                 self.storyMetaService.postStory(postID_date: postID_date),
-                self.storyContentService.postStory(story: asset)
+                self.storyContentService.postStory(story: asset, name: "\(postID_date)")
             )
             .sink { completion in
                 switch completion {

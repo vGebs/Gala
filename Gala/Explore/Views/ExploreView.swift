@@ -22,7 +22,8 @@ struct ExploreView: View {
             RecentlyJoinedView(viewModel: viewModel.recentlyJoinedViewModel)
             MyDivider()
             
-            StoriesView()
+            VibesView()
+            //StoriesView2()
         }
     }
 }

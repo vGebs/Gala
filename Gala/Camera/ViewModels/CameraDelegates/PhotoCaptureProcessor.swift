@@ -10,49 +10,22 @@ import AVFoundation
 class PhotoCaptureProcessor: NSObject {
     private(set) var requestedPhotoSettings: AVCapturePhotoSettings
     
-    private let willCapturePhotoAnimation: () -> Void
-    
-    //private let livePhotoCaptureHandler: (Bool) -> Void
-    
-    //lazy var context = CIContext()
-    
     private let completionHandler: (PhotoCaptureProcessor) -> Void
-    
-    //private let photoProcessingHandler: (Bool) -> Void
-    
-    public var photoData: Data?
+        
+    var photoData: Data?
     
     private var livePhotoCompanionMovieURL: URL?
     
     private var semanticSegmentationMatteDataArray = [Data]()
     private var maxPhotoProcessingTime: CMTime?
 
-    // Save the location of captured photos
-    //var location: CLLocation?
-
-    init(with requestedPhotoSettings: AVCapturePhotoSettings, //livePhotoCaptureHandler: @escaping (Bool) -> Void,
-         willCapturePhotoAnimation: @escaping () -> Void,
-         completionHandler: @escaping (PhotoCaptureProcessor) -> Void
-         ) { //photoProcessingHandler: @escaping (Bool) -> Void
+    init(with requestedPhotoSettings: AVCapturePhotoSettings, completionHandler: @escaping (PhotoCaptureProcessor) -> Void) {
         
         self.requestedPhotoSettings = requestedPhotoSettings
-        self.willCapturePhotoAnimation = willCapturePhotoAnimation
-        //self.livePhotoCaptureHandler = livePhotoCaptureHandler
         self.completionHandler = completionHandler
-        //self.photoProcessingHandler = photoProcessingHandler
     }
     
     private func didFinish() {
-//        if let livePhotoCompanionMoviePath = livePhotoCompanionMovieURL?.path {
-//            if FileManager.default.fileExists(atPath: livePhotoCompanionMoviePath) {
-//                do {
-//                    try FileManager.default.removeItem(atPath: livePhotoCompanionMoviePath)
-//                } catch {
-//                    print("Could not remove file at url: \(livePhotoCompanionMoviePath)")
-//                }
-//            }
-//        }
-        
         completionHandler(self)
     }
 }
@@ -64,30 +37,17 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     
     /// - Tag: WillBeginCapture
     func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-//        if resolvedSettings.livePhotoMovieDimensions.width > 0 && resolvedSettings.livePhotoMovieDimensions.height > 0 {
-//            livePhotoCaptureHandler(true)
-//        }
+
         maxPhotoProcessingTime = resolvedSettings.photoProcessingTimeRange.start + resolvedSettings.photoProcessingTimeRange.duration
     }
     
     /// - Tag: WillCapturePhoto
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        willCapturePhotoAnimation()
-        
-//        guard let maxPhotoProcessingTime = maxPhotoProcessingTime else {
-//            return
-//        }
-//
-//        // Show a spinner if processing time exceeds one second.
-//        let oneSecond = CMTime(seconds: 1, preferredTimescale: 1)
-//        if maxPhotoProcessingTime > oneSecond {
-//            photoProcessingHandler(true)
-//        }
+        //willCapturePhotoAnimation()
     }
     
     /// - Tag: DidFinishProcessingPhoto
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        //photoProcessingHandler(false)
 
         if let error = error {
             print("Error capturing photo: \(error)")

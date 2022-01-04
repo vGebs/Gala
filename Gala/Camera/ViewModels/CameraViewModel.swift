@@ -8,35 +8,47 @@
 
 import AVFoundation
 import SwiftUI
+import UIKit
 import Combine
 
-protocol CameraViewModelProtocol {
+
+// MARK: - Camera Protocol
+protocol CameraProtocol {
     //View builder
     func makeUIView(_ viewBounds: UIView) -> UIView
     
     //Core Functions
     func capturePhoto()
-    func captureVideo() //To do
+    func startRecording()
+    func stopRecording()
     func deleteAsset()
     func saveAsset()
     func toggleCamera()
     
     var flashEnabled: Bool { get set }
     
+    //Assets
     var image: UIImage? { get }
+    var videoURL: String? { get }
     
     //State functions
     func tearDownCamera()
     func buildCamera()
 }
 
-class CameraViewModel: ObservableObject, CameraViewModelProtocol {
+
+class CameraViewModel: ObservableObject, CameraProtocol  {
     
-    // MARK: - General Purpose Public variables
+    // MARK: - User interactive Camera States
     
     @Published public private(set) var photoSaved = false
     @Published public var flashEnabled = false
+    @Published public var isRecording = false
+    
+    // MARK: - Outputs
+    
     @Published public private(set) var image: UIImage?
+    @Published public private(set) var videoURL: String?
 
     
     //MARK: - ViewBuilder
@@ -47,11 +59,12 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     
     //MARK: - Core Functions
     
-    public func capturePhoto() { capturePhoto_() }
-    public func captureVideo() {  }
-    public func deleteAsset(){ deleteAsset_() }
-    public func saveAsset(){ saveAsset_() }
-    public func toggleCamera(){ toggleCamera_() }
+    public func capturePhoto()   { capturePhoto_()   }
+    public func startRecording() { startRecording_() }
+    public func stopRecording()  { stopRecording_()  }
+    public func deleteAsset()    { deleteAsset_()    }
+    public func saveAsset()      { saveAsset_()      }
+    public func toggleCamera()   { toggleCamera_()   }
     
     
     //MARK: - State Functions
@@ -80,15 +93,17 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
     
     
-    // MARK: - Capturing Photos
+    // MARK: - Capturing Photos/Videos
     private var cameraIsBuilt = false
     private let photoOutput = AVCapturePhotoOutput()
     private var photoOutputEnabled = false
     private var movieFileOutput: AVCaptureMovieFileOutput?
+    private var fileOutput: AVCaptureFileOutput?
     private var photoQualityPrioritizationMode: AVCapturePhotoOutput.QualityPrioritization = .balanced
     private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
+    private var inProgressVideoCaptureDelegates = [String: VideoCaptureProcessor]()
     fileprivate var preview: AVCaptureVideoPreviewLayer!
-
+    private var backgroundRecordingID: UIBackgroundTaskIdentifier?
     
     // MARK: - KVO and Notifications
     
@@ -106,11 +121,11 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     
     // MARK: - Live Photo
     
-    private enum LivePhotoMode {
-        case on
-        case off
-    }
-    private var livePhotoMode: LivePhotoMode = .off
+//    private enum LivePhotoMode {
+//        case on
+//        case off
+//    }
+//    private var livePhotoMode: LivePhotoMode = .off
 
     
     // MARK: - Photo Depth
@@ -122,13 +137,13 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     private var depthDataDeliveryMode: DepthDataDeliveryMode = .off
 
     
-    // MARK: - General Purpose Private Variables
+    // MARK: - Camera Dependent Variables
     
     private var camFlipEnabled: Bool
     private var recordActionEnabled: Bool
     private var cameraButtonEnabled: Bool
     private var captureModeControl: Bool
-    private var livePhotoEnabled: Bool
+    //private var livePhotoEnabled: Bool
     private var depthEnabled: Bool
     private var photoQualityPrioritization: Bool
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera, .builtInDualWideCamera], mediaType: .video, position: .unspecified)
@@ -140,41 +155,9 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
         self.recordActionEnabled = false
         self.cameraButtonEnabled = false
         self.captureModeControl = false
-        self.livePhotoEnabled = false
+        //self.livePhotoEnabled = false
         self.depthEnabled = false
         self.photoQualityPrioritization = false
-        
-        /*
-         Check the video authorization status. Video access is required and audio
-         access is optional. If the user denies audio access, AVCam won't
-         record audio during movie recording.
-        */
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            // The user has previously granted access to the camera.
-            break
-            
-        case .notDetermined:
-            /*
-             The user has not yet been presented with the option to grant
-             video access. Suspend the session queue to delay session
-             setup until the access request has completed.
-             
-             Note that audio access will be implicitly requested when we
-             create an AVCaptureDeviceInput for audio during session setup.
-             */
-            sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                if !granted {
-                    self.setupResult = .notAuthorized
-                }
-                self.sessionQueue.resume()
-            })
-            
-        default:
-            // The user has previously denied access.
-            setupResult = .notAuthorized
-        }
         
         /*
          Setup the capture session.
@@ -182,7 +165,7 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
          inputs, outputs, or connections from multiple threads at the same time.
          
          Don't perform these tasks on the main queue because
-         AVCaptureSession.startRunning() is a blocking call, which can
+         AVCaptureSession.startRunning() is a blocking call that can
          take a long time. Dispatch session setup to the sessionQueue, so
          that the main queue isn't blocked, which keeps the UI responsive.
          */
@@ -201,14 +184,13 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
         
         session.beginConfiguration()
         
-        // Add video input.
         self.addVideoInput()
         
-        // Add an audio input device.
         self.addAudioInput()
         
-        // Add the photo output.
         self.addPhotoOutput()
+        
+        self.addVideoOutput()
         
         session.commitConfiguration()
         
@@ -216,36 +198,18 @@ class CameraViewModel: ObservableObject, CameraViewModelProtocol {
     }
 }
 
-
-//MARK: - Initializer helpers --------------------------------------------------------------------------------->
+// MARK: ------------------------------------------------------------------------------------------------------>
+// MARK: - Initializer helpers -------------------------------------------------------------------------------->
+// MARK: ------------------------------------------------------------------------------------------------------>
 
 extension CameraViewModel {
-    private func selectCamera() -> AVCaptureDevice? {
-        var defaultVideoDevice: AVCaptureDevice?
-        
-        if self.currentCamera == .front {
-            if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                defaultVideoDevice = frontCameraDevice
-            }
-        } else {
-            if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                defaultVideoDevice = backCameraDevice
-            }
-            else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
-                defaultVideoDevice = dualCameraDevice
-            }
-            else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
-                defaultVideoDevice = dualWideCameraDevice
-            }
-        }
-        
-        return defaultVideoDevice
-    }
     
     private func addVideoInput() {
         /*
          Do not create an AVCaptureMovieFileOutput when setting up the session because
          Live Photo is not supported when AVCaptureMovieFileOutput is added to the session.
+         
+         For our sake, we are NOT using LivePhoto, so we are going to init AVCaptureMovieFileOutput
          */
         session.sessionPreset = .photo
         session.sessionPreset = AVCaptureSession.Preset(rawValue: AVCaptureSession.Preset.high.rawValue)
@@ -281,6 +245,28 @@ extension CameraViewModel {
         }
     }
     
+    private func selectCamera() -> AVCaptureDevice? {
+        var defaultVideoDevice: AVCaptureDevice?
+        
+        if self.currentCamera == .front {
+            if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                defaultVideoDevice = frontCameraDevice
+            }
+        } else {
+            if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                defaultVideoDevice = backCameraDevice
+            }
+            else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
+                defaultVideoDevice = dualCameraDevice
+            }
+            else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
+                defaultVideoDevice = dualWideCameraDevice
+            }
+        }
+        
+        return defaultVideoDevice
+    }
+    
     private func addAudioInput() {
         do {
             let audioDevice = AVCaptureDevice.default(for: .audio)
@@ -302,12 +288,12 @@ extension CameraViewModel {
                 session.addOutput(photoOutput)
                 
                 photoOutput.isHighResolutionCaptureEnabled = true
-                photoOutput.isLivePhotoCaptureEnabled = photoOutput.isLivePhotoCaptureSupported
+                //photoOutput.isLivePhotoCaptureEnabled = photoOutput.isLivePhotoCaptureSupported
                 photoOutput.isDepthDataDeliveryEnabled = photoOutput.isDepthDataDeliverySupported
                 photoOutput.isPortraitEffectsMatteDeliveryEnabled = photoOutput.isPortraitEffectsMatteDeliverySupported
                 photoOutput.enabledSemanticSegmentationMatteTypes = photoOutput.availableSemanticSegmentationMatteTypes
                 photoOutput.maxPhotoQualityPrioritization = .quality
-                livePhotoMode = photoOutput.isLivePhotoCaptureSupported ? .on : .off
+                //livePhotoMode = photoOutput.isLivePhotoCaptureSupported ? .on : .off
                 depthDataDeliveryMode = photoOutput.isDepthDataDeliverySupported ? .on : .off
                 photoQualityPrioritizationMode = .balanced
                 
@@ -317,6 +303,27 @@ extension CameraViewModel {
                 setupResult = .configurationFailed
                 session.commitConfiguration()
                 return
+            }
+        }
+    }
+    
+    private func addVideoOutput() {
+        sessionQueue.async {
+            let movieFileOutput = AVCaptureMovieFileOutput()
+
+            if self.session.canAddOutput(movieFileOutput) {
+                self.session.addOutput(movieFileOutput)
+                self.session.sessionPreset = .high
+                
+                if let connection = movieFileOutput.connection(with: .video) {
+                    if connection.isVideoStabilizationSupported {
+                        connection.preferredVideoStabilizationMode = .auto
+                    }
+                }
+                
+                self.movieFileOutput = movieFileOutput
+            } else {
+                print("CamerViewModel-Error: Failed to add movieFileOutput")
             }
         }
     }
@@ -339,7 +346,7 @@ extension CameraViewModel {
                 
             case .configurationFailed:
                 DispatchQueue.main.async {
-                    print("Camera configuration failed, please relaunch app")
+                    print("Camera configuration failed, quit and relaunch app")
                 }
             }
         }
@@ -347,7 +354,9 @@ extension CameraViewModel {
 }
 
 
+// MARK: ------------------------------------------------------------------------------------------------------>
 // MARK: - Core Functionality --------------------------------------------------------------------------------->
+// MARK: ------------------------------------------------------------------------------------------------------>
 
 extension CameraViewModel {
     private func makeUIView_(_ viewBounds: UIView) -> UIView{
@@ -395,48 +404,42 @@ extension CameraViewModel {
                 photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPhotoPixelFormatType]
             }
             // Live Photo capture is not supported in movie mode.
-            if self.livePhotoMode == .on && self.photoOutput.isLivePhotoCaptureSupported {
-                let livePhotoMovieFileName = NSUUID().uuidString
-                let livePhotoMovieFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((livePhotoMovieFileName as NSString).appendingPathExtension("mov")!)
-                photoSettings.livePhotoMovieFileURL = URL(fileURLWithPath: livePhotoMovieFilePath)
-            }
+//            if self.livePhotoMode == .on && self.photoOutput.isLivePhotoCaptureSupported {
+//                let livePhotoMovieFileName = NSUUID().uuidString
+//                let livePhotoMovieFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((livePhotoMovieFileName as NSString).appendingPathExtension("mov")!)
+//                photoSettings.livePhotoMovieFileURL = URL(fileURLWithPath: livePhotoMovieFilePath)
+//            }
             
             photoSettings.isDepthDataDeliveryEnabled = (self.depthDataDeliveryMode == .on
                                                         && self.photoOutput.isDepthDataDeliveryEnabled)
             
             photoSettings.photoQualityPrioritization = self.photoQualityPrioritizationMode
             
-            let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, willCapturePhotoAnimation: {
-                // Flash the screen to signal that AVCam took a photo.
-//                DispatchQueue.main.async {
-//                    self.preview.opacity = 0
-//                    UIView.animate(withDuration: 0.25) {
-//                        self.preview.opacity = 1
-//                    }
-//                }
-            }, completionHandler: { photoCaptureProcessor in
-                
-                if let data = photoCaptureProcessor.photoData {
-                    let image = UIImage(data: data)!
+            let photoCaptureProcessor = PhotoCaptureProcessor(
+                with: photoSettings,
+                completionHandler: { photoCaptureProcessor in
                     
-                    if self.currentCamera == .front {
-                        let ciImage: CIImage = CIImage(cgImage: image.cgImage!).oriented(forExifOrientation: 6)
-                        let flippedImage = ciImage.transformed(by: CGAffineTransform(scaleX: -1, y: 1))
-                        self.image = UIImage.convert(from: flippedImage)
+                    if let data = photoCaptureProcessor.photoData {
+                        let image = UIImage(data: data)!
+                        
+                        if self.currentCamera == .front {
+                            let ciImage: CIImage = CIImage(cgImage: image.cgImage!).oriented(forExifOrientation: 6)
+                            let flippedImage = ciImage.transformed(by: CGAffineTransform(scaleX: -1, y: 1))
+                            self.image = UIImage.convert(from: flippedImage)
+                        } else {
+                            self.image = image
+                        }
+                        
+                        print("Got photo")
                     } else {
-                        self.image = image
+                        print("CameraViewModel: Picture was not recieved from photoCaptureProcessor")
                     }
-
-                    print("Got photo")
-                } else {
-                    print("CameraViewModel: Pic was not recieved from photoCaptureProcessor")
-                }
-                
-                // When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
-                self.sessionQueue.async {
-                    self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
-                }
-            })
+                    
+                    // When the capture is complete, remove a reference to the photo capture delegate so it can be deallocated.
+                    self.sessionQueue.async {
+                        self.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil
+                    }
+                })
             
             // Specify the location the photo was taken
             //photoCaptureProcessor.location = self.locationManager.location
@@ -448,8 +451,116 @@ extension CameraViewModel {
         }
     }
     
+    private func startRecording_() {
+        guard let movieFileOutput = self.movieFileOutput else {
+            print("CameraViewModel-Error: MovieFileOutput is nil. Please initialize before using this function.")
+            return
+        }
+        self.isRecording = true
+        sessionQueue.async {
+            if !movieFileOutput.isRecording {
+                if UIDevice.current.isMultitaskingSupported {
+                    self.backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
+                }
+                
+                // Update the orientation on the movie file output video connection before recording.
+                let movieFileOutputConnection = movieFileOutput.connection(with: AVMediaType.video)
+                //movieFileOutputConnection?.videoOrientation = videoPreviewLayerOrientation!
+                
+                //flip video output if front facing camera is selected
+                if self.currentCamera == .front {
+                    movieFileOutputConnection?.isVideoMirrored = true
+                }
+                
+                let availableVideoCodecTypes = movieFileOutput.availableVideoCodecTypes
+                
+                if availableVideoCodecTypes.contains(.hevc) {
+                    movieFileOutput.setOutputSettings([AVVideoCodecKey: AVVideoCodecType.hevc], for: movieFileOutputConnection!)
+                }
+                
+                let uid = UUID().uuidString
+                
+                let videoCaptureProcessor = VideoCaptureProcessor(uid: uid, completionHandler: { vidURL, err in
+                    if let err = err {
+                        print("CameraViewModel-Error: \(err.localizedDescription)")
+                    } else {
+                        
+                        print("CameraViewModel: Video URL -> \(vidURL)")
+                    }
+                })
+                
+                // Start recording video to a temporary file.
+                let outputFileName = NSUUID().uuidString
+                let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
+                
+                if FileManager.default.fileExists(atPath: outputFilePath) {
+                    print("CameraViewModel: File exists at this path")
+                    do {
+                        try FileManager.default.removeItem(atPath: outputFilePath)
+                        print("CameraViewModel: Successfully removed file at location -> \(outputFilePath)")
+                        
+                        print("CameraViewModel: Starting record")
+                        movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: videoCaptureProcessor)
+                    } catch {
+                        print("Could not remove file at url: \(outputFilePath)")
+                    }
+                } else {
+                    self.inProgressVideoCaptureDelegates[uid] = videoCaptureProcessor
+                    print("CameraViewModel: Starting record")
+                    movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: videoCaptureProcessor)
+                }
+            }
+        }
+    }
+    
+    private func stopRecording_(){
+        guard let movieFileOutput = self.movieFileOutput else {
+            print("waaaaaa")
+            return
+        }
+        self.isRecording = false
+        sessionQueue.async {
+            if movieFileOutput.isRecording {
+                
+                if let currentBackgroundRecordingID = self.backgroundRecordingID {
+                    self.backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
+                    
+                    if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
+                        UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
+                    }
+                }
+                
+                movieFileOutput.stopRecording()
+                
+                print("CameraViewModel: Stopped recording")
+                
+                if let movieURL = movieFileOutput.outputFileURL {
+                    print("CameraViewModel: \(movieURL)")
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        
+                        self.videoURL = movieURL.path
+                        
+                        if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(movieURL.path) {
+                            UISaveVideoAtPathToSavedPhotosAlbum(movieURL.path, nil, nil, nil)
+                            print("CameraViewModel: Video asset saved to camera roll")
+                        } else {
+                            print("CameraViewModel-Error: asset could not be stored to camera roll")
+                        }
+                    }
+                } else {
+                    print("CameraViewModel-Error: MovieURL could not be obtained")
+                }
+                
+            } else {
+                print("Something went wrong")
+            }
+        }
+    }
+    
     private func deleteAsset_() {
         self.image = nil
+        self.videoURL = nil
         self.photoSaved = false
     }
     
@@ -519,14 +630,16 @@ extension CameraViewModel {
 }
 
 
-// MARK: - KVO & Notifications --------------------------------------------------------------------------------->
+// MARK: ------------------------------------------------------------------------------------------------------>
+// MARK: - KVO & Notifications -------------------------------------------------------------------------------->
+// MARK: ------------------------------------------------------------------------------------------------------>
 
 extension CameraViewModel {
     /// - Tag: ObserveInterruption
     private func addObservers() {
         let keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
             guard let isSessionRunning = change.newValue else { return }
-            let isLivePhotoCaptureEnabled = self.photoOutput.isLivePhotoCaptureEnabled
+            //let isLivePhotoCaptureEnabled = self.photoOutput.isLivePhotoCaptureEnabled
             let isDepthDeliveryDataEnabled = self.photoOutput.isDepthDataDeliveryEnabled
             
             DispatchQueue.main.async {
@@ -535,7 +648,7 @@ extension CameraViewModel {
                 self.recordActionEnabled = isSessionRunning && self.movieFileOutput != nil
                 self.cameraButtonEnabled = isSessionRunning
                 self.captureModeControl = isSessionRunning
-                self.livePhotoEnabled = isSessionRunning && isLivePhotoCaptureEnabled
+                //self.livePhotoEnabled = isSessionRunning && isLivePhotoCaptureEnabled
                 self.depthEnabled = isSessionRunning && isDepthDeliveryDataEnabled
                 
                 self.photoQualityPrioritization = isSessionRunning

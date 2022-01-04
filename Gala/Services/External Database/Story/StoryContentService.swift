@@ -13,15 +13,31 @@ import FirebaseFirestore
 class StoryContentService: ObservableObject {
     
     private let storage = Storage.storage()
-    
+    private let currentUser = AuthService.shared.currentUser?.uid
+
     private var cancellables: [AnyCancellable] = []
     
     static let shared = StoryContentService()
     private init() {}
     
-    func postStory(story: UIImage) -> AnyPublisher<Void, Error> {
+    func postStory(story: UIImage, name: String) -> AnyPublisher<Void, Error> {
+        
+        let data = story.jpegData(compressionQuality: compressionQuality)!
+        let storageRef = storage.reference()
+        let storyFolder = "Stories"
+        let storyRef = storageRef.child(storyFolder)
+        let myStoryRef = storyRef.child(currentUser!)
+        let imgFileRef = myStoryRef.child("\(name).png")
+        
         return Future<Void, Error> { promise in
-            promise(.success(()))
+            let _ = imgFileRef.putData(data, metadata: nil) { (metaData, error) in
+                if let error = error {
+                    print("StoryContentService: Failed to add story image")
+                    promise(.failure(error))
+                } else {
+                    return promise(.success(()))
+                }
+            }
         }.eraseToAnyPublisher()
     }
     

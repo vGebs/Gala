@@ -145,7 +145,9 @@ struct GalaApp: App {
     
     var body: some Scene {
         WindowGroup {
+            //VideoPlayerTest()
             LaunchView()
+            //CameraButton()
             //SendViewClick()
             //CameraOptionsView()
         }

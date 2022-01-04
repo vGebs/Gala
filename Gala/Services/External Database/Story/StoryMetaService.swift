@@ -28,6 +28,74 @@ class StoryMetaService: ObservableObject {
         }
     }
     
+    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            let currentUser = UserCoreService.shared.currentUserCore!
+            if StoryService.shared.postIDs.count == 1 {
+                self.db.collection("Stories").document(currentUser.uid)
+                    .delete() { err in
+                        if let err = err {
+                            print("StoryMetaService: Failed to delete post")
+                            promise(.failure(err))
+                        } else {
+                            print("StoryMetaService: Successfully deleted story")
+                            promise(.success(()))
+                        }
+                    }
+            } else {
+                self.db.collection("Stories").document(currentUser.uid)
+                    .updateData([
+                        "postIDs" : FieldValue.arrayRemove([storyID])
+                    ]) { err in
+                        if let err = err {
+                            print("StoryMetaService: Failed to delete Story")
+                            promise(.failure(err))
+                        } else {
+                            print("StoryMetaService: Successfully deleted story")
+                            promise(.success(()))
+                        }
+                    }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func getMyStories() -> AnyPublisher<[Date], Error> {
+        let currrentUser = UserCoreService.shared.currentUserCore!
+        return Future<[Date], Error>{ promise in
+            self.db.collection("Stories").document(currrentUser.uid)
+                .getDocument { snap, err in
+                    if let err = err {
+                        print("StoryMetaService: Failed to fetch stories")
+                        promise(.failure(err))
+                    } else if let snap = snap {
+                        var final: [Date] = []
+                        if let ids = snap.data()?["postIDs"] as? [Any] {
+                            for i in 0..<ids.count {
+                                let id = ids[i] as? Timestamp
+                                let idd = id?.dateValue()
+                                if let id_ = idd {
+                                    final.append(id_)
+                                }
+                            }
+                        }
+                        print("PostIDs: \(final)")
+                        promise(.success(final))
+                    }
+                }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func getStories() -> AnyPublisher<[StoryMeta], Error> {
+        return Future<[StoryMeta], Error> { promise in
+            
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+extension StoryMetaService {
     private func pushFirstStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
@@ -96,71 +164,5 @@ class StoryMetaService: ObservableObject {
                     }
                 }
         }.eraseToAnyPublisher()
-    }
-    
-    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            let currentUser = UserCoreService.shared.currentUserCore!
-            if StoryService.shared.postIDs.count == 1 {
-                self.db.collection("Stories").document(currentUser.uid)
-                    .delete() { err in
-                        if let err = err {
-                            print("StoryMetaService: Failed to delete post")
-                            promise(.failure(err))
-                        } else {
-                            print("StoryMetaService: Successfully deleted story")
-                            promise(.success(()))
-                        }
-                    }
-            } else {
-                self.db.collection("Stories").document(currentUser.uid)
-                    .updateData([
-                        "postIDs" : FieldValue.arrayRemove([storyID])
-                    ]) { err in
-                        if let err = err {
-                            print("StoryMetaService: Failed to delete Story")
-                            promise(.failure(err))
-                        } else {
-                            print("StoryMetaService: Successfully deleted story")
-                            promise(.success(()))
-                        }
-                    }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    func getMyStories() -> AnyPublisher<[Date], Error> {
-        let currrentUser = UserCoreService.shared.currentUserCore!
-        return Future<[Date], Error>{ promise in
-            self.db.collection("Stories").document(currrentUser.uid)
-                .getDocument { snap, err in
-                    if let err = err {
-                        print("StoryMetaService: Failed to fetch stories")
-                        promise(.failure(err))
-                    } else if let snap = snap {
-                        var final: [Date] = []
-                        if let ids = snap.data()?["postIDs"] as? [Any] {
-                            for i in 0..<ids.count {
-                                let id = ids[i] as? Timestamp
-                                let idd = id?.dateValue()
-                                if let id_ = idd {
-                                    final.append(id_)
-                                }
-                            }
-                        }
-                        print("PostIDs: \(final)")
-                        promise(.success(final))
-                    }
-                }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    func getStories() -> AnyPublisher<[StoryMeta], Error> {
-        return Future<[StoryMeta], Error> { promise in
-            
-        }
-        .eraseToAnyPublisher()
     }
 }

@@ -71,7 +71,20 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     }
     
     func postStory(pic: UIImage) {
-        
+        print("Selected: \(self.selected)")
+        StoryService.shared.postStory(postID_date: Date(), asset: pic)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("SendViewModel: Failed to post story")
+                    print("SendViewModel-error: \(err)")
+                case .finished:
+                    print("SendViewModel: Successfully posted story")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     func send() {
