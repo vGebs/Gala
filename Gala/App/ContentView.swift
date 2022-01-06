@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    //@ObservedObject var chat: ChatsViewModel
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var profile: ProfileViewModel
     @ObservedObject var explore: ExploreViewModel
@@ -26,9 +27,10 @@ struct ContentView: View {
                 
                 HStack(spacing: 0){
                     //ProfileMainView(viewModel: profile)
-                    ChatsView()
-                    CameraView(camera: camera)
-                    ExploreMainView(viewModel: explore)
+                    //ChatsView()
+                    ChatsView(profile: profile)
+                    CameraView(camera: camera, profile: profile)
+                    ExploreMainView(viewModel: explore, profile: profile)
                     //ShowcaseView()
                 }
             }

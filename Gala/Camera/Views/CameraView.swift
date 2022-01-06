@@ -13,10 +13,14 @@ import AVKit
 struct CameraView: View {
     
     @ObservedObject var camera: CameraViewModel
+    @ObservedObject var profile: ProfileViewModel
+    
     let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight * 0.91))
     
     @State var sendPressed = false
     @State var isRecording = false
+    @State var showProfile = false
+    
     var body: some View{
         ZStack {
             SwiftUICamPreview(camera: camera, view: view)
@@ -84,6 +88,9 @@ struct CameraView: View {
 //                .edgesIgnoringSafeArea(.all)
 //                .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
         }
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: profile)
+        })
     }
     
     var tempRecordButton: some View {
@@ -132,7 +139,7 @@ struct CameraView: View {
         HStack {
             
             VStack {
-                Button(action: {}){
+                Button(action: { self.showProfile = true }){
                     Image(systemName: "rectangle.stack.person.crop")
                         .font(.system(size: 20, weight: .regular, design: .rounded))
                         .foregroundColor(.buttonPrimary)

@@ -14,6 +14,9 @@ struct ExploreMainView: View {
     var baseColor: Color = .blue
     
     @ObservedObject var viewModel: ExploreViewModel
+    @ObservedObject var profile: ProfileViewModel
+    
+    @State var showProfile = false
     
     @AppStorage("isDarkMode") private var isDarkMode = true
     
@@ -40,7 +43,7 @@ struct ExploreMainView: View {
                 
                 VStack {
                     HStack {
-                        Button(action: { }) {
+                        Button(action: { self.showProfile = true }) {
                             Image(systemName: optionButtonLeft)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
                                 .foregroundColor(.blue)
@@ -70,6 +73,9 @@ struct ExploreMainView: View {
             .edgesIgnoringSafeArea(.all)
             Spacer()
         }
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: profile)
+        })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }

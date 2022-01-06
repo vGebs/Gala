@@ -18,8 +18,15 @@ struct ChatsView: View {
     private var cancellables: [AnyCancellable] = []
     
     @StateObject var viewModel = ChatsViewModel()
+    @ObservedObject var profile: ProfileViewModel
+    
+    @State var showProfile = false
     
     @AppStorage("isDarkMode") private var isDarkMode = true
+    
+    init(profile: ProfileViewModel){
+        self.profile = profile
+    }
     
     var body: some View {
         VStack {
@@ -44,7 +51,7 @@ struct ChatsView: View {
                 
                 VStack {
                     HStack {
-                        Button(action: { }) {
+                        Button(action: { self.showProfile = true }) {
                             Image(systemName: optionButtonLeft)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
@@ -74,12 +81,15 @@ struct ChatsView: View {
             .edgesIgnoringSafeArea(.all)
             Spacer()
         }
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: profile)
+        })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
-struct ChatsView2_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatsView()
-    }
-}
+//struct ChatsView2_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatsView()
+//    }
+//}
