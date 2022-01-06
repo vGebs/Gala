@@ -19,33 +19,37 @@ struct NavBar: View {
             
             HStack{
                 //ProfileView
-                ZStack {
-                    Color.black
-                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                    
-                    HStack {
-                        
-                        Image(systemName: "person")
-                            .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        Image(systemName: "poweron")
-                            .font(.system(size: 10, weight: .light, design: .rounded))
-                            .foregroundColor(Color(.systemTeal))
-                            .opacity(self.offset == 0 ? 1 : 0)
-                    }
+//                ZStack {
+//                    Color.black
+//                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+//
+//                    HStack {
+//
+//                        Image(systemName: "person")
+//                            .font(.system(size: 21, weight: .light, design: .rounded))
+//                            .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+//
+//                        Image(systemName: "poweron")
+//                            .font(.system(size: 10, weight: .light, design: .rounded))
+//                            .foregroundColor(Color(.systemTeal))
+//                            .opacity(self.offset == 0 ? 1 : 0)
+//                    }
+//                }
+//                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+//                .onTapGesture {
+//                    withAnimation {
+//                        if self.offset != 0 {
+//                            simpleSuccess()
+//                        }
+//                        self.offset = 0
+//                    }
+//                }
+                HStack{
+                    Spacer()
+                    Spacer()
+                    Spacer()
                 }
-                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                .onTapGesture {
-                    withAnimation {
-                        if self.offset != 0 {
-                            simpleSuccess()
-                        }
-                        self.offset = 0
-                    }
-                }
-                    
-                Spacer()
+                
         //MessagesView
                 ZStack {
                     Color.black
@@ -54,21 +58,23 @@ struct NavBar: View {
                     HStack {
                         Image(systemName: "message")
                             .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                            .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                            //.foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
                         
                         Image(systemName: "poweron")
                             .font(.system(size: 10, weight: .light, design: .rounded))
                             .foregroundColor(Color(.systemTeal))
-                            .opacity(offset == screenWidth ? 1 : 0)
+                            .opacity(self.offset == 0 ? 1 : 0)
+                        //.opacity(offset == screenWidth ? 1 : 0)
                     }
                 }
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
                     withAnimation{
-                        if self.offset != screenWidth {
+                        if self.offset != 0 {
                             simpleSuccess()
                         }
-                        self.offset = screenWidth
+                        self.offset = 0
                     }
                 }
 
@@ -81,11 +87,13 @@ struct NavBar: View {
                     HStack {
                         Image(systemName: "camera")
                             .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                            .foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                            //.foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
                         
                         Image(systemName: "poweron")
                             .font(.system(size: 10, weight: .light, design: .rounded))
-                            .opacity(self.offset == screenWidth * 2 ? 1 : 0)
+                            .opacity(offset == screenWidth ? 1 : 0)
+                        //.opacity(self.offset == screenWidth * 2 ? 1 : 0)
                             .foregroundColor(Color(.systemTeal))
 
                     }
@@ -93,10 +101,10 @@ struct NavBar: View {
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
                     withAnimation{
-                        if self.offset != screenWidth * 2 {
+                        if self.offset != screenWidth {
                             simpleSuccess()
                         }
-                        self.offset = screenWidth * 2
+                        self.offset = screenWidth
                     }
                 }
                     
@@ -109,11 +117,14 @@ struct NavBar: View {
                     HStack {
                         Image(systemName: "person.2")
                             .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= ((screenWidth * 3) - screenWidth * 0.5) && self.offset < ((screenWidth * 4) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                            .foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+                        
+                        //.foregroundColor(self.offset >= ((screenWidth * 3) - screenWidth * 0.5) && self.offset < ((screenWidth * 4) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
                         
                         Image(systemName: "poweron")
                             .font(.system(size: 10, weight: .light, design: .rounded))
-                            .opacity(self.offset == screenWidth * 3 ? 1 : 0)
+                            .opacity(self.offset == screenWidth * 2 ? 1 : 0)
+                        //.opacity(self.offset == screenWidth * 3 ? 1 : 0)
                             .foregroundColor(Color(.systemTeal))
 
                     }
@@ -121,39 +132,44 @@ struct NavBar: View {
                 .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                 .onTapGesture {
                     withAnimation {
-                        if self.offset != screenWidth * 3 {
+                        if self.offset != screenWidth * 2 {
                             simpleSuccess()
                         }
-                        self.offset = screenWidth * 3
+                        self.offset = screenWidth * 2
                     }
                 }
-                    
-                Spacer()
+                
+                HStack {
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                }
+                
         //SwipeView
-                ZStack {
-                    Color.black
-                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                    HStack {
-                        Image(systemName: "rectangle.stack.person.crop")
-                            .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        Image(systemName: "poweron")
-                            .font(.system(size: 10, weight: .light, design: .rounded))
-                            .opacity(self.offset == screenWidth * 4 ? 1 : 0)
-                            .foregroundColor(Color(.systemTeal))
-
-                    }
-                }
-                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                .onTapGesture {
-                    withAnimation {
-                        if self.offset != screenWidth * 4 {
-                            simpleSuccess()
-                        }
-                        self.offset = screenWidth * 4
-                    }
-                }
+//                ZStack {
+//                    Color.black
+//                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+//                    HStack {
+//                        Image(systemName: "rectangle.stack.person.crop")
+//                            .font(.system(size: 21, weight: .light, design: .rounded))
+//                            .foregroundColor(self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
+//
+//                        Image(systemName: "poweron")
+//                            .font(.system(size: 10, weight: .light, design: .rounded))
+//                            .opacity(self.offset == screenWidth * 4 ? 1 : 0)
+//                            .foregroundColor(Color(.systemTeal))
+//
+//                    }
+//                }
+//                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+//                .onTapGesture {
+//                    withAnimation {
+//                        if self.offset != screenWidth * 4 {
+//                            simpleSuccess()
+//                        }
+//                        self.offset = screenWidth * 4
+//                    }
+//                }
             }
         }
         .frame(width: screenWidth, height: screenWidth / 8)

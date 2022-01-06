@@ -15,7 +15,7 @@ struct ContentView: View {
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") private var isDarkMode = true
 
-    @State var offset: CGFloat = screenWidth * 2
+    @State var offset: CGFloat = screenWidth //* 2
     
     var body: some View {
         
@@ -25,11 +25,11 @@ struct ContentView: View {
             Pager(tabs: tabs, rect: rect, offset: $offset) {
                 
                 HStack(spacing: 0){
-                    ProfileMainView(viewModel: profile)
+                    //ProfileMainView(viewModel: profile)
                     ChatsView()
                     CameraView(camera: camera)
                     ExploreMainView(viewModel: explore)
-                    ShowcaseView()
+                    //ShowcaseView()
                 }
             }
         }
@@ -52,4 +52,5 @@ struct ContentView: View {
     }
 }
 
-var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]
+//var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]
+var tabs = ["Chats", "Camera", "Explore"]
