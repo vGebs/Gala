@@ -89,7 +89,7 @@ struct CameraView: View {
 //                .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
         }
         .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: profile)
+            ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
     }
     

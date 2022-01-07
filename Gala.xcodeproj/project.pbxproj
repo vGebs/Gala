@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */; };
+		FA0A1A102786C28700634B31 /* TestAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A1A0F2786C28700634B31 /* TestAnimation.swift */; };
+		FA0A1A122787A95100634B31 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A1A112787A95100634B31 /* MyStoriesDropDown.swift */; };
+		FA0A1A142787B6FD00634B31 /* AddToStoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A1A132787B6FD00634B31 /* AddToStoryButton.swift */; };
+		FA0A1A162787CBBC00634B31 /* MyLikesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A1A152787CBBC00634B31 /* MyLikesDropDown.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA40268404A200434561 /* MatchesStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3F268404A200434561 /* MatchesStoryView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
@@ -95,7 +99,6 @@
 		FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */; };
 		FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */; };
 		FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADC115A269790B00070465C /* GoogleService-Info.plist */; };
-		FADC115D269797F20070465C /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC115C269797F20070465C /* Test.swift */; };
 		FADC11622698129D0070465C /* UserCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* UserCoreService.swift */; };
 		FADC1164269813EC0070465C /* UserCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserCore.swift */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
@@ -114,6 +117,10 @@
 		1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gala.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.release.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.release.xcconfig"; sourceTree = "<group>"; };
 		831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.debug.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.debug.xcconfig"; sourceTree = "<group>"; };
+		FA0A1A0F2786C28700634B31 /* TestAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAnimation.swift; sourceTree = "<group>"; };
+		FA0A1A112787A95100634B31 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
+		FA0A1A132787B6FD00634B31 /* AddToStoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStoryButton.swift; sourceTree = "<group>"; };
+		FA0A1A152787CBBC00634B31 /* MyLikesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDown.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA3F268404A200434561 /* MatchesStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesStoryView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
@@ -199,7 +206,6 @@
 		FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserViewModel.swift; sourceTree = "<group>"; };
 		FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallUserView.swift; sourceTree = "<group>"; };
 		FADC115A269790B00070465C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		FADC115C269797F20070465C /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		FADC11612698129D0070465C /* UserCoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCoreService.swift; sourceTree = "<group>"; };
 		FADC1163269813EC0070465C /* UserCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCore.swift; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,6 +429,9 @@
 			isa = PBXGroup;
 			children = (
 				FA8773F826409AD400D5D5CB /* ProfileView.swift */,
+				FA0A1A112787A95100634B31 /* MyStoriesDropDown.swift */,
+				FA0A1A152787CBBC00634B31 /* MyLikesDropDown.swift */,
+				FA0A1A132787B6FD00634B31 /* AddToStoryButton.swift */,
 				FA87740D26409D6000D5D5CB /* ProfileMainView.swift */,
 				FA87740F26409D8300D5D5CB /* ProfilePreview.swift */,
 			);
@@ -578,8 +587,8 @@
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
-				FADC115C269797F20070465C /* Test.swift */,
 				FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */,
+				FA0A1A0F2786C28700634B31 /* TestAnimation.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -790,7 +799,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA7E3B4126EF15CB00A6653C /* StoriesView.swift in Sources */,
+				FA0A1A162787CBBC00634B31 /* MyLikesDropDown.swift in Sources */,
 				FA0FCA40268404A200434561 /* MatchesStoryView.swift in Sources */,
+				FA0A1A102786C28700634B31 /* TestAnimation.swift in Sources */,
 				FA38DCE32723F2BA003B4C90 /* CameraButton.swift in Sources */,
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
@@ -802,6 +813,7 @@
 				FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */,
 				FADC1164269813EC0070465C /* UserCore.swift in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
+				FA0A1A122787A95100634B31 /* MyStoriesDropDown.swift in Sources */,
 				FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */,
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */,
@@ -819,6 +831,7 @@
 				FA8CE4362717B45500BE8BB4 /* PhotoCaptureProcessor.swift in Sources */,
 				FA7E3B3226E808CF00A6653C /* Story.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
+				FA0A1A142787B6FD00634B31 /* AddToStoryButton.swift in Sources */,
 				FA7BAD4826FD0FAD002F25E0 /* PostSelector.swift in Sources */,
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
@@ -854,7 +867,6 @@
 				FAA3FA162784D6D90048065E /* VibesView.swift in Sources */,
 				FA7E3B2026DECAAE00A6653C /* CardView.swift in Sources */,
 				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
-				FADC115D269797F20070465C /* Test.swift in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,

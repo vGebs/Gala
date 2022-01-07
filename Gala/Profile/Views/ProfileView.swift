@@ -37,6 +37,26 @@ struct ProfileView: View {
                         ProfilePicturePlaceholder
                         nameAgeLocation
                         editButton
+                        
+                        if viewModel.editPressed == false {
+                            HStack{
+                                Image(systemName: "newspaper")
+                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.primary)
+                                Text("Stories")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                Spacer()
+                            }
+                            .padding(.top)
+
+                            AddToStoryButton()
+                                .padding(.bottom, 5)
+                        }
+                        
+                        if viewModel.getNumPosts() > 0 && viewModel.editPressed == false {
+                            MyStoriesDropDown()
+                                .padding(.bottom, 7)
+                        }
                     }
                     
                     if (viewModel.showBio && viewModel.bioText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {
@@ -60,6 +80,7 @@ struct ProfileView: View {
                         ShowcaseProfileImageView(viewModel: self.viewModel, from: 3, to: 5)
                     }
                 }
+                .animation(.easeIn(duration: 0.2))
                 .frame(width: screenWidth * 0.95)
                 
                 VStack{
@@ -128,6 +149,7 @@ struct ProfileView: View {
                         submitChangesButton
                     }
                 }
+                .animation(.easeIn(duration: 0.2))
                 .frame(width: screenWidth * 0.95)
                 .sheet(item: $viewModel.activeSheet){ item in
                     switch item {

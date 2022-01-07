@@ -74,7 +74,7 @@ struct ExploreMainView: View {
             Spacer()
         }
         .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: profile)
+            ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }

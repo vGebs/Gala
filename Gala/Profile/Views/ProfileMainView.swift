@@ -16,6 +16,8 @@ struct ProfileMainView: View {
 
     @AppStorage("isDarkMode") private var isDarkMode = true
     
+    @Binding var showProfile: Bool
+    
     var body: some View {
         VStack {
             ZStack{
@@ -39,7 +41,7 @@ struct ProfileMainView: View {
                 
                 VStack {
                     HStack {
-                        Button(action: { }) {
+                        Button(action: { self.showProfile = false }) {
                             Image(systemName: optionButtonLeft)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
                                 .foregroundColor(.buttonPrimary)

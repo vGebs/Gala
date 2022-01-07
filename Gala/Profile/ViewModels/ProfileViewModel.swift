@@ -49,6 +49,8 @@ final class ProfileViewModel: ObservableObject {
     
     @Published var editPressed = false
     
+    @Published var showStories = StoryService.shared.postIDs.count > 0 ? true : false
+    
     @Published var profileImage: [ImageModel] = []
     @Published var oneProfilePic: Int = 1
     
@@ -328,7 +330,8 @@ final class ProfileViewModel: ObservableObject {
             .sink{ completion in
                 switch completion {
                 case let .failure(error):
-                    print(error.localizedDescription)
+                    print("ProfileViewModel: Failed to logout")
+                    print("ProfileViewModel-error: \(error.localizedDescription)")
                 case .finished:
                     print("Succesfully logged out")
                     UserDefaults.standard.set(false, forKey: "loggedIn")
@@ -582,6 +585,10 @@ extension ProfileViewModel {
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    func getNumPosts() -> Int {
+        return StoryService.shared.postIDs.count
     }
 }
 

@@ -147,6 +147,9 @@ struct GalaApp: App {
         WindowGroup {
             //VideoPlayerTest()
             LaunchView()
+            //MyStoriesDropDown()
+            //MyLikesDropDown()
+            //TestAnimation()
             //CameraButton()
             //SendViewClick()
             //CameraOptionsView()
