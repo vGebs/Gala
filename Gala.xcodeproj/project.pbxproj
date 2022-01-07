@@ -431,6 +431,7 @@
 				FA8773F826409AD400D5D5CB /* ProfileView.swift */,
 				FA87740D26409D6000D5D5CB /* ProfileMainView.swift */,
 				FA87740F26409D8300D5D5CB /* ProfilePreview.swift */,
+				FABAABE92787F63400154363 /* SubViews */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -586,11 +587,18 @@
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */,
 				FA0A1A0F2786C28700634B31 /* TestAnimation.swift */,
-				FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */,
-				FABAABE52787F47700154363 /* MyLikesDropDown.swift */,
-				FABAABE72787F49A00154363 /* AddToStoryButton.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		FABAABE92787F63400154363 /* SubViews */ = {
+			isa = PBXGroup;
+			children = (
+				FABAABE52787F47700154363 /* MyLikesDropDown.swift */,
+				FABAABE72787F49A00154363 /* AddToStoryButton.swift */,
+				FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */,
+			);
+			path = SubViews;
 			sourceTree = "<group>";
 		};
 		FAD9DB18266EEFAE00BC6FDA /* Views */ = {
