@@ -13,6 +13,10 @@ struct MatchStoriesView: View {
     var body: some View {
         VStack {
             HStack {
+                Image(systemName: "person.3.sequence.fill")
+                    .foregroundColor(.primary)
+                    .font(.system(size: 19, weight: .bold, design: .rounded))
+                
                 Text("Match Stories")
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()

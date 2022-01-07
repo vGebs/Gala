@@ -17,6 +17,10 @@ struct RecentlyJoinedView: View {
         ZStack {
             VStack {
                 HStack {
+                    Image(systemName: "figure.wave")
+                        .foregroundColor(.primary)
+                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                    
                     Text("Newcomers")
                         .font(.system(size: 25, weight: .bold, design: .rounded))
                     

@@ -31,21 +31,21 @@ struct CameraView: View {
                 .shadow(radius: 15)
             
             VStack {
-                header
-                
+                CameraViewHeader(showProfile: $showProfile, camera: camera)
+                    .padding(.top, 5)
                 Spacer()
                 
-                tempRecordButton
-                
-                Button(action: {camera.buildCamera()}){
-                    Text("Build cam")
-                }
-                .padding()
-                
-                Button(action: {camera.tearDownCamera()}){
-                    Text("Tear down cam")
-                }
-                .padding()
+//                tempRecordButton
+//
+//                Button(action: {camera.buildCamera()}){
+//                    Text("Build cam")
+//                }
+//                .padding()
+//
+//                Button(action: { camera.tearDownCamera() }){
+//                    Text("Tear down cam")
+//                }
+//                .padding()
                 
                 cameraButton
             }
@@ -117,15 +117,46 @@ struct CameraView: View {
         .padding(.bottom, screenHeight * 0.08)
     }
     
+    @State var cameraButtonPressed = false
+    
     var cameraButton: some View {
-        Button(action: { self.camera.capturePhoto() }){
+        Button(action: {
+            self.camera.capturePhoto()
+//            cameraButtonPressed = true
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                cameraButtonPressed = false
+//            }
+        }){
             ZStack{
-                RoundedRectangle(cornerRadius: 22)
-                    .foregroundColor(.white)
-                    .opacity(0.05)
+//                Circle()
+//                    .trim(from: 0, to: 0.25)
+//                    .stroke(lineWidth: 3)
+//                    .frame(width: screenWidth / 3.3)
+//                    .opacity(cameraButtonPressed ? 1 : 0)
+//                    .rotationEffect(Angle.degrees(300))
+//                    .animation(.linear(duration: 0.1))
+//                    .offset(y: -50)
                 
-                RoundedRectangle(cornerRadius: 22).stroke(lineWidth: 7)
+                Circle()
+                    .frame(width: screenWidth / 4)
+                    .foregroundColor(.white)
+                    .opacity(0.7)
+                
+                Circle()
+                    .frame(width: screenWidth / 9)
                     .foregroundColor(.buttonPrimary)
+                
+                VStack{
+                    HStack {
+                        Spacer()
+                        Circle()
+                            .frame(width: screenWidth / 18)
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: screenWidth / 9)
+                    Spacer()
+                }
+                .frame(width: screenWidth / 18, height: screenWidth / 18)
             }
         }
         .frame(
@@ -147,6 +178,23 @@ struct CameraView: View {
                 .padding(.leading)
                 Spacer()
             }
+            
+            Spacer()
+            
+            ZStack{
+//                Image(systemName: "ticket")
+//                    .font(.system(size: 100, weight: .thin, design: .rounded))
+//                    .foregroundColor(.buttonPrimary)
+                
+                Image(systemName: "map.fill")
+                    .font(.system(size: 30, weight: .thin, design: .rounded))
+                    .foregroundColor(.primary)
+                    
+                Text("Gala")
+                    .font(.system(size: 8, weight: .black, design: .rounded)) //size 15
+                    .foregroundColor(.buttonPrimary)
+            }
+            .offset(y: -20)
             
             Spacer()
             

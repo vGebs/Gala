@@ -14,6 +14,11 @@ struct VibesView: View {
     var body: some View {
         VStack {
             HStack {
+                Image(systemName: "dot.radiowaves.up.forward")
+                    .rotationEffect(.degrees(-90))
+                    .foregroundColor(.primary)
+                    .font(.system(size: 25, weight: .bold, design: .rounded))
+                
                 Text("Vibes")
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()

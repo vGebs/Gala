@@ -17,8 +17,10 @@ struct CameraOptionsView: View {
                 .opacity(0.05)
             
             RoundedRectangle(cornerRadius: 15).stroke()
-                .foregroundColor(.primary)
-            VStack{
+                .foregroundColor(.white)
+                .opacity(0.2)
+            
+            HStack{
                 Spacer()
                 
                 Button(action: {
@@ -43,6 +45,6 @@ struct CameraOptionsView: View {
                 Spacer()
             }
         }
-        .frame(width: screenWidth / 12, height: screenHeight / 12)
+        .frame(width: screenHeight / 12, height: screenWidth / 12)
     }
 }

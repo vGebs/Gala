@@ -93,6 +93,7 @@
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
 		FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE52787F47700154363 /* MyLikesDropDown.swift */; };
 		FABAABE82787F49A00154363 /* AddToStoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE72787F49A00154363 /* AddToStoryButton.swift */; };
+		FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABEA2788079A00154363 /* CameraViewHeader.swift */; };
 		FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */; };
 		FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */; };
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
@@ -200,6 +201,7 @@
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
 		FABAABE52787F47700154363 /* MyLikesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDown.swift; sourceTree = "<group>"; };
 		FABAABE72787F49A00154363 /* AddToStoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStoryButton.swift; sourceTree = "<group>"; };
+		FABAABEA2788079A00154363 /* CameraViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewHeader.swift; sourceTree = "<group>"; };
 		FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedView.swift; sourceTree = "<group>"; };
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 		FA7BAD4626FD0E82002F25E0 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
+				FABAABEA2788079A00154363 /* CameraViewHeader.swift */,
 				FA87741F26409E9000D5D5CB /* PicTakenView.swift */,
 				FA7BAD4426FC48CD002F25E0 /* SendView.swift */,
 				FA7BAD4726FD0FAD002F25E0 /* PostSelector.swift */,
@@ -850,6 +853,7 @@
 				FA76E30926B34733009A650D /* IntExtension.swift in Sources */,
 				FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
+				FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */,
 				FADC11622698129D0070465C /* UserCoreService.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,
 				FA7E3B3C26EF143000A6653C /* StoryView.swift in Sources */,

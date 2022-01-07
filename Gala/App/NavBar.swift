@@ -11,7 +11,8 @@ struct NavBar: View {
     
     @Binding var offset: CGFloat
     @Environment(\.colorScheme) var colorScheme
-    
+    @State var storiesPressed = false
+    @State var vibesPressed = false
     var body: some View {
         
         ZStack {
@@ -19,36 +20,44 @@ struct NavBar: View {
             
             HStack{
                 //ProfileView
-//                ZStack {
-//                    Color.black
-//                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-//
-//                    HStack {
-//
-//                        Image(systemName: "person")
-//                            .font(.system(size: 21, weight: .light, design: .rounded))
-//                            .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-//
-//                        Image(systemName: "poweron")
-//                            .font(.system(size: 10, weight: .light, design: .rounded))
-//                            .foregroundColor(Color(.systemTeal))
-//                            .opacity(self.offset == 0 ? 1 : 0)
-//                    }
-//                }
-//                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-//                .onTapGesture {
+                ZStack {
+                    Color.black
+                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+
+                    HStack {
+
+                        Image(systemName: "newspaper")
+                            .font(.system(size: 21, weight: .light, design: .rounded))
+                            .foregroundColor(storiesPressed ? .primary : .accent) //self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent
+
+                        Image(systemName: "poweron")
+                            .font(.system(size: 10, weight: .light, design: .rounded))
+                            .foregroundColor(.primary)
+                            .opacity(storiesPressed ? 1 : 0)
+                    }
+                }
+                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+                .onTapGesture {
 //                    withAnimation {
 //                        if self.offset != 0 {
 //                            simpleSuccess()
 //                        }
 //                        self.offset = 0
 //                    }
-//                }
-                HStack{
-                    Spacer()
-                    Spacer()
-                    Spacer()
+                    if vibesPressed {
+                        vibesPressed.toggle()
+                        storiesPressed.toggle()
+                    } else {
+                        storiesPressed.toggle()
+                    }
                 }
+//                HStack{
+//                    Spacer()
+//                    Spacer()
+//                    Spacer()
+//                }
+                
+                Spacer()
                 
         //MessagesView
                 ZStack {
@@ -74,6 +83,15 @@ struct NavBar: View {
                         if self.offset != 0 {
                             simpleSuccess()
                         }
+                        
+                        if vibesPressed {
+                            vibesPressed.toggle()
+                        }
+                        
+                        if storiesPressed {
+                            storiesPressed.toggle()
+                        }
+                        
                         self.offset = 0
                     }
                 }
@@ -104,6 +122,15 @@ struct NavBar: View {
                         if self.offset != screenWidth {
                             simpleSuccess()
                         }
+                        
+                        if vibesPressed {
+                            vibesPressed.toggle()
+                        }
+                        
+                        if storiesPressed {
+                            storiesPressed.toggle()
+                        }
+                        
                         self.offset = screenWidth
                     }
                 }
@@ -135,41 +162,59 @@ struct NavBar: View {
                         if self.offset != screenWidth * 2 {
                             simpleSuccess()
                         }
+                        
+                        if vibesPressed {
+                            vibesPressed.toggle()
+                        }
+                        
+                        if storiesPressed {
+                            storiesPressed.toggle()
+                        }
+                        
                         self.offset = screenWidth * 2
                     }
                 }
                 
-                HStack {
-                    Spacer()
-                    Spacer()
-                    Spacer()
-                }
+//                HStack {
+//                    Spacer()
+//                    Spacer()
+//                    Spacer()
+//                }
+                
+                Spacer()
                 
         //SwipeView
-//                ZStack {
-//                    Color.black
-//                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-//                    HStack {
-//                        Image(systemName: "rectangle.stack.person.crop")
-//                            .font(.system(size: 21, weight: .light, design: .rounded))
-//                            .foregroundColor(self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-//
-//                        Image(systemName: "poweron")
-//                            .font(.system(size: 10, weight: .light, design: .rounded))
-//                            .opacity(self.offset == screenWidth * 4 ? 1 : 0)
-//                            .foregroundColor(Color(.systemTeal))
-//
-//                    }
-//                }
-//                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-//                .onTapGesture {
+                ZStack {
+                    Color.black
+                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+                    HStack {
+                        Image(systemName: "dot.radiowaves.up.forward")
+                            .rotationEffect(.degrees(-90))
+                            .font(.system(size: 24, weight: .light, design: .rounded))
+                            .foregroundColor(vibesPressed ? .primary : .accent) //self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent
+
+                        Image(systemName: "poweron")
+                            .font(.system(size: 10, weight: .light, design: .rounded))
+                            .opacity(vibesPressed ? 1 : 0)
+                            .foregroundColor(.primary)
+
+                    }
+                }
+                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+                .onTapGesture {
 //                    withAnimation {
 //                        if self.offset != screenWidth * 4 {
 //                            simpleSuccess()
 //                        }
 //                        self.offset = screenWidth * 4
 //                    }
-//                }
+                    if storiesPressed {
+                        storiesPressed.toggle()
+                        vibesPressed.toggle()
+                    } else {
+                        vibesPressed.toggle()
+                    }
+                }
             }
         }
         .frame(width: screenWidth, height: screenWidth / 8)
