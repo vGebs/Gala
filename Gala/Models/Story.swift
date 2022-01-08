@@ -30,3 +30,9 @@ struct Story {
     var meta: StoryMeta
     var image: UIImage
 }
+
+struct StoryAndLikes: Identifiable {
+    var id = UUID()
+    var storyID: Date
+    var likes: [Int]
+}

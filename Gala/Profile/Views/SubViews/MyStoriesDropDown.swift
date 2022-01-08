@@ -10,23 +10,25 @@ import SwiftUI
 struct MyStoriesDropDown: View {
     @State var expanded = false
     @State var initialHeight: CGFloat = 50
-    @State var stories = [
-        StoryTest(storyID: 0, likes: [1,1,1,1,1,1]),
-        StoryTest(storyID: 1, likes: [1,1,1,1]),
-        StoryTest(storyID: 2, likes: [1,1,1,1,1,1,1,1,1]),
-        StoryTest(storyID: 3, likes: [1,1,1]),
-        StoryTest(storyID: 4, likes: [1,1,1,1,1,1,1,1]),
-        StoryTest(storyID: 3, likes: [1,1,1]),
-        StoryTest(storyID: 3, likes: [1,1,1]),
-        StoryTest(storyID: 3, likes: [1,1,1]),
-        StoryTest(storyID: 3, likes: [1,1,1])
-    ]
+//    @State var stories = [
+//        StoryTest(storyID: 0, likes: [1,1,1,1,1,1]),
+//        StoryTest(storyID: 1, likes: [1,1,1,1]),
+//        StoryTest(storyID: 2, likes: [1,1,1,1,1,1,1,1,1]),
+//        StoryTest(storyID: 3, likes: [1,1,1]),
+//        StoryTest(storyID: 4, likes: [1,1,1,1,1,1,1,1]),
+//        StoryTest(storyID: 3, likes: [1,1,1]),
+//        StoryTest(storyID: 3, likes: [1,1,1]),
+//        StoryTest(storyID: 3, likes: [1,1,1]),
+//        StoryTest(storyID: 3, likes: [1,1,1])
+//    ]
+    
+    @StateObject var viewModel = MyStoriesDropDownViewModel()
     
     @State var addedHeight: CGFloat = 0
     
     var body: some View {
         
-        if stories.count > 0 {
+        if viewModel.stories.count > 0 {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
@@ -40,19 +42,18 @@ struct MyStoriesDropDown: View {
                             addedHeight = 0
                             expanded.toggle()
                         } else {
-                            initialHeight = (60 * CGFloat(Double(stories.count + 1)))
+                            initialHeight = (60 * CGFloat(Double(viewModel.stories.count + 1)))
                             expanded.toggle()
                         }
                     }){
                         storiesPlaceholder
-                            
                     }
                     
                     if expanded {
                         MyDivider()
                             .frame(height: 3)
-                        ForEach(stories) { story in
-                            MyLikesDropDown(story: story, addedHeight: $addedHeight)
+                        ForEach(viewModel.stories) { story in
+                            MyLikesDropDown(viewModel: viewModel, story: story, addedHeight: $addedHeight)
                         }
 
                         Spacer()
@@ -71,12 +72,12 @@ struct MyStoriesDropDown: View {
                 .font(.system(size: 22, weight: .regular, design: .rounded))
                 .padding(.horizontal)
             
-            if stories.count > 1 {
-                Text("You have \(stories.count) stories")
+            if viewModel.stories.count > 1 {
+                Text("You have \(viewModel.stories.count) stories")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
             } else {
-                Text("You have \(stories.count) story")
+                Text("You have \(viewModel.stories.count) story")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
             }
@@ -119,11 +120,3 @@ struct MyStoriesDropDown_Previews: PreviewProvider {
         MyStoriesDropDown()
     }
 }
-
-
-struct StoryTest: Identifiable {
-    var id = UUID()
-    var storyID: Int
-    var likes: [Int]
-}
-

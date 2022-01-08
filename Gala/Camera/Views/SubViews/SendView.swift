@@ -25,13 +25,13 @@ struct SendView: View {
                 ScrollView(showsIndicators: false) {
                     VStack{
                         HStack{
-                            Text("Post story to Currated List")
+                            Text("Add your story to a vibe")
                                 .foregroundColor(.white)
                                 .font(.system(size: 22, weight: .bold, design: .rounded))
                             Spacer()
                             
                             Menu {
-                                Text("A post to a currated list will be seen by your matches")
+                                Text("Posting in a vibe will be seen by your matches")
                             } label: {
                                 Label("", systemImage: "exclamationmark.circle")
                                     .foregroundColor(.buttonPrimary)
@@ -54,10 +54,18 @@ struct SendView: View {
                         }
                         
                         HStack{
-                            Text("Post story to your matches")
+                            Text("Add a private story")
                                 .foregroundColor(.white)
                                 .font(.system(size: 22, weight: .bold, design: .rounded))
                             Spacer()
+                            
+                            Menu {
+                                Text("Private stories will only be seen by your matches")
+                            } label: {
+                                Label("", systemImage: "exclamationmark.circle")
+                                    .foregroundColor(.buttonPrimary)
+                            }
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
                         }
                         .padding(.top)
                         

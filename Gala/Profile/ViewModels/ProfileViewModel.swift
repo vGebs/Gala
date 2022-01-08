@@ -49,7 +49,7 @@ final class ProfileViewModel: ObservableObject {
     
     @Published var editPressed = false
     
-    @Published var showStories = StoryService.shared.postIDs.count > 0 ? true : false
+    //@Published var showStories = StoryService.shared.postIDs.count > 0 ? true : false
     
     @Published var profileImage: [ImageModel] = []
     @Published var oneProfilePic: Int = 1
@@ -343,6 +343,10 @@ final class ProfileViewModel: ObservableObject {
             } receiveValue: { _ in }
             .store(in: &cancellables)
     }
+    
+    func getNumPosts() -> Int {
+        return StoryService.shared.postIDs.count
+    }
 }
 
 //MARK: - Image options ------------------------------------------------------------------------------------->
@@ -585,10 +589,6 @@ extension ProfileViewModel {
                 }
             }
             .store(in: &cancellables)
-    }
-    
-    func getNumPosts() -> Int {
-        return StoryService.shared.postIDs.count
     }
 }
 
