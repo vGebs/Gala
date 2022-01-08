@@ -592,6 +592,7 @@
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */,
 				FA0A1A0F2786C28700634B31 /* TestAnimation.swift */,
+				FABAABF22788E75800154363 /* SubViewViewModels */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -599,7 +600,6 @@
 		FABAABE92787F63400154363 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
-				FABAABF22788E75800154363 /* SubViewViewModels */,
 				FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */,
 				FABAABE52787F47700154363 /* MyLikesDropDown.swift */,
 				FABAABE72787F49A00154363 /* AddToStoryButton.swift */,
