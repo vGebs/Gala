@@ -16,13 +16,13 @@
 		FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */; };
-		FA38DCE32723F2BA003B4C90 /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE22723F2BA003B4C90 /* CameraButton.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
 		FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */; };
 		FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53826C884B200AE3B7C /* LandingView.swift */; };
 		FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */; };
 		FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D526FA605700B77D30 /* VibesService.swift */; };
+		FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33F0278D7B010087127B /* CameraBtn.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -127,13 +127,13 @@
 		FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerTest.swift; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureProcessor.swift; sourceTree = "<group>"; };
-		FA38DCE22723F2BA003B4C90 /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FA58F53826C884B200AE3B7C /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOptionsView.swift; sourceTree = "<group>"; };
 		FA67C6D526FA605700B77D30 /* VibesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesService.swift; sourceTree = "<group>"; };
+		FA6A33F0278D7B010087127B /* CameraBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBtn.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -288,13 +288,13 @@
 			isa = PBXGroup;
 			children = (
 				FABAABEA2788079A00154363 /* CameraViewHeader.swift */,
+				FA6A33F0278D7B010087127B /* CameraBtn.swift */,
 				FA87741F26409E9000D5D5CB /* PicTakenView.swift */,
 				FA7BAD4426FC48CD002F25E0 /* SendView.swift */,
 				FA7BAD4726FD0FAD002F25E0 /* PostSelector.swift */,
 				FA7E3B3526EACF2200A6653C /* SendViewTest.swift */,
 				FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */,
 				FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */,
-				FA38DCE22723F2BA003B4C90 /* CameraButton.swift */,
 				FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */,
 			);
 			path = SubViews;
@@ -823,7 +823,6 @@
 				FA7E3B4126EF15CB00A6653C /* StoriesView.swift in Sources */,
 				FA0FCA40268404A200434561 /* MatchesStoryView.swift in Sources */,
 				FA0A1A102786C28700634B31 /* TestAnimation.swift in Sources */,
-				FA38DCE32723F2BA003B4C90 /* CameraButton.swift in Sources */,
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
 				FA7BAD4A26FD107C002F25E0 /* SendViewModel.swift in Sources */,
@@ -893,6 +892,7 @@
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
+				FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */,
 				FA7E3B3826EAD18D00A6653C /* SendViewModelTest.swift in Sources */,
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,

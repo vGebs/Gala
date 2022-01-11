@@ -35,19 +35,8 @@ struct CameraView: View {
                     .padding(.top, 5)
                 Spacer()
                 
-//                tempRecordButton
-//
-//                Button(action: {camera.buildCamera()}){
-//                    Text("Build cam")
-//                }
-//                .padding()
-//
-//                Button(action: { camera.tearDownCamera() }){
-//                    Text("Tear down cam")
-//                }
-//                .padding()
-                
-                cameraButton
+                CameraBtn(camera: camera)
+                    .padding(.bottom, screenHeight * 0.08)
             }
             
             
@@ -122,21 +111,10 @@ struct CameraView: View {
     var cameraButton: some View {
         Button(action: {
             self.camera.capturePhoto()
-//            cameraButtonPressed = true
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                cameraButtonPressed = false
-//            }
+
         }){
             ZStack{
-//                Circle()
-//                    .trim(from: 0, to: 0.25)
-//                    .stroke(lineWidth: 3)
-//                    .frame(width: screenWidth / 3.3)
-//                    .opacity(cameraButtonPressed ? 1 : 0)
-//                    .rotationEffect(Angle.degrees(300))
-//                    .animation(.linear(duration: 0.1))
-//                    .offset(y: -50)
-                
+
                 Circle()
                     .frame(width: screenWidth / 4)
                     .foregroundColor(.white)
