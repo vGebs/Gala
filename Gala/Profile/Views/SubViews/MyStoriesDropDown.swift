@@ -10,17 +10,6 @@ import SwiftUI
 struct MyStoriesDropDown: View {
     @State var expanded = false
     @State var initialHeight: CGFloat = 50
-//    @State var stories = [
-//        StoryTest(storyID: 0, likes: [1,1,1,1,1,1]),
-//        StoryTest(storyID: 1, likes: [1,1,1,1]),
-//        StoryTest(storyID: 2, likes: [1,1,1,1,1,1,1,1,1]),
-//        StoryTest(storyID: 3, likes: [1,1,1]),
-//        StoryTest(storyID: 4, likes: [1,1,1,1,1,1,1,1]),
-//        StoryTest(storyID: 3, likes: [1,1,1]),
-//        StoryTest(storyID: 3, likes: [1,1,1]),
-//        StoryTest(storyID: 3, likes: [1,1,1]),
-//        StoryTest(storyID: 3, likes: [1,1,1])
-//    ]
     
     @StateObject var viewModel = MyStoriesDropDownViewModel()
     

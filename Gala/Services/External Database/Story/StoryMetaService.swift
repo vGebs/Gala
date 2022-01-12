@@ -17,47 +17,33 @@ class StoryMetaService: ObservableObject {
     
     private var currentUserCore = UserCoreService.shared.currentUserCore!
     
+    private var cancellables: [AnyCancellable] = []
+    
     static let shared = StoryMetaService()
     private init() {}
     
     func postStory(postID_date: Date) -> AnyPublisher<Void, Error> {
-        if StoryService.shared.postIDs.count == 0{
-            return self.pushFirstStory(postID_date)
-        } else {
-            return self.pushAnotherStory(postID_date)
-        }
+        //Fetch stories from db, check how many there are
+        // If there isnt any, make a new post
+        // If there is some, update the doc
+        
+        //If stories.count == 0 -> pushFirstStory
+        // else -> pushAnotherStory
+        self.getMyStories()
+            .flatMap { stories in
+                self.pushStory(postID_date, stories)
+            }
+            .eraseToAnyPublisher()
     }
     
     func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            let currentUser = UserCoreService.shared.currentUserCore!
-            if StoryService.shared.postIDs.count == 1 {
-                self.db.collection("Stories").document(currentUser.uid)
-                    .delete() { err in
-                        if let err = err {
-                            print("StoryMetaService: Failed to delete post")
-                            promise(.failure(err))
-                        } else {
-                            print("StoryMetaService: Successfully deleted story")
-                            promise(.success(()))
-                        }
-                    }
-            } else {
-                self.db.collection("Stories").document(currentUser.uid)
-                    .updateData([
-                        "postIDs" : FieldValue.arrayRemove([storyID])
-                    ]) { err in
-                        if let err = err {
-                            print("StoryMetaService: Failed to delete Story")
-                            promise(.failure(err))
-                        } else {
-                            print("StoryMetaService: Successfully deleted story")
-                            promise(.success(()))
-                        }
-                    }
+        //If count == 1 -> deleteLastStory
+        // otherwise -> deleteOneOfManyStories
+        self.getMyStories()
+            .flatMap { stories in
+                self.deleteStory(storyID, stories)
             }
-        }
-        .eraseToAnyPublisher()
+            .eraseToAnyPublisher()
     }
     
     func getMyStories() -> AnyPublisher<[Date], Error> {
@@ -96,6 +82,15 @@ class StoryMetaService: ObservableObject {
 }
 
 extension StoryMetaService {
+    
+    private func pushStory(_ postID: Date, _ stories: [Date]) ->AnyPublisher<Void, Error> {
+        if stories.count == 0 {
+            return self.pushFirstStory(postID)
+        } else {
+            return self.pushAnotherStory(postID)
+        }
+    }
+    
     private func pushFirstStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
@@ -160,6 +155,53 @@ extension StoryMetaService {
                         promise(.failure(err))
                     } else {
                         print("StoryMetaService: Successfully pushed another story w/ id: \(postID_date)")
+                        promise(.success(()))
+                    }
+                }
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension StoryMetaService {
+    
+    private func deleteStory(_ postID: Date, _ stories: [Date]) -> AnyPublisher<Void, Error> {
+        if stories.count == 1 {
+            return self.deleteLastStory()
+        } else {
+            return self.deleteOneOfManyStories(storyID: postID)
+        }
+    }
+    
+    private func deleteLastStory() -> AnyPublisher<Void, Error> {
+        let currentUser = UserCoreService.shared.currentUserCore!
+        
+        return Future<Void, Error>{ promise in
+            self.db.collection("Stories").document(currentUser.uid)
+                .delete() { err in
+                    if let err = err {
+                        print("StoryMetaService: Failed to delete last post")
+                        promise(.failure(err))
+                    } else {
+                        print("StoryMetaService: Successfully deleted last story")
+                        promise(.success(()))
+                    }
+                }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func deleteOneOfManyStories(storyID: Date) -> AnyPublisher<Void, Error> {
+        let currentUser = UserCoreService.shared.currentUserCore!
+
+        return Future<Void, Error> { promise in
+            self.db.collection("Stories").document(currentUser.uid)
+                .updateData([
+                    "postIDs" : FieldValue.arrayRemove([storyID])
+                ]) { err in
+                    if let err = err {
+                        print("StoryMetaService: Failed to delete Story")
+                        promise(.failure(err))
+                    } else {
+                        print("StoryMetaService: Successfully deleted story")
                         promise(.success(()))
                     }
                 }

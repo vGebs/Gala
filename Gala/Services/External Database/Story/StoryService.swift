@@ -24,7 +24,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     private var cancellables: [AnyCancellable] = []
     
     //Post IDs are just a timestamp
-    @Published private(set) var postIDs: [Date] = []
+    //@Published private(set) var postIDs: [Date] = []
     
     static let shared = StoryService()
     private init() {
@@ -32,6 +32,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         storyMetaService.getMyStories()
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
+            .removeDuplicates()
             .sink { completion in
                 switch completion {
                 case .failure(let err):
@@ -41,7 +42,7 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     print("StoryService: Successfully recieved my Stories")
                 }
             } receiveValue: { [weak self] myStoryIDs in
-                self?.postIDs = myStoryIDs
+                //self?.postIDs = myStoryIDs
             }
             .store(in: &self.cancellables)
     }
@@ -63,7 +64,10 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     promise(.success(()))
                 }
             } receiveValue: { [weak self] _ in
-                self?.postIDs.append(postID_date)
+//                self?.postIDs.append(postID_date)
+//                if let postIDs = self?.postIDs {
+//                    self?.postIDs = postIDs.removingDuplicates()
+//                }
             }
             .store(in: &self.cancellables)
         }
@@ -86,15 +90,30 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                     promise(.success(()))
                 }
             } receiveValue: { [weak self] _, _ in
-                for i in 0..<(self?.postIDs.count)!{
-                    if self?.postIDs[i] == storyID {
-                        self?.postIDs.remove(at: i)
-                        break
-                    }
-                }
+//                for i in 0..<(self?.postIDs.count)!{
+//                    if self?.postIDs[i] == storyID {
+//                        self?.postIDs.remove(at: i)
+//                        print("Removed story from index: \(i)")
+//                        print("Story count: \(self?.postIDs.count)")
+//                    }
+//                }
             }
             .store(in: &self.cancellables)
         }
         .eraseToAnyPublisher()
+    }
+}
+
+extension Array where Element: Hashable {
+    func removingDuplicates() -> [Element] {
+        var addedDict = [Element: Bool]()
+
+        return filter {
+            addedDict.updateValue(true, forKey: $0) == nil
+        }
+    }
+
+    mutating func removeDuplicates() {
+        self = self.removingDuplicates()
     }
 }

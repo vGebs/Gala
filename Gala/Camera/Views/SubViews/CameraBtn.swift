@@ -95,7 +95,7 @@ struct CameraBtn: View {
             Circle()
                 .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
                 .stroke(style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
-                .foregroundColor(.primary)
+                .foregroundColor(.white)
                 .rotationEffect(Angle(degrees: 270.0))
                 .animation(.linear)
         }

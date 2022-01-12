@@ -53,7 +53,7 @@ struct ProfileView: View {
                                 .padding(.bottom, 5)
                         }
                         
-                        if viewModel.getNumPosts() > 0 && viewModel.editPressed == false {
+                        if viewModel.editPressed == false {
                             MyStoriesDropDown()
                                 .padding(.bottom, 7)
                         }

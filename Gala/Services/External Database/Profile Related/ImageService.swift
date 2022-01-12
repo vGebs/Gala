@@ -93,9 +93,26 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
+    //Function is not being used yet.
+    //Images are not being retrieved with id so we cannot delete the correct image
+    //P.S., this function should work tho assuming proper input
     func deleteProfileImage(name: String) -> AnyPublisher<Void, Error> {
+        let uid = currentUser!
+        let storageRef = storage.reference()
+        let profileRef = storageRef.child("ProfileImages")
+        let myProfileRef = profileRef.child(uid)
+        let imgFileRef = myProfileRef.child("\(name).png")
+        
         return Future<Void, Error> { promise in
-            
+            imgFileRef.delete { err in
+                if let err = err {
+                    print("ImageService: Failed to delete image with id: \(name)")
+                    print("ImageService-err: \(err)")
+                } else {
+                    print("ImageService: Successfully deleted image with id: \(name)")
+                    promise(.success(()))
+                }
+            }
         }.eraseToAnyPublisher()
     }
 }

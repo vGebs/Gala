@@ -42,8 +42,22 @@ class StoryContentService: ObservableObject {
     }
     
     func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
+        let storageRef = storage.reference()
+        let storyFolder = "Stories"
+        let storyRef = storageRef.child(storyFolder)
+        let myStoryRef = storyRef.child(currentUser!)
+        let imgFileRef = myStoryRef.child("\(storyID).png")
+        
         return Future<Void, Error> { promise in
-            promise(.success(()))
+            imgFileRef.delete { err in
+                if let err = err {
+                    print("StoryContentService: Failed to delete story with id: \(storyID)")
+                    print("StoryContentService-err: \(err)")
+                } else {
+                    print("StoryContentService: Successfully deleted story with id: \(storyID)")
+                    promise(.success(()))
+                }
+            }
         }.eraseToAnyPublisher()
     }
     

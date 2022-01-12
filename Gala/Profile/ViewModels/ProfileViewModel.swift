@@ -344,9 +344,9 @@ final class ProfileViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func getNumPosts() -> Int {
-        return StoryService.shared.postIDs.count
-    }
+//    func getNumPosts() -> Int {
+//        return StoryService.shared.postIDs.count
+//    }
 }
 
 //MARK: - Image options ------------------------------------------------------------------------------------->
