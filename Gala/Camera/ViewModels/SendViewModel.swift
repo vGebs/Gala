@@ -72,7 +72,7 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     
     func postStory(pic: UIImage) {
         print("Selected: \(self.selected)")
-        StoryService.shared.postStory(postID_date: Date(), asset: pic)
+        StoryService.shared.postStory(postID_date: Date(), vibe: selected, asset: pic)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in

@@ -14,10 +14,10 @@ class MyLikesDropDownViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
     
-    init(story: StoryAndLikes) {
+    init(story: StoryViewable) {
         let currentUID = AuthService.shared.currentUser?.uid
 
-        StoryContentService.shared.getStory(uid: currentUID!, storyID: story.storyID)
+        StoryContentService.shared.getStory(uid: currentUID!, storyID: story.pid)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in

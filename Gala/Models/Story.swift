@@ -43,3 +43,16 @@ struct StoryWithImage: Identifiable {
     var storyID: Date
     var image: UIImage
 }
+
+struct StoryWithVibe: Identifiable {
+    var id = UUID()
+    var pid: Date
+    var title: String
+}
+
+struct StoryViewable: Identifiable {
+    var id = UUID()
+    var pid: Date
+    var title: String
+    var likes: [Int]
+}

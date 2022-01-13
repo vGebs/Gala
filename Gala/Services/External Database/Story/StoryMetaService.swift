@@ -22,7 +22,7 @@ class StoryMetaService: ObservableObject {
     static let shared = StoryMetaService()
     private init() {}
     
-    func postStory(postID_date: Date) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, vibe: String) -> AnyPublisher<Void, Error> {
         //Fetch stories from db, check how many there are
         // If there isnt any, make a new post
         // If there is some, update the doc
@@ -31,7 +31,7 @@ class StoryMetaService: ObservableObject {
         // else -> pushAnotherStory
         self.getMyStories()
             .flatMap { stories in
-                self.pushStory(postID_date, stories)
+                self.pushStory(postID_date, stories, vibe)
             }
             .eraseToAnyPublisher()
     }
@@ -46,26 +46,31 @@ class StoryMetaService: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func getMyStories() -> AnyPublisher<[Date], Error> {
+    func getMyStories() -> AnyPublisher<[StoryWithVibe], Error> {
         let currrentUser = UserCoreService.shared.currentUserCore!
-        return Future<[Date], Error>{ promise in
+        return Future<[StoryWithVibe], Error>{ promise in
             self.db.collection("Stories").document(currrentUser.uid)
                 .getDocument { snap, err in
                     if let err = err {
                         print("StoryMetaService: Failed to fetch stories")
                         promise(.failure(err))
                     } else if let snap = snap {
-                        var final: [Date] = []
-                        if let ids = snap.data()?["postIDs"] as? [Any] {
-                            for i in 0..<ids.count {
-                                let id = ids[i] as? Timestamp
-                                let idd = id?.dateValue()
-                                if let id_ = idd {
-                                    final.append(id_)
+                        var final: [StoryWithVibe] = []
+                        if let posts = snap.data()?["posts"] as? [[String: Any]] {
+                            for i in 0..<posts.count {
+                                
+                                let id = posts[i]["id"] as? Timestamp
+                                let idFinal = id?.dateValue()
+                                
+                                let title = posts[i]["title"] as? String
+                                
+                                if let idd = idFinal, let title = title {
+                                    let storyWithVibe = StoryWithVibe(pid: idd, title: title)
+                                    //print(storyWithVibe)
+                                    final.append(storyWithVibe)
                                 }
                             }
                         }
-                        print("PostIDs: \(final)")
                         promise(.success(final))
                     }
                 }
@@ -83,15 +88,15 @@ class StoryMetaService: ObservableObject {
 
 extension StoryMetaService {
     
-    private func pushStory(_ postID: Date, _ stories: [Date]) ->AnyPublisher<Void, Error> {
+    private func pushStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String) ->AnyPublisher<Void, Error> {
         if stories.count == 0 {
-            return self.pushFirstStory(postID)
+            return self.pushFirstStory(postID, vibe)
         } else {
-            return self.pushAnotherStory(postID)
+            return self.pushAnotherStory(postID, vibe)
         }
     }
     
-    private func pushFirstStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
+    private func pushFirstStory(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -120,7 +125,12 @@ extension StoryMetaService {
                         "latitude" : currentUserCore.latitude,
                     ]
                 ],
-                "postIDs" : [postID_date]
+                "posts" : [
+                    [
+                        "id": postID_date,
+                        "title": vibe
+                    ]
+                ]
             ]) { err in
                 if let err = err {
                     print("StoryMetaService: Failed to post story meta")
@@ -133,7 +143,7 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func pushAnotherStory(_ postID_date: Date) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStory(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -145,7 +155,14 @@ extension StoryMetaService {
             
             self.db.collection("Stories").document(currentUserCore.uid)
                 .updateData([
-                    "postIDs" : FieldValue.arrayUnion([postID_date]),
+                    "posts" : FieldValue.arrayUnion(
+                        [
+                            [
+                                "id": postID_date,
+                                "title": vibe
+                            ]
+                        ]
+                    ),
                     "userCore.location.geoHash" : hash,
                     "userCore.location.latitude" : lat,
                     "userCore.location.longitude" : long
@@ -164,7 +181,7 @@ extension StoryMetaService {
 
 extension StoryMetaService {
     
-    private func deleteStory(_ postID: Date, _ stories: [Date]) -> AnyPublisher<Void, Error> {
+    private func deleteStory(_ postID: Date, _ stories: [StoryWithVibe]) -> AnyPublisher<Void, Error> {
         if stories.count == 1 {
             return self.deleteLastStory()
         } else {

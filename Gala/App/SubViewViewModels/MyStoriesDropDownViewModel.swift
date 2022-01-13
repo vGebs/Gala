@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 class MyStoriesDropDownViewModel: ObservableObject {
-    @Published var stories: [StoryAndLikes] = []
+    @Published var stories: [StoryViewable] = []
     private var cancellables: [AnyCancellable] = []
     
     init() {
@@ -26,11 +26,11 @@ class MyStoriesDropDownViewModel: ObservableObject {
                 case .finished:
                     print("MyStoriesDropDownViewModel: Successfully fetched my stories")
                 }
-            } receiveValue: { [weak self] postIDs in
-                print("PostIDs: \(postIDs)")
+            } receiveValue: { [weak self] stories in
+                print("Posts: \(stories)")
                 //self?.stories = postIDs
-                for post in postIDs {
-                    let newStory = StoryAndLikes(storyID: post, likes: [])
+                for post in stories {
+                    let newStory = StoryViewable(pid: post.pid, title: post.title, likes: [])
                     self?.stories.insert(newStory, at: 0)
                 }
             }
@@ -52,7 +52,7 @@ class MyStoriesDropDownViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.stories.count)!{
-                    if self?.stories[i].storyID == storyID {
+                    if self?.stories[i].pid == storyID {
                         self?.stories.remove(at: i)
                         break
                     }

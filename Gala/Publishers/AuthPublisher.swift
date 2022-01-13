@@ -13,7 +13,11 @@ extension Publishers{
         typealias Output = User?
         typealias Failure = Never
         
-        func receive<S>(subscriber: S) where S : Subscriber, Self.Failure == S.Failure, Self.Output == S.Input {
+        func receive<S>(subscriber: S) where
+        S : Subscriber,
+        Self.Failure == S.Failure,
+        Self.Output == S.Input {
+            
             let authSubscription = AuthSubscription(subscriber: subscriber)
             subscriber.receive(subscription: authSubscription)
         }

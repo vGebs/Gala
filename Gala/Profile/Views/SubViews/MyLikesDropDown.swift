@@ -15,10 +15,11 @@ struct MyLikesDropDown: View {
     @ObservedObject var viewModel: MyStoriesDropDownViewModel
     @ObservedObject var likesVM: MyLikesDropDownViewModel
     
-    var story: StoryAndLikes
+    var story: StoryViewable
+    
     @Binding var addedHeight: CGFloat
         
-    init(story: StoryAndLikes, addedHeight: Binding<CGFloat>, viewModel: MyStoriesDropDownViewModel){
+    init(story: StoryViewable, addedHeight: Binding<CGFloat>, viewModel: MyStoriesDropDownViewModel){
         self.story = story
         self._addedHeight = addedHeight
         self.viewModel = viewModel
@@ -51,7 +52,7 @@ struct MyLikesDropDown: View {
                 //View the story
             }){
                 if likesVM.image == nil {
-                    Circle()
+                    RoundedRectangle(cornerRadius: 5)
                         .stroke()
                         .foregroundColor(.buttonPrimary)
                         .frame(width: 30, height: 30)
@@ -61,10 +62,12 @@ struct MyLikesDropDown: View {
                         Image(uiImage: likesVM.image!)
                             .resizable()
                             .scaledToFill()
-                            .clipShape(Circle())
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
                             .frame(width: 30, height: 30)
+                            .clipped()
                             .padding(.horizontal)
-                        Circle()
+                        
+                        RoundedRectangle(cornerRadius: 5)
                             .stroke()
                             .foregroundColor(.buttonPrimary)
                             .frame(width: 30, height: 30)
@@ -74,7 +77,7 @@ struct MyLikesDropDown: View {
             }
             
             if story.likes.count == 0 {
-                Text("\(story.likes.count) likes so far")
+                Text("\"\(story.title)\"")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
                 
@@ -82,7 +85,7 @@ struct MyLikesDropDown: View {
                 
                 Button(action: {
                     //Delete story
-                    viewModel.deleteStory(storyID: story.storyID)
+                    viewModel.deleteStory(storyID: story.pid)
                     addedHeight -= 50
                 }){
                     Image(systemName: "trash")
@@ -90,7 +93,7 @@ struct MyLikesDropDown: View {
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                 }
                 
-                Text("\(secondsToHoursMinutesSeconds(Int(story.storyID.timeIntervalSinceNow)))")
+                Text("\(secondsToHoursMinutesSeconds(Int(story.pid.timeIntervalSinceNow)))")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
                     .padding(.trailing)
@@ -146,7 +149,7 @@ struct MyLikesDropDown: View {
                             expanded.toggle()
                         }
                     }){
-                        Text("\(secondsToHoursMinutesSeconds(Int(story.storyID.timeIntervalSinceNow)))")
+                        Text("\(secondsToHoursMinutesSeconds(Int(story.pid.timeIntervalSinceNow)))")
                             .font(.system(size: 16, weight: .semibold, design: .rounded))
                             .foregroundColor(.accent)
                         

@@ -24,6 +24,7 @@
 		FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D526FA605700B77D30 /* VibesService.swift */; };
 		FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33F0278D7B010087127B /* CameraBtn.swift */; };
 		FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */; };
+		FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FE278FF8F00087127B /* StoryPublisher.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -136,6 +137,7 @@
 		FA67C6D526FA605700B77D30 /* VibesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesService.swift; sourceTree = "<group>"; };
 		FA6A33F0278D7B010087127B /* CameraBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBtn.swift; sourceTree = "<group>"; };
 		FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDownViewModel.swift; sourceTree = "<group>"; };
+		FA6A33FE278FF8F00087127B /* StoryPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPublisher.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -523,6 +525,7 @@
 			isa = PBXGroup;
 			children = (
 				FA8774422640A14D00D5D5CB /* AuthPublisher.swift */,
+				FA6A33FE278FF8F00087127B /* StoryPublisher.swift */,
 			);
 			path = Publishers;
 			sourceTree = "<group>";
@@ -842,6 +845,7 @@
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */,
 				FABAABF42788E76A00154363 /* MyStoriesDropDownViewModel.swift in Sources */,
+				FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */,
 				FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */,
 				FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */,
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,

@@ -12,7 +12,7 @@ import FirebaseFirestore
 //This protocol will have to be expanded once video is working
 protocol StoryServiceProtocol {
     //User actions
-    func postStory(postID_date: Date, asset: UIImage) -> AnyPublisher<Void, Error>
+    func postStory(postID_date: Date, vibe: String, asset: UIImage) -> AnyPublisher<Void, Error>
     func deleteStory(storyID: Date) -> AnyPublisher<Void, Error>
 }
 
@@ -23,17 +23,14 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     
     private var cancellables: [AnyCancellable] = []
     
-    //Post IDs are just a timestamp
-    //@Published private(set) var postIDs: [Date] = []
-    
     static let shared = StoryService()
     private init() { }
     
-    func postStory(postID_date: Date, asset: UIImage) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, vibe: String, asset: UIImage) -> AnyPublisher<Void, Error> {
                 
         return Future<Void, Error> { promise in
             Publishers.Zip(
-                self.storyMetaService.postStory(postID_date: postID_date),
+                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe),
                 self.storyContentService.postStory(story: asset, name: "\(postID_date)")
             )
             .sink { completion in

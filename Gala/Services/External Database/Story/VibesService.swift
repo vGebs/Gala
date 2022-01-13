@@ -58,10 +58,9 @@ class VibesService: ObservableObject, VibesServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    
-    
     //We likely will not need this function because if we know the vibe title that will be
     // in the story model, then we can just place them in a bucket
+    // True true old Vaughn
     func getViewAbleVibes() -> AnyPublisher<[String], Error> {
         return Future<[String], Error> { promise in
             
