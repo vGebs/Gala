@@ -11,7 +11,7 @@ struct MyStoriesDropDown: View {
     @State var expanded = false
     @State var initialHeight: CGFloat = 50
     
-    @StateObject var viewModel = MyStoriesDropDownViewModel()
+    @ObservedObject var viewModel = MyStoriesDropDownViewModel()
     
     @State var addedHeight: CGFloat = 0
     
@@ -42,7 +42,7 @@ struct MyStoriesDropDown: View {
                         MyDivider()
                             .frame(height: 3)
                         ForEach(viewModel.stories) { story in
-                            MyLikesDropDown(viewModel: viewModel, story: story, addedHeight: $addedHeight)
+                            MyLikesDropDown(story: story, addedHeight: $addedHeight, viewModel: viewModel)
                         }
 
                         Spacer()
@@ -101,11 +101,5 @@ struct MyStoriesDropDown: View {
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .padding(.trailing)
         }
-    }
-}
-
-struct MyStoriesDropDown_Previews: PreviewProvider {
-    static var previews: some View {
-        MyStoriesDropDown()
     }
 }

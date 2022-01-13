@@ -58,6 +58,5 @@ class MyStoriesDropDownViewModel: ObservableObject {
                     }
                 }
             }.store(in: &cancellables)
-
     }
 }

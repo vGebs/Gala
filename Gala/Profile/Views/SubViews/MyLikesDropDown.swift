@@ -6,15 +6,24 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MyLikesDropDown: View {
     @State var height: CGFloat = 50
     @State var expanded = false
+    
     @ObservedObject var viewModel: MyStoriesDropDownViewModel
+    @ObservedObject var likesVM: MyLikesDropDownViewModel
     
     var story: StoryAndLikes
-    
     @Binding var addedHeight: CGFloat
+        
+    init(story: StoryAndLikes, addedHeight: Binding<CGFloat>, viewModel: MyStoriesDropDownViewModel){
+        self.story = story
+        self._addedHeight = addedHeight
+        self.viewModel = viewModel
+        self.likesVM = MyLikesDropDownViewModel(story: story)
+    }
     
     var body: some View {
         ZStack {
@@ -41,10 +50,27 @@ struct MyLikesDropDown: View {
             Button(action: {
                 //View the story
             }){
-                Circle()
-                    .stroke()
-                    .frame(width: 30, height: 30)
-                    .padding(.horizontal)
+                if likesVM.image == nil {
+                    Circle()
+                        .stroke()
+                        .foregroundColor(.buttonPrimary)
+                        .frame(width: 30, height: 30)
+                        .padding(.horizontal)
+                } else {
+                    ZStack{
+                        Image(uiImage: likesVM.image!)
+                            .resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .frame(width: 30, height: 30)
+                            .padding(.horizontal)
+                        Circle()
+                            .stroke()
+                            .foregroundColor(.buttonPrimary)
+                            .frame(width: 30, height: 30)
+                            .padding(.horizontal)
+                    }
+                }
             }
             
             if story.likes.count == 0 {

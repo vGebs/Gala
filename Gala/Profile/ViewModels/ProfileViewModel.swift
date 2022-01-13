@@ -21,6 +21,8 @@ final class ProfileViewModel: ObservableObject {
     
 //MARK: - General Purpose Variables
         
+    //@Published var dropDownViewModel: MyStoriesDropDownViewModel
+    
     private let profileManager = ProfilePersistenceService()
     private var userService: AuthServiceProtocol = AuthService.shared
     
@@ -144,10 +146,7 @@ final class ProfileViewModel: ObservableObject {
         mode: Mode
     ){
         
-//        self.nameText = name
-//        self.age = age
-//        self.ageText = age.ageString()
-//        self.email = email
+        //self.dropDownViewModel = MyStoriesDropDownViewModel()
         
         self.mode = mode
         
