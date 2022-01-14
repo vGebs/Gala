@@ -85,7 +85,7 @@ struct MyLikesDropDown: View {
                 
                 Button(action: {
                     //Delete story
-                    viewModel.deleteStory(storyID: story.pid)
+                    viewModel.deleteStory(storyID: story.pid, vibe: story.title)
                     addedHeight -= 50
                 }){
                     Image(systemName: "trash")

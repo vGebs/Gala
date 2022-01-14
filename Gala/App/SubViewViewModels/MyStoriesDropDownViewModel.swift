@@ -38,8 +38,8 @@ class MyStoriesDropDownViewModel: ObservableObject {
         //Fetch Likes for each story (need the stories first before we can get likes)
     }
     
-    func deleteStory(storyID: Date) {
-        StoryService.shared.deleteStory(storyID: storyID)
+    func deleteStory(storyID: Date, vibe: String) {
+        StoryService.shared.deleteStory(storyID: storyID, vibe: vibe)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in

@@ -36,12 +36,12 @@ class StoryMetaService: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
+    func deleteStory(storyID: Date, vibe: String) -> AnyPublisher<Void, Error> {
         //If count == 1 -> deleteLastStory
         // otherwise -> deleteOneOfManyStories
         self.getMyStories()
             .flatMap { stories in
-                self.deleteStory(storyID, stories)
+                self.deleteStory(storyID, stories, vibe)
             }
             .eraseToAnyPublisher()
     }
@@ -181,11 +181,11 @@ extension StoryMetaService {
 
 extension StoryMetaService {
     
-    private func deleteStory(_ postID: Date, _ stories: [StoryWithVibe]) -> AnyPublisher<Void, Error> {
+    private func deleteStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String) -> AnyPublisher<Void, Error> {
         if stories.count == 1 {
             return self.deleteLastStory()
         } else {
-            return self.deleteOneOfManyStories(storyID: postID)
+            return self.deleteOneOfManyStories(storyID: postID, vibe: vibe)
         }
     }
     
@@ -206,13 +206,20 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func deleteOneOfManyStories(storyID: Date) -> AnyPublisher<Void, Error> {
+    private func deleteOneOfManyStories(storyID: Date, vibe: String) -> AnyPublisher<Void, Error> {
         let currentUser = UserCoreService.shared.currentUserCore!
 
         return Future<Void, Error> { promise in
             self.db.collection("Stories").document(currentUser.uid)
                 .updateData([
-                    "postIDs" : FieldValue.arrayRemove([storyID])
+                    "posts" : FieldValue.arrayRemove(
+                        [
+                            [
+                                "id": storyID,
+                                "title" : vibe
+                            ]
+                        ]
+                    )
                 ]) { err in
                     if let err = err {
                         print("StoryMetaService: Failed to delete Story")

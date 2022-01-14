@@ -13,7 +13,7 @@ import FirebaseFirestore
 protocol StoryServiceProtocol {
     //User actions
     func postStory(postID_date: Date, vibe: String, asset: UIImage) -> AnyPublisher<Void, Error>
-    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error>
+    func deleteStory(storyID: Date, vibe: String) -> AnyPublisher<Void, Error>
 }
 
 class StoryService: ObservableObject, StoryServiceProtocol {
@@ -48,10 +48,10 @@ class StoryService: ObservableObject, StoryServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
+    func deleteStory(storyID: Date, vibe: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             Publishers.Zip(
-                self.storyMetaService.deleteStory(storyID: storyID),
+                self.storyMetaService.deleteStory(storyID: storyID, vibe: vibe),
                 self.storyContentService.deleteStory(storyID: storyID)
             )
             .sink { completion in
