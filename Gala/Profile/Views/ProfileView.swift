@@ -54,7 +54,7 @@ struct ProfileView: View {
                         }
                         
                         if viewModel.editPressed == false {
-                            MyStoriesDropDown()
+                            MyStoriesDropDown(popup: false)
                                 .padding(.bottom, 7)
                         }
                     }

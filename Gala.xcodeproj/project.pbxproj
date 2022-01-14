@@ -25,6 +25,7 @@
 		FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33F0278D7B010087127B /* CameraBtn.swift */; };
 		FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */; };
 		FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FE278FF8F00087127B /* StoryPublisher.swift */; };
+		FA6A34032791145E0087127B /* VibesPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A34022791145E0087127B /* VibesPopup.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -138,6 +139,7 @@
 		FA6A33F0278D7B010087127B /* CameraBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBtn.swift; sourceTree = "<group>"; };
 		FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDownViewModel.swift; sourceTree = "<group>"; };
 		FA6A33FE278FF8F00087127B /* StoryPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPublisher.swift; sourceTree = "<group>"; };
+		FA6A34022791145E0087127B /* VibesPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesPopup.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -594,6 +596,7 @@
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
+				FA6A34022791145E0087127B /* VibesPopup.swift */,
 				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
 				FAFD431A26D8B0AA00C535D2 /* TestDistance.swift */,
 				FA0A1A0F2786C28700634B31 /* TestAnimation.swift */,
@@ -905,6 +908,7 @@
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
+				FA6A34032791145E0087127B /* VibesPopup.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,

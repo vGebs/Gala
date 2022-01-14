@@ -15,11 +15,16 @@ struct MyStoriesDropDown: View {
     
     @State var addedHeight: CGFloat = 0
     
+    var popup: Bool
+    
     var body: some View {
         
         if viewModel.stories.count > 0 {
             
             ZStack {
+                RoundedRectangle(cornerRadius: 15)
+                    .foregroundColor(.black)
+                
                 RoundedRectangle(cornerRadius: 15)
                     .stroke()
                     .foregroundColor(.accent)
@@ -52,6 +57,18 @@ struct MyStoriesDropDown: View {
             }
             .frame(width: screenWidth * 0.95, height: initialHeight + addedHeight)
             .animation(.easeIn(duration: 0.2))
+        } else if viewModel.stories.count == 0 && popup {
+            ZStack {
+                RoundedRectangle(cornerRadius: 15)
+                    .foregroundColor(.black)
+                
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke()
+                    .foregroundColor(.accent)
+                
+                storiesPlaceholder
+            }
+            .frame(width: screenWidth * 0.95, height: initialHeight + addedHeight)
         }
     }
     
@@ -66,18 +83,23 @@ struct MyStoriesDropDown: View {
                 Text("You have \(viewModel.stories.count) stories")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
-            } else {
+            } else if viewModel.stories.count == 1 {
                 Text("You have \(viewModel.stories.count) story")
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(.accent)
+            } else {
+                Text("You have no stories")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
             }
             
             Spacer()
-            
-            Image(systemName: expanded ? "chevron.up" : "chevron.down")
-                .foregroundColor(.buttonPrimary)
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .padding(.trailing)
+            if viewModel.stories.count > 0 {
+                Image(systemName: expanded ? "chevron.up" : "chevron.down")
+                    .foregroundColor(.buttonPrimary)
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .padding(.trailing)
+            }
         }
         .padding(.vertical)
     }

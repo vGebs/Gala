@@ -11,8 +11,10 @@ struct NavBar: View {
     
     @Binding var offset: CGFloat
     @Environment(\.colorScheme) var colorScheme
-    @State var storiesPressed = false
-    @State var vibesPressed = false
+    
+    @Binding var storiesPressed: Bool
+    @Binding var vibesPressed: Bool
+    
     var body: some View {
         
         ZStack {
@@ -226,29 +228,29 @@ struct NavBar: View {
     }
 }
 
-struct NavBar_Previews: PreviewProvider {
-    static var previews: some View {
-        
-//iPhone 12
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 12")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 12 Pro")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 12 Pro Max")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 12 Mini")
-//iPhone 11
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 11")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 11 Pro")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 11 Pro Max")
-//iPhone 8
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 8")
-        NavBar(offset: .constant(screenWidth * 2))
-            .previewDevice("iPhone 8 Plus")
-    }
-}
+//struct NavBar_Previews: PreviewProvider {
+//    static var previews: some View {
+//        
+////iPhone 12
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 12")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 12 Pro")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 12 Pro Max")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 12 Mini")
+////iPhone 11
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 11")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 11 Pro")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 11 Pro Max")
+////iPhone 8
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 8")
+//        NavBar(offset: .constant(screenWidth * 2))
+//            .previewDevice("iPhone 8 Plus")
+//    }
+//}

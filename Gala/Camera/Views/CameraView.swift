@@ -21,6 +21,8 @@ struct CameraView: View {
     @State var isRecording = false
     @State var showProfile = false
     
+    @Binding var hideBtn: Bool
+    
     var body: some View{
         ZStack {
             SwiftUICamPreview(camera: camera, view: view)
@@ -34,9 +36,10 @@ struct CameraView: View {
                 CameraViewHeader(showProfile: $showProfile, camera: camera)
                     .padding(.top, 5)
                 Spacer()
-                
-                CameraBtn(camera: camera)
-                    .padding(.bottom, screenHeight * 0.08)
+                if !hideBtn {
+                    CameraBtn(camera: camera)
+                        .padding(.bottom, screenHeight * 0.08)
+                }
             }
             
             
