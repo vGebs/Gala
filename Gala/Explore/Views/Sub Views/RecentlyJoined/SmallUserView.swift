@@ -111,7 +111,7 @@ struct SmallUserView: View {
             
             Spacer()
         }
-        .frame(width: screenWidth * 0.9, height: screenWidth / 9)
+        .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
 }
 

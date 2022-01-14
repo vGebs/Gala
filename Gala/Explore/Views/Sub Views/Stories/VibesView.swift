@@ -28,11 +28,11 @@ struct VibesView: View {
                     RoundedRectangle(cornerRadius: 20)
                         .stroke()
                         .foregroundColor(.buttonPrimary)
-                        .frame(width: (screenWidth * 0.9) * 0.48, height: (screenWidth * 0.9) * 0.48)
+                        .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                 }
             }
         }
-        .frame(width: screenWidth * 0.9)
+        .frame(width: screenWidth * 0.95)
     }
 }
 

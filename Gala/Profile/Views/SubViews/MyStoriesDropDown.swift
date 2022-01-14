@@ -40,7 +40,8 @@ struct MyStoriesDropDown: View {
                     
                     if expanded {
                         MyDivider()
-                            .frame(height: 3)
+                            .frame(width: screenWidth * 0.9)
+                        
                         ForEach(viewModel.stories) { story in
                             MyLikesDropDown(story: story, addedHeight: $addedHeight, viewModel: viewModel)
                         }

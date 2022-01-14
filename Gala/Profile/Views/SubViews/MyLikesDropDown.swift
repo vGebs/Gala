@@ -37,6 +37,7 @@ struct MyLikesDropDown: View {
                 
                 if expanded {
                     MyDivider()
+                        .frame(width: screenWidth * 0.85)
                     Spacer()
                 }
             }

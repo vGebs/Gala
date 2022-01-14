@@ -21,7 +21,7 @@ struct MatchStoriesView: View {
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()
             }
-            .frame(width: screenWidth * 0.9)
+            .frame(width: screenWidth * 0.95)
             
             TabView{
                 ForEach(0..<stories.count / 5){ i in //stories, id: \.id
@@ -34,7 +34,7 @@ struct MatchStoriesView: View {
                         MatchesStoryView(story: stories[i * 5 + 3])
                         MatchesStoryView(story: stories[i * 5 + 4])
                     }
-                    .frame(width: screenWidth * 0.9)
+                    .frame(width: screenWidth * 0.95)
                     .padding(.bottom, 10)
                 }
             }
