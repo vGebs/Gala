@@ -227,30 +227,3 @@ struct NavBar: View {
         generator.notificationOccurred(.success)
     }
 }
-
-//struct NavBar_Previews: PreviewProvider {
-//    static var previews: some View {
-//        
-////iPhone 12
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 12")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 12 Pro")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 12 Pro Max")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 12 Mini")
-////iPhone 11
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 11")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 11 Pro")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 11 Pro Max")
-////iPhone 8
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 8")
-//        NavBar(offset: .constant(screenWidth * 2))
-//            .previewDevice("iPhone 8 Plus")
-//    }
-//}

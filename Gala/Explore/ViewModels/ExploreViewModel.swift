@@ -35,11 +35,12 @@ class ExploreViewModel: ObservableObject {
     
     //@Published var matchStories: MatchStoryViewModel
     @Published var recentlyJoinedViewModel: RecentlyJoinedViewModel
-    
+    @Published var storiesViewModel: StoriesViewModel
     
     init() {
         //matchStories = MatchStoryViewModel()
         recentlyJoinedViewModel = RecentlyJoinedViewModel()
+        storiesViewModel = StoriesViewModel()
     }
 }
 

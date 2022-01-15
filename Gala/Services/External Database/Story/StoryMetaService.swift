@@ -78,12 +78,7 @@ class StoryMetaService: ObservableObject {
         .eraseToAnyPublisher()
     }
     
-    func getStories() -> AnyPublisher<[StoryMeta], Error> {
-        return Future<[StoryMeta], Error> { promise in
-            
-        }
-        .eraseToAnyPublisher()
-    }
+    func getStories() -> AnyPublisher<[StoryMeta], Error> { self.getStories_() }
 }
 
 extension StoryMetaService {
@@ -229,6 +224,281 @@ extension StoryMetaService {
                         promise(.success(()))
                     }
                 }
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension StoryMetaService {
+    private func getStories_() -> AnyPublisher<[StoryMeta], Error> {
+        
+        let sexaulityAndGender = getCurrentUserSexualityAndGender()
+        let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
+        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
+        let travelDistance = UserCoreService.shared.currentUserCore?.willingToTravel
+        
+        return Future<[StoryMeta], Error> { promise in
+
+            //print("RecentlyJoinedUserService: Entered getRecents_()")
+            
+            switch sexaulityAndGender {
+
+            case .straightMale:
+                //Get straight and bi women
+                Publishers.Zip(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for straight male: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for straight males")
+                    }
+                } receiveValue: { straightFemales, biFemales in
+                    var final: [StoryMeta] = []
+                    
+                    final += straightFemales
+                    final += biFemales
+                    
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+                
+            case .gayMale:
+                //Get gay men and bi men
+                Publishers.Zip(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for gay male: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for gay males")
+                    }
+                } receiveValue: { gayMales, biMales in
+                    var final: [StoryMeta] = []
+                    
+                    final += gayMales
+                    final += biMales
+                    
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+                
+            case .biMale:
+                //Get straight women, bi women, gay men, bi men.
+                Publishers.Zip4(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for bi male: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for bi males")
+                    }
+                } receiveValue: { sF, bF, gM, bM in
+                    var final: [StoryMeta] = []
+                    
+                    final += sF
+                    final += bF
+                    final += gM
+                    final += bM
+                    
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+               
+            case .straightFemale:
+                //Get straight and bi men
+                Publishers.Zip(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for straight female: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for straight female")
+                    }
+                } receiveValue: { sM, bM in
+                    var final: [StoryMeta] = []
+                    
+                    final += sM
+                    final += bM
+                    
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+                
+            case .gayFemale:
+                //Get gay women and bi women
+                Publishers.Zip(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for gay female: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for gay female")
+                    }
+                } receiveValue: { gF, bF in
+                    var final: [StoryMeta] = []
+                    
+                    final += gF
+                    final += bF
+        
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+
+            case .biFemale:
+                //Get straight men, bi men, gay women, bi women
+                Publishers.Zip4(
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "straight", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "male", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "gay", ageMin: ageMinPref!, ageMax: ageMaxPref!),
+                    self.getStories(forRadiusKM: Double(travelDistance!), forGender: "female", forSexuality: "bisexual", ageMin: ageMinPref!, ageMax: ageMaxPref!)
+                )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let error):
+                        print("StoryMetaService-getStories_(): Failed to load users for bi female: \(error.localizedDescription)")
+                    case .finished:
+                        print("StoryMetaService-getStories_(): Finished fetching users for bi female")
+                    }
+                } receiveValue: { sM, bM, gF, bF in
+                    var final: [StoryMeta] = []
+                    
+                    final += sM
+                    final += bM
+                    final += gF
+                    final += bF
+                    
+                    promise(.success(final))
+                }
+                .store(in: &self.cancellables)
+
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func getStories(forRadiusKM: Double, forGender: String, forSexuality: String, ageMin: Int, ageMax: Int) -> AnyPublisher<[StoryMeta], Error> {
+        return Future<[StoryMeta], Error> { promise in
+            let lat: Double = LocationService.shared.coordinates.latitude
+            let long: Double = LocationService.shared.coordinates.longitude
+            
+            let center = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            let radiusInM: Double = forRadiusKM * 1000
+            
+            let queryBounds = GFUtils.queryBounds(forLocation: center, withRadius: radiusInM)
+            
+            let ageMinString = ageMin.getDateForAge()
+            let ageMaxString = ageMax.getDateForAge()
+
+            // *TODO* Add a cloud function that checks for outdated users. *TODO*
+            // *TODO* Add a cloud function that checks for changes in UserCore
+            //              and update RecentlyJoined accordingly
+            let queries = queryBounds.map { bound -> Query in
+                return self.db.collection("Stories")
+                    .order(by: "userCore.location.geoHash")
+                    .start(at: [bound.startValue])
+                    .end(at: [bound.endValue])
+                    .whereField("userCore.gender", isEqualTo: forGender)
+                    .whereField("userCore.sexuality", isEqualTo: forSexuality)
+                    .limit(to: 40)
+            }
+            
+            var results: [StoryMeta] = []
+            var finished = 0
+            for i in 0..<queries.count {
+                self.getDocs(query: queries[i], ageMinString: ageMinString, ageMaxString: ageMaxString)
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let error):
+                            print("StoryMetaService: \(error.localizedDescription)")
+                        case .finished:
+                            print("StoryMetaService: Finished getting docs for query: \(String(i))")
+                            finished += 1
+                        }
+                    } receiveValue: { users in
+                        
+                        print(users)
+                        
+                        if finished == queries.count - 1 {
+                            print("StoryMetaService: results: \(results)")
+                            promise(.success(results))
+                        }
+                    }
+                    .store(in: &self.cancellables)
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func getDocs(query: Query, ageMinString: String, ageMaxString: String) -> AnyPublisher<[StoryMeta], Error> {
+        return Future<[StoryMeta], Error> { promise in
+            var results: [StoryMeta] = []
+            query.getDocuments { snap, error in
+                if let documents = snap?.documents {
+                    print("Documents: \(documents)")
+                    if documents.count == 0 {
+                        promise(.success(results))
+                    }
+                    
+                    for j in 0..<documents.count {
+                        print("docs: \(documents[j].data())")
+//                        let date = documents[j].data()["age"] as? String ?? ""
+//                        let format = DateFormatter()
+//                        format.dateFormat = "yyyy/MM/dd"
+//                        let age = format.date(from: date)!
+//
+//                        let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
+//                        let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
+//                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
+//
+//                        let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
+//                        let lat = documents[j].data()["latitude"] as? Double ?? 0
+//                        let lng = documents[j].data()["longitude"] as? Double ?? 0
+//
+//                        if date <= ageMinString &&
+//                            date >= ageMaxString &&
+//                            (((ageMinPref - 1) <= myAge! &&
+//                            (ageMaxPref + 1) >= myAge!) ||
+//                                ageMaxPref == myAge! ||
+//                                ageMaxPref == myAge!) // Willing = 7, distance = 4
+//                            && willingToTravel >= LocationService.shared.getTravelDistance(to: CLLocation(latitude: lat, longitude: lng))
+//                        {
+//                            let gender = documents[j].data()["gender"] as? String ?? ""
+//                            let id = documents[j].data()["id"] as? String ?? ""
+//                            let name = documents[j].data()["name"] as? String ?? ""
+//                            let sexuality = documents[j].data()["sexuality"] as? String ?? ""
+//
+//                            //let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, willingToTravel: willingToTravel, longitude: lng, latitude: lat)
+//
+//                            if id != AuthService.shared.currentUser?.uid {
+//                                //results.append(uSimp)
+//                            }
+//                        }
+                        
+                        if j == (documents.count - 1){
+                            promise(.success(results))
+                        }
+                    }
+                } else {
+                    print("Unable to fetch snapshot data. \(String(describing: error))")
+                    promise(.failure(error!))
+                }
+            }
         }.eraseToAnyPublisher()
     }
 }

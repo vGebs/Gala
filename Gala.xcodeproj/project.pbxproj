@@ -26,6 +26,7 @@
 		FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */; };
 		FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FE278FF8F00087127B /* StoryPublisher.swift */; };
 		FA6A34032791145E0087127B /* VibesPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A34022791145E0087127B /* VibesPopup.swift */; };
+		FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -140,6 +141,7 @@
 		FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDownViewModel.swift; sourceTree = "<group>"; };
 		FA6A33FE278FF8F00087127B /* StoryPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPublisher.swift; sourceTree = "<group>"; };
 		FA6A34022791145E0087127B /* VibesPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesPopup.swift; sourceTree = "<group>"; };
+		FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserSexualityAndGender.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 			isa = PBXGroup;
 			children = (
 				FA87743F2640A12500D5D5CB /* ActiveSheetEnum.swift */,
+				FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */,
 			);
 			path = "Public Enums";
 			sourceTree = "<group>";
@@ -917,6 +920,7 @@
 				FAFD434526DADBCF00C535D2 /* Pager.swift in Sources */,
 				FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
+				FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */,
 				FA7E3B2426E1F28300A6653C /* LikesService.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,

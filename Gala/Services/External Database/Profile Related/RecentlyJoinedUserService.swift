@@ -73,16 +73,7 @@ extension RecentlyJoinedUserService {
 //MARK: - getRecents()
 extension RecentlyJoinedUserService {
     
-    private enum CurrentUserSexualityAndGender {
-        case straightMale
-        case gayMale
-        case biMale
-        
-        case straightFemale
-        case gayFemale
-        case biFemale
-        
-    }
+    
     
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
@@ -375,7 +366,6 @@ extension RecentlyJoinedUserService {
                                 promise(.success(results))
                             }
                         }
-                        
                     }
                 } else {
                     print("Unable to fetch snapshot data. \(String(describing: error))")
@@ -383,39 +373,6 @@ extension RecentlyJoinedUserService {
                 }
             }
         }.eraseToAnyPublisher()
-    }
-}
-
-extension RecentlyJoinedUserService {
-    private func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
-        print("RecentlyJoinedUserService: \(String(describing: UserCoreService.shared.currentUserCore?.sexuality))")
-        if UserCoreService.shared.currentUserCore?.gender == "male" {
-            if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
-                print("RecentlyJoinedUserService: Straight male")
-                return .straightMale
-            
-            } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
-                print("RecentlyJoinedUserService: Gay male")
-                return .gayMale
-                
-            } else {
-                print("RecentlyJoinedUserService: Bisexual male")
-                return .biMale
-            }
-        } else {
-            if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
-                print("RecentlyJoinedUserService: Straight Female")
-                return .straightFemale
-                
-            } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
-                print("RecentlyJoinedUserService: Gay Female")
-                return .gayFemale
-                
-            } else {
-                print("RecentlyJoinedUserService: Bisexual Female")
-                return .biFemale
-            }
-        }
     }
 }
 
@@ -440,7 +397,6 @@ extension RecentlyJoinedUserService {
         case CurrentUserCoreEmpty
     }
 }
-
 
 // Option 1:
 // UserCore (in root)

@@ -23,7 +23,7 @@ struct ExploreView: View {
                 .frame(width: screenWidth * 0.95, height: screenHeight / 800)
 
             
-            VibesView()
+            VibesView(viewModel: viewModel.storiesViewModel)
             //StoriesView2()
         }
     }

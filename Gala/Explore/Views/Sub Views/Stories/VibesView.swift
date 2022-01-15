@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Combine
 
 struct VibesView: View {
-    
+    @ObservedObject var viewModel: StoriesViewModel
+
     let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 2)
     
     var body: some View {
@@ -22,6 +24,13 @@ struct VibesView: View {
                 Text("Vibes")
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()
+                Button(action: {
+                    viewModel.fetch()
+                }){
+                    Text("Fetch")
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .foregroundColor(.buttonPrimary)
+                }
             }
             LazyVGrid(columns: columns) {
                 ForEach((1...6).reversed(), id: \.self) { num in
@@ -33,11 +42,5 @@ struct VibesView: View {
             }
         }
         .frame(width: screenWidth * 0.95)
-    }
-}
-
-struct VibesView_Previews: PreviewProvider {
-    static var previews: some View {
-        VibesView()
     }
 }

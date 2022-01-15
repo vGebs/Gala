@@ -9,16 +9,50 @@ import Combine
 import SwiftUI
 
 class StoriesViewModel: ObservableObject {
-    @Published var stories: [StoryModel] = [
-        StoryModel(story: UIImage(), name: "1", userID: "123"),
-        StoryModel(story: UIImage(), name: "2", userID: "123"),
-        StoryModel(story: UIImage(), name: "3", userID: "123"),
-        StoryModel(story: UIImage(), name: "4", userID: "123"),
-        StoryModel(story: UIImage(), name: "5", userID: "123"),
-        StoryModel(story: UIImage(), name: "6", userID: "123"),
-        StoryModel(story: UIImage(), name: "7", userID: "123"),
-        StoryModel(story: UIImage(), name: "8", userID: "123")
-    ]
+    
+    private var storyMetaService = StoryMetaService.shared
+
+    private var cancellables: [AnyCancellable] = []
+    
+    @Published var stories: [StoryMeta] = []
+    
+    init() {
+//        storyMetaService.getStories()
+//            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+//            .receive(on: DispatchQueue.main)
+//            .sink { completion in
+//                switch completion {
+//                case .failure(let err):
+//                    print("StoriesViewModel: Failed to fetch stories")
+//                    print("StoriesViewModel-err: \(err)")
+//                case .finished:
+//                    print("StoriesViewModel: Successfully fetched stories")
+//                }
+//            } receiveValue: { stories in
+//                print(stories)
+//                self.stories += stories
+//            }
+//            .store(in: &self.cancellables)
+    }
+    
+    func fetch() {
+        storyMetaService.getStories()
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("StoriesViewModel: Failed to fetch stories")
+                    print("StoriesViewModel-err: \(err)")
+                case .finished:
+                    print("StoriesViewModel: Successfully fetched stories")
+                }
+            } receiveValue: { stories in
+                print(stories)
+                self.stories += stories
+            }
+            .store(in: &self.cancellables)
+    }
 }
 
 struct StoryModel: Identifiable {
