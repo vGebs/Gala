@@ -14,7 +14,7 @@ class StoriesViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
     
-    @Published var stories: [StoryMeta] = []
+    @Published var stories: [UserPostSimple] = []
     
     init() {
 //        storyMetaService.getStories()
@@ -47,9 +47,14 @@ class StoriesViewModel: ObservableObject {
                 case .finished:
                     print("StoriesViewModel: Successfully fetched stories")
                 }
-            } receiveValue: { stories in
-                print(stories)
-                self.stories += stories
+            } receiveValue: { [weak self] stories in
+                print("StoriesViewModel-Stories: \(stories)")
+                //Ok, so before we put the stories in an array, we first need to put all the stories from a vibe into the correct bin
+                //The array will have to be an array of arrays
+                //Each sub array of the main array will be a vibe
+                //Each sub array will be sorted based on the post date
+                //Based on the first post in each sub array, we will order the arrays such that the first array has the most recent posts
+                self?.stories += stories
             }
             .store(in: &self.cancellables)
     }

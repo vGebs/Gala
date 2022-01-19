@@ -78,7 +78,7 @@ class StoryMetaService: ObservableObject {
         .eraseToAnyPublisher()
     }
     
-    func getStories() -> AnyPublisher<[StoryMeta], Error> { self.getStories_() }
+    func getStories() -> AnyPublisher<[UserPostSimple], Error> { self.getStories_() }
 }
 
 extension StoryMetaService {
@@ -229,16 +229,14 @@ extension StoryMetaService {
 }
 
 extension StoryMetaService {
-    private func getStories_() -> AnyPublisher<[StoryMeta], Error> {
+    private func getStories_() -> AnyPublisher<[UserPostSimple], Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
         let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
         let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
         let travelDistance = UserCoreService.shared.currentUserCore?.willingToTravel
         
-        return Future<[StoryMeta], Error> { promise in
-
-            //print("RecentlyJoinedUserService: Entered getRecents_()")
+        return Future<[UserPostSimple], Error> { promise in
             
             switch sexaulityAndGender {
 
@@ -256,7 +254,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for straight males")
                     }
                 } receiveValue: { straightFemales, biFemales in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += straightFemales
                     final += biFemales
@@ -279,7 +277,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for gay males")
                     }
                 } receiveValue: { gayMales, biMales in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += gayMales
                     final += biMales
@@ -304,7 +302,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for bi males")
                     }
                 } receiveValue: { sF, bF, gM, bM in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += sF
                     final += bF
@@ -329,7 +327,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for straight female")
                     }
                 } receiveValue: { sM, bM in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += sM
                     final += bM
@@ -352,7 +350,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for gay female")
                     }
                 } receiveValue: { gF, bF in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += gF
                     final += bF
@@ -377,7 +375,7 @@ extension StoryMetaService {
                         print("StoryMetaService-getStories_(): Finished fetching users for bi female")
                     }
                 } receiveValue: { sM, bM, gF, bF in
-                    var final: [StoryMeta] = []
+                    var final: [UserPostSimple] = []
                     
                     final += sM
                     final += bM
@@ -392,8 +390,8 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func getStories(forRadiusKM: Double, forGender: String, forSexuality: String, ageMin: Int, ageMax: Int) -> AnyPublisher<[StoryMeta], Error> {
-        return Future<[StoryMeta], Error> { promise in
+    private func getStories(forRadiusKM: Double, forGender: String, forSexuality: String, ageMin: Int, ageMax: Int) -> AnyPublisher<[UserPostSimple], Error> {
+        return Future<[UserPostSimple], Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
             let long: Double = LocationService.shared.coordinates.longitude
             
@@ -418,7 +416,7 @@ extension StoryMetaService {
                     .limit(to: 40)
             }
             
-            var results: [StoryMeta] = []
+            var results: [UserPostSimple] = []
             var finished = 0
             for i in 0..<queries.count {
                 self.getDocs(query: queries[i], ageMinString: ageMinString, ageMaxString: ageMaxString)
@@ -433,10 +431,9 @@ extension StoryMetaService {
                         }
                     } receiveValue: { users in
                         
-                        print(users)
+                        results += users
                         
                         if finished == queries.count - 1 {
-                            print("StoryMetaService: results: \(results)")
                             promise(.success(results))
                         }
                     }
@@ -445,50 +442,78 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func getDocs(query: Query, ageMinString: String, ageMaxString: String) -> AnyPublisher<[StoryMeta], Error> {
-        return Future<[StoryMeta], Error> { promise in
-            var results: [StoryMeta] = []
+    private func getDocs(query: Query, ageMinString: String, ageMaxString: String) -> AnyPublisher<[UserPostSimple], Error> {
+        return Future<[UserPostSimple], Error> { promise in
+            var results: [UserPostSimple] = []
             query.getDocuments { snap, error in
                 if let documents = snap?.documents {
-                    print("Documents: \(documents)")
                     if documents.count == 0 {
                         promise(.success(results))
                     }
                     
                     for j in 0..<documents.count {
-                        print("docs: \(documents[j].data())")
-//                        let date = documents[j].data()["age"] as? String ?? ""
-//                        let format = DateFormatter()
-//                        format.dateFormat = "yyyy/MM/dd"
-//                        let age = format.date(from: date)!
-//
-//                        let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
-//                        let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
-//                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
-//
-//                        let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
-//                        let lat = documents[j].data()["latitude"] as? Double ?? 0
-//                        let lng = documents[j].data()["longitude"] as? Double ?? 0
-//
-//                        if date <= ageMinString &&
-//                            date >= ageMaxString &&
-//                            (((ageMinPref - 1) <= myAge! &&
-//                            (ageMaxPref + 1) >= myAge!) ||
-//                                ageMaxPref == myAge! ||
-//                                ageMaxPref == myAge!) // Willing = 7, distance = 4
-//                            && willingToTravel >= LocationService.shared.getTravelDistance(to: CLLocation(latitude: lat, longitude: lng))
-//                        {
-//                            let gender = documents[j].data()["gender"] as? String ?? ""
-//                            let id = documents[j].data()["id"] as? String ?? ""
-//                            let name = documents[j].data()["name"] as? String ?? ""
-//                            let sexuality = documents[j].data()["sexuality"] as? String ?? ""
-//
-//                            //let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, willingToTravel: willingToTravel, longitude: lng, latitude: lat)
-//
-//                            if id != AuthService.shared.currentUser?.uid {
-//                                //results.append(uSimp)
-//                            }
-//                        }
+                        
+                        //question is, what data do we need from the pull?
+                        // we need:
+                        //  1. Posts -> Array (postID, title)
+                        //  2. the user's name **
+                        //  3. Birthday -> for age **
+                        //  4. uid -> for fetching their info and profile images **
+                        //  5. Coordinates -> for displaying how far away they are **
+                        
+                        
+                        let userCore = documents[j].data()["userCore"] as? [String: Any]
+                        
+                        //get birthday and calculate age
+                        let birthdateString = userCore!["birthday"] as? String ?? ""
+                        let format = DateFormatter()
+                        format.dateFormat = "yyyy/MM/dd"
+                        let birthdate = format.date(from: birthdateString)!
+                        
+                        let agePref = userCore!["agePref"] as? [String: Any]
+                        let ageMinPref = agePref!["min"] as? Int ?? 18
+                        let ageMaxPref = agePref!["max"] as? Int ?? 99
+                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
+                        
+                        let willingToTravel = userCore!["willingToTravel"] as? Int ?? 25
+                        let location = userCore!["location"] as? [String: Any]
+                        let lat = location!["latitude"] as? Double ?? 0
+                        let lng = location!["longitude"] as? Double ?? 0
+
+                        
+                        if birthdateString <= ageMinString &&
+                            birthdateString >= ageMaxString &&
+                            (((ageMinPref - 1) <= myAge! &&
+                            (ageMaxPref + 1) >= myAge!) ||
+                                ageMaxPref == myAge! ||
+                                ageMaxPref == myAge!) // Willing = 7, distance = 4
+                            && willingToTravel >= LocationService.shared.getTravelDistance(to: CLLocation(latitude: lat, longitude: lng))
+                        {
+                            
+                            let id = userCore!["uid"] as? String ?? ""
+                            let name = userCore!["name"] as? String ?? ""
+
+                            var posts: [Post] = []
+                            if let inComingPosts = documents[j].data()["posts"] as? [[String: Any]] {
+                                for post in inComingPosts {
+                                    let title = post["title"] as? String ?? ""
+                                    let pid = post["id"] as? Timestamp
+                                    
+                                    let pidFinal = pid?.dateValue()
+                                                                        
+                                    if let pidF = pidFinal {
+                                        let newPost = Post(pid: pidF, title: title)
+                                        posts.append(newPost)
+                                    }
+                                }
+                            }
+                            
+                            let uSimp = UserPostSimple(posts: posts, name: name, uid: id, birthdate: birthdate, coordinates: Coordinate(lat: lat, lng: lng))
+                            
+                            if id != AuthService.shared.currentUser?.uid {
+                                results.append(uSimp)
+                            }
+                        }
                         
                         if j == (documents.count - 1){
                             promise(.success(results))

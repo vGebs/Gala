@@ -56,3 +56,23 @@ struct StoryViewable: Identifiable {
     var title: String
     var likes: [Int]
 }
+
+struct Post: Identifiable {
+    var id = UUID()
+    var pid: Date
+    var title: String
+}
+
+struct UserPostSimple: Identifiable {
+    var id = UUID()
+    var posts: [Post]
+    var name: String
+    var uid: String
+    var birthdate: Date
+    var coordinates: Coordinate
+}
+
+struct Coordinate {
+    var lat: Double
+    var lng: Double
+}
