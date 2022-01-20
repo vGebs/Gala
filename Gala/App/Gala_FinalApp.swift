@@ -147,6 +147,7 @@ struct GalaApp: App {
         WindowGroup {
             //VideoPlayerTest()
             LaunchView()
+            //VibeView(title: "I should be sleeping..")
             //MyStoriesDropDown()
             //MyLikesDropDown()
             //TestAnimation()

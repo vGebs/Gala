@@ -99,6 +99,8 @@
 		FABAABE82787F49A00154363 /* AddToStoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE72787F49A00154363 /* AddToStoryButton.swift */; };
 		FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABEA2788079A00154363 /* CameraViewHeader.swift */; };
 		FABAABF42788E76A00154363 /* MyStoriesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */; };
+		FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C6C27993BA7007221B0 /* VibeView.swift */; };
+		FAD73C7027994FA8007221B0 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = FAD73C6F27994FA8007221B0 /* OrderedCollections */; };
 		FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */; };
 		FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */; };
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
@@ -212,6 +214,7 @@
 		FABAABE72787F49A00154363 /* AddToStoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStoryButton.swift; sourceTree = "<group>"; };
 		FABAABEA2788079A00154363 /* CameraViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewHeader.swift; sourceTree = "<group>"; };
 		FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDownViewModel.swift; sourceTree = "<group>"; };
+		FAD73C6C27993BA7007221B0 /* VibeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeView.swift; sourceTree = "<group>"; };
 		FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedView.swift; sourceTree = "<group>"; };
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
@@ -241,6 +244,7 @@
 			files = (
 				FA8773E8264097C300D5D5CB /* iTextField in Frameworks */,
 				FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */,
+				FAD73C7027994FA8007221B0 /* OrderedCollections in Frameworks */,
 				DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,6 +383,7 @@
 				FA7E3B4026EF15CB00A6653C /* StoriesView.swift */,
 				FAA3FA132784D0220048065E /* StoriesView2.swift */,
 				FAA3FA152784D6D90048065E /* VibesView.swift */,
+				FAD73C6C27993BA7007221B0 /* VibeView.swift */,
 			);
 			path = Stories;
 			sourceTree = "<group>";
@@ -731,6 +736,7 @@
 			packageProductDependencies = (
 				FA8773E42640979E00D5D5CB /* iPhoneNumberField */,
 				FA8773E7264097C300D5D5CB /* iTextField */,
+				FAD73C6F27994FA8007221B0 /* OrderedCollections */,
 			);
 			productName = Gala_Final;
 			productReference = FAE5E6EE264092D000CC1670 /* Gala.app */;
@@ -762,6 +768,7 @@
 			packageReferences = (
 				FA8773E32640979E00D5D5CB /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
 				FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */,
+				FAD73C6E27994FA8007221B0 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = FAE5E6EF264092D000CC1670 /* Products */;
 			projectDirPath = "";
@@ -869,6 +876,7 @@
 				FA7BAD4826FD0FAD002F25E0 /* PostSelector.swift in Sources */,
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
+				FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
 				FA7E3B2826E43F4600A6653C /* RecentlyJoinedViewModel.swift in Sources */,
 				FAA3FA142784D0220048065E /* StoriesView2.swift in Sources */,
@@ -1145,6 +1153,14 @@
 				minimumVersion = 0.0.8;
 			};
 		};
+		FAD73C6E27994FA8007221B0 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1157,6 +1173,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA8773E6264097C300D5D5CB /* XCRemoteSwiftPackageReference "iTextField" */;
 			productName = iTextField;
+		};
+		FAD73C6F27994FA8007221B0 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAD73C6E27994FA8007221B0 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 

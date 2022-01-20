@@ -24,20 +24,17 @@ struct VibesView: View {
                 Text("Vibes")
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()
-                Button(action: {
-                    viewModel.fetch()
-                }){
-                    Text("Fetch")
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundColor(.buttonPrimary)
-                }
+//                Button(action: {
+//                    viewModel.fetch()
+//                }){
+//                    Text("Fetch")
+//                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+//                        .foregroundColor(.buttonPrimary)
+//                }
             }
             LazyVGrid(columns: columns) {
-                ForEach((1...6).reversed(), id: \.self) { num in
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke()
-                        .foregroundColor(.buttonPrimary)
-                        .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
+                ForEach(viewModel.vibesDict.keys, id: \.self) { key in
+                    VibeView(title: key, imageName: viewModel.imageNames[key]!)
                 }
             }
         }

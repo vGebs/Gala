@@ -7,6 +7,7 @@
 
 import Combine
 import SwiftUI
+import OrderedCollections
 
 class StoriesViewModel: ObservableObject {
     
@@ -14,26 +15,15 @@ class StoriesViewModel: ObservableObject {
 
     private var cancellables: [AnyCancellable] = []
     
-    @Published var stories: [String: [UserPostSimple]] = [:]
+    @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
     
-    init() {
-//        storyMetaService.getStories()
-//            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-//            .receive(on: DispatchQueue.main)
-//            .sink { completion in
-//                switch completion {
-//                case .failure(let err):
-//                    print("StoriesViewModel: Failed to fetch stories")
-//                    print("StoriesViewModel-err: \(err)")
-//                case .finished:
-//                    print("StoriesViewModel: Successfully fetched stories")
-//                }
-//            } receiveValue: { stories in
-//                print(stories)
-//                self.stories += stories
-//            }
-//            .store(in: &self.cancellables)
-    }
+    var imageNames: [String: String] = [
+        "We still out here": "squaresClouds",
+        "Club's Goin' up": "stayHydrated",
+        "Friday night hustle" : "neon-light-frame"
+    ]
+    
+    init() { fetch() }
     
     func fetch() {
         storyMetaService.getStories()
@@ -60,7 +50,7 @@ class StoriesViewModel: ObservableObject {
                 //  3. Place the story into the correct bin
                 //      - if the user already exists within a bin, we put their story in the posts array
                 
-                var final: [String: [UserPostSimple]] = [:]
+                var final: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
                 
                 //Loop through all returned stories
                 for userPost in userPosts {
@@ -157,7 +147,7 @@ class StoriesViewModel: ObservableObject {
                     }
                 }
                 
-                self?.stories = final
+                self?.vibesDict = final
             }
             .store(in: &self.cancellables)
     }
