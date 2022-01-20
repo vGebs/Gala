@@ -32,6 +32,7 @@ struct VibesView: View {
 //                        .foregroundColor(.buttonPrimary)
 //                }
             }
+            
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.vibesDict.keys, id: \.self) { key in
                     VibeView(title: key, imageName: viewModel.imageNames[key]!)
