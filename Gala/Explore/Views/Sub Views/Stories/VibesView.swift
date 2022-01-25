@@ -10,7 +10,8 @@ import Combine
 
 struct VibesView: View {
     @ObservedObject var viewModel: StoriesViewModel
-
+    @Binding var showVibe: String?
+    
     let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 2)
     
     var body: some View {
@@ -35,7 +36,7 @@ struct VibesView: View {
             
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.vibesDict.keys, id: \.self) { key in
-                    VibeView(title: key, imageName: viewModel.imageNames[key]!)
+                    VibeView(title: key, imageName: viewModel.imageNames[key]!, showVibe: $showVibe)
                 }
             }
         }

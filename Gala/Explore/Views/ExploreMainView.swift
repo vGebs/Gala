@@ -17,6 +17,7 @@ struct ExploreMainView: View {
     @ObservedObject var profile: ProfileViewModel
     
     @State var showProfile = false
+    @Binding var showVibe: String?
     
     @AppStorage("isDarkMode") private var isDarkMode = true
     
@@ -35,7 +36,7 @@ struct ExploreMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ExploreView(viewModel: viewModel)
+                        ExploreView(viewModel: viewModel, showVibe: $showVibe)
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

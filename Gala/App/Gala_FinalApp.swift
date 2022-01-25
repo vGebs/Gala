@@ -142,18 +142,12 @@ var password = UserDefaults.standard.string(forKey: "password")
 struct GalaApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+    @State var offset: CGFloat = 0
     var body: some Scene {
         WindowGroup {
-            //VideoPlayerTest()
             LaunchView()
+            //AnimatedCarousel()
             //VibeView(title: "I should be sleeping..")
-            //MyStoriesDropDown()
-            //MyLikesDropDown()
-            //TestAnimation()
-            //CameraButton()
-            //SendViewClick()
-            //CameraOptionsView()
         }
     }
 }

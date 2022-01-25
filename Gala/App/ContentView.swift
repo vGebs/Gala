@@ -20,44 +20,81 @@ struct ContentView: View {
     
     @State var storiesPopup = false
     @State var vibesPopup = false
+    @State var showVibe: String?
     
+    @State var offset2: CGSize = .zero
+
     var body: some View {
         ZStack{
-            GeometryReader { proxy in
-                let rect = proxy.frame(in: .global)
-                
-                Pager(tabs: tabs, rect: rect, offset: $offset) {
-                    
-                    HStack(spacing: 0){
-                        ChatsView(profile: profile)
-                        CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
-                        ExploreMainView(viewModel: explore, profile: profile)
-                    }
-                }
-            }
-            .edgesIgnoringSafeArea(.all)
-            .overlay(
-                NavBar(offset: $offset, storiesPressed: $storiesPopup, vibesPressed: $vibesPopup)
-                    .opacity(camera.image != nil ? 0 : 1)
-                    .padding(.bottom, screenHeight * 0.03),
-                alignment: .bottom
-            )
-            .preferredColorScheme(isDarkMode ? .dark : .light)
-            .edgesIgnoringSafeArea(.all)
+            
+            mainSwipeView
             
             if storiesPopup {
-                VStack{
-                    Spacer()
-                    MyStoriesDropDown(popup: true)
-                        //.offset(x: storiesPopup ? 0 : -screenWidth)
-                        //.animation(.easeInOut)
-                        .padding(.bottom, 50)
+                storiesPopupView
+            }
+            
+            vibesPopupView
+            
+            if showVibe != nil {
+                AnimatedCarousel()
+                    .offset(offset2)
+                    .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
+            }
+        }
+    }
+    
+    func onChanged(value: DragGesture.Value) {
+        //only moves view when swipes down
+        if value.translation.height  > 70 {
+            offset2 = value.translation
+        }
+    }
+    
+    func onEnded(value: DragGesture.Value) {
+        withAnimation(.default) {
+            offset2 = .zero
+            showVibe = nil
+        }
+    }
+    
+    var mainSwipeView: some View {
+        GeometryReader { proxy in
+            let rect = proxy.frame(in: .global)
+            
+            Pager(tabs: tabs, rect: rect, offset: $offset) {
+                
+                HStack(spacing: 0){
+                    ChatsView(profile: profile)
+                    CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
+                    ExploreMainView(viewModel: explore, profile: profile, showVibe: $showVibe)
                 }
             }
-        
-            VibesPopup(pop: $vibesPopup)
-                .padding(.bottom, 50)
         }
+        .edgesIgnoringSafeArea(.all)
+        .overlay(
+            NavBar(offset: $offset, storiesPressed: $storiesPopup, vibesPressed: $vibesPopup)
+                .opacity(camera.image != nil ? 0 : 1)
+                .padding(.bottom, screenHeight * 0.03),
+            alignment: .bottom
+        )
+        .preferredColorScheme(isDarkMode ? .dark : .light)
+        .edgesIgnoringSafeArea(.all)
+    }
+    
+    var storiesPopupView: some View {
+        VStack{
+            Spacer()
+            MyStoriesDropDown(popup: true)
+            //.offset(x: storiesPopup ? 0 : -screenWidth)
+            //.animation(.easeInOut)
+                .padding(.bottom, 50)
+            
+        }
+    }
+    
+    var vibesPopupView: some View {
+        VibesPopup(pop: $vibesPopup)
+            .padding(.bottom, 50)
     }
 }
 
