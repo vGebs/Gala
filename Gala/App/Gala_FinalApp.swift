@@ -146,6 +146,7 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
+            //StoryView()
             //AnimatedCarousel()
             //VibeView(title: "I should be sleeping..")
         }

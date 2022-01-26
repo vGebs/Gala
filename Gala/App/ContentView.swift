@@ -23,6 +23,7 @@ struct ContentView: View {
     @State var showVibe: String?
     
     @State var offset2: CGSize = .zero
+    @State var scale: CGFloat = 1
 
     var body: some View {
         ZStack{
@@ -36,17 +37,24 @@ struct ContentView: View {
             vibesPopupView
             
             if showVibe != nil {
-                AnimatedCarousel()
+                AnimatedCarousel(viewModel: explore.storiesViewModel, showVibe: $showVibe)
                     .offset(offset2)
+                    .scaleEffect(scale)
                     .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
             }
         }
     }
-    
+
     func onChanged(value: DragGesture.Value) {
         //only moves view when swipes down
         if value.translation.height  > 70 {
             offset2 = value.translation
+            
+            let progress = offset2.height / screenHeight
+            
+            if 1 - progress > 0.5 {
+                scale = 1 - progress
+            }
         }
     }
     
@@ -54,6 +62,7 @@ struct ContentView: View {
         withAnimation(.default) {
             offset2 = .zero
             showVibe = nil
+            scale = 1
         }
     }
     

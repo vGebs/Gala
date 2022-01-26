@@ -159,11 +159,3 @@ struct StoryModel: Identifiable {
     var name: String
     var userID: String
 }
-
-class StoryViewModel: ObservableObject {
-    var story: StoryModel
-
-    init(_ story: StoryModel){
-        self.story = story
-    }
-}
