@@ -14,6 +14,7 @@ struct StoryView: View {
     var body: some View {
         ZStack {
             if viewModel.img == nil {
+                Color.black.edgesIgnoringSafeArea(.all)
                 ProgressView()
             } else {
                 Image(uiImage: viewModel.img!)
@@ -28,6 +29,12 @@ struct StoryView: View {
                     .padding(.top, screenHeight * 0.05)
                     .padding(.leading, screenWidth * 0.03)
                 Spacer()
+                HStack {
+                    Spacer()
+                    storyFooter
+                        .padding(.bottom)
+                        .padding(.trailing)
+                }
             }
         }
         .frame(width: screenWidth, height: screenHeight)
@@ -92,5 +99,33 @@ struct StoryView: View {
 
             Spacer()
         }
+    }
+    
+    var storyFooter: some View {
+        Button(action: {
+            viewModel.likePost()
+        }) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: screenWidth * 0.3)
+                    .foregroundColor(Color.black)
+                
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke()
+                    .foregroundColor(.buttonPrimary)
+                    .frame(width: screenWidth * 0.3)
+                
+                HStack {
+                    Image(systemName: "hand.thumbsup.fill")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    
+                    Text("Like")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+            }
+        }
+        .frame(height: screenHeight * 0.05)
     }
 }

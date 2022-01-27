@@ -10,15 +10,23 @@ import FirebaseFirestore
 
 protocol LikesServiceProtocol {
     func likeUser(uid: String) -> AnyPublisher<Void, Error>
+    
+    //Unlike user may be redundant, we'll keep just in case
     func unLikeUser(uid: String) -> AnyPublisher<Void, Error>
     
+    func likePost(uid: String, postID: Date) -> AnyPublisher<Void, Error>
+    
     //Premium version
+    // no, 'get the people that liked me' will only be available for
+    //  the week that they join. They can view the people that liked them to
+    //  get things rolling
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error>
     
     //Temporary (will have trigger on backend that adds mutual likes to matches collection)
     func getMyMatches() -> AnyPublisher<[Like], Error>
 }
 
+//Likes on recentlyJoined Users will expire after 1 week.
 class LikesService: LikesServiceProtocol {
     
     private let db = Firestore.firestore()
@@ -173,6 +181,33 @@ class LikesService: LikesServiceProtocol {
     }
 }
 
+//Post like service
+//likes on posts will be stored in the same collection
+//Likes on posts will expire after the post expires
+extension LikesService {
+    func likePost(uid: String, postID: Date) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            self.db.collection("Likes").addDocument(data: [
+                "dateOfLike" : Date(),
+                "likerUID" : self.currentUserCore.uid,
+                "likedUID" : uid,
+                "nameOfLiker" : self.currentUserCore.name,
+                "birthdayOfLiker" : self.currentUserCore.age.formatDate(),
+                "postID": postID
+            ]) { err in
+                if let err = err {
+                    print("LikesService: Failed to like user with id: \(uid)")
+                    print("LikesService-Error: \(err.localizedDescription)")
+                    promise(.failure(err))
+                } else {
+                    print("LikesService: Successfully likes user with id: \(uid)")
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+}
 
 //NOTE: These solutions do not take into account loading user images
 // ASIDE: we are going to assume there is:

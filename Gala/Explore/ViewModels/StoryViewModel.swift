@@ -8,13 +8,23 @@
 import Combine
 import SwiftUI
 
-class StoryViewModel: ObservableObject {
-    @Published private(set) var pid: Date
+protocol StoryViewModelProtocol {
+    func fetchStory()
+    func fetchProfileImg()
+    func likePost()
+    func reportPost()
+}
+
+class StoryViewModel: ObservableObject, StoryViewModelProtocol {
+    
+    private(set) var name: String
+    
+    private var pid: Date
+    private var uid: String
+
     @Published private(set) var img: UIImage?
     @Published private(set) var profileImg: UIImage?
-    @Published private(set) var name: String
     @Published private(set) var age: String = ""
-    @Published private var uid: String
     @Published private(set) var timeSincePost: String = ""
     
     private var cancellables: [AnyCancellable] = []
@@ -26,8 +36,8 @@ class StoryViewModel: ObservableObject {
         
         fetchStory()
         fetchProfileImg()
-        self.age = birthdate.ageString()
         
+        self.age = birthdate.ageString()
         self.timeSincePost = secondsToHoursMinutesSeconds(Int(pid.timeIntervalSinceNow))
     }
     
@@ -51,10 +61,6 @@ class StoryViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func getAge(_ birthDate: String) {
-        
-    }
-    
     func fetchProfileImg() {
         ProfileImageService.shared.getProfileImage(id: uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
@@ -75,6 +81,28 @@ class StoryViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func likePost() {
+        LikesService.shared.likePost(uid: self.uid, postID: self.pid)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("StoryViewModel: Failed to like post")
+                    print("StoryViewModel-err: \(err)")
+                case .finished:
+                    print("StoryViewModel: Successfully liked post")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+    
+    func reportPost() {
+        
+    }
+    
+    // extract this method and add it to date.
+    // will need to input a date and then from there get seconds and then we can get the output
     func secondsToHoursMinutesSeconds(_ seconds: Int) -> String { //(Int, Int, Int)
         
 //        print(String((seconds % 86400) / 3600) + " hours")
