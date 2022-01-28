@@ -38,6 +38,7 @@ struct VibesView: View {
                 LazyVGrid(columns: columns) {
                     ForEach(viewModel.vibesDict.keys, id: \.self) { key in
                         VibeView(title: key, imageName: viewModel.imageNames[0], showVibe: $showVibe)
+
                     }
                 }
             }

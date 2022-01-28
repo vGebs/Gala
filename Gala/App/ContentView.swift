@@ -20,11 +20,16 @@ struct ContentView: View {
     
     @State var storiesPopup = false
     @State var vibesPopup = false
-    @State var showVibe: String?
+    
+    @State var showVibe = false
     
     @State var offset2: CGSize = .zero
     @State var scale: CGFloat = 1
 
+    @Namespace var animation
+    
+    @State var selectedVibe = ColorStruct()
+    
     var body: some View {
         ZStack{
             
@@ -36,21 +41,28 @@ struct ContentView: View {
             
             vibesPopupView
             
-            if showVibe != nil {
-                AnimatedCarousel(viewModel: explore.storiesViewModel, showVibe: $showVibe)
-                    .offset(offset2)
+            if showVibe {
+                //selectedVibe.color
+                TestSnapchat(showVibe: $showVibe)
+                    .cornerRadius(20)
                     .scaleEffect(scale)
+                    .matchedGeometryEffect(id: selectedVibe.id, in: animation)
+                    .offset(self.offset2)
                     .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
+                    .edgesIgnoringSafeArea(.all)
             }
         }
     }
 
     func onChanged(value: DragGesture.Value) {
-        //only moves view when swipes down
-        if value.translation.height  > 70 {
+        
+        //only moves the view when user swipes down
+        if value.translation.height > 50 {
             offset2 = value.translation
             
-            let progress = offset2.height / screenHeight
+            //Scaling view
+            let height = screenHeight - 50
+            let progress = offset2.height / height
             
             if 1 - progress > 0.5 {
                 scale = 1 - progress
@@ -59,9 +71,15 @@ struct ContentView: View {
     }
     
     func onEnded(value: DragGesture.Value) {
-        withAnimation(.default) {
+        
+        //resetting view
+        withAnimation {
+            
+            if value.translation.height > 120 {
+                showVibe = false
+            }
+            
             offset2 = .zero
-            showVibe = nil
             scale = 1
         }
     }
@@ -75,7 +93,7 @@ struct ContentView: View {
                 HStack(spacing: 0){
                     ChatsView(profile: profile)
                     CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
-                    ExploreMainView(viewModel: explore, profile: profile, showVibe: $showVibe)
+                    ExploreMainView(viewModel: explore, profile: profile, showVibe: $showVibe, selectedVibe: $selectedVibe, offset: $offset2, scale: $scale, animation: animation)
                 }
             }
         }

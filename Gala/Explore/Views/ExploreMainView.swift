@@ -17,14 +17,19 @@ struct ExploreMainView: View {
     @ObservedObject var profile: ProfileViewModel
     
     @State var showProfile = false
-    @Binding var showVibe: String?
+    
+    @Binding var showVibe: Bool
+    @Binding var selectedVibe: ColorStruct
+    @Binding var offset: CGSize
+    @Binding var scale: CGFloat
+    
+    var animation: Namespace.ID
     
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     var body: some View {
         VStack {
             ZStack{
-                
                 VStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 20)
@@ -36,7 +41,7 @@ struct ExploreMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ExploreView(viewModel: viewModel, showVibe: $showVibe)
+                        ExploreView(viewModel: viewModel, selectedVibe: $selectedVibe, animation: animation, showVibe: $showVibe, offset: $offset, scale: $scale) //, showVibe: $showVibe
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)
