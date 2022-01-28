@@ -145,7 +145,9 @@ struct GalaApp: App {
     @State var offset: CGFloat = 0
     var body: some Scene {
         WindowGroup {
-            LaunchView()
+            TestSnapchatExpand()
+            //TestSnapchat()
+            //LaunchView()
             //StoryView()
             //AnimatedCarousel()
             //VibeView(title: "I should be sleeping..")

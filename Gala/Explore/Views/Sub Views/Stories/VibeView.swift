@@ -15,9 +15,7 @@ struct VibeView: View {
     
     var body: some View {
         ZStack {
-            
             vibePlaceHolder
-        
         }
     }
     

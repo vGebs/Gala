@@ -26,14 +26,13 @@ struct StoryView: View {
             
             VStack {
                 storyHeader
-                    .padding(.top, screenHeight * 0.05)
+                    .padding(.top, screenHeight * 0.055)
                     .padding(.leading, screenWidth * 0.03)
                 Spacer()
                 HStack {
                     Spacer()
                     storyFooter
-                        .padding(.bottom)
-                        .padding(.trailing)
+                        .padding()
                 }
             }
         }
@@ -100,32 +99,51 @@ struct StoryView: View {
             Spacer()
         }
     }
-    
+    @State var liked = false
     var storyFooter: some View {
-        Button(action: {
-            viewModel.likePost()
-        }) {
+        HStack {
+            Button(action: {
+                //remove the individual story
+            }) {
+                buttonView(imageName: "xmark")
+            }
+            .frame(width: screenWidth * 0.12, height: screenWidth * 0.12)
+            
+            Spacer()
+            
+            Button(action: {
+                if !liked {
+                    viewModel.likePost()
+                    liked = true
+                }
+                viewModel.likePost()
+            }) {
+                if !liked {
+                    buttonView(imageName: "hand.thumbsup.fill")
+                } else {
+                    buttonView(imageName: "checkmark")
+                }
+            }
+            .frame(width: screenWidth * 0.12, height: screenWidth * 0.12)
+        }
+    }
+    
+    struct buttonView: View {
+        var imageName: String
+        var body: some View {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .frame(width: screenWidth * 0.3)
                     .foregroundColor(Color.black)
                 
                 RoundedRectangle(cornerRadius: 10)
                     .stroke()
                     .foregroundColor(.buttonPrimary)
-                    .frame(width: screenWidth * 0.3)
                 
-                HStack {
-                    Image(systemName: "hand.thumbsup.fill")
-                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
-                    
-                    Text("Like")
-                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                }
+                Image(systemName: imageName)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundColor(.primary)
             }
+            .frame(width: screenWidth * 0.12, height: screenWidth * 0.12)
         }
-        .frame(height: screenHeight * 0.05)
     }
 }

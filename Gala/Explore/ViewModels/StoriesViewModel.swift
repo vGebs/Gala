@@ -17,10 +17,10 @@ class StoriesViewModel: ObservableObject {
     
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
     
-    var imageNames: [String: String] = [
-        "We still out here": "squaresClouds",
-        "Club's Goin' up": "stayHydrated",
-        "Friday night hustle" : "neon-light-frame"
+    var imageNames: [String] = [
+        "squaresClouds",
+        "stayHydrated",
+        "neon-light-frame"
     ]
     
     init() { fetch() }

@@ -15,31 +15,33 @@ struct VibesView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 2)
     
     var body: some View {
-        VStack {
-            HStack {
-                Image(systemName: "dot.radiowaves.up.forward")
-                    .rotationEffect(.degrees(-90))
-                    .foregroundColor(.primary)
-                    .font(.system(size: 25, weight: .bold, design: .rounded))
+        ZStack {
+            VStack {
+                HStack {
+                    Image(systemName: "dot.radiowaves.up.forward")
+                        .rotationEffect(.degrees(-90))
+                        .foregroundColor(.primary)
+                        .font(.system(size: 25, weight: .bold, design: .rounded))
+                    
+                    Text("Vibes")
+                        .font(.system(size: 25, weight: .bold, design: .rounded))
+                    Spacer()
+    //                Button(action: {
+    //                    viewModel.fetch()
+    //                }){
+    //                    Text("Fetch")
+    //                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+    //                        .foregroundColor(.buttonPrimary)
+    //                }
+                }
                 
-                Text("Vibes")
-                    .font(.system(size: 25, weight: .bold, design: .rounded))
-                Spacer()
-//                Button(action: {
-//                    viewModel.fetch()
-//                }){
-//                    Text("Fetch")
-//                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                        .foregroundColor(.buttonPrimary)
-//                }
-            }
-            
-            LazyVGrid(columns: columns) {
-                ForEach(viewModel.vibesDict.keys, id: \.self) { key in
-                    VibeView(title: key, imageName: viewModel.imageNames[key]!, showVibe: $showVibe)
+                LazyVGrid(columns: columns) {
+                    ForEach(viewModel.vibesDict.keys, id: \.self) { key in
+                        VibeView(title: key, imageName: viewModel.imageNames[0], showVibe: $showVibe)
+                    }
                 }
             }
+            .frame(width: screenWidth * 0.95)
         }
-        .frame(width: screenWidth * 0.95)
     }
 }
