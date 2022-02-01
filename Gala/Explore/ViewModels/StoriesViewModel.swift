@@ -17,11 +17,7 @@ class StoriesViewModel: ObservableObject {
     
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
     
-    var imageNames: [String] = [
-        "squaresClouds",
-        "stayHydrated",
-        "neon-light-frame"
-    ]
+    @Published var vibeImages: [ImageHolder] = []
     
     init() { fetch() }
     
@@ -39,7 +35,7 @@ class StoriesViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] userPosts in
                 //Ok, so before we put the stories in an array, we first need to put all the stories from a vibe into the correct bin
-                //The array will have to be an array of arrays
+                //The array will have to be an array of arrays (or dictionary)
                 //Each sub array of the main array will be a vibe
                 //Each array will be sorted based on the post dates from the sub Arrays
                 //Based on the first post in each sub array, we will order the arrays such that the first array has the most recent posts
@@ -148,9 +144,44 @@ class StoriesViewModel: ObservableObject {
                 }
                 
                 self?.vibesDict = final
+                
+                //let vibeCount = final.count
+                //self?.fetchVibeImages(count: vibeCount)
+                
             }
             .store(in: &self.cancellables)
     }
+    
+    func fetchVibeImages(count: Int) {
+        self.vibeImages = []
+        for _ in 0..<count {
+            let name = Int.random(in: 0..<4)
+            
+            VibeImageService.shared.fetchImage(name: name)
+                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let err):
+                        print("StoriesViewModel: Failed to fetch vibe image w/ name: \(name)")
+                        print("StoriesViewModel-err: \(err)")
+                    case .finished:
+                        print("StoriesViewModel: Successfully fetched image with name: \(name)")
+                    }
+                } receiveValue: {[weak self] img in
+                    if let img = img {
+                        let newImg = ImageHolder(image: img)
+                        self?.vibeImages.append(newImg)
+                        print("VibeImages Count: \(self?.vibeImages.count)")
+                    }
+                }.store(in: &cancellables)
+        }
+    }
+}
+
+struct ImageHolder: Identifiable {
+    var id = UUID()
+    var image: UIImage
 }
 
 struct StoryModel: Identifiable {

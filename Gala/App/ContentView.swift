@@ -28,7 +28,7 @@ struct ContentView: View {
 
     @Namespace var animation
     
-    @State var selectedVibe = ColorStruct()
+    @State var selectedVibe = ImageHolder(image: UIImage())
     
     var body: some View {
         ZStack{
@@ -36,24 +36,27 @@ struct ContentView: View {
             mainSwipeView
             
             if storiesPopup {
-                storiesPopupView
+                storiesInfoPopupView
             }
             
             vibesPopupView
             
             if showVibe {
-                //selectedVibe.color
-                TestSnapchat(showVibe: $showVibe)
-                    .cornerRadius(20)
-                    .scaleEffect(scale)
-                    .matchedGeometryEffect(id: selectedVibe.id, in: animation)
-                    .offset(self.offset2)
-                    .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
-                    .edgesIgnoringSafeArea(.all)
+                fullStoryPopup
             }
         }
     }
 
+    var fullStoryPopup: some View {
+        TestSnapchat(showVibe: $showVibe)
+            .cornerRadius(20)
+            .scaleEffect(scale)
+            .matchedGeometryEffect(id: selectedVibe.id, in: animation)
+            .offset(self.offset2)
+            .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
+            .edgesIgnoringSafeArea(.all)
+    }
+    
     func onChanged(value: DragGesture.Value) {
         
         //only moves the view when user swipes down
@@ -108,7 +111,7 @@ struct ContentView: View {
         .edgesIgnoringSafeArea(.all)
     }
     
-    var storiesPopupView: some View {
+    var storiesInfoPopupView: some View {
         VStack{
             Spacer()
             MyStoriesDropDown(popup: true)

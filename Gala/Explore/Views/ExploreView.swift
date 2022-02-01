@@ -11,7 +11,7 @@ struct ExploreView: View {
     @ObservedObject var viewModel: ExploreViewModel
     //@Binding var showVibe: String?
     
-    @Binding var selectedVibe: ColorStruct
+    @Binding var selectedVibe: ImageHolder
     var animation: Namespace.ID
     
     @Binding var showVibe: Bool
@@ -23,17 +23,17 @@ struct ExploreView: View {
             ScrollView(showsIndicators: false){
                 MatchStoriesView(stories: $viewModel.matchStories)
                     .offset(y: screenHeight * 0.01)
+                
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
                     .offset(y: screenHeight * 0.01)
 
                 RecentlyJoinedView(viewModel: viewModel.recentlyJoinedViewModel)
+                
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
 
-                
-                //VibesView(viewModel: viewModel.storiesViewModel, showVibe: $showVibe)
-                TestSnapchatExpand(showVibe: $showVibe, offset: $offset, scale: $scale, selectedVibe: $selectedVibe, animation: animation)
+                VibesPlaceHolder(viewModel: viewModel.storiesViewModel, showVibe: $showVibe, offset: $offset, scale: $scale, selectedVibe: $selectedVibe, animation: animation)
             }
         }
     }

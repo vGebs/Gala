@@ -102,7 +102,8 @@
 		FAD73C7627A0D26B007221B0 /* StoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7527A0D26B007221B0 /* StoryView.swift */; };
 		FAD73C7827A0ECF1007221B0 /* StoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7727A0ECF0007221B0 /* StoryViewModel.swift */; };
 		FAD73C7B27A35102007221B0 /* TestSnapchat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7A27A35101007221B0 /* TestSnapchat.swift */; };
-		FAD73C7D27A353A9007221B0 /* TestSnapchatExpand.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7C27A353A9007221B0 /* TestSnapchatExpand.swift */; };
+		FAD73C7D27A353A9007221B0 /* VibesPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */; };
+		FAD73C7F27A9AA1A007221B0 /* VibeImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7E27A9AA1A007221B0 /* VibeImageService.swift */; };
 		FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */; };
 		FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */; };
 		FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */; };
@@ -218,7 +219,8 @@
 		FAD73C7527A0D26B007221B0 /* StoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
 		FAD73C7727A0ECF0007221B0 /* StoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryViewModel.swift; sourceTree = "<group>"; };
 		FAD73C7A27A35101007221B0 /* TestSnapchat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSnapchat.swift; sourceTree = "<group>"; };
-		FAD73C7C27A353A9007221B0 /* TestSnapchatExpand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSnapchatExpand.swift; sourceTree = "<group>"; };
+		FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesPlaceHolder.swift; sourceTree = "<group>"; };
+		FAD73C7E27A9AA1A007221B0 /* VibeImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeImageService.swift; sourceTree = "<group>"; };
 		FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedView.swift; sourceTree = "<group>"; };
 		FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
 				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
 				FA67C6D526FA605700B77D30 /* VibesService.swift */,
+				FAD73C7E27A9AA1A007221B0 /* VibeImageService.swift */,
 			);
 			path = Story;
 			sourceTree = "<group>";
@@ -597,7 +600,7 @@
 				FA8774602640A41300D5D5CB /* BaseView2.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
 				FAD73C7A27A35101007221B0 /* TestSnapchat.swift */,
-				FAD73C7C27A353A9007221B0 /* TestSnapchatExpand.swift */,
+				FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */,
 			);
 			path = ServiceViews;
 			sourceTree = "<group>";
@@ -903,7 +906,7 @@
 				FA87741826409E0700D5D5CB /* ConvoPreview.swift in Sources */,
 				FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */,
 				FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */,
-				FAD73C7D27A353A9007221B0 /* TestSnapchatExpand.swift in Sources */,
+				FAD73C7D27A353A9007221B0 /* VibesPlaceHolder.swift in Sources */,
 				FA777D2526CE0D86007C53F5 /* Slider.swift in Sources */,
 				FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */,
 				FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */,
@@ -936,6 +939,7 @@
 				FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
 				FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */,
+				FAD73C7F27A9AA1A007221B0 /* VibeImageService.swift in Sources */,
 				FA7E3B2426E1F28300A6653C /* LikesService.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
