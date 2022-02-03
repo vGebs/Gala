@@ -100,7 +100,7 @@ struct SmallUserView: View {
                                 }
                             }
                         }){
-                            Image(systemName: self.pressed ? "heart.fill" : "plus.app")
+                            Image(systemName: self.pressed ? "heart.fill" : "hand.thumbsup.circle")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
                         } 
@@ -108,7 +108,6 @@ struct SmallUserView: View {
                 }
                 Spacer()
             }
-            
             Spacer()
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)

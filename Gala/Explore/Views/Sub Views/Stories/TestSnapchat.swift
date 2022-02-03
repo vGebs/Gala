@@ -15,11 +15,15 @@ struct TestSnapchat: View {
         [Color.buttonPrimary, Color.accent],
         [Color.green, Color.gray, Color.yellow]
     ]
-
+    
+    //We need the selected vibe and the vibesdict so we can loop through the posts
+//    @ObservedObject var viewModel: StoriesViewModel
+//    @Binding var selectedVibe: ImageHolder
+    
     @State var selectedStory = 0
     @State var tag = 0
     
-    //@ObservedObject var viewModel: StoriesViewModel
+    //@Binding var selectedVibe: ImageHolder
     
     @Binding var showVibe: Bool
     

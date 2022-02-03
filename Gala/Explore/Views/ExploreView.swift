@@ -11,7 +11,7 @@ struct ExploreView: View {
     @ObservedObject var viewModel: ExploreViewModel
     //@Binding var showVibe: String?
     
-    @Binding var selectedVibe: ImageHolder
+    @Binding var selectedVibe: VibeCoverImage
     var animation: Namespace.ID
     
     @Binding var showVibe: Bool

@@ -388,6 +388,8 @@
 			children = (
 				FAA3FA152784D6D90048065E /* VibesView.swift */,
 				FAD73C7527A0D26B007221B0 /* StoryView.swift */,
+				FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */,
+				FAD73C7A27A35101007221B0 /* TestSnapchat.swift */,
 				FAD73C6C27993BA7007221B0 /* VibeView.swift */,
 			);
 			path = Stories;
@@ -599,8 +601,6 @@
 				FA87745E2640A3F700D5D5CB /* BaseView.swift */,
 				FA8774602640A41300D5D5CB /* BaseView2.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
-				FAD73C7A27A35101007221B0 /* TestSnapchat.swift */,
-				FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */,
 			);
 			path = ServiceViews;
 			sourceTree = "<group>";

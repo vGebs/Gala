@@ -19,7 +19,7 @@ struct ExploreMainView: View {
     @State var showProfile = false
     
     @Binding var showVibe: Bool
-    @Binding var selectedVibe: ImageHolder
+    @Binding var selectedVibe: VibeCoverImage
     @Binding var offset: CGSize
     @Binding var scale: CGFloat
     

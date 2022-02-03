@@ -130,7 +130,7 @@ class AppState: ObservableObject {
             .assign(to: &$cameraVM)
         
         $allowAccess
-            .flatMap { allow -> AnyPublisher<ExploreViewModel?, Never> in
+            .flatMap { allow ->  AnyPublisher<ExploreViewModel?, Never> in
                 if allow {
                     return Just(ExploreViewModel()).eraseToAnyPublisher()
                 } else {

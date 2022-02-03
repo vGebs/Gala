@@ -17,7 +17,7 @@ struct VibesPlaceHolder: View {
     @Binding var offset: CGSize
     @Binding var scale: CGFloat
     
-    @Binding var selectedVibe: ImageHolder
+    @Binding var selectedVibe: VibeCoverImage
     
     var animation: Namespace.ID
     
@@ -34,8 +34,7 @@ struct VibesPlaceHolder: View {
                         .font(.system(size: 25, weight: .bold, design: .rounded))
                     Spacer()
                     Button(action: {
-                        let count = viewModel.vibesDict.count
-                        viewModel.fetchVibeImages(count: count)
+                        viewModel.fetchVibeImages()
                     }) {
                         Text("Fetch")
                             .foregroundColor(.buttonPrimary)
@@ -58,7 +57,26 @@ struct VibesPlaceHolder: View {
                                 .stroke(lineWidth: 4)
                                 .foregroundColor(.buttonPrimary)
                                 .edgesIgnoringSafeArea(.all)
+                            
+                            VStack {
+                                Spacer()
+                //                RoundedRectangle(cornerRadius: 1)
+                //                    .foregroundColor(.accent)
+                //                    .frame(height: screenWidth / 1000)
+                                
+                                HStack {
+                                    Spacer()
+                                    Text(vibe.title)
+                                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                                        .foregroundColor(.white)
+                                        .padding(.trailing)
+                                        .padding(.vertical, 10)
+                                }
+                                .border(Color.buttonPrimary)
+                                .background(Color.white.opacity(0.15))
+                            }
                         }
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .matchedGeometryEffect(id: vibe.id, in: animation)
                         .scaleEffect(showVibe && selectedVibe.id == vibe.id ? scale : 1)
                         .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
@@ -71,7 +89,6 @@ struct VibesPlaceHolder: View {
                         }
                     }
                 })
-                
             }
             .frame(width: screenWidth * 0.95)
         }
@@ -84,8 +101,8 @@ struct ColorStruct: Identifiable {
 }
 
 struct VibeCover: View {
-    @Binding var vibe: ImageHolder
-    @Binding var selectedVibe: ImageHolder
+    @Binding var vibe: VibeCoverImage
+    @Binding var selectedVibe: VibeCoverImage
     
     @Binding var scale: CGFloat
     @Binding var showVibe: Bool

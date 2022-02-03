@@ -28,7 +28,7 @@ struct ContentView: View {
 
     @Namespace var animation
     
-    @State var selectedVibe = ImageHolder(image: UIImage())
+    @State var selectedVibe = VibeCoverImage(image: UIImage(), title: "")
     
     var body: some View {
         ZStack{

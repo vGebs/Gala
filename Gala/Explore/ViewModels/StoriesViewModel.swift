@@ -17,9 +17,11 @@ class StoriesViewModel: ObservableObject {
     
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
     
-    @Published var vibeImages: [ImageHolder] = []
+    @Published var vibeImages: [VibeCoverImage] = []
     
-    init() { fetch() }
+    init() {
+        fetch()
+    }
     
     func fetch() {
         storyMetaService.getStories()
@@ -152,36 +154,34 @@ class StoriesViewModel: ObservableObject {
             .store(in: &self.cancellables)
     }
     
-    func fetchVibeImages(count: Int) {
+    func fetchVibeImages() {
         self.vibeImages = []
-        for _ in 0..<count {
-            let name = Int.random(in: 0..<4)
-            
-            VibeImageService.shared.fetchImage(name: name)
+        for key in vibesDict.keys {
+            VibeImageService.shared.fetchImage(name: key)
                 .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                 .receive(on: DispatchQueue.main)
                 .sink { completion in
                     switch completion {
                     case .failure(let err):
-                        print("StoriesViewModel: Failed to fetch vibe image w/ name: \(name)")
+                        print("StoriesViewModel: Failed to fetch vibe image w/ name: \(key)")
                         print("StoriesViewModel-err: \(err)")
                     case .finished:
-                        print("StoriesViewModel: Successfully fetched image with name: \(name)")
+                        print("StoriesViewModel: Successfully fetched image with name: \(key)")
                     }
-                } receiveValue: {[weak self] img in
-                    if let img = img {
-                        let newImg = ImageHolder(image: img)
-                        self?.vibeImages.append(newImg)
-                        print("VibeImages Count: \(self?.vibeImages.count)")
+                } receiveValue: {[weak self] vibeCoverImage in
+                    if let vibeCoverImage = vibeCoverImage {
+                        self?.vibeImages.append(vibeCoverImage)
                     }
-                }.store(in: &cancellables)
+                }
+                .store(in: &cancellables)
         }
     }
 }
 
-struct ImageHolder: Identifiable {
-    var id = UUID()
-    var image: UIImage
+struct VibeCoverImage: Identifiable {
+    let id = UUID()
+    let image: UIImage
+    let title: String
 }
 
 struct StoryModel: Identifiable {
