@@ -99,7 +99,9 @@ struct StoryView: View {
             Spacer()
         }
     }
+    
     @State var liked = false
+    
     var storyFooter: some View {
         HStack {
             Button(action: {

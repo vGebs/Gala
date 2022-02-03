@@ -7,25 +7,26 @@
 
 import SwiftUI
 
-struct TestSnapchat: View {
+struct StoryCarousel: View {
     var colors = [Color.buttonPrimary, Color.primary, Color.accent]
     
     let stories = [
-        [Color.primary, Color.yellow],
-        [Color.buttonPrimary, Color.accent],
-        [Color.green, Color.gray, Color.yellow]
+        [Color.primary, Color.yellow], //acts as user with 2 posts
+        [Color.buttonPrimary, Color.accent], //acts as user with 2 posts
+        [Color.green, Color.gray, Color.yellow] //acts as user with 3 posts
     ]
     
-    //We need the selected vibe and the vibesdict so we can loop through the posts
-//    @ObservedObject var viewModel: StoriesViewModel
-//    @Binding var selectedVibe: ImageHolder
+    @ObservedObject var viewModel: StoriesViewModel
+    
+    @Binding var selectedVibe: VibeCoverImage
+    @Binding var showVibe: Bool
     
     @State var selectedStory = 0
     @State var tag = 0
     
-    //@Binding var selectedVibe: ImageHolder
-    
-    @Binding var showVibe: Bool
+    //[Vibe title: [Users]]
+    //in UserPostSimple -> each user has an array of posts
+    //When the user runs out of posts, we need to go to the next user
     
     var body: some View {
         ZStack {
@@ -34,7 +35,7 @@ struct TestSnapchat: View {
             
             VStack {
                 TabView(selection: $tag) {
-                    ForEach(0..<stories.count, id: \.self) { index in
+                    ForEach(0..<viewModel.vibesDict[selectedVibe.title]!.count, id: \.self) { index in
                         GeometryReader { proxy -> AnyView in
                             
                             let minX = proxy.frame(in: .global).minX
@@ -46,10 +47,19 @@ struct TestSnapchat: View {
                             return AnyView (
                                 
                                 VStack {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .foregroundColor(stories[tag][selectedStory])
-                                    }
+//                                    ZStack {
+//                                        RoundedRectangle(cornerRadius: 20)
+//                                            .foregroundColor(stories[tag][selectedStory])
+//                                    }
+                                    StoryView(viewModel:
+                                                StoryViewModel(
+                                                    pid: viewModel.vibesDict[selectedVibe.title]![tag].posts[selectedStory].pid,
+                                                    name: viewModel.vibesDict[selectedVibe.title]![tag].name,
+                                                    birthdate: viewModel.vibesDict[selectedVibe.title]![tag].birthdate,
+                                                    uid: viewModel.vibesDict[selectedVibe.title]![tag].uid
+                                                ),
+                                              vibeTitle: selectedVibe.title
+                                    )
                                 }
                                 .frame(width: screenWidth, height: screenHeight)
                                 .scaleEffect(scale)
@@ -57,11 +67,11 @@ struct TestSnapchat: View {
                                 .tag(index)
                                 .onTapGesture {
                                     withAnimation {
-                                        if self.selectedStory + 1 < stories[selectedStory].count {
+                                        if self.selectedStory + 1 < viewModel.vibesDict[selectedVibe.title]![tag].posts.count {
                                             self.selectedStory += 1
                                         } else {
                                             //animate slide
-                                            if tag + 1 < stories.count {
+                                            if tag + 1 < viewModel.vibesDict[selectedVibe.title]!.count {
                                                 withAnimation { tag += 1 }
                                                 self.selectedStory = 0
                                             } else {

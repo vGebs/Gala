@@ -48,7 +48,7 @@ struct ContentView: View {
     }
 
     var fullStoryPopup: some View {
-        TestSnapchat(showVibe: $showVibe)
+        StoryCarousel(viewModel: explore.storiesViewModel, selectedVibe: $selectedVibe, showVibe: $showVibe)
             .cornerRadius(20)
             .scaleEffect(scale)
             .matchedGeometryEffect(id: selectedVibe.id, in: animation)
