@@ -502,7 +502,7 @@ extension StoryMetaService {
                                     let pidFinal = pid?.dateValue()
                                                                         
                                     if let pidF = pidFinal {
-                                        let newPost = Post(pid: pidF, title: title)
+                                        let newPost = Post(pid: pidF, uid: id, title: title)
                                         posts.append(newPost)
                                     }
                                 }

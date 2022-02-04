@@ -55,7 +55,9 @@ struct AnimatedCarousel: View {
                                                             birthdate: viewModel.vibesDict[showVibe!]![index].birthdate,
                                                             uid: viewModel.vibesDict[showVibe!]![index].uid
                                                         ),
-                                                      vibeTitle: showVibe!)
+                                                      post: viewModel.vibesDict[showVibe!]![index].posts[selectedStory],
+                                                      profileImg: viewModel.vibesDict[showVibe!]![index].profileImg
+                                            )
                                         }
                                     }
                                     .frame(width: screenWidth, height: screenHeight)

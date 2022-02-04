@@ -57,8 +57,8 @@ struct StoryCarousel: View {
                                                     name: viewModel.vibesDict[selectedVibe.title]![tag].name,
                                                     birthdate: viewModel.vibesDict[selectedVibe.title]![tag].birthdate,
                                                     uid: viewModel.vibesDict[selectedVibe.title]![tag].uid
-                                                ),
-                                              vibeTitle: selectedVibe.title
+                                                ), post: viewModel.vibesDict[selectedVibe.title]![tag].posts[selectedStory],
+                                              profileImg: viewModel.vibesDict[selectedVibe.title]![tag].profileImg
                                     )
                                 }
                                 .frame(width: screenWidth, height: screenHeight)

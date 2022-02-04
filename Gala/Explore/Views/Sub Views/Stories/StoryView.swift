@@ -9,15 +9,17 @@ import SwiftUI
 
 struct StoryView: View {
     @ObservedObject var viewModel: StoryViewModel
-    var vibeTitle: String
+    @ObservedObject var post: Post
+    
+    var profileImg: UIImage?
     
     var body: some View {
         ZStack {
-            if viewModel.img == nil {
+            if post.storyImage == nil {
                 Color.black.edgesIgnoringSafeArea(.all)
                 ProgressView()
             } else {
-                Image(uiImage: viewModel.img!)
+                Image(uiImage: post.storyImage!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -49,14 +51,14 @@ struct StoryView: View {
                 .frame(width: screenWidth / 300, height: screenHeight / 20)
                 .foregroundColor(.white)
             ZStack {
-                if viewModel.profileImg == nil {
+                if profileImg == nil {
                     Image(systemName: "person.fill.questionmark")
                         .foregroundColor(Color(.systemTeal))
                         .frame(width: screenHeight / 20, height: screenHeight / 20)
                         .padding(.trailing)
                     
                 } else {
-                    Image(uiImage: viewModel.profileImg!)
+                    Image(uiImage: profileImg!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: screenHeight / 20, height: screenHeight / 20)
@@ -71,7 +73,7 @@ struct StoryView: View {
             
             VStack{
                 HStack {
-                    Text(viewModel.timeSincePost)
+                    Text(post.timeSincePost)
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                     
@@ -88,7 +90,7 @@ struct StoryView: View {
                 .frame(width: screenWidth * 0.7)
                 
                 HStack {
-                    Text(vibeTitle)
+                    Text(post.title)
                         .font(.system(size: 10, weight: .regular, design: .rounded))
                         .foregroundColor(.white)
                     Spacer()

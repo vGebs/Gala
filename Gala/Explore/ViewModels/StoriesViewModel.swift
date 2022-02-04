@@ -126,7 +126,13 @@ class StoriesViewModel: ObservableObject {
                                     if var _ = final[post.title] {
                                         for i in 0..<final[post.title]!.count {
                                             if final[post.title]![i].uid == userPost.uid {
-                                                final[post.title]![i].posts.append(Post(pid: post.pid, title: post.title))
+                                                final[post.title]![i].posts.append(
+                                                    Post(
+                                                        pid: post.pid,
+                                                        uid: final[post.title]![i].uid,
+                                                        title: post.title
+                                                    )
+                                                )
                                             }
                                         }
                                     }
