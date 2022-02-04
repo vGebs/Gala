@@ -58,12 +58,6 @@ struct StoryViewable: Identifiable {
     var likes: [Int]
 }
 
-//struct Post: Identifiable {
-//    var id = UUID()
-//    var pid: Date
-//    var title: String
-//}
-
 class Post: Identifiable, ObservableObject {
     let id = UUID()
     let pid: Date
@@ -122,15 +116,6 @@ class Post: Identifiable, ObservableObject {
         //return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
 }
-
-//struct UserPostSimple: Identifiable {
-//    var id = UUID()
-//    var posts: [Post]
-//    var name: String
-//    var uid: String
-//    var birthdate: Date
-//    var coordinates: Coordinate
-//}
 
 class UserPostSimple: Identifiable {
     let id = UUID()

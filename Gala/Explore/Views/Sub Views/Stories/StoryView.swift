@@ -101,9 +101,7 @@ struct StoryView: View {
             Spacer()
         }
     }
-    
-    @State var liked = false
-    
+        
     var storyFooter: some View {
         HStack {
             Button(action: {
@@ -116,13 +114,11 @@ struct StoryView: View {
             Spacer()
             
             Button(action: {
-                if !liked {
+                if !viewModel.liked {
                     viewModel.likePost()
-                    liked = true
                 }
-                viewModel.likePost()
             }) {
-                if !liked {
+                if !viewModel.liked {
                     buttonView(imageName: "hand.thumbsup.fill")
                 } else {
                     buttonView(imageName: "checkmark")

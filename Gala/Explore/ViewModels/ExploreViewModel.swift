@@ -37,6 +37,10 @@ class ExploreViewModel: ObservableObject {
     @Published var recentlyJoinedViewModel: RecentlyJoinedViewModel
     @Published var storiesViewModel: StoriesViewModel
     
+    func checkLikes() {
+        print("LikesContainer likes: \(LikesContainer.shared.iLiked)")
+    }
+    
     init() {
         //matchStories = MatchStoryViewModel()
         recentlyJoinedViewModel = RecentlyJoinedViewModel()

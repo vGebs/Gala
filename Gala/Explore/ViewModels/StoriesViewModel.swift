@@ -21,6 +21,7 @@ class StoriesViewModel: ObservableObject {
     
     init() {
         fetch()
+        print(LikesContainer.shared.iLiked.count)
     }
     
     func fetch() {

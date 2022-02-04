@@ -51,7 +51,6 @@ class AppState: ObservableObject {
     //...
     
     private init() {
-        
 //        UserService.shared
 //            .observeAuthChanges()
 //            .map { $0 != nil }

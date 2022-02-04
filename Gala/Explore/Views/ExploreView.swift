@@ -32,7 +32,7 @@ struct ExploreView: View {
                 
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
-
+                
                 VibesPlaceHolder(viewModel: viewModel.storiesViewModel, showVibe: $showVibe, offset: $offset, scale: $scale, selectedVibe: $selectedVibe, animation: animation)
             }
         }

@@ -23,7 +23,7 @@ protocol LikesServiceProtocol {
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error>
     
     //Temporary (will have trigger on backend that adds mutual likes to matches collection)
-    func getMyMatches() -> AnyPublisher<[Like], Error>
+    func getMyMatches() -> AnyPublisher<[Like], Error>    
 }
 
 //Likes on recentlyJoined Users will expire after 1 week.
@@ -67,7 +67,7 @@ class LikesService: LikesServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    private func unLikeUser_(uid: String, inComingLikes: [InComingLike]) -> AnyPublisher<Void, Error> {
+    private func unLikeUser_(uid: String, inComingLikes: [StoryLike]) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             for like in inComingLikes {
                 if like.like.likedUID == uid {
@@ -108,8 +108,8 @@ class LikesService: LikesServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func getPeopleILiked() -> AnyPublisher<[InComingLike], Error> {
-        return Future<[InComingLike], Error> { promise in
+    func getPeopleILiked() -> AnyPublisher<[StoryLike], Error> {
+        return Future<[StoryLike], Error> { promise in
             self.db.collection("Likes")
                 .whereField("likerUID", isEqualTo: self.currentUserCore.uid)
                 .getDocuments { snapshot, error in
@@ -118,30 +118,45 @@ class LikesService: LikesServiceProtocol {
                         print("LikesService-Error: \(error.localizedDescription)")
                         promise(.failure(error))
                     } else {
-                        var inComingLikes: [InComingLike] = []
+                        var storyLikes: [StoryLike] = []
                         
                         for doc in snapshot!.documents {
                             let date = doc.data()["dateOfLike"] as? Timestamp
                             let d = date?.dateValue()
                             
-                            let like = Like(
-                                dateOfLike: d!,
-                                likerUID: doc.data()["likerUID"] as? String ?? "",
-                                likedUID: doc.data()["likedUID"] as? String ?? "",
-                                nameOfLiker: doc.data()["nameOfLiker"] as? String ?? "",
-                                birthdayOfLiker: doc.data()["birthdayOfLiker"] as? String ?? ""
-                            )
+                            let postID = doc.data()["postID"] as? Timestamp ?? nil
                             
-                            let inComing = InComingLike(
-                                like: like,
-                                docID: doc.documentID
-                            )
-                            
-                            inComingLikes.append(inComing)
-                            
-                            print("InComingLikes: \(inComing)")
+                            if let pid = postID?.dateValue() {
+                                let like = Like(
+                                    dateOfLike: d!,
+                                    likerUID: doc.data()["likerUID"] as? String ?? "",
+                                    likedUID: doc.data()["likedUID"] as? String ?? "",
+                                    nameOfLiker: doc.data()["nameOfLiker"] as? String ?? "",
+                                    birthdayOfLiker: doc.data()["birthdayOfLiker"] as? String ?? "",
+                                    storyID: pid
+                                )
+                                
+                                let storyLike = StoryLike(like: like, docID: doc.documentID)
+                                
+                                storyLikes.append(storyLike)
+                                
+                            } else {
+                                let like = Like(
+                                    dateOfLike: d!,
+                                    likerUID: doc.data()["likerUID"] as? String ?? "",
+                                    likedUID: doc.data()["likedUID"] as? String ?? "",
+                                    nameOfLiker: doc.data()["nameOfLiker"] as? String ?? "",
+                                    birthdayOfLiker: doc.data()["birthdayOfLiker"] as? String ?? "",
+                                    storyID: nil
+                                )
+                                
+                                let storyLike = StoryLike(like: like, docID: doc.documentID)
+
+                                storyLikes.append(storyLike)
+                            }
                         }
-                        promise(.success(inComingLikes))
+                        
+                        promise(.success(storyLikes))
                     }
                 }
         }

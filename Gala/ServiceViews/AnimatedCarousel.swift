@@ -26,9 +26,6 @@ struct AnimatedCarousel: View {
     
     var body: some View {
         ZStack {
-//            RoundedRectangle(cornerRadius: 20)
-//                .foregroundColor(.black)
-
             VStack {
                 TabView(selection: $tag) {
                     if showVibe != nil {

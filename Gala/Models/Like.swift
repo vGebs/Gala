@@ -14,9 +14,15 @@ struct Like {
     
     var nameOfLiker: String
     var birthdayOfLiker: String
+    var storyID: Date?
 }
 
 struct InComingLike {
+    var like: Like
+    var docID: String
+}
+
+struct StoryLike {
     var like: Like
     var docID: String
 }

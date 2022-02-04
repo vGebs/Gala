@@ -21,6 +21,8 @@ class StoryViewModel: ObservableObject, StoryViewModelProtocol {
     private var uid: String
 
     @Published private(set) var age: String = ""
+    @Published private(set) var liked: Bool = false
+    
     
     private var cancellables: [AnyCancellable] = []
     
@@ -30,9 +32,37 @@ class StoryViewModel: ObservableObject, StoryViewModelProtocol {
         self.pid = pid
                 
         self.age = birthdate.ageString()
+        
+        self.liked = isStoryLiked()
     }
     
     func likePost() {
+        if !isStoryLiked() {
+            likePost_()
+        }
+    }
+    
+    //LikesContainer not working, so this always falls through
+    private func isStoryLiked() -> Bool {
+        
+        for like in LikesContainer.shared.iLiked {
+            if let postID = like.like.storyID {
+                if like.like.likedUID == self.uid && postID == pid {
+                    self.liked = true
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func reportPost() {
+        
+    }
+}
+
+extension StoryViewModel {
+    private func likePost_(){
         LikesService.shared.likePost(uid: self.uid, postID: self.pid)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -44,11 +74,9 @@ class StoryViewModel: ObservableObject, StoryViewModelProtocol {
                 case .finished:
                     print("StoryViewModel: Successfully liked post")
                 }
-            } receiveValue: { _ in }
+            } receiveValue: { [weak self] _ in
+                self?.liked = true
+            }
             .store(in: &cancellables)
-    }
-    
-    func reportPost() {
-        
     }
 }
