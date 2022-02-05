@@ -1,0 +1,41 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "RecentlyJoined",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "gender",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sexuality",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "geoHash",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Stories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userCore.gender",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "userCore.sexuality",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "userCore.location.geoHash",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
