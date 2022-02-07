@@ -1,23 +1,22 @@
 //
-//  ChatsViewModel.swift
-//  Gala_Final
+//  MatchesContainer.swift
+//  Gala
 //
-//  Created by Vaughn on 2021-05-03.
+//  Created by Vaughn on 2022-02-04.
 //
 
-import Foundation
 import Combine
 import FirebaseFirestore
 
-class ChatsViewModel: ObservableObject {
+class MatchesContainer: ObservableObject {
     
-    private var cancellables: [AnyCancellable] = []
+    static let shared = MatchesContainer()
     
     private let db = Firestore.firestore()
     
     @Published var matchIDs: [String] = []
     
-    init() {
+    private init() {
         observeMatches()
     }
     
@@ -47,20 +46,4 @@ class ChatsViewModel: ObservableObject {
                 })
             }
     }
-    
-//    func doo() {
-//        LikesService.shared.getPeopleILiked()
-//            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-//            .sink { completion in
-//                switch completion {
-//                case .failure(let error):
-//                    print("ChatsViewModel: Error getting people I like")
-//                    print("ChatsViewModel-Error: \(error.localizedDescription)")
-//                case .finished:
-//                    print("ChatsViewModel: Finished getting users i like")
-//                }
-//            } receiveValue: { _ in
-//                
-//            }.store(in: &self.cancellables)
-//    }
 }

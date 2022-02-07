@@ -9,19 +9,16 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
         const data = snap.data();
         const likerUID = data.likerUID;
         const likedUID = data.likedUID;
-        console.log("listenForMatches-likerUID: " + likerUID);
-        console.log("listenForMatches-likedUID: " + likedUID);
 
         const matchCollection = db.collection("Matches");
         const peopleThatLikeMe = await getPeopleThatLikeMe(likerUID);
-        console.log(peopleThatLikeMe)
 
         if (peopleThatLikeMe != null) {
             for (let i = 0; i < peopleThatLikeMe.length; i++) {
                 if (peopleThatLikeMe[i] == likedUID) {
-                    console.log("Matched with: " + likedUID)
                     matchCollection.add({
-                        matched: [likedUID, likerUID]
+                        matched: [likedUID, likerUID],
+                        time: admin.firestore.FieldValue.serverTimestamp()
                     });
                 }
             }
@@ -41,7 +38,6 @@ async function getPeopleThatLikeMe(likerUID) {
 
     const snap = await likesRef.where("likedUID", "==", likerUID).get();
     if (snap.empty) {
-        console.log("didnt get any");
         return new Array();
     } else {
         let ids = new Array();
@@ -51,7 +47,6 @@ async function getPeopleThatLikeMe(likerUID) {
             ids.push(liked);
         });
         const newIds = uniq(ids);
-        console.log("id: " + newIds);
         return newIds;
     }
 }

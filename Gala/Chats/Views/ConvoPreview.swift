@@ -7,74 +7,91 @@
 
 import SwiftUI
 
-struct ConvoPreviewView: View {
-    var profilePic: String = "me"
-    var name: String = "Vaughn"
-    var statusImage: String = "arrowtriangle.right"
-    var status: String = "opened"
-    var timeAgo: String = "2h"
-    var statusColor: Color = .blue
+struct ConvoPreview: View {
+    
+    @ObservedObject var user: SmallUserViewModel
+    @State var pressed = false
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 20)
-                .foregroundColor(.white)
-                .shadow(color: .dropShadow, radius: 15, x: 10, y: 10)
-                .shadow(color: .dropLight, radius: 15, x: -10, y: -10)
-                .frame(width: screenWidth * 0.9, height: screenHeight / 12)
-
-            HStack{
-                Image(profilePic)
-                    .resizable()
-                    .frame(width: screenHeight / 17, height: screenHeight / 17)
-                    .clipShape(Circle())
-                    .padding(.leading, 5)
-                    .padding(.trailing, 5)
-                    //.shadow(radius: 1)
-                    .shadow(color: .dropShadow, radius: 15, x: 10, y: 10)
-                    .shadow(color: .dropLight, radius: 15, x: -10, y: -10)
+        HStack{
+            ZStack {
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke()
+                    .frame(width: screenWidth / 9, height: screenWidth / 9)
+                    .foregroundColor(.blue)
+                    .padding(.trailing)
                 
-                VStack(alignment: .leading){
+                if user.img == nil {
+                    Image(systemName: "person.fill.questionmark")
+                        .foregroundColor(Color(.systemTeal))
+                        .frame(width: screenWidth / 20, height: screenWidth / 20)
+                        .padding(.trailing)
                     
-                    Text(name)
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(.black)
-                        .offset(y: screenHeight / 100)
-
-                    HStack {
-                        Image(systemName: statusImage)
-                            .font(.system(size: 13, weight: .regular, design: .rounded))
-                            .foregroundColor(statusColor)
-                            .offset(y: screenHeight / 700)
-                        
+                } else {
+                    Image(uiImage: user.img!)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                        .padding(.trailing)
+                }
+            }
+            
+            VStack{
+                Divider()
+                Spacer()
+                HStack {
+                    VStack {
                         HStack {
-                            Text(status)
-                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                .foregroundColor(statusColor)
+                            Text("\(user.profile?.name ?? ""), \(user.profile?.age.ageString() ?? "")")
+                                .font(.system(size: 17, weight: .medium, design: .rounded))
+                                .foregroundColor(.primary)
                             
-                            Image(systemName: "circlebadge.fill")
-                                .resizable()
-                                .foregroundColor(.black)
-                                .frame(width: 3, height: 3)
-                            
-                            Text(timeAgo)
-                                .foregroundColor(.black)
-                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                            Spacer()
                         }
+                        
+                        //if matched {
+                            HStack {
+                                Image(systemName: "arrowtriangle.right")
+                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                    .foregroundColor(.buttonPrimary)
+                                
+                                Text("Opened")
+                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                    .foregroundColor(.primary)
+                                
+                                Image(systemName: "circlebadge.fill")
+                                    //.resizable()
+                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                    //.frame(width: 3, height: 3)
+                                
+                                Text("2h")
+                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                Spacer()
+                            }
+//                        } else {
+//                            HStack {
+//                                Image(systemName: "mappin.and.ellipse")
+//                                    .foregroundColor(.blue)
+//                                    .font(.system(size: 8, weight: .semibold, design: .rounded))
+//
+//                                Text("\(user.city), \(user.country)")
+//                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+//                                Spacer()
+//                            }
+//                        }
+                    }
+                    
+                    Button(action: {  }){
+                        Image(systemName: "camera")
+                            .font(.system(size: 15, weight: .medium, design: .rounded))
+                            .foregroundColor(.buttonPrimary)
                     }
                 }
-                
                 Spacer()
             }
-            .frame(width: screenWidth * 0.9, height: screenHeight / 14)
+            Spacer()
         }
-        .frame(width: screenWidth, height: screenHeight / 12)
-        .padding(.top, 5)
-    }
-}
-
-struct ConvoPreviewView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConvoPreviewView()
+        .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
 }

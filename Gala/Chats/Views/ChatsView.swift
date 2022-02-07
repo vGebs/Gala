@@ -43,7 +43,14 @@ struct ChatsView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .foregroundColor(.black)
+                            .frame(height: screenHeight * 0.015)
                         
+                        ForEach(viewModel.matchIDs, id: \.self){ matchID in
+                            ConvoPreview(user: SmallUserViewModel(uid: matchID))
+                                .padding(.horizontal)
+                        }
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

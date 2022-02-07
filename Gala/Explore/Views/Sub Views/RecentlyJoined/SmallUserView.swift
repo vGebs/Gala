@@ -47,7 +47,7 @@ struct SmallUserView: View {
                 HStack {
                     VStack {
                         HStack {
-                            Text("\(user.profile.name), \(user.profile.age.ageString())")
+                            Text("\(user.profile!.name), \(user.profile!.age.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
                                 .foregroundColor(.primary)
                             
@@ -93,7 +93,7 @@ struct SmallUserView: View {
                     } else {
                         Button(action: {
                             if self.pressed == false {
-                                self.viewModel.likeUser(with: user.profile.uid)
+                                self.viewModel.likeUser(with: user.profile!.uid)
                                 self.pressed.toggle()
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
                                     self.pressed.toggle()
@@ -111,11 +111,5 @@ struct SmallUserView: View {
             Spacer()
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
-    }
-}
-
-struct SmallUserView_Previews: PreviewProvider {
-    static var previews: some View {
-        SmallUserView(viewModel: RecentlyJoinedViewModel(), user: SmallUserViewModel(profile: UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 30, willingToTravel: 30, longitude: 50.0, latitude: 50.0)))
     }
 }

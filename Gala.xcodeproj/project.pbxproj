@@ -113,6 +113,7 @@
 		FADC115B269790B00070465C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADC115A269790B00070465C /* GoogleService-Info.plist */; };
 		FADC11622698129D0070465C /* UserCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* UserCoreService.swift */; };
 		FADC1164269813EC0070465C /* UserCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserCore.swift */; };
+		FADDED1127AE3F8200CBE7C4 /* MatchesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADDED1027AE3F8100CBE7C4 /* MatchesContainer.swift */; };
 		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
@@ -231,6 +232,7 @@
 		FADC115A269790B00070465C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FADC11612698129D0070465C /* UserCoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCoreService.swift; sourceTree = "<group>"; };
 		FADC1163269813EC0070465C /* UserCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCore.swift; sourceTree = "<group>"; };
+		FADDED1027AE3F8100CBE7C4 /* MatchesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesContainer.swift; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -628,6 +630,7 @@
 			children = (
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
 				FAA0184527ACB6F700A03D08 /* LikesContainer.swift */,
+				FADDED1027AE3F8100CBE7C4 /* MatchesContainer.swift */,
 			);
 			path = AppState;
 			sourceTree = "<group>";
@@ -940,6 +943,7 @@
 				FA7E3B3826EAD18D00A6653C /* SendViewModelTest.swift in Sources */,
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
+				FADDED1127AE3F8200CBE7C4 /* MatchesContainer.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FA6A34032791145E0087127B /* VibesPopup.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,

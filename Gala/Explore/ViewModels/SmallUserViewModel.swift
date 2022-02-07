@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 class SmallUserViewModel: ObservableObject {
-    @Published private(set) var profile: UserCore
+    @Published private(set) var profile: UserCore?
     @Published private(set) var city: String = ""
     @Published private(set) var country: String = ""
     @Published private(set) var img: UIImage?
@@ -22,9 +22,28 @@ class SmallUserViewModel: ObservableObject {
         getCityAndCountry()
         getProfileImage()
     }
+    //Need to make getUserCore in UserCoreService using async and await
+    // then pull the usercore, followed by getCityAndCountry and getProfileImage
+    init(uid: String) {
+        Task {
+            let uc = await UserCoreService.shared.getUserCore_iOS15(uid: uid)
+            
+            if let uc = uc {
+                DispatchQueue.main.async {
+                    self.profile = uc
+                    self.getCityAndCountry()
+                    self.getProfileImage()
+                }
+            }
+        }
+    }
+    
+    private func getUserCore(_ uid: String) async {
+        
+    }
     
     private func getCityAndCountry() {
-        LocationService.shared.getCityAndCountry(lat: profile.latitude, long: profile.longitude)
+        LocationService.shared.getCityAndCountry(lat: profile!.latitude, long: profile!.longitude)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -47,7 +66,7 @@ class SmallUserViewModel: ObservableObject {
     }
     
     private func getProfileImage() {
-        ProfileImageService.shared.getProfileImage(id: profile.uid, index: "0")
+        ProfileImageService.shared.getProfileImage(id: profile!.uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -68,5 +87,3 @@ class SmallUserViewModel: ObservableObject {
             .store(in: &self.cancellables)
     }
 }
-
-

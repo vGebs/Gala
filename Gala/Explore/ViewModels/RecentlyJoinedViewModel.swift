@@ -79,7 +79,7 @@ class RecentlyJoinedViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.users.count)! {
-                    if self?.users[i].profile.uid == uid {
+                    if self?.users[i].profile?.uid == uid {
                         self?.users.remove(at: i)
                         break
                     }
@@ -102,7 +102,7 @@ class RecentlyJoinedViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.users.count)! {
-                    if self?.users[i].profile.uid == uid {
+                    if self?.users[i].profile?.uid == uid {
                         self?.users.remove(at: i)
                         break
                     }

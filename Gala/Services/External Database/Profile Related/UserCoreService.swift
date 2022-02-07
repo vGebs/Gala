@@ -84,8 +84,8 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                     
                     let age = format.date(from: date)!
                     
-//                    print("UserCore birthday: \(age)")
-//                    print("UserCore age: \(age.ageString())")
+                    //                    print("UserCore birthday: \(age)")
+                    //                    print("UserCore age: \(age.ageString())")
                     
                     let userCore = UserCore(
                         uid: doc.data()?["id"] as? String ?? "",
@@ -112,5 +112,47 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                 promise(.success(nil))
             }
         }.eraseToAnyPublisher()
+    }
+    
+    func getUserCore_iOS15(uid: String) async -> UserCore? {
+        let docRef = self.db.collection("UserCore").document(uid)
+
+        do {
+            let doc = try await docRef.getDocument()
+            
+            let date = doc.data()?["age"] as? String ?? ""
+            let format = DateFormatter()
+            format.dateFormat = "yyyy/MM/dd"
+            
+            let age = format.date(from: date)!
+            
+            //                    print("UserCore birthday: \(age)")
+            //                    print("UserCore age: \(age.ageString())")
+            
+            let userCore = UserCore(
+                uid: doc.data()?["id"] as? String ?? "",
+                name: doc.data()?["name"] as? String ?? "",
+                age: age,
+                gender: doc.data()?["gender"] as? String ?? "",
+                sexuality: doc.data()?["sexuality"] as? String ?? "",
+                ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
+                ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
+                willingToTravel: doc.data()?["willingToTravel"] as? Int ?? 25,
+                longitude: doc.data()?["longitude"] as? Double ?? 0,
+                latitude: doc.data()?["latitude"] as? Double ?? 0
+            )
+            print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
+            print("UserCoreService: setting CurrentUserCore: \(String(describing: self.currentUID))")
+            if uid == self.currentUID{
+                self.currentUserCore = userCore
+                print("UserCoreService: setting CurrentUserCore: \(String(describing: self.currentUserCore))")
+            }
+            
+            return userCore
+        } catch {
+            print("UserCoreService: Failed to fetch UserCore w/ id: \(uid)")
+            print("UserCoreService-err: \(error)")
+            return nil
+        }
     }
 }
