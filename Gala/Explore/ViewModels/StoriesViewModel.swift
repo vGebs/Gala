@@ -43,6 +43,9 @@ class StoriesViewModel: ObservableObject {
             .flatMap { matches in
                 self.fetchStories(matches)
             }
+            .flatMap { _ in
+                self.fetchVibeImages()
+            }
             .eraseToAnyPublisher()
     }
     
@@ -202,27 +205,36 @@ class StoriesViewModel: ObservableObject {
         }.eraseToAnyPublisher()
     }
     
-    func fetchVibeImages() {
+    func fetchVibeImages() -> AnyPublisher<Void, Error>{
         self.vibeImages = []
-        for key in vibesDict.keys {
-            VibeImageService.shared.fetchImage(name: key)
-                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case .failure(let err):
-                        print("StoriesViewModel: Failed to fetch vibe image w/ name: \(key)")
-                        print("StoriesViewModel-err: \(err)")
-                    case .finished:
-                        print("StoriesViewModel: Successfully fetched image with name: \(key)")
+        let count = vibesDict.keys.count
+        var counter = 0
+        return Future<Void, Error> { promise in
+            for key in self.vibesDict.keys {
+                VibeImageService.shared.fetchImage(name: key)
+                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let err):
+                            print("StoriesViewModel: Failed to fetch vibe image w/ name: \(key)")
+                            print("StoriesViewModel-err: \(err)")
+                        case .finished:
+                            print("StoriesViewModel: Successfully fetched image with name: \(key)")
+                        }
+                    } receiveValue: {[weak self] vibeCoverImage in
+                        if let vibeCoverImage = vibeCoverImage {
+                            self?.vibeImages.append(vibeCoverImage)
+                            counter += 1
+                        }
+                        
+                        if counter == count {
+                            promise(.success(()))
+                        }
                     }
-                } receiveValue: {[weak self] vibeCoverImage in
-                    if let vibeCoverImage = vibeCoverImage {
-                        self?.vibeImages.append(vibeCoverImage)
-                    }
-                }
-                .store(in: &cancellables)
-        }
+                    .store(in: &self.cancellables)
+            }
+        }.eraseToAnyPublisher()
     }
 }
 

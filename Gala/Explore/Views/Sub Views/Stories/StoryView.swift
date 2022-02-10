@@ -20,10 +20,10 @@ struct StoryView: View {
                 ProgressView()
             } else {
                 Image(uiImage: post.storyImage!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .frame(width: screenWidth, height: screenHeight)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .frame(width: screenWidth, height: screenHeight)
             }
             
             VStack {

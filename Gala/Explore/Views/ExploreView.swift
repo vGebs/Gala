@@ -21,7 +21,7 @@ struct ExploreView: View {
     var body: some View {
         ZStack {
             ScrollView(showsIndicators: false){
-                MatchStoriesView(stories: $viewModel.matchStories)
+                MatchStoriesView(viewModel: viewModel.storiesViewModel)
                     .offset(y: screenHeight * 0.01)
                 
                 MyDivider()

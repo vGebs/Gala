@@ -33,13 +33,6 @@ struct VibesPlaceHolder: View {
                     Text("Vibes")
                         .font(.system(size: 25, weight: .bold, design: .rounded))
                     Spacer()
-                    Button(action: {
-                        viewModel.fetchVibeImages()
-                    }) {
-                        Text("Fetch")
-                            .foregroundColor(.buttonPrimary)
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                    }
                 }
                 
                 LazyVGrid(columns: columns, content: {
