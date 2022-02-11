@@ -12,6 +12,8 @@ struct ChatView: View {
     @State var chatText = ""
     @Binding var userChat: UserChat?
     
+    @ObservedObject var viewModel = ChatViewModel()
+    
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
@@ -19,46 +21,8 @@ struct ChatView: View {
             VStack {
                 header
                 
-                ScrollView(showsIndicators: false){
-                    ForEach(0...15, id:\.self){ i in
-                        if i % 2 == 0 {
-                            HStack {
-                                ZStack {
-                                    Text("Hello, im Lucy and i like to fuck")
-                                        .font(.system(size: 16, weight: .regular, design: .rounded))
-                                        .foregroundColor(.white)
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 7)
-                                .background(Color.accent)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .frame(maxWidth: screenWidth * 0.7)
-                                
-                                Spacer()
+                messageLog
 
-                            }
-                        } else {
-                            HStack {
-                                Spacer()
-                                
-                                ZStack {
-                                    Text("Hello, im vaughn whats up aw d aw d awd aw da wd")
-                                        .font(.system(size: 16, weight: .regular, design: .rounded))
-                                        .foregroundColor(.white)
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 7)
-                                .background(Color.primary)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .frame(maxWidth: screenWidth * 0.7)
-                            }
-                        }
-                        
-                    }
-                    HStack { Spacer() }
-                }
-                .cornerRadius(20)
-                
                 footer
             }
         }
@@ -83,7 +47,7 @@ struct ChatView: View {
                     .foregroundColor(.buttonPrimary)
                     .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
             }
-            .padding(.trailing)
+            .padding(.horizontal)
             
             VStack(alignment: .leading) {
                 Text("\(userChat!.name), \(userChat!.bday.ageString())")
@@ -103,9 +67,28 @@ struct ChatView: View {
         }
         .frame(height: screenWidth * 0.11)
         .padding(.top)
-        //.padding(.horizontal)
     }
     
+    var messageLog: some View {
+        ScrollViewReader{ proxy in
+            ScrollView(showsIndicators: false){
+                ForEach(0...15, id:\.self){ i in
+                    if i % 2 == 0 {
+                        MessageView(message: "Hey I'm Suzy and i like fuk", fromMe: false)
+                    } else {
+                        MessageView(message: "Hey Suzy, I'm vaughn and i like to play hockey and baseball and shit", fromMe: true)
+                    }
+                }
+                HStack { Spacer() }
+                .frame(width: screenWidth, height: screenHeight * 0.001)
+            }
+            .onAppear{
+                proxy.scrollTo(15)
+            }
+            .cornerRadius(20)
+        }
+    }
+        
     var footer: some View {
         HStack {
             Button(action: {}) {
@@ -118,12 +101,17 @@ struct ChatView: View {
                 Capsule()
                     .foregroundColor(.white)
                 
-                TextField("Start typing..", text: $chatText)
+                TextField("Start typing..", text: $viewModel.messageText, onCommit: {
+                    viewModel.sendMessage(toUID: userChat!.uid)
+                })
+                    .foregroundColor(.black)
                     .padding(.horizontal)
             }
             .frame(height: screenWidth * 0.09)
             
-            Button(action: {}) {
+            Button(action: {
+                viewModel.sendMessage(toUID: userChat!.uid)
+            }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
                         .foregroundColor(.buttonPrimary)
@@ -133,6 +121,7 @@ struct ChatView: View {
                         .foregroundColor(.primary)
                 }
             }
+            .disabled(viewModel.messageText.isEmpty)
             .frame(width: screenWidth * 0.15, height: screenWidth * 0.09)
         }
         .padding(.bottom)

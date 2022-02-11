@@ -52,7 +52,7 @@ struct ConvoPreview: View {
                 Spacer()
                 HStack {
                     Button(action: {
-                        userChat = UserChat(name: user.profile!.name, location: user.city, bday: user.profile!.age, profileImg: user.img!)
+                        userChat = UserChat(name: user.profile!.name, uid: user.profile!.uid, location: user.city, bday: user.profile!.age, profileImg: user.img!)
                         showChat = true
                     }){
                         VStack {
@@ -97,11 +97,4 @@ struct ConvoPreview: View {
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
-}
-
-struct UserChat {
-    var name: String
-    var location: String
-    var bday: Date
-    var profileImg: UIImage
 }
