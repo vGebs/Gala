@@ -22,6 +22,7 @@ class SmallUserViewModel: ObservableObject {
         getCityAndCountry()
         getProfileImage()
     }
+    
     //Need to make getUserCore in UserCoreService using async and await
     // then pull the usercore, followed by getCityAndCountry and getProfileImage
     init(uid: String) {
@@ -36,10 +37,6 @@ class SmallUserViewModel: ObservableObject {
                 }
             }
         }
-    }
-    
-    private func getUserCore(_ uid: String) async {
-        
     }
     
     private func getCityAndCountry() {

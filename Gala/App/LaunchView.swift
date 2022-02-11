@@ -19,8 +19,8 @@ struct LaunchView: View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
             if viewModel.allowAccess {
-                ContentView(camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!)
-
+                ContentView(chat: viewModel.chatsVM!, camera: viewModel.cameraVM!, profile: viewModel.profileVM!, explore: viewModel.exploreVM!)
+                
             } else if viewModel.createAccountPressed {
                 ProfileView(viewModel: viewModel.createProfileVM!)
                     .transition(.move(edge: .leading))

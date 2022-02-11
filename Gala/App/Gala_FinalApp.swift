@@ -148,6 +148,7 @@ struct GalaApp: App {
             //TestSnapchatExpand()
             //TestSnapchat()
             LaunchView()
+            //ChatView()
         }
     }
 }

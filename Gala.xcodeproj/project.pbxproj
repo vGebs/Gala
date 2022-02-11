@@ -29,6 +29,7 @@
 		FA6BE5EF27B4A5140058B78C /* MatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5EE27B4A5140058B78C /* MatchService.swift */; };
 		FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */; };
 		FA6BE5F327B4AF8B0058B78C /* MatchedStoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F227B4AF8B0058B78C /* MatchedStoryViewModel.swift */; };
+		FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F427B5AA630058B78C /* ChatView.swift */; };
 		FA72A17326681CAE004DEF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17226681CAE004DEF77 /* AppState.swift */; };
 		FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A17426688949004DEF77 /* CameraViewModel.swift */; };
 		FA72A1782669ACFC004DEF77 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA72A1772669ACFC004DEF77 /* LocationService.swift */; };
@@ -152,6 +153,7 @@
 		FA6BE5EE27B4A5140058B78C /* MatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchService.swift; sourceTree = "<group>"; };
 		FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryView.swift; sourceTree = "<group>"; };
 		FA6BE5F227B4AF8B0058B78C /* MatchedStoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryViewModel.swift; sourceTree = "<group>"; };
+		FA6BE5F427B5AA630058B78C /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		FA72A17226681CAE004DEF77 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FA72A17426688949004DEF77 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		FA72A1772669ACFC004DEF77 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 			children = (
 				FA7E3B1D26DEB64700A6653C /* ChatsView.swift */,
 				FA87741726409E0700D5D5CB /* ConvoPreview.swift */,
+				FA6BE5F427B5AA630058B78C /* ChatView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -869,6 +872,7 @@
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
 				FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
+				FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */,
 				FA7BAD4A26FD107C002F25E0 /* SendViewModel.swift in Sources */,
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,
 				FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */,

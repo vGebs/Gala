@@ -41,7 +41,7 @@ class AppState: ObservableObject {
     
     //Main ViewModels
     @Published var profileVM: ProfileViewModel?
-    //@Published var chats: ChatsViewModel?
+    @Published var chatsVM: ChatsViewModel?
     @Published var cameraVM: CameraViewModel?
     @Published var exploreVM: ExploreViewModel?
     //@Published var showcaseVM: ShowCaseViewModel?
@@ -136,6 +136,15 @@ class AppState: ObservableObject {
                     return Just(nil).eraseToAnyPublisher()
                 }
             }.assign(to: &$exploreVM)
+        
+        $allowAccess
+            .flatMap { allow ->  AnyPublisher<ChatsViewModel?, Never> in
+                if allow {
+                    return Just(ChatsViewModel()).eraseToAnyPublisher()
+                } else {
+                    return Just(nil).eraseToAnyPublisher()
+                }
+            }.assign(to: &$chatsVM)
     }
     
     public func toggleDarkMode() {

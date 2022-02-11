@@ -13,19 +13,22 @@ struct ChatsView: View {
     var pageName: String = "Chats"
     var optionButtonRight: String = "square.and.pencil"
     
-    //@ObservedObject var viewModel: ProfileViewModel
-
     private var cancellables: [AnyCancellable] = []
     
-    @StateObject var viewModel = ChatsViewModel()
+    @ObservedObject var viewModel: ChatsViewModel
     @ObservedObject var profile: ProfileViewModel
     
     @State var showProfile = false
     
+    @State var showChat: Bool = false
+    @State var userChat: UserChat? = nil
+    
     @AppStorage("isDarkMode") private var isDarkMode = true
     
-    init(profile: ProfileViewModel){
+    init(viewModel: ChatsViewModel, profile: ProfileViewModel){
+        //self._selectedChat = selectedChat
         self.profile = profile
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -42,13 +45,14 @@ struct ChatsView: View {
                 
                 VStack {
                     Spacer()
+                    
                     ScrollView(showsIndicators: false) {
                         RoundedRectangle(cornerRadius: 2)
                             .foregroundColor(.black)
                             .frame(height: screenHeight * 0.015)
                         
-                        ForEach(viewModel.matchIDs, id: \.self){ matchID in
-                            ConvoPreview(user: SmallUserViewModel(uid: matchID))
+                        ForEach(viewModel.matchIDs, id: \.self){ match in
+                            ConvoPreview(id: match, showChat: $showChat, user: $userChat)
                                 .padding(.horizontal)
                         }
                     }
@@ -58,7 +62,9 @@ struct ChatsView: View {
                 
                 VStack {
                     HStack {
-                        Button(action: { self.showProfile = true }) {
+                        Button(action: {
+                            self.showProfile = true
+                        }) {
                             Image(systemName: optionButtonLeft)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
@@ -91,12 +97,9 @@ struct ChatsView: View {
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
+        .fullScreenCover(isPresented: $showChat, content: {
+            ChatView(showChat: $showChat, userChat: $userChat)
+        })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
-
-//struct ChatsView2_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChatsView()
-//    }
-//}

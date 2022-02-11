@@ -12,6 +12,16 @@ struct ConvoPreview: View {
     @ObservedObject var user: SmallUserViewModel
     @State var pressed = false
     
+    @Binding var showChat: Bool
+    
+    @Binding var userChat: UserChat?
+    
+    init(id: String, showChat: Binding<Bool>, user: Binding<UserChat?>){
+        self.user = SmallUserViewModel(uid: id)
+        self._showChat = showChat
+        self._userChat = user
+    }
+    
     var body: some View {
         HStack{
             ZStack {
@@ -41,16 +51,19 @@ struct ConvoPreview: View {
                 Divider()
                 Spacer()
                 HStack {
-                    VStack {
-                        HStack {
-                            Text("\(user.profile?.name ?? ""), \(user.profile?.age.ageString() ?? "")")
-                                .font(.system(size: 17, weight: .medium, design: .rounded))
-                                .foregroundColor(.primary)
+                    Button(action: {
+                        userChat = UserChat(name: user.profile!.name, location: user.city, bday: user.profile!.age, profileImg: user.img!)
+                        showChat = true
+                    }){
+                        VStack {
+                            HStack {
+                                Text("\(user.profile?.name ?? ""), \(user.profile?.age.ageString() ?? "")")
+                                    .font(.system(size: 17, weight: .medium, design: .rounded))
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                            }
                             
-                            Spacer()
-                        }
-                        
-                        //if matched {
                             HStack {
                                 Image(systemName: "arrowtriangle.right")
                                     .font(.system(size: 12, weight: .regular, design: .rounded))
@@ -61,25 +74,15 @@ struct ConvoPreview: View {
                                     .foregroundColor(.primary)
                                 
                                 Image(systemName: "circlebadge.fill")
-                                    //.resizable()
+                                //.resizable()
                                     .font(.system(size: 5, weight: .regular, design: .rounded))
-                                    //.frame(width: 3, height: 3)
+                                //.frame(width: 3, height: 3)
                                 
                                 Text("2h")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }
-//                        } else {
-//                            HStack {
-//                                Image(systemName: "mappin.and.ellipse")
-//                                    .foregroundColor(.blue)
-//                                    .font(.system(size: 8, weight: .semibold, design: .rounded))
-//
-//                                Text("\(user.city), \(user.country)")
-//                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-//                                Spacer()
-//                            }
-//                        }
+                        }
                     }
                     
                     Button(action: {  }){
@@ -94,4 +97,11 @@ struct ConvoPreview: View {
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
+}
+
+struct UserChat {
+    var name: String
+    var location: String
+    var bday: Date
+    var profileImg: UIImage
 }

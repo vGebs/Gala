@@ -59,7 +59,7 @@ class RecentlyJoinedViewModel: ObservableObject {
                     self?.users = final
                 }
             } else {
-                print("ExploreViewModel recents: nil")
+                print("ExploreViewModel-recents: nil")
             }
         }
         .store(in: &self.cancellables)

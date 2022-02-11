@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    //@ObservedObject var chat: ChatsViewModel
+    @ObservedObject var chat: ChatsViewModel
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var profile: ProfileViewModel
     @ObservedObject var explore: ExploreViewModel
@@ -29,7 +29,7 @@ struct ContentView: View {
     @Namespace var animation
     
     @State var selectedVibe = VibeCoverImage(image: UIImage(), title: "")
-    
+        
     var body: some View {
         ZStack{
             
@@ -94,7 +94,7 @@ struct ContentView: View {
             Pager(tabs: tabs, rect: rect, offset: $offset) {
                 
                 HStack(spacing: 0){
-                    ChatsView(profile: profile)
+                    ChatsView(viewModel: chat, profile: profile)
                     CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
                     ExploreMainView(viewModel: explore, profile: profile, showVibe: $showVibe, selectedVibe: $selectedVibe, offset: $offset2, scale: $scale, animation: animation)
                 }
