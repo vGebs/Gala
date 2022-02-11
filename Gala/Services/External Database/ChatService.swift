@@ -24,7 +24,8 @@ class ChatService {
                     "message": message,
                     "toID": toID,
                     "fromID": AuthService.shared.currentUser!.uid,
-                    "timestamp": Date()
+                    "timestamp": Date(),
+                    "opened": false
                 ]){ err in
                     if let err = err {
                         print("ChatService: Failed to send message to id: \(toID)")
@@ -103,10 +104,11 @@ class ChatService {
                             let message = doc.data()["message"] as? String ?? ""
                             let toID = doc.data()["fromID"] as? String ?? ""
                             let fromID = doc.data()["toID"] as? String ?? ""
+                            let opened = doc.data()["opened"] as? Bool ?? false
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal)
+                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened)
                                 final.append(newMessage)
                             }
                         }
@@ -135,10 +137,11 @@ class ChatService {
                             let message = doc.data()["message"] as? String ?? ""
                             let toID = doc.data()["fromID"] as? String ?? ""
                             let fromID = doc.data()["toID"] as? String ?? ""
+                            let opened = doc.data()["opened"] as? Bool ?? false
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal)
+                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened)
                                 final.append(newMessage)
                             }
                         }

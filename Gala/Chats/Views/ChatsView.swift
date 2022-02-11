@@ -98,7 +98,7 @@ struct ChatsView: View {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
         .fullScreenCover(isPresented: $showChat, content: {
-            ChatView(showChat: $showChat, userChat: $userChat)
+            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }

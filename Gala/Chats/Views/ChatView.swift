@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct ChatView: View {
     @Binding var showChat: Bool
@@ -13,6 +14,7 @@ struct ChatView: View {
     @Binding var userChat: UserChat?
     
     @ObservedObject var viewModel = ChatViewModel()
+    @Binding var messages: OrderedDictionary<String, [Message]>
     
     var body: some View {
         ZStack {
@@ -72,18 +74,22 @@ struct ChatView: View {
     var messageLog: some View {
         ScrollViewReader{ proxy in
             ScrollView(showsIndicators: false){
-                ForEach(0...15, id:\.self){ i in
-                    if i % 2 == 0 {
-                        MessageView(message: "Hey I'm Suzy and i like fuk", fromMe: false)
-                    } else {
-                        MessageView(message: "Hey Suzy, I'm vaughn and i like to play hockey and baseball and shit", fromMe: true)
+                if messages[userChat!.uid] != nil {
+                    ForEach(messages[userChat!.uid]!){ message in
+                        if message.toID == AuthService.shared.currentUser!.uid {
+                            MessageView(message: message.message, fromMe: false)
+                        } else {
+                            MessageView(message: message.message, fromMe: true)
+                        }
                     }
                 }
                 HStack { Spacer() }
                 .frame(width: screenWidth, height: screenHeight * 0.001)
             }
             .onAppear{
-                proxy.scrollTo(15)
+                if messages[userChat!.uid] != nil {
+                    proxy.scrollTo(messages[userChat!.uid]!.count)
+                }
             }
             .cornerRadius(20)
         }

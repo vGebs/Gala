@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import FirebaseFirestore
+import OrderedCollections
 
 class ChatsViewModel: ObservableObject {
     
@@ -16,9 +17,16 @@ class ChatsViewModel: ObservableObject {
     private let db = Firestore.firestore()
     
     @Published private(set) var matchIDs: [String] = []
+    @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
         observeMatches()
+        
+        //we need to fetch all messages as well to see when the last message was sent/ recieved and whether it was opened or not.
+        //we can store the match messages in a dictionary.
+        //  key = uid of matched user
+        //  value = array of messages
+        observeChats()
     }
     
     private func observeMatches()  {
@@ -52,19 +60,84 @@ class ChatsViewModel: ObservableObject {
             }
     }
     
-//    func doo() {
-//        LikesService.shared.getPeopleILiked()
-//            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-//            .sink { completion in
-//                switch completion {
-//                case .failure(let error):
-//                    print("ChatsViewModel: Error getting people I like")
-//                    print("ChatsViewModel-Error: \(error.localizedDescription)")
-//                case .finished:
-//                    print("ChatsViewModel: Finished getting users i like")
-//                }
-//            } receiveValue: { _ in
-//                
-//            }.store(in: &self.cancellables)
-//    }
+    func observeChats() {
+        observeChatsFromMe()
+        observeChatsToMe()
+    }
+    
+    private func observeChatsFromMe() {
+        db.collection("Messages")
+            .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .order(by: "timestamp")
+            .addSnapshotListener { [weak self] documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("ChatsViewModel: Failed to observe chats from me")
+                    print("ChatsViewModel-err: \(error!)")
+                    return
+                }
+                
+                documentSnapshot?.documentChanges.forEach({ change in
+                    if change.type == .added {
+                        let data = change.document.data()
+                                                
+                        let fromID = data["fromID"] as? String ?? ""
+                        let toID = data["toID"] as? String ?? ""
+                        let message = data["message"] as? String ?? ""
+                        let opened = data["opened"] as? Bool ?? false
+                        let timestamp = data["timestamp"] as? Timestamp
+                        
+                        if let date = timestamp?.dateValue() {
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
+                            if let _ = self?.matchMessages[toID] {
+                                self?.matchMessages[toID]?.append(message)
+                                print("ChatsViewModel: Fetched message from me: \(message.message)")
+                            } else {
+                                self?.matchMessages[toID] = [message]
+                                print("ChatsViewModel: Fetched message from me: \(message.message)")
+                            }
+                        }
+                    }
+                })
+            }
+    }
+    
+    private func observeChatsToMe() {
+        db.collection("Messages")
+            .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .order(by: "timestamp")
+            .addSnapshotListener { [weak self] documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("ChatsViewModel: Failed to observe chats from me")
+                    print("ChatsViewModel-err: \(error!)")
+                    return
+                }
+                
+                documentSnapshot?.documentChanges.forEach({ change in
+                    if change.type == .added {
+                        let data = change.document.data()
+                                                
+                        let fromID = data["fromID"] as? String ?? ""
+                        let toID = data["toID"] as? String ?? ""
+                        let message = data["message"] as? String ?? ""
+                        let opened = data["opened"] as? Bool ?? false
+                        let timestamp = data["timestamp"] as? Timestamp
+                        
+                        if let date = timestamp?.dateValue() {
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
+                            if let _ = self?.matchMessages[toID] {
+                                DispatchQueue.main.async {
+                                    self?.matchMessages[fromID]?.append(message)
+                                }
+                                print("ChatsViewModel: Fetched message to me: \(message.message)")
+                            } else {
+                                DispatchQueue.main.async {
+                                    self?.matchMessages[fromID] = [message]
+                                }
+                                print("ChatsViewModel: Fetched message to me: \(message.message)")
+                            }
+                        }
+                    }
+                })
+            }
+    }
 }
