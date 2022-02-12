@@ -165,26 +165,21 @@ struct MyLikesDropDown: View {
         }
         .padding(.vertical, expanded ? 10 : 0)
     }
-    
-    func secondsToHoursMinutesSeconds(_ seconds: Int) -> String { //(Int, Int, Int)
-        
-//        print(String((seconds % 86400) / 3600) + " hours")
-//        print(String((seconds % 3600) / 60) + " minutes")
-//        print(String((seconds % 3600) % 60) + " seconds")
-        
-        if abs(((seconds % 3600) / 60)) == 0 {
-            let secondString = "\(abs((seconds % 3600) / 60))s"
-            return secondString
-        } else if abs((seconds / 3600)) == 0 {
-            let minuteString = "\(abs((seconds % 3600) / 60))m"
-            return minuteString
-        } else {
-            let hourString = "\(abs(seconds / 3600))h"
-            return hourString
-        }
-        
-        //return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
-    }
 }
 
-
+func secondsToHoursMinutesSeconds(_ seconds: Int) -> String { //(Int, Int, Int)
+    
+    if abs(((seconds % 3600) / 60)) == 0 {
+        let secondString = "\(abs((seconds % 3600) / 60))s"
+        return secondString
+    } else if abs((seconds / 3600)) == 0 {
+        let minuteString = "\(abs((seconds % 3600) / 60))m"
+        return minuteString
+    } else if abs(seconds / 3600) < 24{
+        let hourString = "\(abs(seconds / 3600))h"
+        return hourString
+    } else {
+        let dayString = "\(abs(seconds / 86400))d"
+        return dayString
+    }
+}

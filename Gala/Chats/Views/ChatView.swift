@@ -15,6 +15,7 @@ struct ChatView: View {
     
     @ObservedObject var viewModel = ChatViewModel()
     @Binding var messages: OrderedDictionary<String, [Message]>
+    @Binding var timeMatched: Date?
     
     var body: some View {
         ZStack {
@@ -62,7 +63,11 @@ struct ChatView: View {
             }
             Spacer()
             
-            Button(action: { self.showChat = false }){
+            Button(action: {
+                self.showChat = false
+                //self.timeMatched = nil
+                //self.userChat = nil
+            }){
                 Image(systemName: "arrow.down")
             }
             .padding(.trailing)
@@ -74,6 +79,7 @@ struct ChatView: View {
     var messageLog: some View {
         ScrollViewReader{ proxy in
             ScrollView(showsIndicators: false){
+                macthedDateView
                 if messages[userChat!.uid] != nil {
                     ForEach(messages[userChat!.uid]!){ message in
                         if message.toID == AuthService.shared.currentUser!.uid {
@@ -94,6 +100,21 @@ struct ChatView: View {
             .cornerRadius(20)
         }
     }
+    
+    var macthedDateView: some View {
+        HStack {
+            Image(systemName: "figure.stand.line.dotted.figure.stand")
+                .font(.system(size: 14, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            
+            Text("Matched \(secondsToHoursMinutesSeconds(Int(timeMatched!.timeIntervalSinceNow)))")
+                .font(.system(size: 15, weight: .regular, design: .rounded))
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 5)
+        .background(RoundedRectangle(cornerRadius: 5).foregroundColor(.accent))
+    }
         
     var footer: some View {
         HStack {
@@ -107,7 +128,7 @@ struct ChatView: View {
                 Capsule()
                     .foregroundColor(.white)
                 
-                TextField("Start typing..", text: $viewModel.messageText, onCommit: {
+                TextField("", text: $viewModel.messageText, onCommit: {
                     viewModel.sendMessage(toUID: userChat!.uid)
                 })
                     .foregroundColor(.black)

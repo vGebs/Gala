@@ -16,7 +16,7 @@ class ChatsViewModel: ObservableObject {
     
     private let db = Firestore.firestore()
     
-    @Published private(set) var matchIDs: [String] = []
+    @Published private(set) var matches: [Match] = []
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
@@ -42,19 +42,25 @@ class ChatsViewModel: ObservableObject {
                     if change.type == .added {
                         let data = change.document.data()
                         
-                        var final: [String] = []
+                        var final: [Match] = []
+                        let timestamp = data["time"] as? Timestamp
                         
-                        if let uids = data["matched"] as? [String] {
-                            for uid in uids {
-                                if uid != AuthService.shared.currentUser!.uid {
-                                    print("Matches: \(uid)")
-                                    //let temp = SmallUserViewModel(uid: uid)
-                                    final.append(uid)
-                                    print("ChatsViewModel: Added new match: \(uid)")
+                        
+                        if let matchDate = timestamp?.dateValue(){
+                            if let uids = data["matched"] as? [String] {
+                                for uid in uids {
+                                    if uid != AuthService.shared.currentUser!.uid {
+                                        print("Matches: \(uid)")
+                                        //let temp = SmallUserViewModel(uid: uid)
+                                        let match = Match(matchedUID: uid, timeMatched: matchDate)
+                                        final.append(match)
+                                        print("ChatsViewModel: Added new match: \(uid)")
+                                    }
                                 }
                             }
                         }
-                        self?.matchIDs = final
+                        
+                        self?.matches = final
                     }
                 })
             }

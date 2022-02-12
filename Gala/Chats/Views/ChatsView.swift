@@ -22,6 +22,8 @@ struct ChatsView: View {
     
     @State var showChat: Bool = false
     @State var userChat: UserChat? = nil
+
+    @State var timeMatched: Date? = nil
     
     @AppStorage("isDarkMode") private var isDarkMode = true
     
@@ -51,8 +53,8 @@ struct ChatsView: View {
                             .foregroundColor(.black)
                             .frame(height: screenHeight * 0.015)
                         
-                        ForEach(viewModel.matchIDs, id: \.self){ match in
-                            ConvoPreview(id: match, showChat: $showChat, user: $userChat)
+                        ForEach(viewModel.matches){ match in
+                            ConvoPreview(id: match.matchedUID, showChat: $showChat, user: $userChat, messages: $viewModel.matchMessages, timeMatched: match.timeMatched, timeMatchedBinding: $timeMatched)
                                 .padding(.horizontal)
                         }
                     }
@@ -98,7 +100,7 @@ struct ChatsView: View {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
         .fullScreenCover(isPresented: $showChat, content: {
-            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages)
+            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages, timeMatched: $timeMatched)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
