@@ -6,20 +6,25 @@ const db = admin.firestore();
 
 exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
     .onCreate(async (snap, context) => {
+        const docRef = snap.id;
         const data = snap.data();
         const likerUID = data.likerUID;
         const likedUID = data.likedUID;
 
         const matchCollection = db.collection("Matches");
+        const likesCollection = db.collection("Likes");
         const peopleThatLikeMe = await getPeopleThatLikeMe(likerUID);
 
         if (peopleThatLikeMe != null) {
             for (let i = 0; i < peopleThatLikeMe.length; i++) {
-                if (peopleThatLikeMe[i] == likedUID) {
+                if (peopleThatLikeMe[i].id == likedUID) {
                     matchCollection.add({
                         matched: [likedUID, likerUID],
                         time: admin.firestore.FieldValue.serverTimestamp()
                     });
+
+                    likesCollection.doc(docRef).delete();
+                    likesCollection.doc(peopleThatLikeMe[i].ref).delete();
                 }
             }
         }
@@ -40,23 +45,38 @@ async function getPeopleThatLikeMe(likerUID) {
     if (snap.empty) {
         return new Array();
     } else {
-        let ids = new Array();
+        let likes = new Array();
         snap.forEach((doc) => {
+            const docRef = doc.id;
             const data = doc.data();
             const liked = data.likerUID;
-            ids.push(liked);
+
+            const likeObject = new Object();
+            likeObject.ref = docRef;
+            likeObject.id = liked;
+
+            likes.push(likeObject);
         });
-        const newIds = uniq(ids);
-        return newIds;
+
+        const filteredArr = likes.reduce((acc, current) => {
+            const x = acc.find(item => item.id === current.id);
+            if (!x) {
+                return acc.concat([current]);
+            } else {
+                return acc;
+            }
+        }, []);
+
+        return filteredArr;
     }
 }
 
-function uniq(a) {
-    var seen = {};
-    return a.filter(function(item) {
-        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-    });
-}
+// function uniq(a) {
+//     var seen = {};
+//     return a.filter(function (item) {
+//         return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+//     });
+// }
 
 //for linting
 // "functions": {
