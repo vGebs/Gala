@@ -90,28 +90,60 @@ struct ConvoPreview: View {
                                 } else {
                                     HStack {
                                         if user.profile != nil {
-                                            if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened {
-                                                Image(systemName: "arrowtriangle.right")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Opened")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
+                                            //I sent a message
+                                            if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].fromID == AuthService.shared.currentUser?.uid {
+                                                
+                                                if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened {
+                                                    Image(systemName: "arrowtriangle.right")
+                                                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.buttonPrimary)
+                                                    Text("Opened")
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.primary)
+                                                    Image(systemName: "circlebadge.fill")
+                                                        .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                    Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                } else {
+                                                    Image(systemName: "arrowtriangle.right.fill")
+                                                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.buttonPrimary)
+                                                    Text("Sent")
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.primary)
+                                                    Image(systemName: "circlebadge.fill")
+                                                        .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                    Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                }
                                             } else {
-                                                Image(systemName: "arrowtriangle.right.fill")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Sent")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
+                                                //i recieved a message
+                                                if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened {
+                                                    Image(systemName: "message")
+                                                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.buttonPrimary)
+                                                    Text("Opened")
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.primary)
+                                                    Image(systemName: "circlebadge.fill")
+                                                        .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                    Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                } else {
+                                                    Image(systemName: "message.fill")
+                                                        .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.buttonPrimary)
+                                                    Text("New message")
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                        .foregroundColor(.primary)
+                                                    Image(systemName: "circlebadge.fill")
+                                                        .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                    Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                }
                                             }
                                         }
                                         
-                                        Image(systemName: "circlebadge.fill")
-                                            .font(.system(size: 5, weight: .regular, design: .rounded))
-                                        
-                                        Text(secondsToHoursMinutesSeconds_(Int(timeMatched.timeIntervalSinceNow)))
-                                            .font(.system(size: 13, weight: .regular, design: .rounded))
                                         Spacer()
                                     }
                                 }
