@@ -17,6 +17,8 @@ struct ChatView: View {
     @Binding var messages: OrderedDictionary<String, [Message]>
     @Binding var timeMatched: Date?
     
+    @State var showProfile = false
+    
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
@@ -29,6 +31,9 @@ struct ChatView: View {
                 footer
             }
         }
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: userChat!.uid), showProfile: $showProfile)
+        })
         .onTapGesture {
             self.endEditing()
         }
@@ -36,31 +41,36 @@ struct ChatView: View {
     
     var header: some View {
         HStack {
-            ZStack{
-                if userChat?.profileImg != nil {
-                    Image(uiImage: userChat!.profileImg)
-                        .resizable()
-                        .scaledToFill()
+            Button(action: {
+                self.showProfile = true
+            }) {
+                ZStack{
+                    if userChat?.profileImg != nil {
+                        Image(uiImage: userChat!.profileImg)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                    
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke()
+                        .foregroundColor(.buttonPrimary)
                         .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
+                .padding(.horizontal)
                 
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke()
-                    .foregroundColor(.buttonPrimary)
-                    .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                VStack(alignment: .leading) {
+                    Text("\(userChat!.name), \(userChat!.bday.ageString())")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(.primary)
+                    
+                    Text("\(userChat!.location)")
+                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                        .foregroundColor(.white)
+                }
             }
-            .padding(.horizontal)
             
-            VStack(alignment: .leading) {
-                Text("\(userChat!.name), \(userChat!.bday.ageString())")
-                    .font(.system(size: 17, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
-                
-                Text("\(userChat!.location)")
-                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                    .foregroundColor(.white)
-            }
             Spacer()
             
             Button(action: {

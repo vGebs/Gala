@@ -32,30 +32,37 @@ struct ProfileView: View {
                         nameAgeLocation
                     }
                     
-                    if viewModel.mode == .profileStandard {
+                    if viewModel.mode == .profileStandard || viewModel.mode == .otherAccount{
                         Spacer().frame(height: screenHeight * 0.02)
                         ProfilePicturePlaceholder
                         nameAgeLocation
-                        editButton
                         
-                        if viewModel.editPressed == false {
-                            HStack{
-                                Image(systemName: "newspaper")
-                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.primary)
-                                Text("Stories")
-                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                Spacer()
-                            }
-                            .padding(.top)
-
-                            AddToStoryButton()
-                                .padding(.bottom, 5)
+                        if viewModel.mode != .otherAccount {
+                            editButton
                         }
                         
                         if viewModel.editPressed == false {
-                            MyStoriesDropDown(popup: false)
-                                .padding(.bottom, 7)
+                            if viewModel.mode != .otherAccount {
+                                HStack{
+                                    Image(systemName: "newspaper")
+                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.primary)
+                                    Text("Stories")
+                                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    Spacer()
+                                }
+                                .padding(.top)
+                                
+                                AddToStoryButton()
+                                    .padding(.bottom, 5)
+                            }
+                        }
+                        
+                        if viewModel.editPressed == false {
+                            if viewModel.mode != .otherAccount {
+                                MyStoriesDropDown(popup: false)
+                                    .padding(.bottom, 7)
+                            }
                         }
                     }
                     
@@ -66,7 +73,7 @@ struct ProfileView: View {
                             bioTextField
                         }
                         
-                        if viewModel.mode == .profileStandard && !viewModel.editPressed {
+                        if (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount) && !viewModel.editPressed {
                             bioText
                         }
                     }
@@ -718,12 +725,6 @@ struct ProfileView: View {
         .disabled(!viewModel.isValid)
         .opacity(viewModel.isValid ? 1 : 0.4)
         .padding(.vertical)
-    }
-}
-
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView(viewModel: ProfileViewModel(name: "Vaughn", age: Date(), mode: .profileStandard))
     }
 }
 

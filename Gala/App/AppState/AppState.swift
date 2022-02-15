@@ -98,7 +98,7 @@ class AppState: ObservableObject {
         $createAccountPressed
             .flatMap{ on -> AnyPublisher<ProfileViewModel?, Never> in
                 if on {
-                    return Just(ProfileViewModel(name: self.profileInfo.name, age: self.profileInfo.age, email: self.profileInfo.email, mode: .createAccount)).eraseToAnyPublisher()
+                    return Just(ProfileViewModel(name: self.profileInfo.name, age: self.profileInfo.age, email: self.profileInfo.email, mode: .createAccount, uid: nil)).eraseToAnyPublisher()
                 } else {
                     print("Setting Create profile VM = nil: AppState.swift")
                     return Just(nil).eraseToAnyPublisher()
@@ -109,7 +109,7 @@ class AppState: ObservableObject {
         $allowAccess
             .flatMap{ allow -> AnyPublisher<ProfileViewModel?, Never> in
                 if allow {
-                    return Just(ProfileViewModel(mode: .profileStandard)).eraseToAnyPublisher()
+                    return Just(ProfileViewModel(mode: .profileStandard, uid: AuthService.shared.currentUser!.uid)).eraseToAnyPublisher()
                 } else {
                     print("Setting Profile Standard = nil: AppState.swift")
                     return Just(nil).eraseToAnyPublisher()

@@ -20,6 +20,8 @@ struct ConvoPreview: View {
     var timeMatched: Date
     @Binding var timeMatchedBinding: Date?
     
+    @State var showProfile = false
+    
     init(id: String, showChat: Binding<Bool>, user: Binding<UserChat?>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatched: Date, timeMatchedBinding: Binding<Date?>){
         self.user = SmallUserViewModel(uid: id)
         self._showChat = showChat
@@ -31,26 +33,28 @@ struct ConvoPreview: View {
     
     var body: some View {
         HStack{
-            ZStack {
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke()
-                    .frame(width: screenWidth / 9, height: screenWidth / 9)
-                    .foregroundColor(.blue)
-                    .padding(.trailing)
-                
-                if user.img == nil {
-                    Image(systemName: "person.fill.questionmark")
-                        .foregroundColor(Color(.systemTeal))
-                        .frame(width: screenWidth / 20, height: screenWidth / 20)
+            Button(action: { self.showProfile = true }){
+                ZStack {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke()
+                        .frame(width: screenWidth / 9, height: screenWidth / 9)
+                        .foregroundColor(.blue)
                         .padding(.trailing)
                     
-                } else {
-                    Image(uiImage: user.img!)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                        .padding(.trailing)
+                    if user.img == nil {
+                        Image(systemName: "person.fill.questionmark")
+                            .foregroundColor(Color(.systemTeal))
+                            .frame(width: screenWidth / 20, height: screenWidth / 20)
+                            .padding(.trailing)
+                        
+                    } else {
+                        Image(uiImage: user.img!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.trailing)
+                    }
                 }
             }
             
@@ -125,6 +129,9 @@ struct ConvoPreview: View {
             }
             Spacer()
         }
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: user.profile!.uid), showProfile: $showProfile)
+        })
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
     

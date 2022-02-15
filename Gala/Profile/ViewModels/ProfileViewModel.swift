@@ -108,6 +108,7 @@ final class ProfileViewModel: ObservableObject {
     enum Mode{
         case createAccount
         case profileStandard
+        case otherAccount
     }
     
     enum Gender: String {
@@ -143,7 +144,8 @@ final class ProfileViewModel: ObservableObject {
         name: String = String(),
         age: Date = Date(),
         email: String = String(),
-        mode: Mode
+        mode: Mode,
+        uid: String?
     ){
         
         //self.dropDownViewModel = MyStoriesDropDownViewModel()
@@ -165,12 +167,22 @@ final class ProfileViewModel: ObservableObject {
             self.ageText = age.ageString()
             self.email = email
             
-            guard let currentUser = userService.currentUser?.uid else { return }
+            //guard let currentUser = userService.currentUser?.uid else { return }
+            if let uid = uid {
+                //if !self.readProfileFromCoreData(id: currentUser) {
+                    self.readProfileFromFirebase(uid: uid)
+                   // print("could not get core data")
+                //}
+            }
+        case .otherAccount:
+            self.nameText = name
+            self.age = age
+            self.ageText = age.ageString()
+            self.email = email
             
-            //if !self.readProfileFromCoreData(id: currentUser) {
-                self.readProfileFromFirebase(uid: currentUser)
-               // print("could not get core data")
-            //}
+            if let uid = uid {
+                self.readProfileFromFirebase(uid: uid)
+            }
         }
         
         $bioCharCount
@@ -315,7 +327,6 @@ final class ProfileViewModel: ObservableObject {
             print("Created profile")
             
         case .submitProfileChanges:
-            
             print("Profile changed")
         }
     }
@@ -533,7 +544,7 @@ extension ProfileViewModel {
     
     private func readProfileFromFirebase(uid: String) {
         
-        ProfileService.shared.getUserProfile(uid: (UserCoreService.shared.currentUserCore?.uid)!)
+        ProfileService.shared.getUserProfile(uid: uid)
             .sink { completion in
                 switch completion {
                 case let .failure(error):

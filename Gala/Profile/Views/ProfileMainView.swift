@@ -54,27 +54,50 @@ struct ProfileMainView: View {
                             .foregroundColor(.primary)
 
                         Spacer()
-                        
-                        Menu {
-                            Button(action: { AppState.shared.toggleDarkMode() }){
-                                HStack{
-                                    Image(systemName: "person.fill.xmark")
-                                    Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
+                        if viewModel.mode == .profileStandard {
+                            Menu {
+                                Button(action: { AppState.shared.toggleDarkMode() }){
+                                    HStack{
+                                        Image(systemName: "person.fill.xmark")
+                                        Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
+                                    }
                                 }
-                            }
-                            
-                            Button(action: { self.viewModel.logout() }){
-                                HStack{
-                                    Image(systemName: "person.fill.xmark")
-                                    Text("Log out")
+                                
+                                Button(action: { self.viewModel.logout() }){
+                                    HStack{
+                                        Image(systemName: "person.fill.xmark")
+                                        Text("Log out")
+                                    }
                                 }
+                            } label: {
+                                Label("", systemImage: optionButtonRight)
+                                    .foregroundColor(.buttonPrimary)
+                                    .font(.system(size: 20, weight: .regular, design: .rounded))
                             }
-                        } label: {
-                            Label("", systemImage: optionButtonRight)
-                                .foregroundColor(.buttonPrimary)
-                                .font(.system(size: 20, weight: .regular, design: .rounded))
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        } else {
+                            Menu {
+                                Button(action: {  }){
+                                    HStack{
+                                        Image(systemName: "figure.wave")
+                                        Text("Unmatch user")
+                                    }
+                                }
+                                
+                                Button(action: {  }){
+                                    HStack{
+                                        Image(systemName: "person.crop.circle.badge.exclamationmark")
+                                        Text("Report user")
+                                    }
+                                }
+                            } label: {
+                                Label("", systemImage: optionButtonRight)
+                                    .foregroundColor(.buttonPrimary)
+                                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                            }
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
                         }
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                       
                     }
                     .padding()
                     
