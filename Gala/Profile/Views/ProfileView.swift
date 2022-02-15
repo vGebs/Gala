@@ -135,7 +135,7 @@ struct ProfileView: View {
                             jobTextField
                         }
                         
-                        if !viewModel.editPressed && viewModel.mode == .profileStandard{
+                        if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount){
                             jobText
                         }
                     }
@@ -147,7 +147,7 @@ struct ProfileView: View {
                             schoolTextField
                         }
                         
-                        if !viewModel.editPressed && viewModel.mode == .profileStandard{
+                            if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount){
                             schoolText
                         }
                     }
