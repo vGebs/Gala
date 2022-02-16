@@ -41,7 +41,7 @@ class ChatsViewModel: ObservableObject {
                 documentSnapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         let data = change.document.data()
-                        
+                        print("data chatsViewModel: \(data)")
                         var final: [Match] = []
                         let timestamp = data["time"] as? Timestamp
                         
@@ -66,7 +66,7 @@ class ChatsViewModel: ObservableObject {
             }
     }
     
-    func observeChats() {
+    private func observeChats() {
         observeChatsFromMe()
         observeChatsToMe()
     }
@@ -96,10 +96,14 @@ class ChatsViewModel: ObservableObject {
                             let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
                             if let _ = self?.matchMessages[toID] {
                                 self?.matchMessages[toID]?.append(message)
-                                print("ChatsViewModel: Fetched message from me: \(message.message)")
+                                
+                                print("MatchMessages: \(self?.matchMessages[toID])")
+                                print("ChatsViewModel: Fetched message from me (appended): \(message.message)")
                             } else {
                                 self?.matchMessages[toID] = [message]
-                                print("ChatsViewModel: Fetched message from me: \(message.message)")
+                                
+                                print("MatchMessages: \(self?.matchMessages[toID])")
+                                print("ChatsViewModel: Fetched message from me (created): \(message.message)")
                             }
                         }
                     }
@@ -130,16 +134,16 @@ class ChatsViewModel: ObservableObject {
                         
                         if let date = timestamp?.dateValue() {
                             let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
-                            if let _ = self?.matchMessages[toID] {
-                                DispatchQueue.main.async {
-                                    self?.matchMessages[fromID]?.append(message)
-                                }
-                                print("ChatsViewModel: Fetched message to me: \(message.message)")
+                            if let _ = self?.matchMessages[fromID] {
+                                self?.matchMessages[fromID]?.append(message)
+                                
+                                print("MatchMessages: \(self?.matchMessages[fromID])")
+                                print("ChatsViewModel: Fetched message to me (appended): \(message.message)")
                             } else {
-                                DispatchQueue.main.async {
-                                    self?.matchMessages[fromID] = [message]
-                                }
-                                print("ChatsViewModel: Fetched message to me: \(message.message)")
+                                self?.matchMessages[fromID] = [message]
+                                
+                                print("MatchMessages: \(self?.matchMessages[fromID])")
+                                print("ChatsViewModel: Fetched message to me (created): \(message.message)")
                             }
                         }
                     }

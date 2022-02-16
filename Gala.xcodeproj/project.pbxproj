@@ -92,7 +92,6 @@
 		FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745A2640A3B200D5D5CB /* ImageCropper.swift */; };
 		FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */; };
 		FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745E2640A3F700D5D5CB /* BaseView.swift */; };
-		FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774602640A41300D5D5CB /* BaseView2.swift */; };
 		FA8CE4342717901900BE8BB4 /* OldCameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4332717901900BE8BB4 /* OldCameraViewModel.swift */; };
 		FA8CE4362717B45500BE8BB4 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4352717B45500BE8BB4 /* PhotoCaptureProcessor.swift */; };
 		FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */; };
@@ -220,7 +219,6 @@
 		FA87745A2640A3B200D5D5CB /* ImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropper.swift; sourceTree = "<group>"; };
 		FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
 		FA87745E2640A3F700D5D5CB /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
-		FA8774602640A41300D5D5CB /* BaseView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView2.swift; sourceTree = "<group>"; };
 		FA8CE4332717901900BE8BB4 /* OldCameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldCameraViewModel.swift; sourceTree = "<group>"; };
 		FA8CE4352717B45500BE8BB4 /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
@@ -626,7 +624,6 @@
 				FA87745A2640A3B200D5D5CB /* ImageCropper.swift */,
 				FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */,
 				FA87745E2640A3F700D5D5CB /* BaseView.swift */,
-				FA8774602640A41300D5D5CB /* BaseView2.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
 			);
 			path = ServiceViews;
@@ -959,7 +956,6 @@
 				FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
 				FABAABE82787F49A00154363 /* AddToStoryButton.swift in Sources */,
-				FA8774612640A41300D5D5CB /* BaseView2.swift in Sources */,
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,

@@ -119,7 +119,7 @@ struct ConvoPreview: View {
                                             } else {
                                                 //i recieved a message
                                                 if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened {
-                                                    Image(systemName: "message")
+                                                    Image(systemName: "bubble.left")
                                                         .font(.system(size: 12, weight: .regular, design: .rounded))
                                                         .foregroundColor(.buttonPrimary)
                                                     Text("Opened")
@@ -130,7 +130,7 @@ struct ConvoPreview: View {
                                                     Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
                                                         .font(.system(size: 13, weight: .regular, design: .rounded))
                                                 } else {
-                                                    Image(systemName: "message.fill")
+                                                    Image(systemName: "bubble.left.fill")
                                                         .font(.system(size: 12, weight: .regular, design: .rounded))
                                                         .foregroundColor(.buttonPrimary)
                                                     Text("New message")
