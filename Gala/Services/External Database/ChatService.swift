@@ -108,7 +108,7 @@ class ChatService {
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened)
+                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened, docID: doc.documentID)
                                 final.append(newMessage)
                             }
                         }
@@ -141,7 +141,7 @@ class ChatService {
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened)
+                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened, docID: doc.documentID)
                                 final.append(newMessage)
                             }
                         }

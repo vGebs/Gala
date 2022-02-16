@@ -14,4 +14,5 @@ struct Message: Identifiable {
     let fromID: String
     let time: Date
     var opened: Bool
+    let docID: String 
 }

@@ -14,7 +14,9 @@ class ChatViewModel: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     func sendMessage(toUID: String) {
-        if !messageText.isEmpty {
+        //make sure there is at least one character before sending
+        let trimmed = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !messageText.isEmpty && trimmed.count > 0{
             ChatService.shared.sendMessage(message: messageText, toID: toUID)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)

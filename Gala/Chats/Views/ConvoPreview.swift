@@ -21,14 +21,16 @@ struct ConvoPreview: View {
     @Binding var timeMatchedBinding: Date?
     
     @State var showProfile = false
+    @ObservedObject var chatsViewModel: ChatsViewModel
     
-    init(id: String, showChat: Binding<Bool>, user: Binding<UserChat?>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatched: Date, timeMatchedBinding: Binding<Date?>){
+    init(id: String, showChat: Binding<Bool>, user: Binding<UserChat?>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatched: Date, timeMatchedBinding: Binding<Date?>, chatsViewModel: ChatsViewModel){
         self.user = SmallUserViewModel(uid: id)
         self._showChat = showChat
         self._userChat = user
         self._messages = messages
         self.timeMatched = timeMatched
         self._timeMatchedBinding = timeMatchedBinding
+        self.chatsViewModel = chatsViewModel
     }
     
     var body: some View {
@@ -66,6 +68,13 @@ struct ConvoPreview: View {
                         userChat = UserChat(name: user.profile!.name, uid: user.profile!.uid, location: user.city, bday: user.profile!.age, profileImg: user.img!)
                         timeMatchedBinding = timeMatched
                         showChat = true
+                        
+                        //open message
+                        // if the last message is not already opened and was not sent by me
+                        if !messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened && (messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+                            //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
+                            chatsViewModel.openMessage(message: messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1])
+                        }
                     }){
                         VStack {
                             HStack {
@@ -94,6 +103,7 @@ struct ConvoPreview: View {
                                             if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].fromID == AuthService.shared.currentUser?.uid {
                                                 
                                                 if messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened {
+                                                    
                                                     Image(systemName: "arrowtriangle.right")
                                                         .font(.system(size: 12, weight: .regular, design: .rounded))
                                                         .foregroundColor(.buttonPrimary)
@@ -104,6 +114,7 @@ struct ConvoPreview: View {
                                                         .font(.system(size: 5, weight: .regular, design: .rounded))
                                                     Text(secondsToHoursMinutesSeconds_(Int(messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].time.timeIntervalSinceNow)))
                                                         .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    
                                                 } else {
                                                     Image(systemName: "arrowtriangle.right.fill")
                                                         .font(.system(size: 12, weight: .regular, design: .rounded))

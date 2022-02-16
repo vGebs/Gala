@@ -54,7 +54,7 @@ struct ChatsView: View {
                             .frame(height: screenHeight * 0.015)
                         
                         ForEach(viewModel.matches){ match in
-                            ConvoPreview(id: match.matchedUID, showChat: $showChat, user: $userChat, messages: $viewModel.matchMessages, timeMatched: match.timeMatched, timeMatchedBinding: $timeMatched)
+                            ConvoPreview(id: match.matchedUID, showChat: $showChat, user: $userChat, messages: $viewModel.matchMessages, timeMatched: match.timeMatched, timeMatchedBinding: $timeMatched, chatsViewModel: viewModel)
                                 .padding(.horizontal)
                         }
                     }

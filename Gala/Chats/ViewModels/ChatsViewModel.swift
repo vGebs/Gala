@@ -67,8 +67,11 @@ class ChatsViewModel: ObservableObject {
     }
     
     private func observeChats() {
+        print("Starting to get chats from me")
         observeChatsFromMe()
+        print("Starting to get chats to me")
         observeChatsToMe()
+        print("Finished getting all chats")
     }
     
     private func observeChatsFromMe() {
@@ -93,17 +96,37 @@ class ChatsViewModel: ObservableObject {
                         let timestamp = data["timestamp"] as? Timestamp
                         
                         if let date = timestamp?.dateValue() {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
                             if let _ = self?.matchMessages[toID] {
-                                self?.matchMessages[toID]?.append(message)
+                                let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                 
-                                print("MatchMessages: \(self?.matchMessages[toID])")
+                                self?.matchMessages[toID]?.insert(message, at: insertIndex!)
                                 print("ChatsViewModel: Fetched message from me (appended): \(message.message)")
                             } else {
                                 self?.matchMessages[toID] = [message]
-                                
-                                print("MatchMessages: \(self?.matchMessages[toID])")
                                 print("ChatsViewModel: Fetched message from me (created): \(message.message)")
+                            }
+                        }
+                    }
+                    
+                    if change.type == .modified {
+                        let data = change.document.data()
+                                                
+                        let fromID = data["fromID"] as? String ?? ""
+                        let toID = data["toID"] as? String ?? ""
+                        let message = data["message"] as? String ?? ""
+                        let opened = data["opened"] as? Bool ?? false
+                        let timestamp = data["timestamp"] as? Timestamp
+                        
+                        if let date = timestamp?.dateValue() {
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
+                            
+                            if let _ = self?.matchMessages[toID] {
+                                for i in 0..<(self?.matchMessages[toID]!.count)! {
+                                    if self?.matchMessages[toID]![i].docID == change.document.documentID {
+                                        self?.matchMessages[toID]![i] = message
+                                    }
+                                }
                             }
                         }
                     }
@@ -133,21 +156,55 @@ class ChatsViewModel: ObservableObject {
                         let timestamp = data["timestamp"] as? Timestamp
                         
                         if let date = timestamp?.dateValue() {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
                             if let _ = self?.matchMessages[fromID] {
-                                self?.matchMessages[fromID]?.append(message)
+                                let insertIndex = self?.matchMessages[fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                 
-                                print("MatchMessages: \(self?.matchMessages[fromID])")
+                                self?.matchMessages[fromID]?.insert(message, at: insertIndex!)
                                 print("ChatsViewModel: Fetched message to me (appended): \(message.message)")
                             } else {
                                 self?.matchMessages[fromID] = [message]
-                                
-                                print("MatchMessages: \(self?.matchMessages[fromID])")
                                 print("ChatsViewModel: Fetched message to me (created): \(message.message)")
                             }
                         }
                     }
+                    
+                    if change.type == .modified {
+                        
+                        let data = change.document.data()
+                                                
+                        let fromID = data["fromID"] as? String ?? ""
+                        let toID = data["toID"] as? String ?? ""
+                        let message = data["message"] as? String ?? ""
+                        let opened = data["opened"] as? Bool ?? false
+                        let timestamp = data["timestamp"] as? Timestamp
+                        
+                        if let date = timestamp?.dateValue() {
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
+                            
+                            if let _ = self?.matchMessages[fromID] {
+                                for i in 0..<(self?.matchMessages[fromID]!.count)! {
+                                    if self?.matchMessages[fromID]![i].docID == change.document.documentID {
+                                        self?.matchMessages[fromID]![i] = message
+                                    }
+                                }
+                            }
+                        }
+                    }
                 })
+            }
+    }
+    
+    func openMessage(message: Message) {
+        //we want to open the last message only since we are only checking the value of the most recent message
+        db.collection("Messages").document(message.docID)
+            .updateData(["opened": true]) { err in
+                if let e = err {
+                    print("ChatsViewModel: Failed to update document")
+                    print("ChatsViewModel-err: \(e)")
+                } else {
+                    print("ChatsViewModel: Successfully updated document")
+                }
             }
     }
 }
