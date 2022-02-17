@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import FirebaseFirestore
 import OrderedCollections
+import UIKit
 
 class ChatsViewModel: ObservableObject {
     
@@ -16,30 +17,59 @@ class ChatsViewModel: ObservableObject {
     
     private let db = Firestore.firestore()
     
-    @Published private(set) var matches: [Match] = []
+    @Published private(set) var matches: [MatchedUserCore] = []
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
-        observeMatches()
+        observeMatches() { [weak self] matches in
+            for match in matches {
+                Publishers.Zip(
+                    UserCoreService.shared.getUserCore(uid: match.matchedUID),
+                    ProfileImageService.shared.getProfileImage(id: match.matchedUID, index: "0")
+                )
+                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ChatsViewModel: Failed to fetch uc and img")
+                            print("ChatsViewModel-err: \(e)")
+                        case .finished:
+                            print("ChatsViewModel: Successfully fetched uc and img")
+                        }
+                    } receiveValue: { uc, img in
+                        if let uc = uc {
+                            if let img = img {
+                                let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
+                                self?.matches.append(newUCimg)
+                            } else {
+                                let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
+                                self?.matches.append(newUCimg)
+                            }
+                        }
+                    }.store(in: &self!.cancellables)
+            }
+        }
+        
         observeChats()
     }
     
-    private func observeMatches()  {
+    private func observeMatches(completion: @escaping ([Match]) -> Void) {
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
-            .addSnapshotListener { [weak self] documentSnapshot, error in
+            .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
                     print("Error fetching document: \(error!)")
                     return
                 }
                 
+                var final: [Match] = []
+
                 documentSnapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         let data = change.document.data()
                         print("data chatsViewModel: \(data)")
-                        var final: [Match] = []
                         let timestamp = data["time"] as? Timestamp
-                        
                         
                         if let matchDate = timestamp?.dateValue(){
                             if let uids = data["matched"] as? [String] {
@@ -54,10 +84,11 @@ class ChatsViewModel: ObservableObject {
                                 }
                             }
                         }
-                        
-                        self?.matches = final
                     }
                 })
+                
+                //self?.matches = final
+                completion(final)
             }
     }
     

@@ -40,6 +40,8 @@ struct UserCore: Codable {
     }
 }
 
+
+
 struct InComingUserCore {
     var userCore: UserCore
     var liked: Bool

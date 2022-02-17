@@ -6,9 +6,17 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Match: Identifiable {
     let id = UUID()
     let matchedUID: String
     let timeMatched: Date
+}
+
+struct MatchedUserCore: Identifiable {
+    let id = UUID()
+    let uc: UserCore
+    var profileImg: UIImage
+    var timeMatched: Date
 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct UserChat {
     let name: String
     let uid: String 
-    let location: String
+    //let location: String
     let bday: Date
     let profileImg: UIImage
 }

@@ -65,7 +65,7 @@ struct ChatView: View {
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundColor(.primary)
                     
-                    Text("\(userChat!.location)")
+                    Text("Poop Town")
                         .font(.system(size: 13, weight: .regular, design: .rounded))
                         .foregroundColor(.white)
                 }
