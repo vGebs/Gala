@@ -21,11 +21,6 @@ class ChatsViewModel: ObservableObject {
     
     init() {
         observeMatches()
-        
-        //we need to fetch all messages as well to see when the last message was sent/ recieved and whether it was opened or not.
-        //we can store the match messages in a dictionary.
-        //  key = uid of matched user
-        //  value = array of messages
         observeChats()
     }
     
@@ -67,11 +62,8 @@ class ChatsViewModel: ObservableObject {
     }
     
     private func observeChats() {
-        print("Starting to get chats from me")
         observeChatsFromMe()
-        print("Starting to get chats to me")
         observeChatsToMe()
-        print("Finished getting all chats")
     }
     
     private func observeChatsFromMe() {

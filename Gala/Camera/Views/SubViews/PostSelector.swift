@@ -18,7 +18,7 @@ struct PostSelector: View {
                 .foregroundColor(.buttonPrimary)
             
             HStack{
-                Image(systemName: "wand.and.stars.inverse")
+                Image(systemName: text == "Add a private story" ? "shareplay.slash" : "shareplay")
                     .font(.system(size: 18, weight: .regular, design: .rounded))
                     .foregroundColor(.primary)
                     .padding(.leading)
@@ -33,7 +33,17 @@ struct PostSelector: View {
                 Image(systemName: selected == text ? "checkmark.square" : "square")
                     .font(.system(size: 18, weight: .regular, design: .rounded))
                     .foregroundColor(.buttonPrimary)
-                    .padding(.trailing)
+                    .padding(text == "Add a private story" ? .leading : .trailing)
+                
+                if text == "Add a private story" {
+                    Menu {
+                        Text("Private stories will only be seen by your matches")
+                    } label: {
+                        Label("", systemImage: "exclamationmark.circle")
+                            .foregroundColor(.buttonPrimary)
+                    }
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                }
             }
         }
         .frame(width: screenWidth * 0.9, height: screenHeight / 18)
