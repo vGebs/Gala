@@ -25,12 +25,14 @@ struct MatchStoriesView: View {
                 .frame(width: screenWidth * 0.95, height: screenHeight * 0.02)
                 
                 ScrollView(.horizontal){
-                    ForEach(viewModel.matchedStories){ story in //stories, id: \.id
-                        MatchedStoryView(story: story, viewModel: MatchedStoryViewModel(story: story))
-                            .padding(.top, 2)
+                    HStack{
+                        ForEach(viewModel.matchedStories){ story in //stories, id: \.id
+                            MatchedStoryView(story: story, viewModel: MatchedStoryViewModel(story: story))
+                                .padding(.top, 2)
+                        }
                     }
                 }
-                .frame(width: screenWidth * 0.95, height: screenHeight * 0.13)
+                .frame(width: screenWidth * 0.95, height: screenHeight * 0.13)                
             }
         }
     }

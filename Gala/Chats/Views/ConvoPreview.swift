@@ -52,7 +52,7 @@ struct ConvoPreview: View {
                             .padding(.trailing)
                         
                     } else {
-                        Image(uiImage: ucMatch.profileImg)
+                        Image(uiImage: ucMatch.profileImg!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
@@ -67,16 +67,22 @@ struct ConvoPreview: View {
                 Spacer()
                 HStack {
                     Button(action: {
-
-                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: ucMatch.profileImg)
+                        if let img = ucMatch.profileImg {
+                            userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                        } else {
+                            userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                        }
+                        
                         timeMatchedBinding = timeMatched
                         showChat = true
                         
                         //open message
                         // if the last message is not already opened and was not sent by me
-                        if !messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
-                            //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
-                            chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
+                        if let _ = messages[ucMatch.uc.uid]{
+                            if !messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+                                //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
+                                chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
+                            }
                         }
                     }){
                         VStack {

@@ -50,8 +50,3 @@ struct PostSelector: View {
     }
 }
 
-//struct PostSelector_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PostSelector(selected: .constant("Just another manic monday.."), text: "Just another manic monday..")
-//    }
-//}

@@ -101,12 +101,21 @@ struct SendView: View {
                     .foregroundColor(.white)
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                 Spacer()
-                
-                ForEach(chatsViewModel.matches) { match in
-                    //Show matches that we can send to
-                }
             }
             .frame(width: screenWidth * 0.9)
+            
+            ForEach(chatsViewModel.matches) { match in
+                //Show matches that we can send to
+                SendToSelector(user: match, selected: $viewModel.selected)
+                    .onTapGesture {
+                        if viewModel.selected == match.uc.uid {
+                            viewModel.selected = ""
+                        } else {
+                            viewModel.selected = match.uc.uid
+                        }
+                    }
+            }
+            
             Spacer()
         }
     }

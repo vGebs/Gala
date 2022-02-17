@@ -12,5 +12,5 @@ struct UserChat {
     let uid: String 
     //let location: String
     let bday: Date
-    let profileImg: UIImage
+    let profileImg: UIImage?
 }

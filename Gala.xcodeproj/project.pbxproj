@@ -14,6 +14,7 @@
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
 		FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
+		FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CB27BEF23D000C131A /* SendToSelector.swift */; };
 		FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
@@ -58,7 +59,6 @@
 		FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */; };
 		FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B2F26E8073300A6653C /* StoryContentService.swift */; };
 		FA7E3B3226E808CF00A6653C /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3126E808CF00A6653C /* Story.swift */; };
-		FA7E3B3626EACF2200A6653C /* SendViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3526EACF2200A6653C /* SendViewTest.swift */; };
 		FA7E3B3826EAD18D00A6653C /* SendViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7E3B3726EAD18D00A6653C /* SendViewModelTest.swift */; };
 		FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */; };
 		FA8773E52640979E00D5D5CB /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = FA8773E42640979E00D5D5CB /* iPhoneNumberField */; };
@@ -75,7 +75,6 @@
 		FA87741826409E0700D5D5CB /* ConvoPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741726409E0700D5D5CB /* ConvoPreview.swift */; };
 		FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741926409E3A00D5D5CB /* CameraPreview.swift */; };
 		FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741B26409E5700D5D5CB /* CameraView.swift */; };
-		FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */; };
 		FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87741F26409E9000D5D5CB /* PicTakenView.swift */; };
 		FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774332640A03100D5D5CB /* ShowcaseView.swift */; };
 		FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774362640A07900D5D5CB /* DateExtension.swift */; };
@@ -144,6 +143,7 @@
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
 		FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerTest.swift; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		FA2E23CB27BEF23D000C131A /* SendToSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToSelector.swift; sourceTree = "<group>"; };
 		FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
@@ -188,7 +188,6 @@
 		FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMetaService.swift; sourceTree = "<group>"; };
 		FA7E3B2F26E8073300A6653C /* StoryContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryContentService.swift; sourceTree = "<group>"; };
 		FA7E3B3126E808CF00A6653C /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
-		FA7E3B3526EACF2200A6653C /* SendViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewTest.swift; sourceTree = "<group>"; };
 		FA7E3B3726EAD18D00A6653C /* SendViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewModelTest.swift; sourceTree = "<group>"; };
 		FA84874A268E5EAD009CA4C0 /* SignInSignUpValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSignUpValidation.swift; sourceTree = "<group>"; };
 		FA8773EF26409A4500D5D5CB /* NavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBar.swift; sourceTree = "<group>"; };
@@ -203,7 +202,6 @@
 		FA87741726409E0700D5D5CB /* ConvoPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPreview.swift; sourceTree = "<group>"; };
 		FA87741926409E3A00D5D5CB /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		FA87741B26409E5700D5D5CB /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableCameraButton.swift; sourceTree = "<group>"; };
 		FA87741F26409E9000D5D5CB /* PicTakenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicTakenView.swift; sourceTree = "<group>"; };
 		FA8774332640A03100D5D5CB /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
 		FA8774362640A07900D5D5CB /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -329,9 +327,8 @@
 				FA6A33F0278D7B010087127B /* CameraBtn.swift */,
 				FA87741F26409E9000D5D5CB /* PicTakenView.swift */,
 				FA7BAD4426FC48CD002F25E0 /* SendView.swift */,
+				FA2E23CB27BEF23D000C131A /* SendToSelector.swift */,
 				FA7BAD4726FD0FAD002F25E0 /* PostSelector.swift */,
-				FA7E3B3526EACF2200A6653C /* SendViewTest.swift */,
-				FA87741D26409E7600D5D5CB /* DraggableCameraButton.swift */,
 				FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */,
 				FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */,
 			);
@@ -900,6 +897,7 @@
 				FAA0184627ACB6F700A03D08 /* LikesContainer.swift in Sources */,
 				FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */,
 				FADC1164269813EC0070465C /* UserCore.swift in Sources */,
+				FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */,
 				FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */,
@@ -917,7 +915,6 @@
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */,
-				FA87741E26409E7600D5D5CB /* DraggableCameraButton.swift in Sources */,
 				FAA88B1D26492928007F042D /* SwipeView.swift in Sources */,
 				FA6BE5FE27B5FC1A0058B78C /* Message.swift in Sources */,
 				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
@@ -1001,7 +998,6 @@
 				FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */,
 				FA87744F2640A20F00D5D5CB /* AuthService.swift in Sources */,
 				FAD73C7B27A35102007221B0 /* StoryCarousel.swift in Sources */,
-				FA7E3B3626EACF2200A6653C /* SendViewTest.swift in Sources */,
 				FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */,
 				FA6BE60427B7446B0058B78C /* Match.swift in Sources */,
 			);

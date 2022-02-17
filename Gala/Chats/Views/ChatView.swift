@@ -46,7 +46,7 @@ struct ChatView: View {
             }) {
                 ZStack{
                     if userChat?.profileImg != nil {
-                        Image(uiImage: userChat!.profileImg)
+                        Image(uiImage: userChat!.profileImg!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
@@ -64,10 +64,17 @@ struct ChatView: View {
                     Text("\(userChat!.name), \(userChat!.bday.ageString())")
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundColor(.primary)
+                    HStack{
+                        Image(systemName: "mappin.and.ellipse")
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                            .foregroundColor(.buttonPrimary)
+                        
+                        Text("Poop Town")
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .foregroundColor(.white)
+                        Spacer()
+                    }
                     
-                    Text("Poop Town")
-                        .font(.system(size: 13, weight: .regular, design: .rounded))
-                        .foregroundColor(.white)
                 }
             }
             
