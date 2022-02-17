@@ -18,8 +18,8 @@ class ChatService {
     private init() {}
     
     func sendMessage(message: String, toID: String) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            self.db.collection("Messages")
+        return Future<Void, Error> { [weak self] promise in
+            self!.db.collection("Messages")
                 .addDocument(data: [
                     "message": message,
                     "toID": toID,
@@ -119,8 +119,8 @@ class ChatService {
     }
     
     private func getMessagesFromMe(toUserID: String) -> AnyPublisher<[Message], Error> {
-        return Future<[Message], Error> { promise in
-            self.db.collection("Messages")
+        return Future<[Message], Error> {[weak self] promise in
+            self!.db.collection("Messages")
                 .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
                 .whereField("toID", isEqualTo: toUserID)
                 .order(by: "timestamp")
@@ -148,12 +148,6 @@ class ChatService {
                     }
                     promise(.success(final))
                 }
-        }.eraseToAnyPublisher()
-    }
-    
-    func sendSnap(img: UIImage, toID: String) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            
         }.eraseToAnyPublisher()
     }
 }

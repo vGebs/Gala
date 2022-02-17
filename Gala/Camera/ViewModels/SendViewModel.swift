@@ -10,14 +10,17 @@ import Combine
 
 protocol SendViewModelProtocol {
     var vibes: [String] { get }
+
     
-    func postStory(pic: UIImage)
-    func send()
+    func send(pic: UIImage)
+    func postStory(_ pic: UIImage)
+    func sendPic(to: String, _ pic: UIImage)
 }
 
 class SendViewModel: ObservableObject, SendViewModelProtocol {
     
-    @Published var selected: String = ""
+    @Published var selectedMatch: String = ""
+    @Published var selectedVibe: String = ""
     @Published var currentDay: String?
     @Published var currentPeriod: String?
     
@@ -70,9 +73,35 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
         return ""
     }
     
-    func postStory(pic: UIImage) {
-        print("Selected: \(self.selected)")
-        StoryService.shared.postStory(postID_date: Date(), vibe: selected, asset: pic)
+    func send(pic: UIImage) {
+        if selectedVibe != "" {
+            //Post Story
+            postStory(pic)
+        } else if selectedMatch != "" {
+            //sendPic to
+            sendPic(to: selectedMatch, pic)
+        }
+    }
+    
+    internal func sendPic(to: String, _ pic: UIImage) {
+        SnapService.shared.sendSnap(to: to, img: pic)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("SendViewModel: Failed to send snap")
+                    print("SendViewModel-err: \(e)")
+                case .finished:
+                    print("SendViewModel: Successfully sent snap")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+
+    internal func postStory(_ pic: UIImage) {
+        print("Selected: \(self.selectedVibe)")
+        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: pic)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -85,9 +114,5 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
-    }
-    
-    func send() {
-        
     }
 }

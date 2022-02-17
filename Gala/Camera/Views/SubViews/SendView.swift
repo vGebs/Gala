@@ -34,15 +34,16 @@ struct SendView: View {
             VStack{
                 Spacer()
                 Button(action: {
-                    self.viewModel.postStory(pic: camera.image!)
+                    self.viewModel.send(pic: camera.image!)
                     self.camera.deleteAsset()
-                    self.viewModel.selected = ""
+                    self.viewModel.selectedVibe = ""
+                    self.viewModel.selectedMatch = ""
                     self.isPresented = false
                 }){
                     postButton
                 }
-                .disabled(viewModel.selected == "")
-                .opacity(viewModel.selected != "" ? 1 : 0.4)
+                .disabled(viewModel.selectedVibe == "" && viewModel.selectedMatch == "")
+                .opacity(viewModel.selectedVibe != "" || viewModel.selectedMatch != "" ? 1 : 0.4)
             }
         }
     }
@@ -67,24 +68,26 @@ struct SendView: View {
             .frame(width: screenWidth * 0.9)
             
             ForEach(0..<viewModel.vibes.count, id: \.self){ i in
-                PostSelector(selected: viewModel.selected, text: viewModel.vibes[i])
+                PostSelector(selected: viewModel.selectedVibe, text: viewModel.vibes[i])
                     .frame(width: screenWidth * 0.9)
                     .onTapGesture {
-                        if viewModel.selected == viewModel.vibes[i] {
-                            viewModel.selected = ""
+                        if viewModel.selectedVibe == viewModel.vibes[i] {
+                            viewModel.selectedVibe = ""
                         } else {
-                            viewModel.selected = viewModel.vibes[i]
+                            viewModel.selectedVibe = viewModel.vibes[i]
+                            viewModel.selectedMatch = ""
                         }
                     }
             }
             
-            PostSelector(selected: viewModel.selected, text: "Add a private story")
+            PostSelector(selected: viewModel.selectedVibe, text: "Add a private story")
                 .frame(width: screenWidth * 0.9)
                 .onTapGesture {
-                    if viewModel.selected == "Add a private story" {
-                        viewModel.selected = ""
+                    if viewModel.selectedVibe == "Add a private story" {
+                        viewModel.selectedVibe = ""
                     } else {
-                        viewModel.selected = "Add a private story"
+                        viewModel.selectedVibe = "Add a private story"
+                        viewModel.selectedMatch = ""
                     }
                 }
             
@@ -106,12 +109,13 @@ struct SendView: View {
             
             ForEach(chatsViewModel.matches) { match in
                 //Show matches that we can send to
-                SendToSelector(user: match, selected: $viewModel.selected)
+                SendToSelector(user: match, selected: $viewModel.selectedMatch)
                     .onTapGesture {
-                        if viewModel.selected == match.uc.uid {
-                            viewModel.selected = ""
+                        if viewModel.selectedMatch == match.uc.uid {
+                            viewModel.selectedMatch = ""
                         } else {
-                            viewModel.selected = match.uc.uid
+                            viewModel.selectedMatch = match.uc.uid
+                            viewModel.selectedVibe = ""
                         }
                     }
             }

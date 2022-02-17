@@ -60,12 +60,12 @@ extension ProfileService {
     
     private func createProfile_(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
         //Call profileText & addImages
-        return Future<Void,Error> { promise in
+        return Future<Void,Error> { [weak self] promise in
             Publishers.Zip4(
-                self.addUserCore(profile),
-                self.addUserAbout(profile),
-                self.addRecent(profile),
-                self.addImages(allImages)
+                self!.addUserCore(profile),
+                self!.addUserAbout(profile),
+                self!.addRecent(profile),
+                self!.addImages(allImages)
             )
             .sink { completion in
                 switch completion {
@@ -76,7 +76,7 @@ extension ProfileService {
                     promise(.success(()))
                 }
             } receiveValue: { _ in }
-            .store(in: &self.cancellables)
+            .store(in: &self!.cancellables)
         }
         .eraseToAnyPublisher()
     }
@@ -96,8 +96,8 @@ extension ProfileService {
             latitude: profile.latitude
         )
         
-        return Future<Void, Error> { promise in
-            self.coreService.addNewUser(core: uCore)
+        return Future<Void, Error> { [weak self] promise in
+            self!.coreService.addNewUser(core: uCore)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -108,13 +108,13 @@ extension ProfileService {
                         promise(.success(()))
                     }
                 } receiveValue: { _ in }
-                .store(in: &self.cancellables)
+                .store(in: &self!.cancellables)
         }.eraseToAnyPublisher()
     }
     
     private func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
-        return Future<Void, Error> { promise in
-            self.aboutService.addUserAbout(profile)
+        return Future<Void, Error> { [weak self] promise in
+            self!.aboutService.addUserAbout(profile)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink{ completion in
                     switch completion{
@@ -126,7 +126,7 @@ extension ProfileService {
                         promise(.success(()))
                     }
                 } receiveValue: { _ in }
-                .store(in: &self.cancellables)
+                .store(in: &self!.cancellables)
         }.eraseToAnyPublisher()
     }
     
@@ -144,8 +144,8 @@ extension ProfileService {
             latitude: profile.latitude
         )
         
-        return Future<Void, Error> { promise in
-            self.recentService.addNewUser(core: uCore)
+        return Future<Void, Error> { [weak self] promise in
+            self!.recentService.addNewUser(core: uCore)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -156,7 +156,7 @@ extension ProfileService {
                         promise(.success(()))
                     }
                 } receiveValue: { _ in }
-                .store(in: &self.cancellables)
+                .store(in: &self!.cancellables)
         }.eraseToAnyPublisher()
     }
     
@@ -170,11 +170,11 @@ extension ProfileService {
 extension ProfileService {
     private func getUserProfile_(_ uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
         
-        return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { promise in
+        return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { [weak self] promise in
             Publishers.Zip3(
-                self.coreService.getUserCore(uid: uid),
-                self.aboutService.getUserAbout(uid: uid),
-                self.getUserImages(uid: uid)
+                self!.coreService.getUserCore(uid: uid),
+                self!.aboutService.getUserAbout(uid: uid),
+                self!.getUserImages(uid: uid)
             ).sink { completion in
                 switch completion {
                 case .failure(let error):
@@ -185,10 +185,11 @@ extension ProfileService {
             } receiveValue: { core, about, imgs in
                 promise(.success((core, about, imgs)))
             }
-            .store(in: &self.cancellables)
+            .store(in: &self!.cancellables)
         }.eraseToAnyPublisher()
     }
     
+    //Because images are not coming back in order, what we can do is return an object with the index as well as the img. this can be done inside the 'ProfileImageService.shared.getProfileImage(id: uid, index: String(i))' function
     private func getUserImages(uid: String) -> AnyPublisher<[ImageModel]?, Error> {
         return Future<[ImageModel]?, Error> { promise in
             var profileImgs: [ImageModel]? = nil

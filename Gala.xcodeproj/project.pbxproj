@@ -15,6 +15,7 @@
 		FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */; };
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CB27BEF23D000C131A /* SendToSelector.swift */; };
+		FA2E23CE27BF0D0D000C131A /* SnapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CD27BF0D0D000C131A /* SnapService.swift */; };
 		FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
@@ -144,6 +145,7 @@
 		FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerTest.swift; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA2E23CB27BEF23D000C131A /* SendToSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToSelector.swift; sourceTree = "<group>"; };
+		FA2E23CD27BF0D0D000C131A /* SnapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService.swift; sourceTree = "<group>"; };
 		FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
 				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
 				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
+				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
 			);
 			path = "Profile Related";
 			sourceTree = "<group>";
@@ -938,6 +941,7 @@
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
 				FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */,
 				FAD73C7827A0ECF1007221B0 /* StoryViewModel.swift in Sources */,
+				FA2E23CE27BF0D0D000C131A /* SnapService.swift in Sources */,
 				FADC11622698129D0070465C /* UserCoreService.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,
 				FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */,
