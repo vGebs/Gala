@@ -16,6 +16,7 @@
 		FA2D6EDE2643604000551EE3 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ImageService.swift */; };
 		FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CB27BEF23D000C131A /* SendToSelector.swift */; };
 		FA2E23CE27BF0D0D000C131A /* SnapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CD27BF0D0D000C131A /* SnapService.swift */; };
+		FA2E23D027BF58AA000C131A /* Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CF27BF58AA000C131A /* Snap.swift */; };
 		FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
@@ -146,6 +147,7 @@
 		FA2D6EDD2643604000551EE3 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		FA2E23CB27BEF23D000C131A /* SendToSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToSelector.swift; sourceTree = "<group>"; };
 		FA2E23CD27BF0D0D000C131A /* SnapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService.swift; sourceTree = "<group>"; };
+		FA2E23CF27BF58AA000C131A /* Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snap.swift; sourceTree = "<group>"; };
 		FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
@@ -379,7 +381,6 @@
 				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
 				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
 				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
-				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
 			);
 			path = "Profile Related";
 			sourceTree = "<group>";
@@ -582,6 +583,7 @@
 				FA6BE5FA27B5FA040058B78C /* UserChat.swift */,
 				FA6BE5FD27B5FC1A0058B78C /* Message.swift */,
 				FA6BE60327B7446B0058B78C /* Match.swift */,
+				FA2E23CF27BF58AA000C131A /* Snap.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -612,6 +614,7 @@
 				FA7E3B2326E1F28300A6653C /* LikesService.swift */,
 				FA6BE5EE27B4A5140058B78C /* MatchService.swift */,
 				FA6BE5F827B5F7E30058B78C /* ChatService.swift */,
+				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
 				FA7E3B3A26EAD74000A6653C /* Profile Related */,
 				FA7E3B3926EAD72200A6653C /* Story */,
 			);
@@ -890,6 +893,7 @@
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
 				FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
+				FA2E23D027BF58AA000C131A /* Snap.swift in Sources */,
 				FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */,
 				FA7BAD4A26FD107C002F25E0 /* SendViewModel.swift in Sources */,
 				FAD9DB1D266F024A00BC6FDA /* RecentlyJoinedView.swift in Sources */,

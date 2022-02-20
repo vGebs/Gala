@@ -10,7 +10,6 @@ import Combine
 
 protocol SendViewModelProtocol {
     var vibes: [String] { get }
-
     
     func send(pic: UIImage)
     func postStory(_ pic: UIImage)

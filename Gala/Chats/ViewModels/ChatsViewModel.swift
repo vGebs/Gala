@@ -21,6 +21,12 @@ class ChatsViewModel: ObservableObject {
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
+        observeSnaps() { snaps in
+            for snap in snaps {
+                print("Snap: \(snap)")
+            }
+        }
+        
         observeMatches() { [weak self] matches in
             for match in matches {
                 Publishers.Zip(
@@ -37,7 +43,7 @@ class ChatsViewModel: ObservableObject {
                         case .finished:
                             print("ChatsViewModel: Successfully fetched uc and img")
                         }
-                    } receiveValue: { uc, img in
+                    } receiveValue: { [weak self] uc, img in
                         if let uc = uc {
                             if let img = img {
                                 let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
@@ -54,9 +60,43 @@ class ChatsViewModel: ObservableObject {
         observeChats()
     }
     
+    private func observeSnaps(completion: @escaping ([Snap]) -> Void) {
+        db.collection("Snaps")
+            .whereField("toID", isEqualTo: String(AuthService.shared.currentUser!.uid))
+            .addSnapshotListener { documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("Error fetching document: \(error!)")
+                    return
+                }
+                
+                var final: [Snap] = []
+
+                documentSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    
+                    let toID = data["toID"] as? String ?? ""
+                    let fromID = data["fromID"] as? String ?? ""
+                    let opened = data["opened"] as? Bool ?? false
+                    let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
+
+                    if change.type == .added {
+                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
+                            final.append(newSnap)
+                        }
+                    } else if change.type == .modified {
+                        
+                    }
+                })
+                
+                completion(final)
+            }
+    }
+    
     private func observeMatches(completion: @escaping ([Match]) -> Void) {
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
+            .order(by: "time")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
                     print("Error fetching document: \(error!)")
@@ -68,7 +108,6 @@ class ChatsViewModel: ObservableObject {
                 documentSnapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         let data = change.document.data()
-                        print("data chatsViewModel: \(data)")
                         let timestamp = data["time"] as? Timestamp
                         
                         if let matchDate = timestamp?.dateValue(){
@@ -109,38 +148,30 @@ class ChatsViewModel: ObservableObject {
                 }
                 
                 documentSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                                            
+                    let fromID = data["fromID"] as? String ?? ""
+                    let toID = data["toID"] as? String ?? ""
+                    let message = data["message"] as? String ?? ""
+                    let opened = data["opened"] as? Bool ?? false
+                    let timestamp = data["timestamp"] as? Timestamp
+                    
                     if change.type == .added {
-                        let data = change.document.data()
-                                                
-                        let fromID = data["fromID"] as? String ?? ""
-                        let toID = data["toID"] as? String ?? ""
-                        let message = data["message"] as? String ?? ""
-                        let opened = data["opened"] as? Bool ?? false
-                        let timestamp = data["timestamp"] as? Timestamp
-                        
                         if let date = timestamp?.dateValue() {
                             let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
+                            
                             if let _ = self?.matchMessages[toID] {
                                 let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                                
                                 self?.matchMessages[toID]?.insert(message, at: insertIndex!)
                                 print("ChatsViewModel: Fetched message from me (appended): \(message.message)")
+                                
                             } else {
                                 self?.matchMessages[toID] = [message]
                                 print("ChatsViewModel: Fetched message from me (created): \(message.message)")
                             }
                         }
-                    }
-                    
-                    if change.type == .modified {
-                        let data = change.document.data()
-                                                
-                        let fromID = data["fromID"] as? String ?? ""
-                        let toID = data["toID"] as? String ?? ""
-                        let message = data["message"] as? String ?? ""
-                        let opened = data["opened"] as? Bool ?? false
-                        let timestamp = data["timestamp"] as? Timestamp
                         
+                    } else if change.type == .modified {
                         if let date = timestamp?.dateValue() {
                             let message = Message(message: message, toID: toID, fromID: fromID, time: date, opened: opened, docID: change.document.documentID)
                             
