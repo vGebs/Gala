@@ -18,7 +18,7 @@ class MatchService {
     func getMatches() -> AnyPublisher<[String], Error> {
         return Future<[String], Error> { promise in
             self.db.collection("Matches")
-                .whereField("matched", arrayContains: AuthService.shared.currentUser?.uid)
+                .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("MatchService: Failed to fetch matches")
@@ -42,5 +42,39 @@ class MatchService {
                     }
                 }
         }.eraseToAnyPublisher()
+    }
+    
+    func observeMatches(completion: @escaping ([Match]) -> Void) {
+        db.collection("Matches")
+            .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
+            .order(by: "time")
+            .addSnapshotListener { documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("MatchService: Error fetching document: \(error!)")
+                    return
+                }
+                
+                var final: [Match] = []
+
+                documentSnapshot?.documentChanges.forEach({ change in
+                    if change.type == .added {
+                        let data = change.document.data()
+                        let timestamp = data["time"] as? Timestamp
+                        
+                        if let matchDate = timestamp?.dateValue(){
+                            if let uids = data["matched"] as? [String] {
+                                for uid in uids {
+                                    if uid != AuthService.shared.currentUser!.uid {
+                                        let match = Match(matchedUID: uid, timeMatched: matchDate)
+                                        final.append(match)
+                                        print("MatchService: Added new match: \(uid)")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                completion(final)
+            }
     }
 }

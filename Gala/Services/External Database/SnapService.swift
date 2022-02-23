@@ -26,6 +26,80 @@ class SnapService: SnapServiceProtocol {
 
     private init() {}
     
+    func observeSnapsToMe(completion: @escaping ([Snap], DocumentChangeType) -> Void) {
+        db.collection("Snaps")
+            .whereField("toID", isEqualTo: String(AuthService.shared.currentUser!.uid))
+            .order(by: "snapID_timestamp")
+            .addSnapshotListener { documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("Error fetching document: \(error!)")
+                    return
+                }
+                
+                var final: [Snap] = []
+                var docChange: DocumentChangeType = .added
+                
+                documentSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    
+                    let toID = data["toID"] as? String ?? ""
+                    let fromID = data["fromID"] as? String ?? ""
+                    let opened = data["opened"] as? Bool ?? false
+                    let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
+
+                    if change.type == .added {
+                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
+                            final.append(newSnap)
+                        }
+                    } else if change.type == .modified {
+                        docChange = .modified
+                    } else if change.type == .removed {
+                        docChange = .removed
+                    }
+                })
+                
+                completion(final, docChange)
+            }
+    }
+    
+    func observerSnapsfromMe(completion: @escaping ([Snap], DocumentChangeType) -> Void) {
+        db.collection("Snaps")
+            .whereField("fromID", isEqualTo: String(AuthService.shared.currentUser!.uid))
+            .order(by: "snapID_timestamp")
+            .addSnapshotListener { documentSnapshot, error in
+                guard let  _ = documentSnapshot?.documents else {
+                    print("Error fetching document: \(error!)")
+                    return
+                }
+                
+                var final: [Snap] = []
+                var documentChangeType: DocumentChangeType = .added
+                
+                documentSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    
+                    let toID = data["toID"] as? String ?? ""
+                    let fromID = data["fromID"] as? String ?? ""
+                    let opened = data["opened"] as? Bool ?? false
+                    let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
+
+                    if change.type == .added {
+                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
+                            final.append(newSnap)
+                        }
+                    } else if change.type == .modified {
+                        documentChangeType = .modified
+                    } else if change.type == .removed {
+                        documentChangeType = .removed
+                    }
+                })
+                
+                completion(final, documentChangeType)
+            }
+    }
+    
     func sendSnap(to: String, img: UIImage) -> AnyPublisher<Void, Error>{
         let date = Date()
         return Future<Void, Error> { [weak self] promise in
@@ -78,6 +152,29 @@ class SnapService: SnapServiceProtocol {
                     promise(.failure(error))
                 } else {
                     return promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func fetchSnap(snapID: Date) -> AnyPublisher<UIImage?, Error> {
+        let storageRef = storage.reference()
+        let snapFolderRef = storageRef.child("Snaps")
+        let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
+        let imgFileRef = toImgRef.child("\(snapID).jpeg")
+        
+        return Future<UIImage?, Error> { promise in
+            imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
+                if let error = error {
+                    print("SnapService: Non lethal fetching error: \(error.localizedDescription)")
+                    promise(.failure(error))
+                }
+                
+                if let data = data {
+                    let img = UIImage(data: data)
+                    promise(.success(img))
+                } else {
+                    promise(.success(nil))
                 }
             }
         }.eraseToAnyPublisher()

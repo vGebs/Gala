@@ -86,8 +86,8 @@ class ChatService {
     }
     
     private func getMessagesToMe(fromUserID: String) -> AnyPublisher<[Message], Error> {
-        return Future<[Message], Error> { promise in
-            self.db.collection("Messages")
+        return Future<[Message], Error> { [weak self] promise in
+            self?.db.collection("Messages")
                 .whereField("fromID", isEqualTo: fromUserID)
                 .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
                 .order(by: "timestamp")
@@ -120,7 +120,7 @@ class ChatService {
     
     private func getMessagesFromMe(toUserID: String) -> AnyPublisher<[Message], Error> {
         return Future<[Message], Error> {[weak self] promise in
-            self!.db.collection("Messages")
+            self?.db.collection("Messages")
                 .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
                 .whereField("toID", isEqualTo: toUserID)
                 .order(by: "timestamp")
@@ -147,6 +147,23 @@ class ChatService {
                         }
                     }
                     promise(.success(final))
+                }
+        }.eraseToAnyPublisher()
+    }
+    
+    func openMessage(message: Message) -> AnyPublisher<Void, Error>{
+        //we want to open the last message only since we are only checking the value of the most recent message
+        return Future<Void, Error> { [weak self] promise in
+            self?.db.collection("Messages").document(message.docID)
+                .updateData(["opened": true]) { err in
+                    if let e = err {
+                        print("ChatService: Failed to update document")
+                        print("ChatService-err: \(e)")
+                        promise(.failure(e))
+                    } else {
+                        print("ChatService: Successfully updated document")
+                        promise(.success(()))
+                    }
                 }
         }.eraseToAnyPublisher()
     }

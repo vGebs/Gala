@@ -18,16 +18,125 @@ class ChatsViewModel: ObservableObject {
     private let db = Firestore.firestore()
     
     @Published private(set) var matches: [MatchedUserCore] = []
+    @Published private(set) var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
-        observeSnaps() { snaps in
-            for snap in snaps {
-                print("Snap: \(snap)")
+        observeSnaps()
+        observeMatches()
+        observeChats()
+    }
+    
+    private func observeSnaps() {
+        observeSnapsToMe()
+        observeSnapsFromMe()
+    }
+    
+    private func observeSnapsToMe() {
+        SnapService.shared.observeSnapsToMe() { [weak self] snaps, docChange in
+            if docChange == .added {
+                //if the snap is newly added
+                // we want to fetch the content and then add it to the array in the correct position
+                for snap in snaps {
+                    SnapService.shared.fetchSnap(snapID: snap.snapID_timestamp)
+                        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                        .receive(on: DispatchQueue.main)
+                        .sink { completion in
+                            switch completion {
+                            case .failure(let e):
+                                print("ChatsViewModel: Failed to fetch snap with id: \(snap.snapID_timestamp)")
+                                print("ChatsViewModel-err: \(e)")
+                            case .finished:
+                                print("ChatsViewModel: Successfully fetched snap")
+                            }
+                        } receiveValue: { [weak self] img in
+                            if let i = img {
+                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, opened: snap.opened, img: i)
+                                
+                                if let _ = self?.snaps[snap.fromID] {
+                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                    
+                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                } else {
+                                    self?.snaps[snap.fromID] = [newSnap]
+                                }
+                            }
+                        }
+                        .store(in: &self!.cancellables)
+                }
+            } else if docChange == .modified {
+                //cycle through the snaps received and the snaps we have,
+                // if there is a match, replace the snap with the new one
+                for snap in snaps {
+                    if let _ = self?.snaps[snap.fromID] {
+                        for i in 0..<(self?.snaps[snap.fromID]!.count)! {
+                            if self?.snaps[snap.fromID]![i].snapID_timestamp == snap.snapID_timestamp {
+                                self?.snaps[snap.fromID]![i] = snap
+                            }
+                        }
+                    }
+                }
+            } else if docChange == .removed {
+                //cycle through the snaps received and the snaps we have,
+                // if there is a match, remove that snap
+                for snap in snaps {
+                    if let _ = self?.snaps[snap.fromID] {
+                        for i in 0..<(self?.snaps[snap.fromID]!.count)! {
+                            if self?.snaps[snap.fromID]![i].snapID_timestamp == snap.snapID_timestamp {
+                                self?.snaps[snap.fromID]!.remove(at: i)
+                            }
+                        }
+                    }
+                }
             }
         }
-        
-        observeMatches() { [weak self] matches in
+    }
+    
+    private func observeSnapsFromMe() {
+        SnapService.shared.observerSnapsfromMe { [weak self] snaps, docChange in
+            if docChange == .added {
+                // if the snap is newly added,
+                // add it in the correct position (we do not need to pull the image because it is from us.
+                for snap in snaps {
+                    if let _ = self?.snaps[snap.toID] {
+                        let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                        
+                        self?.snaps[snap.toID]?.insert(snap, at: insertIndex!)
+                    } else {
+                        self?.snaps[snap.toID] = [snap]
+                    }
+                }
+                
+            } else if docChange == .modified {
+                //cycle through the snaps received and the snaps we have,
+                // if there is a match, replace the snap with the new one
+                for snap in snaps {
+                    if let _ = self?.snaps[snap.toID] {
+                        for i in 0..<(self?.snaps[snap.toID]!.count)! {
+                            if self?.snaps[snap.toID]![i].snapID_timestamp == snap.snapID_timestamp {
+                                self?.snaps[snap.toID]![i] = snap
+                            }
+                        }
+                    }
+                }
+            } else if docChange == .removed {
+                //cycle through the snaps received and the snaps we have,
+                // if there is a match, remove that snap
+                for snap in snaps {
+                    if let _ = self?.snaps[snap.toID] {
+                        for i in 0..<(self?.snaps[snap.toID]!.count)! {
+                            if self?.snaps[snap.toID]![i].snapID_timestamp == snap.snapID_timestamp {
+                                self?.snaps[snap.toID]!.remove(at: i)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func observeMatches() {
+        MatchService.shared.observeMatches() { [weak self] matches in
             for match in matches {
                 Publishers.Zip(
                     UserCoreService.shared.getUserCore(uid: match.matchedUID),
@@ -56,79 +165,6 @@ class ChatsViewModel: ObservableObject {
                     }.store(in: &self!.cancellables)
             }
         }
-        
-        observeChats()
-    }
-    
-    private func observeSnaps(completion: @escaping ([Snap]) -> Void) {
-        db.collection("Snaps")
-            .whereField("toID", isEqualTo: String(AuthService.shared.currentUser!.uid))
-            .addSnapshotListener { documentSnapshot, error in
-                guard let  _ = documentSnapshot?.documents else {
-                    print("Error fetching document: \(error!)")
-                    return
-                }
-                
-                var final: [Snap] = []
-
-                documentSnapshot?.documentChanges.forEach({ change in
-                    let data = change.document.data()
-                    
-                    let toID = data["toID"] as? String ?? ""
-                    let fromID = data["fromID"] as? String ?? ""
-                    let opened = data["opened"] as? Bool ?? false
-                    let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
-
-                    if change.type == .added {
-                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
-                            final.append(newSnap)
-                        }
-                    } else if change.type == .modified {
-                        
-                    }
-                })
-                
-                completion(final)
-            }
-    }
-    
-    private func observeMatches(completion: @escaping ([Match]) -> Void) {
-        db.collection("Matches")
-            .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
-            .order(by: "time")
-            .addSnapshotListener { documentSnapshot, error in
-                guard let  _ = documentSnapshot?.documents else {
-                    print("Error fetching document: \(error!)")
-                    return
-                }
-                
-                var final: [Match] = []
-
-                documentSnapshot?.documentChanges.forEach({ change in
-                    if change.type == .added {
-                        let data = change.document.data()
-                        let timestamp = data["time"] as? Timestamp
-                        
-                        if let matchDate = timestamp?.dateValue(){
-                            if let uids = data["matched"] as? [String] {
-                                for uid in uids {
-                                    if uid != AuthService.shared.currentUser!.uid {
-                                        print("Matches: \(uid)")
-                                        //let temp = SmallUserViewModel(uid: uid)
-                                        let match = Match(matchedUID: uid, timeMatched: matchDate)
-                                        final.append(match)
-                                        print("ChatsViewModel: Added new match: \(uid)")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                })
-                
-                //self?.matches = final
-                completion(final)
-            }
     }
     
     private func observeChats() {
@@ -250,15 +286,18 @@ class ChatsViewModel: ObservableObject {
     }
     
     func openMessage(message: Message) {
-        //we want to open the last message only since we are only checking the value of the most recent message
-        db.collection("Messages").document(message.docID)
-            .updateData(["opened": true]) { err in
-                if let e = err {
-                    print("ChatsViewModel: Failed to update document")
+        ChatService.shared.openMessage(message: message)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to open message")
                     print("ChatsViewModel-err: \(e)")
-                } else {
-                    print("ChatsViewModel: Successfully updated document")
+                case .finished:
+                    print("ChatsViewModel: Successfully opened message")
                 }
-            }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
 }

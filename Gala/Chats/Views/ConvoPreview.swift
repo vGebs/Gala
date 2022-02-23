@@ -76,9 +76,16 @@ struct ConvoPreview: View {
                         timeMatchedBinding = timeMatched
                         showChat = true
                         
-                        //open message
-                        // if the last message is not already opened and was not sent by me
-                        if let _ = messages[ucMatch.uc.uid]{
+                        if let _ = chatsViewModel.snaps[ucMatch.uc.uid] {
+                            //open snap
+                            // if the last snap is not already opened and was not sent by me
+                            if !chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
+                                print("ConvoPreview: Opening snap")
+                            }
+                        } else if let _ = messages[ucMatch.uc.uid]{
+                            //open message
+                            // if the last message is not already opened and was not sent by me
+                            
                             if !messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
                                 //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
                                 chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
@@ -93,7 +100,7 @@ struct ConvoPreview: View {
                                 
                                 Spacer()
                             }
-                            if messages[ucMatch.uc.uid] == nil {
+                            if messages[ucMatch.uc.uid] == nil && chatsViewModel.snaps[ucMatch.uc.uid] == nil {
                                 HStack {
                                     Image(systemName: "figure.stand.line.dotted.figure.stand")
                                         .font(.system(size: 12, weight: .regular, design: .rounded))
@@ -106,58 +113,112 @@ struct ConvoPreview: View {
                                 }
                             } else {
                                 HStack {
-                                    //I sent a message
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser?.uid {
-                                        
-                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
-                                            
-                                            Image(systemName: "arrowtriangle.right")
-                                                .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                .foregroundColor(.buttonPrimary)
-                                            Text("Opened")
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                .foregroundColor(.primary)
-                                            Image(systemName: "circlebadge.fill")
-                                                .font(.system(size: 5, weight: .regular, design: .rounded))
-                                            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            
-                                        } else {
-                                            Image(systemName: "arrowtriangle.right.fill")
-                                                .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                .foregroundColor(.buttonPrimary)
-                                            Text("Sent")
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                .foregroundColor(.primary)
-                                            Image(systemName: "circlebadge.fill")
-                                                .font(.system(size: 5, weight: .regular, design: .rounded))
-                                            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                                    if chatsViewModel.snaps[ucMatch.uc.uid] != nil {
+                                        if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                            //I sent a snap
+                                            if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
+                                                Image(systemName: "arrowtriangle.right")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Snap Opened")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            } else {
+                                                Image(systemName: "arrowtriangle.right.fill")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Snap Sent")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            }
+                                        } else if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].toID == AuthService.shared.currentUser!.uid{
+                                            // i received a snap
+                                            if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
+                                                Image(systemName: "map")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Snap Opened")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            } else {
+                                                Image(systemName: "map.fill")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("New Snap")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            }
                                         }
-                                    } else {
-                                        //i recieved a message
-                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
-                                            Image(systemName: "bubble.left")
-                                                .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                .foregroundColor(.buttonPrimary)
-                                            Text("Opened")
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                .foregroundColor(.primary)
-                                            Image(systemName: "circlebadge.fill")
-                                                .font(.system(size: 5, weight: .regular, design: .rounded))
-                                            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                        } else {
-                                            Image(systemName: "bubble.left.fill")
-                                                .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                .foregroundColor(.buttonPrimary)
-                                            Text("New message")
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                .foregroundColor(.primary)
-                                            Image(systemName: "circlebadge.fill")
-                                                .font(.system(size: 5, weight: .regular, design: .rounded))
-                                            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                                    } else if messages[ucMatch.uc.uid] != nil {
+                                        //I sent a message
+                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser?.uid {
+                                            
+                                            if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
+                                                
+                                                Image(systemName: "arrowtriangle.right")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Message Opened")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                
+                                            } else {
+                                                Image(systemName: "arrowtriangle.right.fill")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Message Sent")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            }
+                                        } else if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == ucMatch.uc.uid {
+                                            //i recieved a message
+                                            if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
+                                                Image(systemName: "bubble.left")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("Opened")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            } else {
+                                                Image(systemName: "bubble.left.fill")
+                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.buttonPrimary)
+                                                Text("New message")
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                                    .foregroundColor(.primary)
+                                                Image(systemName: "circlebadge.fill")
+                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
+                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                                            }
                                         }
                                     }
                                     
