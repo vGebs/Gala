@@ -100,132 +100,101 @@ struct ConvoPreview: View {
                                 
                                 Spacer()
                             }
-                            if messages[ucMatch.uc.uid] == nil && chatsViewModel.snaps[ucMatch.uc.uid] == nil {
-                                HStack {
-                                    Image(systemName: "figure.stand.line.dotted.figure.stand")
-                                        .font(.system(size: 12, weight: .regular, design: .rounded))
-                                        .foregroundColor(.buttonPrimary)
-                                    
-                                    Text("Matched \(secondsToHoursMinutesSeconds(Int(timeMatched.timeIntervalSinceNow)))")
-                                        .font(.system(size: 13, weight: .regular, design: .rounded))
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                }
-                            } else {
-                                HStack {
-                                    if chatsViewModel.snaps[ucMatch.uc.uid] != nil {
+                            
+                            //we want to see whether or not a snap or message was sent
+                            // a snap trumps a message
+                            // priority level:
+                            //  1. Unopened snap (does not depend on date)
+                            //  2. Unopened message (does not depend  on date)
+                            //  3. most recently opened/ sent (either snap or message [does depend on date])
+                            
+                            if chatsViewModel.snaps[ucMatch.uc.uid] != nil && messages[ucMatch.uc.uid] != nil {
+                                if !chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
+                                    // show unopened snap
+                                    //check to see who its from
+                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        //its from me
+                                        unopenedSnapFromMe
+                                    } else {
+                                        //its to me
+                                        unopenedSnapToMe
+                                    }
+                                } else if !messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
+                                    //show unopened message
+                                    //check to see who its from
+                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        //its from me
+                                        unopenedMessageFromMe
+                                    } else {
+                                        //its to me
+                                        unopenedMessageToMe
+                                    }
+                                } else {
+                                    //if they're both opened find which one is newer and display the receipt
+                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp > messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time {
+                                        //show opened snap
+                                        //check to see who its from
                                         if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
-                                            //I sent a snap
-                                            if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
-                                                Image(systemName: "arrowtriangle.right")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Snap Opened")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            } else {
-                                                Image(systemName: "arrowtriangle.right.fill")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Snap Sent")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            }
-                                        } else if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].toID == AuthService.shared.currentUser!.uid{
-                                            // i received a snap
-                                            if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
-                                                Image(systemName: "map")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Snap Opened")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            } else {
-                                                Image(systemName: "map.fill")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("New Snap")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            }
+                                            // its from me
+                                            openedSnapFromMe
+                                        } else {
+                                            //its to me
+                                            openedSnapToMe
                                         }
-                                    } else if messages[ucMatch.uc.uid] != nil {
-                                        //I sent a message
-                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser?.uid {
-                                            
-                                            if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
-                                                
-                                                Image(systemName: "arrowtriangle.right")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Message Opened")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                
-                                            } else {
-                                                Image(systemName: "arrowtriangle.right.fill")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Message Sent")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            }
-                                        } else if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == ucMatch.uc.uid {
-                                            //i recieved a message
-                                            if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
-                                                Image(systemName: "bubble.left")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("Opened")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            } else {
-                                                Image(systemName: "bubble.left.fill")
-                                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.buttonPrimary)
-                                                Text("New message")
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                                    .foregroundColor(.primary)
-                                                Image(systemName: "circlebadge.fill")
-                                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                                Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                            }
+                                    } else {
+                                        //show opened message
+                                        //check to see who its from
+                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                            //its from me
+                                            openedMessageFromMe
+                                        } else {
+                                            //its to me
+                                            openedMessageToMe
                                         }
                                     }
-                                    
-                                    Spacer()
                                 }
+                            } else if chatsViewModel.snaps[ucMatch.uc.uid] != nil && messages[ucMatch.uc.uid] == nil {
+                                //there is snaps but no messages
+                                if !chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].opened {
+                                    // show unopened snap
+                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        unopenedSnapFromMe
+                                    } else {
+                                        unopenedSnapToMe
+                                    }
+                                } else {
+                                        //show opened snap
+                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        openedSnapFromMe
+                                    } else {
+                                        openedSnapToMe
+                                    }
+                                }
+                            } else if chatsViewModel.snaps[ucMatch.uc.uid] == nil && messages[ucMatch.uc.uid] != nil {
+                                // there are messages but no snaps
+                                if !messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].opened {
+                                    //show unopened message
+                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        //its from me
+                                        unopenedMessageFromMe
+                                    } else {
+                                        //its to me
+                                        unopenedMessageToMe
+                                    }
+                                } else {
+                                    //show opened message
+                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        //its from me
+                                        openedMessageFromMe
+                                    } else {
+                                        //its to me
+                                        openedMessageToMe
+                                    }
+                                }
+                            } else {
+                                //they are both nil
+                                newMatch
                             }
-                            
                         }
                     }
                     
@@ -243,6 +212,147 @@ struct ConvoPreview: View {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.uid), showProfile: $showProfile)
         })
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
+    }
+    
+    var unopenedSnapFromMe : some View {
+        HStack {
+            Image(systemName: "arrowtriangle.right.fill")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Snap Sent")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var unopenedSnapToMe : some View {
+        HStack {
+            Image(systemName: "map.fill")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("New Snap")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var openedSnapFromMe: some View {
+        HStack {
+            Image(systemName: "arrowtriangle.right")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Snap Opened")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var openedSnapToMe: some View {
+        HStack {
+            Image(systemName: "map")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Snap Opened")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var unopenedMessageFromMe: some View {
+        HStack {
+            Image(systemName: "arrowtriangle.right.fill")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Message Sent")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var unopenedMessageToMe: some View {
+        HStack {
+            Image(systemName: "bubble.left.fill")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("New message")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var openedMessageFromMe: some View {
+        HStack {
+            Image(systemName: "arrowtriangle.right")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Message Opened")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var openedMessageToMe: some View {
+        HStack {
+            Image(systemName: "bubble.left")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            Text("Opened")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+            Spacer()
+        }
+    }
+    
+    var newMatch: some View {
+        HStack {
+            Image(systemName: "figure.stand.line.dotted.figure.stand")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.buttonPrimary)
+            
+            Text("Matched \(secondsToHoursMinutesSeconds(Int(timeMatched.timeIntervalSinceNow)))")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.white)
+            Spacer()
+        }
     }
     
     func secondsToHoursMinutesSeconds_(_ seconds: Int) -> String { //(Int, Int, Int)
