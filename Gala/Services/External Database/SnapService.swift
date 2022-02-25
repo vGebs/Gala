@@ -41,19 +41,25 @@ class SnapService: SnapServiceProtocol {
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
-                    
+                    let docID = change.document.documentID
                     let toID = data["toID"] as? String ?? ""
                     let fromID = data["fromID"] as? String ?? ""
-                    let opened = data["opened"] as? Bool ?? false
+                    let opened = data["openedDate"] as? Timestamp
                     let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
-
-                    if change.type == .added {
-                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
+                    
+                    if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                        if let o = opened {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), img: nil, docID: docID)
+                            final.append(newSnap)
+                        } else {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, img: nil, docID: docID)
                             final.append(newSnap)
                         }
-                    } else if change.type == .modified {
+                    }
+                    
+                    if change.type == .modified {
                         docChange = .modified
+                        
                     } else if change.type == .removed {
                         docChange = .removed
                     }
@@ -78,19 +84,26 @@ class SnapService: SnapServiceProtocol {
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
+                    let docID = change.document.documentID
                     
                     let toID = data["toID"] as? String ?? ""
                     let fromID = data["fromID"] as? String ?? ""
-                    let opened = data["opened"] as? Bool ?? false
+                    let openedDate = data["openedDate"] as? Timestamp
                     let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
 
-                    if change.type == .added {
-                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, opened: opened, img: nil)
+                    if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                        if let o = openedDate{
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), img: nil, docID: docID)
+                            final.append(newSnap)
+                        } else {
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, img: nil, docID: docID)
                             final.append(newSnap)
                         }
-                    } else if change.type == .modified {
+                    }
+                    
+                    if change.type == .modified {
                         documentChangeType = .modified
+                        
                     } else if change.type == .removed {
                         documentChangeType = .removed
                     }
@@ -123,8 +136,7 @@ class SnapService: SnapServiceProtocol {
                 .addDocument(data: [
                     "toID": to,
                     "fromID": AuthService.shared.currentUser!.uid,
-                    "snapID_timestamp": date,
-                    "opened": false
+                    "snapID_timestamp": date
                 ]){ err in
                     if let err = err {
                         print("SnapService: Failed to send snap to id: \(to)")
@@ -177,6 +189,22 @@ class SnapService: SnapServiceProtocol {
                     promise(.success(nil))
                 }
             }
+        }.eraseToAnyPublisher()
+    }
+    
+    func openSnap(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            self?.db.collection("Snaps").document(snap.docID)
+                .updateData(["openedDate": Date()]) { err in
+                    if let e = err {
+                        print("ChatService: Failed to update document")
+                        print("ChatService-err: \(e)")
+                        promise(.failure(e))
+                    } else {
+                        print("ChatService: Successfully updated document")
+                        promise(.success(()))
+                    }
+                }
         }.eraseToAnyPublisher()
     }
 }

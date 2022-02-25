@@ -13,6 +13,7 @@ struct Snap: Identifiable {
     let fromID: String
     let toID: String
     let snapID_timestamp: Date
-    var opened: Bool
+    var openedDate: Date?
     var img: UIImage?
+    let docID: String
 }

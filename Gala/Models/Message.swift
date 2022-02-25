@@ -13,6 +13,6 @@ struct Message: Identifiable {
     let toID: String
     let fromID: String
     let time: Date
-    var opened: Bool
+    var openedDate: Date?
     let docID: String 
 }

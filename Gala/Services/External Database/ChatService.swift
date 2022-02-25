@@ -24,8 +24,7 @@ class ChatService {
                     "message": message,
                     "toID": toID,
                     "fromID": AuthService.shared.currentUser!.uid,
-                    "timestamp": Date(),
-                    "opened": false
+                    "timestamp": Date()
                 ]){ err in
                     if let err = err {
                         print("ChatService: Failed to send message to id: \(toID)")
@@ -104,12 +103,17 @@ class ChatService {
                             let message = doc.data()["message"] as? String ?? ""
                             let toID = doc.data()["fromID"] as? String ?? ""
                             let fromID = doc.data()["toID"] as? String ?? ""
-                            let opened = doc.data()["opened"] as? Bool ?? false
+                            let opened = doc.data()["openedDate"] as? Timestamp
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened, docID: doc.documentID)
-                                final.append(newMessage)
+                                if let openedFinal = opened {
+                                    let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, openedDate: openedFinal.dateValue(), docID: doc.documentID)
+                                    final.append(newMessage)
+                                } else {
+                                    let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, openedDate: nil, docID: doc.documentID)
+                                    final.append(newMessage)
+                                }
                             }
                         }
                     }
@@ -137,12 +141,17 @@ class ChatService {
                             let message = doc.data()["message"] as? String ?? ""
                             let toID = doc.data()["fromID"] as? String ?? ""
                             let fromID = doc.data()["toID"] as? String ?? ""
-                            let opened = doc.data()["opened"] as? Bool ?? false
+                            let opened = doc.data()["openedDate"] as? Timestamp
                             
                             let date = doc.data()["timestamp"] as? Timestamp
                             if let dateFinal = date?.dateValue() {
-                                let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, opened: opened, docID: doc.documentID)
-                                final.append(newMessage)
+                                if let o = opened {
+                                    let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, openedDate: o.dateValue(), docID: doc.documentID)
+                                    final.append(newMessage)
+                                } else {
+                                    let newMessage = Message(message: message, toID: toID, fromID: fromID, time: dateFinal, openedDate: nil, docID: doc.documentID)
+                                    final.append(newMessage)
+                                }
                             }
                         }
                     }
@@ -155,7 +164,7 @@ class ChatService {
         //we want to open the last message only since we are only checking the value of the most recent message
         return Future<Void, Error> { [weak self] promise in
             self?.db.collection("Messages").document(message.docID)
-                .updateData(["opened": true]) { err in
+                .updateData(["openedDate": Date()]) { err in
                     if let e = err {
                         print("ChatService: Failed to update document")
                         print("ChatService-err: \(e)")
