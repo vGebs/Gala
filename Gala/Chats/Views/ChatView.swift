@@ -15,6 +15,7 @@ struct ChatView: View {
     
     @ObservedObject var viewModel = ChatViewModel()
     @Binding var messages: OrderedDictionary<String, [Message]>
+    @Binding var snaps: OrderedDictionary<String, [Snap]>
     @Binding var timeMatched: Date?
     
     @State var showProfile = false
@@ -82,8 +83,6 @@ struct ChatView: View {
             
             Button(action: {
                 self.showChat = false
-                //self.timeMatched = nil
-                //self.userChat = nil
             }){
                 Image(systemName: "arrow.down")
             }
@@ -106,6 +105,13 @@ struct ChatView: View {
                         }
                     }
                 }
+                
+                if snaps[userChat!.uid] != nil {
+                    ForEach(snaps[userChat!.uid]!){ snap in
+                        
+                    }
+                }
+                
                 HStack { Spacer() }
                 .frame(width: screenWidth, height: screenHeight * 0.001)
             }
@@ -124,7 +130,7 @@ struct ChatView: View {
                 .font(.system(size: 14, weight: .regular, design: .rounded))
                 .foregroundColor(.buttonPrimary)
             
-            Text("Matched \(secondsToHoursMinutesSeconds(Int(timeMatched!.timeIntervalSinceNow)))")
+            Text("Matched \(secondsToHoursMinutesSeconds_(Int(timeMatched!.timeIntervalSinceNow)))")
                 .font(.system(size: 15, weight: .regular, design: .rounded))
                 .foregroundColor(.white)
         }
@@ -174,6 +180,46 @@ struct ChatView: View {
     
     private func endEditing() {
         UIApplication.shared.endEditing()
+    }
+    
+    func secondsToHoursMinutesSeconds_(_ seconds: Int) -> String { //(Int, Int, Int)
+        
+        //60 = 1 minute
+        //3600 = 1 hour
+        //86400 = 1 day
+        //604800 = 1 week
+        
+        if abs(((seconds % 3600) / 60)) == 0 {
+            let secondString = "\(abs((seconds % 3600) / 60))s ago"
+            return secondString
+        } else if abs((seconds / 3600)) == 0 {
+            let minuteString = "\(abs((seconds % 3600) / 60))min ago"
+            return minuteString
+        } else if abs(seconds / 3600) < 24{
+            if abs(seconds / 3600) == 1 {
+                let hourString = "\(abs(seconds / 3600)) hour ago"
+                return hourString
+            } else {
+                let hourString = "\(abs(seconds / 3600)) hours ago"
+                return hourString
+            }
+        } else if abs(seconds / 86400) < 7{
+            if abs(seconds / 86400) == 1 {
+                let dayString = "\(abs(seconds / 86400)) day ago"
+                return dayString
+            } else {
+                let dayString = "\(abs(seconds / 86400)) days ago"
+                return dayString
+            }
+        } else {
+            if (abs(seconds / 604800) == 1) {
+                let weekString = "\(abs(seconds / 604800)) week ago"
+                return weekString
+            } else {
+                let weekString = "\(abs(seconds / 604800)) weeks ago"
+                return weekString
+            }
+        }
     }
 }
 

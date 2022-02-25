@@ -19,6 +19,7 @@
 		FA2E23D027BF58AA000C131A /* Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CF27BF58AA000C131A /* Snap.swift */; };
 		FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */; };
 		FA43BE6926645A9F001D1368 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA43BE6826645A9F001D1368 /* LaunchView.swift */; };
+		FA50FAB327C8859200502410 /* SnapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50FAB227C8859200502410 /* SnapView.swift */; };
 		FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA579DC02654ED1D00EFA166 /* UIImage.swift */; };
 		FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */; };
 		FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58F53826C884B200AE3B7C /* LandingView.swift */; };
@@ -150,6 +151,7 @@
 		FA2E23CF27BF58AA000C131A /* Snap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snap.swift; sourceTree = "<group>"; };
 		FA38DCE02723DA33003B4C90 /* VideoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA43BE6826645A9F001D1368 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
+		FA50FAB227C8859200502410 /* SnapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapView.swift; sourceTree = "<group>"; };
 		FA579DC02654ED1D00EFA166 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FA58F53826C884B200AE3B7C /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 				FA87741726409E0700D5D5CB /* ConvoPreview.swift */,
 				FA6BE5F427B5AA630058B78C /* ChatView.swift */,
 				FA6BE60127B6015C0058B78C /* MessageView.swift */,
+				FA50FAB227C8859200502410 /* SnapView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -975,6 +978,7 @@
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
 				FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */,
 				FA7E3B3826EAD18D00A6653C /* SendViewModelTest.swift in Sources */,
+				FA50FAB327C8859200502410 /* SnapView.swift in Sources */,
 				FAFD431B26D8B0AA00C535D2 /* TestDistance.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
 				FADDED1127AE3F8200CBE7C4 /* MatchesContainer.swift in Sources */,

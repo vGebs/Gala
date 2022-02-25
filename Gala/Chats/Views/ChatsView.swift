@@ -22,7 +22,7 @@ struct ChatsView: View {
     
     @State var showChat: Bool = false
     @State var userChat: UserChat? = nil
-
+    
     @State var timeMatched: Date? = nil
     
     @AppStorage("isDarkMode") private var isDarkMode = true
@@ -100,7 +100,7 @@ struct ChatsView: View {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
         .fullScreenCover(isPresented: $showChat, content: {
-            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages, timeMatched: $timeMatched)
+            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }

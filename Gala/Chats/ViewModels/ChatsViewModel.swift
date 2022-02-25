@@ -18,7 +18,7 @@ class ChatsViewModel: ObservableObject {
     private let db = Firestore.firestore()
     
     @Published private(set) var matches: [MatchedUserCore] = []
-    @Published private(set) var snaps: OrderedDictionary<String, [Snap]> = [:]
+    @Published var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     init() {
@@ -27,7 +27,20 @@ class ChatsViewModel: ObservableObject {
         observeChats()
     }
     
+    func handleConvoPress() {
+        //for this function, we need to determine which button was pressed.
+        //If there is an unopened snap, we open the snap(s)
+        //if there is no snaps, we open the chat
+        
+    }
+    
     func openSnap(snap: Snap) {
+        //opening a snap is trickier than opening a message
+        //we need to open all snaps instead of just the most recent
+        //the snaps arr will work as a queue
+        // the first snap will always be opened first (arr[0])
+        // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
+        //
         SnapService.shared.openSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -43,6 +56,64 @@ class ChatsViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func openMessage(message: Message) {
+        ChatService.shared.openMessage(message: message)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to open message")
+                    print("ChatsViewModel-err: \(e)")
+                case .finished:
+                    print("ChatsViewModel: Successfully opened message")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+}
+
+//MARK: ----------------------------------------------------------------------------------------------------------->
+//MARK: - Observe Matches ----------------------------------------------------------------------------------------->
+//MARK: ----------------------------------------------------------------------------------------------------------->
+extension ChatsViewModel {
+    private func observeMatches() {
+        MatchService.shared.observeMatches() { [weak self] matches in
+            for match in matches {
+                Publishers.Zip(
+                    UserCoreService.shared.getUserCore(uid: match.matchedUID),
+                    ProfileImageService.shared.getProfileImage(id: match.matchedUID, index: "0")
+                )
+                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ChatsViewModel: Failed to fetch uc and img")
+                            print("ChatsViewModel-err: \(e)")
+                        case .finished:
+                            print("ChatsViewModel: Successfully fetched uc and img")
+                        }
+                    } receiveValue: { [weak self] uc, img in
+                        if let uc = uc {
+                            if let img = img {
+                                let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
+                                self?.matches.append(newUCimg)
+                            } else {
+                                let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
+                                self?.matches.append(newUCimg)
+                            }
+                        }
+                    }.store(in: &self!.cancellables)
+            }
+        }
+    }
+}
+
+//MARK: ----------------------------------------------------------------------------------------------------------->
+//MARK: - Observe Snaps ------------------------------------------------------------------------------------------->
+//MARK: ----------------------------------------------------------------------------------------------------------->
+extension ChatsViewModel {
     private func observeSnaps() {
         observeSnapsToMe()
         observeSnapsFromMe()
@@ -154,39 +225,12 @@ class ChatsViewModel: ObservableObject {
             }
         }
     }
-    
-    private func observeMatches() {
-        MatchService.shared.observeMatches() { [weak self] matches in
-            for match in matches {
-                Publishers.Zip(
-                    UserCoreService.shared.getUserCore(uid: match.matchedUID),
-                    ProfileImageService.shared.getProfileImage(id: match.matchedUID, index: "0")
-                )
-                    .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let e):
-                            print("ChatsViewModel: Failed to fetch uc and img")
-                            print("ChatsViewModel-err: \(e)")
-                        case .finished:
-                            print("ChatsViewModel: Successfully fetched uc and img")
-                        }
-                    } receiveValue: { [weak self] uc, img in
-                        if let uc = uc {
-                            if let img = img {
-                                let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
-                                self?.matches.append(newUCimg)
-                            } else {
-                                let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
-                                self?.matches.append(newUCimg)
-                            }
-                        }
-                    }.store(in: &self!.cancellables)
-            }
-        }
-    }
-    
+}
+
+//MARK: ----------------------------------------------------------------------------------------------------------->
+//MARK: - Observe Messages ---------------------------------------------------------------------------------------->
+//MARK: ----------------------------------------------------------------------------------------------------------->
+extension ChatsViewModel {
     private func observeChats() {
         observeChatsFromMe()
         observeChatsToMe()
@@ -355,21 +399,5 @@ class ChatsViewModel: ObservableObject {
                     }
                 })
             }
-    }
-    
-    func openMessage(message: Message) {
-        ChatService.shared.openMessage(message: message)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("ChatsViewModel: Failed to open message")
-                    print("ChatsViewModel-err: \(e)")
-                case .finished:
-                    print("ChatsViewModel: Successfully opened message")
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
     }
 }
