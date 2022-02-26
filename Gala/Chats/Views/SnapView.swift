@@ -9,7 +9,6 @@ import SwiftUI
 import OrderedCollections
 
 struct SnapView: View {
-    var imgs: [Color] = [Color.blue, Color.red]
     @State var counter: Int = 0
     @Binding var show: Bool
     @Binding var userChat: UserChat?
@@ -27,6 +26,22 @@ struct SnapView: View {
                     } else {
                         counter += 1
                     }
+                }
+        }
+    }
+}
+
+struct IndividualSnapView: View {
+    var snap: Snap
+    @Binding var showSnap: Bool
+    var body: some View {
+        ZStack {
+            Image(uiImage: snap.img!)
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    showSnap = false
                 }
         }
     }

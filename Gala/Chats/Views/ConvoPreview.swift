@@ -139,8 +139,8 @@ struct ConvoPreview: View {
                         VStack {
                             HStack {
                                 Text("\(ucMatch.uc.name), \(ucMatch.uc.age.ageString())")
-                                    .font(.system(size: 17, weight: .medium, design: .rounded))
-                                    .foregroundColor(.primary)
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white)
                                 
                                 Spacer()
                             }
@@ -324,15 +324,16 @@ struct ConvoPreview: View {
     var unopenedSnapFromMe : some View {
         HStack {
             Image(systemName: "arrowtriangle.right.fill")
-                .font(.system(size: 12, weight: .regular, design: .rounded))
-                .foregroundColor(.buttonPrimary)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(.primary)
             Text("Snap Sent")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -340,15 +341,16 @@ struct ConvoPreview: View {
     var unopenedSnapToMe : some View {
         HStack {
             Image(systemName: "map.fill")
-                .font(.system(size: 12, weight: .regular, design: .rounded))
-                .foregroundColor(.buttonPrimary)
-            Text("New Snap")
-                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
+            Text("New Snap")
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
-                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -357,14 +359,15 @@ struct ConvoPreview: View {
         HStack {
             Image(systemName: "arrowtriangle.right")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
-                .foregroundColor(.buttonPrimary)
+                .foregroundColor(.primary)
             Text("Snap Opened")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -373,14 +376,15 @@ struct ConvoPreview: View {
         HStack {
             Image(systemName: "map")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
-                .foregroundColor(.buttonPrimary)
+                .foregroundColor(.primary)
             Text("Received")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -392,11 +396,12 @@ struct ConvoPreview: View {
                 .foregroundColor(.buttonPrimary)
             Text("Sent")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -404,15 +409,16 @@ struct ConvoPreview: View {
     var unopenedMessageToMe: some View {
         HStack {
             Image(systemName: "bubble.left.fill")
-                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundColor(.buttonPrimary)
             Text("Message")
-                .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
-                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -424,11 +430,12 @@ struct ConvoPreview: View {
                 .foregroundColor(.buttonPrimary)
             Text("Opened")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -440,11 +447,12 @@ struct ConvoPreview: View {
                 .foregroundColor(.buttonPrimary)
             Text("Received")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
             Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
             Spacer()
         }
     }
@@ -454,10 +462,9 @@ struct ConvoPreview: View {
             Image(systemName: "figure.stand.line.dotted.figure.stand")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
                 .foregroundColor(.buttonPrimary)
-            
             Text("Matched \(secondsToHoursMinutesSeconds(Int(timeMatched.timeIntervalSinceNow)))")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
             Spacer()
         }
     }
@@ -481,18 +488,41 @@ struct ConvoPreview: View {
     
     func secondsToHoursMinutesSeconds(_ seconds: Int) -> String { //(Int, Int, Int)
         
+        //60 = 1 minute
+        //3600 = 1 hour
+        //86400 = 1 day
+        //604800 = 1 week
+        
         if abs(((seconds % 3600) / 60)) == 0 {
-            let secondString = "\(abs((seconds % 3600) / 60)) seconds ago"
+            let secondString = "\(abs((seconds % 3600) / 60))s ago"
             return secondString
         } else if abs((seconds / 3600)) == 0 {
-            let minuteString = "\(abs((seconds % 3600) / 60)) minutes ago"
+            let minuteString = "\(abs((seconds % 3600) / 60))min ago"
             return minuteString
         } else if abs(seconds / 3600) < 24{
-            let hourString = "\(abs(seconds / 3600)) hours ago"
-            return hourString
+            if abs(seconds / 3600) == 1 {
+                let hourString = "\(abs(seconds / 3600)) hour ago"
+                return hourString
+            } else {
+                let hourString = "\(abs(seconds / 3600)) hours ago"
+                return hourString
+            }
+        } else if abs(seconds / 86400) < 7{
+            if abs(seconds / 86400) == 1 {
+                let dayString = "\(abs(seconds / 86400)) day ago"
+                return dayString
+            } else {
+                let dayString = "\(abs(seconds / 86400)) days ago"
+                return dayString
+            }
         } else {
-            let dayString = "\(abs(seconds / 86400)) days ago"
-            return dayString
+            if (abs(seconds / 604800) == 1) {
+                let weekString = "\(abs(seconds / 604800)) week ago"
+                return weekString
+            } else {
+                let weekString = "\(abs(seconds / 604800)) weeks ago"
+                return weekString
+            }
         }
     }
 }

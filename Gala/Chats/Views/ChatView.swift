@@ -100,15 +100,20 @@ struct ChatView: View {
                     ForEach(messages[userChat!.uid]!){ message in
                         if message.toID == AuthService.shared.currentUser!.uid {
                             MessageView(message: message.message, fromMe: false)
+                                .padding(.leading, 3)
                         } else {
                             MessageView(message: message.message, fromMe: true)
+                                .padding(.trailing, 3)
                         }
                     }
                 }
                 
                 if snaps[userChat!.uid] != nil {
                     ForEach(snaps[userChat!.uid]!){ snap in
-                        
+                        if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid{
+                            SnapMessageView(snap: snap)
+                                .padding(.leading, 3)
+                        }
                     }
                 }
                 
