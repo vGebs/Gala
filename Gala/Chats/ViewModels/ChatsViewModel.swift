@@ -97,8 +97,8 @@ class ChatsViewModel: ObservableObject {
         // the first snap will always be opened first (arr[0])
         // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
         //
-        //self.openSnap_(snap)
-        print("ChatsViewModel: opened snap with id: \(snap.snapID_timestamp)")
+        self.openSnap_(snap)
+        //print("ChatsViewModel: opened snap with id: \(snap.snapID_timestamp)")
     }
     
     private func openSnap_(_ snap: Snap) {

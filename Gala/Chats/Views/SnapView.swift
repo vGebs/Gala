@@ -16,19 +16,19 @@ struct SnapView: View {
     
     var body: some View {
         ZStack {
-            Image(uiImage: snaps[counter].img!)
+            Image(uiImage: snaps[0].img!)
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
-                    if counter == snaps.count - 1 {
+                    if snaps.count == 1 {
+                        chatsViewModel.openSnap(snap: snaps[counter])
                         show = false
                     } else {
-                        counter += 1
                         chatsViewModel.openSnap(snap: snaps[counter])
                     }
                 }
-                .onAppear {
+                .onDisappear {
                     chatsViewModel.openSnap(snap: snaps[counter])
                 }
         }
