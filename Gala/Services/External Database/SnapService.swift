@@ -207,4 +207,22 @@ class SnapService: SnapServiceProtocol {
                 }
         }.eraseToAnyPublisher()
     }
+    
+    func deleteSnap(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            
+        }.eraseToAnyPublisher()
+    }
+    
+    func deletMeta(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            
+        }.eraseToAnyPublisher()
+    }
+    
+    func deleteAsset(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            
+        }.eraseToAnyPublisher()
+    }
 }

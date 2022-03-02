@@ -20,11 +20,32 @@ class ChatsViewModel: ObservableObject {
     @Published private(set) var matches: [MatchedUserCore] = []
     @Published var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
+    @Published var combinedSnapsAndMessages: [Any] = []
     
     init() {
         observeSnaps()
         observeMatches()
         observeChats()
+        
+        //try the function that was made first for this before trying below.
+        //For the function made, we can call the function everytime we enter the chat and also when we send a message
+        //but that will not work if we receive a message.
+        //
+        //Because we need the merged list for a single user chat. What we can do, is make a uid variable and set it when we enter a chat
+        //from there we will retreive the messages and snaps and have them sorted
+        //
+    }
+    
+    func getUnopenedSnapsFrom(uid: String) -> [Snap] {
+        var final: [Snap] = []
+        if let snaps = snaps[uid] {
+            for snap in snaps {
+                if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid {
+                    final.append(snap)
+                }
+            }
+        }
+        return final
     }
     
     func handleConvoPress() {
@@ -34,6 +55,41 @@ class ChatsViewModel: ObservableObject {
         
     }
     
+    func combineMessagesAndSnapsFor(uid: String) -> [Any] {
+        var final: [Any] = []
+        var i = 0
+        var j = 0
+        
+        if matchMessages[uid] == nil && snaps[uid] == nil {
+            return final
+        } else if matchMessages[uid] != nil && snaps[uid] == nil {
+            return matchMessages[uid]!
+        } else if matchMessages[uid] == nil && snaps[uid] != nil {
+            return snaps[uid]!
+        } else {
+            while i < matchMessages[uid]!.count && j < snaps[uid]!.count{
+                //we want the oldest messages first, so itll be less than
+                if matchMessages[uid]![i].time < snaps[uid]![j].snapID_timestamp {
+                    final.append(matchMessages[uid]![i])
+                    i += 1
+                } else {
+                    final.append(snaps[uid]![j])
+                    j += 1
+                }
+            }
+            
+            if i < matchMessages[uid]!.count {
+                final.append(matchMessages[uid]![i])
+            }
+            
+            if j < snaps[uid]!.count {
+                final.append(snaps[uid]![j])
+            }
+            
+            return final
+        }
+    }
+    
     func openSnap(snap: Snap) {
         //opening a snap is trickier than opening a message
         //we need to open all snaps instead of just the most recent
@@ -41,6 +97,11 @@ class ChatsViewModel: ObservableObject {
         // the first snap will always be opened first (arr[0])
         // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
         //
+        //self.openSnap_(snap)
+        print("ChatsViewModel: opened snap with id: \(snap.snapID_timestamp)")
+    }
+    
+    private func openSnap_(_ snap: Snap) {
         SnapService.shared.openSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -54,6 +115,10 @@ class ChatsViewModel: ObservableObject {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
+    }
+    
+    private func deleteSnap_(_ snap: Snap){
+        
     }
     
     func openMessage(message: Message) {
@@ -159,6 +224,7 @@ extension ChatsViewModel {
                         for i in 0..<(self?.snaps[snap.fromID]!.count)! {
                             if self?.snaps[snap.fromID]![i].snapID_timestamp == snap.snapID_timestamp {
                                 self?.snaps[snap.fromID]![i] = snap
+                                print("ChatsViewModel: modified snap with id -> \(snap.docID)")
                             }
                         }
                     }
