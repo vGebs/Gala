@@ -11,7 +11,7 @@ import FirebaseFirestore
 import OrderedCollections
 import UIKit
 
-class ChatsViewModel: ObservableObject {
+class ChatsViewModel: ObservableObject, SnapProtocol {
     
     private var cancellables: [AnyCancellable] = []
     

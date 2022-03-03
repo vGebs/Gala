@@ -8,11 +8,15 @@
 import SwiftUI
 import OrderedCollections
 
+protocol SnapProtocol {
+    func openSnap(snap: Snap)
+}
+
 struct SnapView: View {
     @State var counter: Int = 0
     @Binding var show: Bool
     var snaps: [Snap]
-    @ObservedObject var chatsViewModel: ChatsViewModel
+    var snapViewModel: SnapProtocol
     
     var body: some View {
         ZStack {
@@ -22,14 +26,14 @@ struct SnapView: View {
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     if snaps.count == 1 {
-                        chatsViewModel.openSnap(snap: snaps[counter])
+                        snapViewModel.openSnap(snap: snaps[counter])
                         show = false
                     } else {
-                        chatsViewModel.openSnap(snap: snaps[counter])
+                        snapViewModel.openSnap(snap: snaps[counter])
                     }
                 }
                 .onDisappear {
-                    chatsViewModel.openSnap(snap: snaps[counter])
+                    snapViewModel.openSnap(snap: snaps[counter])
                 }
         }
     }

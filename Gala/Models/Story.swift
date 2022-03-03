@@ -21,30 +21,6 @@ import Combine
 //  We also likely will not need the 'Story' Model becuase we are pulling the images
 //      once we get the meta and pass it to the object. Wait and see what is needed.
 
-
-struct StoryMeta {
-    var postID_timeAndDatePosted: [String]
-    var userCore: UserCore
-}
-
-struct Story {
-    var meta: StoryMeta
-    var image: UIImage
-}
-
-struct StoryAndLikes: Identifiable {
-    var id = UUID()
-    var storyID: Date
-    //var image: UIImage
-    var likes: [Int]
-}
-
-struct StoryWithImage: Identifiable {
-    var id = UUID()
-    var storyID: Date
-    var image: UIImage
-}
-
 struct StoryWithVibe: Identifiable {
     var id = UUID()
     var pid: Date
@@ -64,7 +40,12 @@ class Post: Identifiable, ObservableObject {
     let uid: String
     let title: String
     
-    @Published var storyImage: UIImage?
+    var storyImage: UIImage? {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    
     @Published private(set) var timeSincePost: String = ""
 
     private var cancellables: [AnyCancellable] = []
@@ -98,10 +79,6 @@ class Post: Identifiable, ObservableObject {
     // will need to input a date and then from there get seconds and then we can get the output
     private func secondsToHoursMinutesSeconds(_ seconds: Int) -> String { //(Int, Int, Int)
         
-//        print(String((seconds % 86400) / 3600) + " hours")
-//        print(String((seconds % 3600) / 60) + " minutes")
-//        print(String((seconds % 3600) % 60) + " seconds")
-        
         if abs(((seconds % 3600) / 60)) == 0 {
             let secondString = "\(abs((seconds % 3600) / 60))s"
             return secondString
@@ -112,14 +89,12 @@ class Post: Identifiable, ObservableObject {
             let hourString = "\(abs(seconds / 3600))h"
             return hourString
         }
-        
-        //return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
 }
 
-class UserPostSimple: Identifiable {
+class UserPostSimple: Identifiable, ObservableObject {
     let id = UUID()
-    var posts: [Post]
+    @Published var posts: [Post]
     let name: String
     let uid: String
     let birthdate: Date
@@ -135,6 +110,12 @@ class UserPostSimple: Identifiable {
         self.uid = uid
         self.birthdate = birthdate
         self.coordinates = coordinates
+        
+        for post in posts {
+            post.objectWillChange.sink{ [weak self] _ in
+                self?.objectWillChange.send()
+            }.store(in: &cancellables)
+        }
         
         ProfileImageService.shared.getProfileImage(id: uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))

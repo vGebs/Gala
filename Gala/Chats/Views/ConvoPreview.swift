@@ -313,7 +313,7 @@ struct ConvoPreview: View {
             Spacer()
         }
         .sheet(isPresented: $showSnapView, content: {
-            SnapView(show: $showSnapView, snaps: chatsViewModel.getUnopenedSnapsFrom(uid: userChat!.uid), chatsViewModel: chatsViewModel)
+            SnapView(show: $showSnapView, snaps: chatsViewModel.getUnopenedSnapsFrom(uid: userChat!.uid), snapViewModel: chatsViewModel)
         })
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.uid), showProfile: $showProfile)
