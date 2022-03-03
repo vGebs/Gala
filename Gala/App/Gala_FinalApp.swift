@@ -146,6 +146,7 @@ struct GalaApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchView()
+            //UserStoryView()
             //StoryListView()
             //SnapView()
         }

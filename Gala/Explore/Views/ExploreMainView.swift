@@ -18,13 +18,6 @@ struct ExploreMainView: View {
     
     @State var showProfile = false
     
-    @Binding var showVibe: Bool
-    @Binding var selectedVibe: VibeCoverImage
-    @Binding var offset: CGSize
-    @Binding var scale: CGFloat
-    
-    var animation: Namespace.ID
-    
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     var body: some View {
@@ -41,7 +34,7 @@ struct ExploreMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ExploreView(viewModel: viewModel, selectedVibe: $selectedVibe, animation: animation, showVibe: $showVibe, offset: $offset, scale: $scale) //, showVibe: $showVibe
+                        ExploreView(viewModel: viewModel) //, showVibe: $showVibe
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

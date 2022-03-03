@@ -38,9 +38,6 @@ struct VibeView: View {
             
             VStack {
                 Spacer()
-//                RoundedRectangle(cornerRadius: 1)
-//                    .foregroundColor(.accent)
-//                    .frame(height: screenWidth / 1000)
                 
                 HStack {
                     Spacer()

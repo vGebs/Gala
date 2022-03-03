@@ -109,6 +109,7 @@
 		FABAABE82787F49A00154363 /* AddToStoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE72787F49A00154363 /* AddToStoryButton.swift */; };
 		FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABEA2788079A00154363 /* CameraViewHeader.swift */; };
 		FABAABF42788E76A00154363 /* MyStoriesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */; };
+		FAD33A0C27D0313800FC9553 /* UserStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD33A0B27D0313800FC9553 /* UserStoryView.swift */; };
 		FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C6C27993BA7007221B0 /* VibeView.swift */; };
 		FAD73C7027994FA8007221B0 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = FAD73C6F27994FA8007221B0 /* OrderedCollections */; };
 		FAD73C7227A08B92007221B0 /* AnimatedCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C7127A08B92007221B0 /* AnimatedCarousel.swift */; };
@@ -241,6 +242,7 @@
 		FABAABE72787F49A00154363 /* AddToStoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStoryButton.swift; sourceTree = "<group>"; };
 		FABAABEA2788079A00154363 /* CameraViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewHeader.swift; sourceTree = "<group>"; };
 		FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDownViewModel.swift; sourceTree = "<group>"; };
+		FAD33A0B27D0313800FC9553 /* UserStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoryView.swift; sourceTree = "<group>"; };
 		FAD73C6C27993BA7007221B0 /* VibeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeView.swift; sourceTree = "<group>"; };
 		FAD73C7127A08B92007221B0 /* AnimatedCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedCarousel.swift; sourceTree = "<group>"; };
 		FAD73C7527A0D26B007221B0 /* StoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				FAD73C7A27A35101007221B0 /* StoryCarousel.swift */,
 				FAD73C6C27993BA7007221B0 /* VibeView.swift */,
 				FAB6103427CC3FF300BD8187 /* StoryListView.swift */,
+				FAD33A0B27D0313800FC9553 /* UserStoryView.swift */,
 			);
 			path = Stories;
 			sourceTree = "<group>";
@@ -1004,6 +1007,7 @@
 				FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */,
 				FAD73C7F27A9AA1A007221B0 /* VibeImageService.swift in Sources */,
 				FA7E3B2426E1F28300A6653C /* LikesService.swift in Sources */,
+				FAD33A0C27D0313800FC9553 /* UserStoryView.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
 				FA7BAD4526FC48CD002F25E0 /* SendView.swift in Sources */,

@@ -41,9 +41,9 @@ struct ContentView: View {
             
             vibesPopupView
             
-            if showVibe {
-                fullStoryPopup
-            }
+//            if showVibe {
+//                fullStoryPopup
+//            }
         }
     }
 
@@ -96,7 +96,7 @@ struct ContentView: View {
                 HStack(spacing: 0){
                     ChatsView(viewModel: chat, profile: profile)
                     CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
-                    ExploreMainView(viewModel: explore, profile: profile, showVibe: $showVibe, selectedVibe: $selectedVibe, offset: $offset2, scale: $scale, animation: animation)
+                    ExploreMainView(viewModel: explore, profile: profile)
                 }
             }
         }

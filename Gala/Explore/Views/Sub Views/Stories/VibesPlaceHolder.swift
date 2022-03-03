@@ -13,13 +13,13 @@ struct VibesPlaceHolder: View {
     
     @ObservedObject var viewModel: StoriesViewModel
     
-    @Binding var showVibe: Bool
-    @Binding var offset: CGSize
-    @Binding var scale: CGFloat
+    //    @Binding var showVibe: Bool
+    //    @Binding var offset: CGSize
+    //    @Binding var scale: CGFloat
     
-    @Binding var selectedVibe: VibeCoverImage
+    //var animation: Namespace.ID
     
-    var animation: Namespace.ID
+    @State var showVibe = false
     
     var body: some View {
         ZStack {
@@ -38,7 +38,6 @@ struct VibesPlaceHolder: View {
                 LazyVGrid(columns: columns, content: {
                     ForEach(viewModel.vibeImages) { vibe in
                         //VibeCover(vibe: vibe, selectedVibe: $selectedVibe, scale: $scale, showVibe: $showVibe, animation: animation)
-                        
                         ZStack {
                             Image(uiImage: vibe.image)
                                 .resizable()
@@ -53,9 +52,9 @@ struct VibesPlaceHolder: View {
                             
                             VStack {
                                 Spacer()
-                //                RoundedRectangle(cornerRadius: 1)
-                //                    .foregroundColor(.accent)
-                //                    .frame(height: screenWidth / 1000)
+                                //                RoundedRectangle(cornerRadius: 1)
+                                //                    .foregroundColor(.accent)
+                                //                    .frame(height: screenWidth / 1000)
                                 
                                 HStack {
                                     Spacer()
@@ -70,21 +69,27 @@ struct VibesPlaceHolder: View {
                             }
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .matchedGeometryEffect(id: vibe.id, in: animation)
-                        .scaleEffect(showVibe && selectedVibe.id == vibe.id ? scale : 1)
+                        //.matchedGeometryEffect(id: vibe.id, in: animation)
+                        //.scaleEffect(showVibe && selectedVibe.id == vibe.id ? scale : 1)
                         .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
-                        .opacity(showVibe && selectedVibe.id == vibe.id ? 0 : 1)
+                        //.opacity(showVibe && selectedVibe.id == vibe.id ? 0 : 1)
+                        //                        .onTapGesture {
+                        //                            withAnimation {
+                        //                                self.showVibe = true
+                        //                                self.selectedVibe = vibe
+                        //                            }
+                        //                        }
                         .onTapGesture {
-                            withAnimation {
-                                self.showVibe = true
-                                self.selectedVibe = vibe
-                            }
+                            showVibe = true
                         }
                     }
                 })
             }
             .frame(width: screenWidth * 0.95)
         }
+        .fullScreenCover(isPresented: $showVibe, content: {
+            StoryListView(show: $showVibe)
+        })
     }
 }
 

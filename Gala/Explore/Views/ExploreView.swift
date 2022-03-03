@@ -10,14 +10,7 @@ import SwiftUI
 struct ExploreView: View {
     @ObservedObject var viewModel: ExploreViewModel
     //@Binding var showVibe: String?
-    
-    @Binding var selectedVibe: VibeCoverImage
-    var animation: Namespace.ID
-    
-    @Binding var showVibe: Bool
-    @Binding var offset: CGSize
-    @Binding var scale: CGFloat
-    
+        
     var body: some View {
         ZStack {
             ScrollView(showsIndicators: false){
@@ -33,7 +26,7 @@ struct ExploreView: View {
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
                 
-                VibesPlaceHolder(viewModel: viewModel.storiesViewModel, showVibe: $showVibe, offset: $offset, scale: $scale, selectedVibe: $selectedVibe, animation: animation)
+                VibesPlaceHolder(viewModel: viewModel.storiesViewModel)
             }
         }
     }
