@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MatchStoryView: View {
+struct MultipleStoryView: View {
     var posts: [Post]
     //var snapViewModel: SnapProtocol
     @State var counter: Int = 0

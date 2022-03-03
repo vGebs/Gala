@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct UserStoryView: View {
     
     @State var showProfile = false
-    //@Binding var img: UIImage?
+    @State var showStory = false
+    
+    var user: UserPostSimple
     
     var body: some View {
         HStack {
@@ -22,33 +25,34 @@ struct UserStoryView: View {
                         .foregroundColor(.blue)
                         .padding(.trailing)
                     
-                    //if img == nil {
+                    if user.profileImg == nil {
                         Image(systemName: "person.fill.questionmark")
                             .foregroundColor(Color(.systemTeal))
                             .frame(width: screenWidth / 20, height: screenWidth / 20)
                             .padding(.trailing)
                         
-////                    } else {
-//                        Image(uiImage: img!)
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
-//                            .clipShape(RoundedRectangle(cornerRadius: 5))
-//                            .padding(.trailing)
-////                    }
+                    } else {
+                        Image(uiImage: user.profileImg!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.trailing)
+                    }
                 }
             }
+            
             VStack {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(height: screenHeight / 1500)
                     .foregroundColor(.accent)
                 //Spacer()
                 HStack {
-                    Button(action: {}){
+                    Button(action: { showStory = true }){
                         VStack {
 
                             HStack {
-                                Text("Vaughn, 24")
+                                Text("\(user.name), \(user.birthdate.ageString())")
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                                     .foregroundColor(.white)
                                 Spacer()
@@ -57,12 +61,12 @@ struct UserStoryView: View {
                                 Image(systemName: "mappin.and.ellipse")
                                     .font(.system(size: 12, weight: .regular, design: .rounded))
                                     .foregroundColor(.primary)
-                                Text("3km")
+                                Text("\(LocationService.shared.getTravelDistance_String(to: CLLocation(latitude: user.coordinates.lat, longitude: user.coordinates.lng)))")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                     .foregroundColor(.accent)
                                 Image(systemName: "circlebadge.fill")
                                     .font(.system(size: 5, weight: .regular, design: .rounded))
-                                Text("2h")
+                                Text(user.posts[user.posts.count - 1].timeSincePost)
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                     .foregroundColor(.accent)
                                 Spacer()
@@ -74,5 +78,11 @@ struct UserStoryView: View {
             }
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: user.uid), showProfile: $showProfile)
+        })
+        .sheet(isPresented: $showStory, content: {
+            MultipleStoryView(posts: user.posts, show: $showStory)
+        })
     }
 }

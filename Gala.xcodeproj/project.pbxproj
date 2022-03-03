@@ -32,7 +32,6 @@
 		FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */; };
 		FA6BE5EF27B4A5140058B78C /* MatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5EE27B4A5140058B78C /* MatchService.swift */; };
 		FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */; };
-		FA6BE5F327B4AF8B0058B78C /* MatchedStoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F227B4AF8B0058B78C /* MatchedStoryViewModel.swift */; };
 		FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F427B5AA630058B78C /* ChatView.swift */; };
 		FA6BE5F727B5F7620058B78C /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */; };
 		FA6BE5F927B5F7E30058B78C /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F827B5F7E30058B78C /* ChatService.swift */; };
@@ -99,7 +98,8 @@
 		FA8CE4362717B45500BE8BB4 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4352717B45500BE8BB4 /* PhotoCaptureProcessor.swift */; };
 		FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */; };
 		FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA98385F2686834200A76AD5 /* ExploreMainView.swift */; };
-		FA9E53F627D15CCB002DDF99 /* MatchStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E53F527D15CCB002DDF99 /* MatchStoryView.swift */; };
+		FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E53F527D15CCB002DDF99 /* MultipleStoryView.swift */; };
+		FA9E53F827D1767A002DDF99 /* CircularLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */; };
 		FAA0184627ACB6F700A03D08 /* LikesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA0184527ACB6F700A03D08 /* LikesContainer.swift */; };
 		FAA88B1D26492928007F042D /* SwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1C26492928007F042D /* SwipeView.swift */; };
 		FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA88B1E26492960007F042D /* SwipeViewModel.swift */; };
@@ -169,7 +169,6 @@
 		FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserSexualityAndGender.swift; sourceTree = "<group>"; };
 		FA6BE5EE27B4A5140058B78C /* MatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchService.swift; sourceTree = "<group>"; };
 		FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryView.swift; sourceTree = "<group>"; };
-		FA6BE5F227B4AF8B0058B78C /* MatchedStoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryViewModel.swift; sourceTree = "<group>"; };
 		FA6BE5F427B5AA630058B78C /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		FA6BE5F827B5F7E30058B78C /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
@@ -234,7 +233,8 @@
 		FA8CE4352717B45500BE8BB4 /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 		FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
 		FA98385F2686834200A76AD5 /* ExploreMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreMainView.swift; sourceTree = "<group>"; };
-		FA9E53F527D15CCB002DDF99 /* MatchStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoryView.swift; sourceTree = "<group>"; };
+		FA9E53F527D15CCB002DDF99 /* MultipleStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleStoryView.swift; sourceTree = "<group>"; };
+		FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularLoadingView.swift; sourceTree = "<group>"; };
 		FAA0184527ACB6F700A03D08 /* LikesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesContainer.swift; sourceTree = "<group>"; };
 		FAA88B1C26492928007F042D /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		FAA88B1E26492960007F042D /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
@@ -412,7 +412,7 @@
 			children = (
 				FA0FCA3D2684048000434561 /* MatchStoriesView.swift */,
 				FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */,
-				FA9E53F527D15CCB002DDF99 /* MatchStoryView.swift */,
+				FA9E53F527D15CCB002DDF99 /* MultipleStoryView.swift */,
 			);
 			path = MatchStories;
 			sourceTree = "<group>";
@@ -647,8 +647,9 @@
 				FA87745A2640A3B200D5D5CB /* ImageCropper.swift */,
 				FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */,
 				FA87745E2640A3F700D5D5CB /* BaseView.swift */,
-				FAFD431326D57AAE00C535D2 /* Slider */,
 				FAD33A0D27D0489000FC9553 /* LoadingView.swift */,
+				FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */,
+				FAFD431326D57AAE00C535D2 /* Slider */,
 			);
 			path = ServiceViews;
 			sourceTree = "<group>";
@@ -716,7 +717,6 @@
 				FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */,
 				FAD73C7727A0ECF0007221B0 /* StoryViewModel.swift */,
 				FA0FCA412684050900434561 /* StoriesViewModel.swift */,
-				FA6BE5F227B4AF8B0058B78C /* MatchedStoryViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -953,7 +953,7 @@
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
 				FA6BE60627BDB0F10058B78C /* ArrayExtensions.swift in Sources */,
 				FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */,
-				FA9E53F627D15CCB002DDF99 /* MatchStoryView.swift in Sources */,
+				FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */,
 				FAD73C7227A08B92007221B0 /* AnimatedCarousel.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
 				FA7E3B2826E43F4600A6653C /* RecentlyJoinedViewModel.swift in Sources */,
@@ -965,6 +965,7 @@
 				FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
 				FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */,
+				FA9E53F827D1767A002DDF99 /* CircularLoadingView.swift in Sources */,
 				FAD73C7827A0ECF1007221B0 /* StoryViewModel.swift in Sources */,
 				FA2E23CE27BF0D0D000C131A /* SnapService.swift in Sources */,
 				FADC11622698129D0070465C /* UserCoreService.swift in Sources */,
@@ -1003,7 +1004,6 @@
 				FADDED1127AE3F8200CBE7C4 /* MatchesContainer.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FA6A34032791145E0087127B /* VibesPopup.swift in Sources */,
-				FA6BE5F327B4AF8B0058B78C /* MatchedStoryViewModel.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,

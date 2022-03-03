@@ -30,6 +30,9 @@ struct LoadingView: View {
         .onAppear {
             self.shouldAnimate = true
         }
+        .onDisappear {
+            shouldAnimate = false
+        }
     }
 }
 

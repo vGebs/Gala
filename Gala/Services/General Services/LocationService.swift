@@ -159,8 +159,21 @@ extension LocationService {
         
         let myLocation = CLLocation(latitude: lat, longitude: lon)
         
-        let distance = myLocation.distance(from: to) / 1000
+        let distanceKm = myLocation.distance(from: to) / 1000
+        return Int(distanceKm)
+    }
+    
+    func getTravelDistance_String(to: CLLocation) -> String {
+        let lon = (UserCoreService.shared.currentUserCore?.longitude)!
+        let lat = (UserCoreService.shared.currentUserCore?.latitude)!
         
-        return Int(distance)
+        let myLocation = CLLocation(latitude: lat, longitude: lon)
+        
+        let distanceMeters = myLocation.distance(from: to)
+        if distanceMeters < 1000 {
+            return "\(Int(distanceMeters))m"
+        } else {
+            return "\(Int(distanceMeters) / 1000)km"
+        }
     }
 }

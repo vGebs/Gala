@@ -13,13 +13,8 @@ struct VibesPlaceHolder: View {
     
     @ObservedObject var viewModel: StoriesViewModel
     
-    //    @Binding var showVibe: Bool
-    //    @Binding var offset: CGSize
-    //    @Binding var scale: CGFloat
-    
-    //var animation: Namespace.ID
-    
     @State var showVibe = false
+    @State var selectedVibe: VibeCoverImage = VibeCoverImage(image: UIImage(), title: "")
     
     var body: some View {
         ZStack {
@@ -45,58 +40,46 @@ struct VibesPlaceHolder: View {
                 LazyVGrid(columns: columns, content: {
 
                     ForEach(viewModel.vibeImages) { vibe in
-                        //VibeCover(vibe: vibe, selectedVibe: $selectedVibe, scale: $scale, showVibe: $showVibe, animation: animation)
-                        ZStack {
-                            Image(uiImage: vibe.image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(lineWidth: 4)
-                                .foregroundColor(.buttonPrimary)
-                                .edgesIgnoringSafeArea(.all)
-
-                            VStack {
-                                Spacer()
-                                //                RoundedRectangle(cornerRadius: 1)
-                                //                    .foregroundColor(.accent)
-                                //                    .frame(height: screenWidth / 1000)
-
-                                HStack {
-                                    Spacer()
-                                    Text(vibe.title)
-                                        .font(.system(size: 12, weight: .bold, design: .rounded))
-                                        .foregroundColor(.white)
-                                        .padding(.trailing)
-                                        .padding(.vertical, 10)
-                                }
-                                .border(Color.buttonPrimary)
-                                .background(Color.white.opacity(0.15))
-                            }
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        //.matchedGeometryEffect(id: vibe.id, in: animation)
-                        //.scaleEffect(showVibe && selectedVibe.id == vibe.id ? scale : 1)
-                        .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
-                        //.opacity(showVibe && selectedVibe.id == vibe.id ? 0 : 1)
-                        //                        .onTapGesture {
-                        //                            withAnimation {
-                        //                                self.showVibe = true
-                        //                                self.selectedVibe = vibe
-                        //                            }
-                        //                        }
-                        .onTapGesture {
+                        Button(action: {
+                            self.selectedVibe = vibe
                             showVibe = true
+                        }){
+                            ZStack {
+                                Image(uiImage: vibe.image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(lineWidth: 4)
+                                    .foregroundColor(.buttonPrimary)
+                                    .edgesIgnoringSafeArea(.all)
+
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        Spacer()
+                                        Text(vibe.title)
+                                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                                            .foregroundColor(.white)
+                                            .padding(.trailing)
+                                            .padding(.vertical, 10)
+                                    }
+                                    .border(Color.buttonPrimary)
+                                    .background(Color.white.opacity(0.15))
+                                }
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                         }
+                        .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                     }
                 })
             }
             .frame(width: screenWidth * 0.95)
         }
         .fullScreenCover(isPresented: $showVibe, content: {
-            StoryListView(show: $showVibe)
+            StoryListView(show: $showVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
         })
     }
 }

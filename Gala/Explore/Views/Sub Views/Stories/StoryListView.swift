@@ -6,9 +6,16 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct StoryListView: View {
     @Binding var show: Bool
+//    var coverImg: UIImage
+//    var vibeTitle: String
+    @Binding var vibe: VibeCoverImage
+    var timeFrame: String = "Tuesday Afternoon"
+    var vibeDescription: String = "These folks are on a chill vibe. See if you vibe with 'em!"
+    var stories: OrderedDictionary<String, [UserPostSimple]>
     
     var body: some View {
         ZStack {
@@ -16,7 +23,8 @@ struct StoryListView: View {
             ScrollView {
                 VStack {
                     ZStack {
-                        Image("neon-light-frame")
+                        
+                        Image(uiImage: vibe.image)
                             .resizable()
                             .scaledToFill()
                             .frame(height: screenHeight * 0.7)
@@ -26,10 +34,10 @@ struct StoryListView: View {
                             Text("Vibes")
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                                 .foregroundColor(.white)
-                            Text("Just Chillin'")
+                            Text(vibe.title)
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
                                 .foregroundColor(.white)
-                            Text("Tuesday Afternoon")
+                            Text(timeFrame)
                                 .font(.system(size: 16, weight: .regular, design: .rounded))
                                 .foregroundColor(.white)
                             
@@ -48,7 +56,7 @@ struct StoryListView: View {
                             .padding(.bottom, 5)
                             .padding(.top, 5)
                             
-                            Text("These folks are on a chill vibe. See if you vibe with 'em!")
+                            Text(vibeDescription)
                                 .font(.system(size: 13, weight: .light, design: .rounded))
                                 .foregroundColor(.white)
                                 .frame(width: screenWidth * 0.95)
@@ -56,18 +64,41 @@ struct StoryListView: View {
                         }
                     }
                     
-                    ForEach(0..<15, id:\.self) { _ in
-                        UserStoryView()
-                            .padding(.horizontal)
-                            .padding(.bottom, 5)
+                    if stories[vibe.title] != nil {
+                        ForEach(stories[vibe.title]!) { user in
+                            UserStoryView(user: user)
+                                .padding(.horizontal)
+                                .padding(.bottom, 5)
+                        }
                     }
                     
                     Spacer()
                     HStack {
                         Spacer()
-                        Text("15 Singles, 22 Stories")
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundColor(.accent)
+                        if stories[vibe.title] != nil {
+                            if stories[vibe.title]!.count > 1 {
+                                if getNumberOfStoriesInVibe() > 1 {
+                                    Text("\(stories[vibe.title]!.count) Users, \(getNumberOfStoriesInVibe()) Story")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.accent)
+                                } else {
+                                    Text("\(stories[vibe.title]!.count) Users, \(getNumberOfStoriesInVibe()) Stories")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.accent)
+                                }
+                            } else {
+                                if getNumberOfStoriesInVibe() > 1 {
+                                    Text("\(stories[vibe.title]!.count) User, \(getNumberOfStoriesInVibe()) Stories")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.accent)
+                                } else {
+                                    Text("\(stories[vibe.title]!.count) User, \(getNumberOfStoriesInVibe()) Story")
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.accent)
+                                }
+                            }
+                            
+                        }
                     }
                     .frame(width: screenWidth * 0.9)
                     
@@ -138,5 +169,19 @@ struct StoryListView: View {
             }
         }
         .frame(width: screenWidth * 0.4, height: screenHeight * 0.05)
+    }
+    
+    func getNumberOfStoriesInVibe() -> Int {
+        var final = 0
+        
+        if stories[vibe.title] != nil {
+            for user in stories[vibe.title]! {
+                for _ in user.posts {
+                    final += 1
+                }
+            }
+        }
+        
+        return final
     }
 }

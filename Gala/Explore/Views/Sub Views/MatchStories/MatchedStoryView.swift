@@ -16,10 +16,14 @@ struct MatchedStoryView: View {
                 showStory = true
             }){
                 if story.posts[story.posts.count - 1].storyImage == nil { //viewModel.img
-                    RoundedRectangle(cornerRadius: 10)
-                        //.stroke()
-                        .foregroundColor(.buttonPrimary)
-                        .frame(width: screenWidth / 7, height: screenWidth / 7)
+                    ZStack{
+                        CircularLoadingView()
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke()
+                            .foregroundColor(.buttonPrimary)
+                            .frame(width: screenWidth / 7, height: screenWidth / 7)
+
+                    }
                 } else {
                     ZStack {
                         Image(uiImage: story.posts[story.posts.count - 1].storyImage!)
@@ -43,7 +47,7 @@ struct MatchedStoryView: View {
         }
         .frame(width: screenWidth / 6)
         .sheet(isPresented: $showStory, content: {
-            MatchStoryView(posts: story.posts, show: $showStory)
+            MultipleStoryView(posts: story.posts, show: $showStory)
         })
     }
 }
