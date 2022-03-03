@@ -12,32 +12,35 @@ struct SmallUserView: View {
     @ObservedObject var viewModel: RecentlyJoinedViewModel
     @ObservedObject var user: SmallUserViewModel
     
-    var matched = false
-    
-    @State var pressed = false
+    @State var likePressed = false
+    @State var showProfile = false
     
     var body: some View {
         HStack{
-            ZStack {
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke()
-                    .frame(width: screenWidth / 9, height: screenWidth / 9)
-                    .foregroundColor(.blue)
-                    .padding(.trailing)
-                
-                if user.img == nil {
-                    Image(systemName: "person.fill.questionmark")
-                        .foregroundColor(Color(.systemTeal))
-                        .frame(width: screenWidth / 20, height: screenWidth / 20)
+            Button(action: {
+                showProfile = true
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke()
+                        .frame(width: screenWidth / 9, height: screenWidth / 9)
+                        .foregroundColor(.blue)
                         .padding(.trailing)
                     
-                } else {
-                    Image(uiImage: user.img!)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                        .padding(.trailing)
+                    if user.img == nil {
+                        Image(systemName: "person.fill.questionmark")
+                            .foregroundColor(Color(.systemTeal))
+                            .frame(width: screenWidth / 20, height: screenWidth / 20)
+                            .padding(.trailing)
+                        
+                    } else {
+                        Image(uiImage: user.img!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.trailing)
+                    }
                 }
             }
             
@@ -45,71 +48,55 @@ struct SmallUserView: View {
                 Divider()
                 Spacer()
                 HStack {
-                    VStack {
-                        HStack {
-                            Text("\(user.profile!.name), \(user.profile!.age.ageString())")
-                                .font(.system(size: 17, weight: .medium, design: .rounded))
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                        }
-                        
-                        if matched {
+                    Button(action: {
+                        showProfile = true
+                    }){
+                        VStack {
                             HStack {
-                                Image(systemName: "arrowtriangle.right")
-                                    .font(.system(size: 12, weight: .regular, design: .rounded))
-                                    .foregroundColor(.primary)
+                                Text("\(user.profile!.name), \(user.profile!.age.ageString())")
+                                    .font(.system(size: 17, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white)
                                 
-                                Text("Opened")
-                                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                                    .foregroundColor(.primary)
-                                
-                                Image(systemName: "circlebadge.fill")
-                                    //.resizable()
-                                    .font(.system(size: 5, weight: .regular, design: .rounded))
-                                    //.frame(width: 3, height: 3)
-                                
-                                Text("2h")
-                                    .font(.system(size: 13, weight: .regular, design: .rounded))
                                 Spacer()
                             }
-                        } else {
+                            
                             HStack {
                                 Image(systemName: "mappin.and.ellipse")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.buttonPrimary)
                                     .font(.system(size: 8, weight: .semibold, design: .rounded))
                                 
                                 Text("\(user.city), \(user.country)")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
+                                    .foregroundColor(.primary)
                                 Spacer()
                             }
                         }
-                    }
+                    }.frame(width: screenWidth * 0.33)
                     
-                    if matched {
-                        Image(systemName: "camera")
-                            .font(.system(size: 15, weight: .medium, design: .rounded))
-                            .foregroundColor(.buttonPrimary)
-                    } else {
-                        Button(action: {
-                            if self.pressed == false {
-                                self.viewModel.likeUser(with: user.profile!.uid)
-                                self.pressed.toggle()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
-                                    self.pressed.toggle()
-                                }
+                    Spacer()
+                    
+                    Button(action: {
+                        if self.likePressed == false {
+                            self.viewModel.likeUser(with: user.profile!.uid)
+                            self.likePressed.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
+                                self.likePressed.toggle()
                             }
-                        }){
-                            Image(systemName: self.pressed ? "heart.fill" : "hand.thumbsup.circle")
-                                .font(.system(size: 18, weight: .medium, design: .rounded))
-                                .foregroundColor(.buttonPrimary)
-                        } 
+                        }
+                    }){
+                        Image(systemName: self.likePressed ? "heart.fill" : "heart")
+                            .font(.system(size: 18, weight: .medium, design: .rounded))
+                            .foregroundColor(.buttonPrimary)
                     }
                 }
+                
                 Spacer()
             }
             Spacer()
         }
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
+        .sheet(isPresented: $showProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.name, age: user.profile!.age, mode: .otherAccount, uid: user.profile!.uid), showProfile: $showProfile)
+        })
     }
 }

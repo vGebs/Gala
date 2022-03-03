@@ -30,11 +30,12 @@ struct NavBar: View {
 
                         Image(systemName: "newspaper")
                             .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(storiesPressed ? .primary : .accent) //self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent
-
+                            //.foregroundColor(storiesPressed ? .primary : .accent) //self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent
+                            .foregroundColor(.black)
                         Image(systemName: "poweron")
                             .font(.system(size: 10, weight: .light, design: .rounded))
-                            .foregroundColor(.primary)
+//                            .foregroundColor(.primary)
+                            .foregroundColor(.black)
                             .opacity(storiesPressed ? 1 : 0)
                     }
                 }
@@ -46,12 +47,12 @@ struct NavBar: View {
 //                        }
 //                        self.offset = 0
 //                    }
-                    if vibesPressed {
-                        vibesPressed.toggle()
-                        storiesPressed.toggle()
-                    } else {
-                        storiesPressed.toggle()
-                    }
+//                    if vibesPressed {
+//                        vibesPressed.toggle()
+//                        storiesPressed.toggle()
+//                    } else {
+//                        storiesPressed.toggle()
+//                    }
                 }
 //                HStack{
 //                    Spacer()
@@ -193,12 +194,13 @@ struct NavBar: View {
                         Image(systemName: "dot.radiowaves.up.forward")
                             .rotationEffect(.degrees(-90))
                             .font(.system(size: 24, weight: .light, design: .rounded))
-                            .foregroundColor(vibesPressed ? .primary : .accent) //self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent
-
+                            //.foregroundColor(vibesPressed ? .primary : .accent) //self.offset >= ((screenWidth * 4) - screenWidth * 0.5) && self.offset < ((screenWidth * 5) - screenWidth * 0.5) ? Color(.systemTeal) : .accent
+                            .foregroundColor(.black)
                         Image(systemName: "poweron")
                             .font(.system(size: 10, weight: .light, design: .rounded))
                             .opacity(vibesPressed ? 1 : 0)
-                            .foregroundColor(.primary)
+//                            .foregroundColor(.primary)
+                            .foregroundColor(.black)
 
                     }
                 }
@@ -210,12 +212,12 @@ struct NavBar: View {
 //                        }
 //                        self.offset = screenWidth * 4
 //                    }
-                    if storiesPressed {
-                        storiesPressed.toggle()
-                        vibesPressed.toggle()
-                    } else {
-                        vibesPressed.toggle()
-                    }
+//                    if storiesPressed {
+//                        storiesPressed.toggle()
+//                        vibesPressed.toggle()
+//                    } else {
+//                        vibesPressed.toggle()
+//                    }
                 }
             }
         }

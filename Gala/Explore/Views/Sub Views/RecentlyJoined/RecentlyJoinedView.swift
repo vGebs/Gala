@@ -51,6 +51,7 @@ struct RecentlyJoinedView: View {
                                 if i * 2 + 1 < viewModel.users.count {
                                     //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
                                     SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2 + 1])
+                                    
                                 }
                                 
                                 if i * 2 + 1 == viewModel.users.count {

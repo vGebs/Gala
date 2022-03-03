@@ -35,7 +35,15 @@ struct VibesPlaceHolder: View {
                     Spacer()
                 }
                 
+                if viewModel.vibeImages.count == 0 {
+                    VStack {
+                        Spacer()
+                        LoadingView()
+                    }.frame(height: screenHeight * 0.25)
+                }
+                
                 LazyVGrid(columns: columns, content: {
+
                     ForEach(viewModel.vibeImages) { vibe in
                         //VibeCover(vibe: vibe, selectedVibe: $selectedVibe, scale: $scale, showVibe: $showVibe, animation: animation)
                         ZStack {
@@ -44,18 +52,18 @@ struct VibesPlaceHolder: View {
                                 .scaledToFill()
                                 .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                            
+
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(lineWidth: 4)
                                 .foregroundColor(.buttonPrimary)
                                 .edgesIgnoringSafeArea(.all)
-                            
+
                             VStack {
                                 Spacer()
                                 //                RoundedRectangle(cornerRadius: 1)
                                 //                    .foregroundColor(.accent)
                                 //                    .frame(height: screenWidth / 1000)
-                                
+
                                 HStack {
                                     Spacer()
                                     Text(vibe.title)

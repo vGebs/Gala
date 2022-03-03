@@ -96,9 +96,9 @@ struct SigninSignupView: View {
             }
             
             if viewModel.loading {
-                Color.black.opacity(0.4)
+                Color.black.opacity(0.7)
                     .edgesIgnoringSafeArea(.all)
-                ProgressView()
+                LoadingView()
             }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
@@ -248,6 +248,7 @@ struct SigninSignupView: View {
     var actionButton: some View{
         VStack{
             Button(action: {
+                hideKeyboard()
                 viewModel.tappedActionButton()
             }){
                 ZStack{
