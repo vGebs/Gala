@@ -20,6 +20,10 @@ struct ExploreMainView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode = true
     
+    var animation: Namespace.ID
+    @Binding var selectedVibe: VibeCoverImage
+    @Binding var showVibe: Bool
+    
     var body: some View {
         VStack {
             ZStack{
@@ -34,7 +38,7 @@ struct ExploreMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ExploreView(viewModel: viewModel) //, showVibe: $showVibe
+                        ExploreView(viewModel: viewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe) //, showVibe: $showVibe
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

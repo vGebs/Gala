@@ -13,8 +13,19 @@ struct VibesPlaceHolder: View {
     
     @ObservedObject var viewModel: StoriesViewModel
     
-    @State var showVibe = false
-    @State var selectedVibe: VibeCoverImage = VibeCoverImage(image: UIImage(), title: "")
+    //@State var showVibe = false
+    //@State var selectedVibe: VibeCoverImage = VibeCoverImage(image: UIImage(), title: "")
+    
+    //@Namespace var animation
+    
+    var animation: Namespace.ID
+    @Binding var selectedVibe: VibeCoverImage
+    @Binding var showVibe: Bool
+    @State var showAllForVibe = false
+    
+    var response: CGFloat = 0.3
+    var dampingFactor: CGFloat = 0.9
+    var blendDuration: CGFloat = 0.01
     
     var body: some View {
         ZStack {
@@ -40,46 +51,28 @@ struct VibesPlaceHolder: View {
                 LazyVGrid(columns: columns, content: {
 
                     ForEach(viewModel.vibeImages) { vibe in
-                        Button(action: {
-                            self.selectedVibe = vibe
-                            showVibe = true
-                        }){
-                            ZStack {
-                                Image(uiImage: vibe.image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(lineWidth: 4)
-                                    .foregroundColor(.buttonPrimary)
-                                    .edgesIgnoringSafeArea(.all)
-
-                                VStack {
-                                    Spacer()
-                                    HStack {
-                                        Spacer()
-                                        Text(vibe.title)
-                                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                                            .foregroundColor(.white)
-                                            .padding(.trailing)
-                                            .padding(.vertical, 10)
-                                    }
-                                    .border(Color.buttonPrimary)
-                                    .background(Color.white.opacity(0.15))
+                        if selectedVibe.id == vibe.id {
+                            VibeView(vibe: vibe)
+                                .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
+                        } else {
+                            Button(action: {
+                                withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+                                    self.selectedVibe = vibe
+                                    self.showVibe = true
                                 }
+                            }){
+                                VibeView(vibe: vibe)
+                                    .matchedGeometryEffect(id: vibe.title, in: animation)
                             }
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                         }
-                        .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                     }
                 })
             }
             .frame(width: screenWidth * 0.95)
         }
-        .fullScreenCover(isPresented: $showVibe, content: {
-            StoryListView(show: $showVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
+        .fullScreenCover(isPresented: $showAllForVibe, content: {
+            StoryListView(show: $showAllForVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
         })
     }
 }

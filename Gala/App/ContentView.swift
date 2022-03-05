@@ -23,15 +23,20 @@ struct ContentView: View {
     
     @State var showVibe = false
     
-    @State var offset2: CGSize = .zero
     @State var scale: CGFloat = 1
 
     @Namespace var animation
     
     @State var selectedVibe = VibeCoverImage(image: UIImage(), title: "")
-        
+    @State var draggedOffset: CGSize = .zero
+    
+    var response: CGFloat = 0.3
+    var dampingFactor: CGFloat = 0.9
+    var blendDuration: CGFloat = 0.01
+    
     var body: some View {
         ZStack{
+            
             
             mainSwipeView
             
@@ -41,49 +46,41 @@ struct ContentView: View {
             
             vibesPopupView
             
-//            if showVibe {
-//                fullStoryPopup
-//            }
-        }
-    }
-
-    var fullStoryPopup: some View {
-        StoryCarousel(viewModel: explore.storiesViewModel, selectedVibe: $selectedVibe, showVibe: $showVibe)
-            .cornerRadius(20)
-            .scaleEffect(scale)
-            .matchedGeometryEffect(id: selectedVibe.id, in: animation)
-            .offset(self.offset2)
-            .gesture(DragGesture().onChanged(onChanged(value:)).onEnded(onEnded(value:)))
-            .edgesIgnoringSafeArea(.all)
-    }
-    
-    func onChanged(value: DragGesture.Value) {
-        
-        //only moves the view when user swipes down
-        if value.translation.height > 50 {
-            offset2 = value.translation
-            
-            //Scaling view
-            let height = screenHeight - 50
-            let progress = offset2.height / height
-            
-            if 1 - progress > 0.5 {
-                scale = 1 - progress
+            if showVibe {
+                StoryTransitionView(yOffset: $draggedOffset.height)
+                //RoundedRectangle(cornerRadius: 10)
+                    .matchedGeometryEffect(id: selectedVibe.title, in: animation)
+                    .scaleEffect(scale)
+                    .offset(x: draggedOffset.width, y: draggedOffset.height)
+                    .gesture(DragGesture().onChanged{ value in
+                        
+                        if value.translation.height > 50 {
+                            self.draggedOffset = value.translation
+                        }
+                        
+                        withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+                            if draggedOffset.height < 150 {
+                                self.scale = 1 - abs(draggedOffset.height / 220)
+                            }
+                        }
+                    }.onEnded{ value in
+                        if value.translation.height > 70 && value.translation.height < 180{
+                            withAnimation(.linear(duration: 0.2)) { //.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)
+                                self.showVibe.toggle()
+                                self.selectedVibe = VibeCoverImage(image: UIImage(), title: "")
+                                scale = 1
+                            }
+                            draggedOffset = .zero
+                        } else {
+                            withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+                                draggedOffset = .zero
+                                scale = 1.0
+                            }
+                        }
+                    })
+                    .frame(width: screenWidth, height: screenHeight)
+                    .edgesIgnoringSafeArea(.all)
             }
-        }
-    }
-    
-    func onEnded(value: DragGesture.Value) {
-        
-        //resetting view
-        withAnimation {
-            
-            if value.translation.height > 120 {
-                showVibe = false
-            }
-            
-            offset2 = .zero
-            scale = 1
         }
     }
     
@@ -96,7 +93,7 @@ struct ContentView: View {
                 HStack(spacing: 0){
                     ChatsView(viewModel: chat, profile: profile)
                     CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
-                    ExploreMainView(viewModel: explore, profile: profile)
+                    ExploreMainView(viewModel: explore, profile: profile, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe)
                 }
             }
         }

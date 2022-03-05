@@ -9,8 +9,11 @@ import SwiftUI
 
 struct ExploreView: View {
     @ObservedObject var viewModel: ExploreViewModel
-    //@Binding var showVibe: String?
-        
+    
+    var animation: Namespace.ID
+    @Binding var selectedVibe: VibeCoverImage
+    @Binding var showVibe: Bool
+    
     var body: some View {
         ZStack {
             ScrollView(showsIndicators: false){
@@ -26,7 +29,7 @@ struct ExploreView: View {
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
                 
-                VibesPlaceHolder(viewModel: viewModel.storiesViewModel)
+                VibesPlaceHolder(viewModel: viewModel.storiesViewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe)
             }
         }
     }
