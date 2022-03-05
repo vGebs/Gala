@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct VibesPlaceHolder: View {
     
@@ -26,6 +27,8 @@ struct VibesPlaceHolder: View {
     var response: CGFloat = 0.3
     var dampingFactor: CGFloat = 0.9
     var blendDuration: CGFloat = 0.01
+    
+    @Binding var vibesDict: OrderedDictionary<String, [UserPostSimple]>
     
     var body: some View {
         ZStack {
@@ -56,6 +59,7 @@ struct VibesPlaceHolder: View {
                                 .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                         } else {
                             Button(action: {
+                                self.vibesDict = viewModel.vibesDict
                                 withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
                                     self.selectedVibe = vibe
                                     self.showVibe = true

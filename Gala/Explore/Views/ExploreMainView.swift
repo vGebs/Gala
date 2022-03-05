@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct ExploreMainView: View {
     var optionButtonLeft: String = "rectangle.stack.person.crop"
@@ -23,6 +24,7 @@ struct ExploreMainView: View {
     var animation: Namespace.ID
     @Binding var selectedVibe: VibeCoverImage
     @Binding var showVibe: Bool
+    @Binding var vibesDict: OrderedDictionary<String, [UserPostSimple]>
     
     var body: some View {
         VStack {
@@ -38,7 +40,7 @@ struct ExploreMainView: View {
                 VStack {
                     Spacer()
                     ScrollView(showsIndicators: false) {
-                        ExploreView(viewModel: viewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe) //, showVibe: $showVibe
+                        ExploreView(viewModel: viewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe, vibesDict: $vibesDict) //, showVibe: $showVibe
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.81)
                     .cornerRadius(20)

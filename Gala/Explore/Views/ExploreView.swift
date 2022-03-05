@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct ExploreView: View {
     @ObservedObject var viewModel: ExploreViewModel
@@ -13,6 +14,7 @@ struct ExploreView: View {
     var animation: Namespace.ID
     @Binding var selectedVibe: VibeCoverImage
     @Binding var showVibe: Bool
+    @Binding var vibesDict: OrderedDictionary<String, [UserPostSimple]>
     
     var body: some View {
         ZStack {
@@ -29,7 +31,7 @@ struct ExploreView: View {
                 MyDivider()
                     .frame(width: screenWidth * 0.95, height: screenHeight / 800)
                 
-                VibesPlaceHolder(viewModel: viewModel.storiesViewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe)
+                VibesPlaceHolder(viewModel: viewModel.storiesViewModel, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe, vibesDict: $vibesDict)
             }
         }
     }

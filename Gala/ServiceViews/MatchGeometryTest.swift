@@ -38,8 +38,8 @@ struct MatchGeometryTest: View {
             }
             
             if show {
-                StoryTransitionView(yOffset: $draggedOffset.height)
-                //RoundedRectangle(cornerRadius: 10)
+                //StoryTransitionView(yOffset: $draggedOffset.height)
+                RoundedRectangle(cornerRadius: 10)
                     .matchedGeometryEffect(id: "Shape", in: animation)
                     .scaleEffect(scale)
                     .offset(x: draggedOffset.width, y: draggedOffset.height)

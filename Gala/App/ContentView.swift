@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct ContentView: View {
     @ObservedObject var chat: ChatsViewModel
@@ -34,9 +35,10 @@ struct ContentView: View {
     var dampingFactor: CGFloat = 0.9
     var blendDuration: CGFloat = 0.01
     
+    @State var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:]
+
     var body: some View {
         ZStack{
-            
             
             mainSwipeView
             
@@ -47,7 +49,7 @@ struct ContentView: View {
             vibesPopupView
             
             if showVibe {
-                StoryTransitionView(yOffset: $draggedOffset.height)
+                StoryTransitionView(yOffset: $draggedOffset.height, vibesDict: $vibesDict, selectedVibe: $selectedVibe, showVibe: $showVibe)
                 //RoundedRectangle(cornerRadius: 10)
                     .matchedGeometryEffect(id: selectedVibe.title, in: animation)
                     .scaleEffect(scale)
@@ -66,6 +68,7 @@ struct ContentView: View {
                     }.onEnded{ value in
                         if value.translation.height > 70 && value.translation.height < 180{
                             withAnimation(.linear(duration: 0.2)) { //.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)
+                                self.vibesDict = [:]
                                 self.showVibe.toggle()
                                 self.selectedVibe = VibeCoverImage(image: UIImage(), title: "")
                                 scale = 1
@@ -93,7 +96,7 @@ struct ContentView: View {
                 HStack(spacing: 0){
                     ChatsView(viewModel: chat, profile: profile)
                     CameraView(camera: camera, profile: profile, hideBtn: $storiesPopup)
-                    ExploreMainView(viewModel: explore, profile: profile, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe)
+                    ExploreMainView(viewModel: explore, profile: profile, animation: animation, selectedVibe: $selectedVibe, showVibe: $showVibe, vibesDict: $vibesDict)
                 }
             }
         }
