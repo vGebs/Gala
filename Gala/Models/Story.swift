@@ -93,7 +93,7 @@ class Post: Identifiable, ObservableObject {
 }
 
 class UserPostSimple: Identifiable, ObservableObject {
-    let id = UUID()
+    let id = UUID().uuidString
     @Published var posts: [Post]
     let name: String
     let uid: String

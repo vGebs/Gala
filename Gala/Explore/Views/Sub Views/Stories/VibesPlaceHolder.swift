@@ -14,11 +14,6 @@ struct VibesPlaceHolder: View {
     
     @ObservedObject var viewModel: StoriesViewModel
     
-    //@State var showVibe = false
-    //@State var selectedVibe: VibeCoverImage = VibeCoverImage(image: UIImage(), title: "")
-    
-    //@Namespace var animation
-    
     var animation: Namespace.ID
     @Binding var selectedVibe: VibeCoverImage
     @Binding var showVibe: Bool
@@ -29,6 +24,8 @@ struct VibesPlaceHolder: View {
     var blendDuration: CGFloat = 0.01
     
     @Binding var vibesDict: OrderedDictionary<String, [UserPostSimple]>
+    
+    //@StateObject var vm = InstaStoryViewModel()
     
     var body: some View {
         ZStack {
@@ -59,10 +56,15 @@ struct VibesPlaceHolder: View {
                                 .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                         } else {
                             Button(action: {
-                                self.vibesDict = viewModel.vibesDict
+                                //self.vibesDict = viewModel.vibesDict
                                 withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
-                                    self.selectedVibe = vibe
-                                    self.showVibe = true
+                                    //self.selectedVibe = vibe
+                                    //self.showVibe = true
+                                    if let vibe = viewModel.vibesDict[vibe.title] {
+                                        viewModel.currentVibe = vibe
+                                        viewModel.currentStory = vibe[0].id
+                                        viewModel.showStory = true
+                                    }
                                 }
                             }){
                                 VibeView(vibe: vibe)
@@ -75,6 +77,9 @@ struct VibesPlaceHolder: View {
             }
             .frame(width: screenWidth * 0.95)
         }
+        .sheet(isPresented: $viewModel.showStory, content: {
+            InstaStoryView(storyData: viewModel)
+        })
         .fullScreenCover(isPresented: $showAllForVibe, content: {
             StoryListView(show: $showAllForVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
         })

@@ -49,40 +49,40 @@ struct ContentView: View {
             vibesPopupView
             
             if showVibe {
-                StoryTransitionView(yOffset: $draggedOffset.height, vibesDict: $vibesDict, selectedVibe: $selectedVibe, showVibe: $showVibe)
+//                StoryTransitionView(yOffset: $draggedOffset.height, vibesDict: $vibesDict, selectedVibe: $selectedVibe, showVibe: $showVibe)
                 //RoundedRectangle(cornerRadius: 10)
-                    .matchedGeometryEffect(id: selectedVibe.title, in: animation)
-                    .scaleEffect(scale)
-                    .offset(x: draggedOffset.width, y: draggedOffset.height)
-                    .gesture(DragGesture().onChanged{ value in
-                        
-                        if value.translation.height > 50 {
-                            self.draggedOffset = value.translation
-                        }
-                        
-                        withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
-                            if draggedOffset.height < 150 {
-                                self.scale = 1 - abs(draggedOffset.height / 220)
-                            }
-                        }
-                    }.onEnded{ value in
-                        if value.translation.height > 70 && value.translation.height < 180{
-                            withAnimation(.linear(duration: 0.2)) { //.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)
-                                self.vibesDict = [:]
-                                self.showVibe.toggle()
-                                self.selectedVibe = VibeCoverImage(image: UIImage(), title: "")
-                                scale = 1
-                            }
-                            draggedOffset = .zero
-                        } else {
-                            withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
-                                draggedOffset = .zero
-                                scale = 1.0
-                            }
-                        }
-                    })
-                    .frame(width: screenWidth, height: screenHeight)
-                    .edgesIgnoringSafeArea(.all)
+//                    .matchedGeometryEffect(id: selectedVibe.title, in: animation)
+//                    .scaleEffect(scale)
+//                    .offset(x: draggedOffset.width, y: draggedOffset.height)
+//                    .gesture(DragGesture().onChanged{ value in
+//
+//                        if value.translation.height > 50 {
+//                            self.draggedOffset = value.translation
+//                        }
+//
+//                        withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+//                            if draggedOffset.height < 150 {
+//                                self.scale = 1 - abs(draggedOffset.height / 220)
+//                            }
+//                        }
+//                    }.onEnded{ value in
+//                        if value.translation.height > 70 && value.translation.height < 180{
+//                            withAnimation(.linear(duration: 0.2)) { //.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)
+//                                self.vibesDict = [:]
+//                                self.showVibe.toggle()
+//                                self.selectedVibe = VibeCoverImage(image: UIImage(), title: "")
+//                                scale = 1
+//                            }
+//                            draggedOffset = .zero
+//                        } else {
+//                            withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+//                                draggedOffset = .zero
+//                                scale = 1.0
+//                            }
+//                        }
+//                    })
+//                    .frame(width: screenWidth, height: screenHeight)
+//                    .edgesIgnoringSafeArea(.all)
             }
         }
     }

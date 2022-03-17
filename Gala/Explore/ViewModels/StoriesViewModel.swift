@@ -19,6 +19,10 @@ class StoriesViewModel: ObservableObject {
     
     @Published var matchedStories: [UserPostSimple] = []
         
+    @Published var currentVibe: [UserPostSimple] = [] //Will contain all stories from a particular vibe
+    @Published var currentStory = "" //Will contain the current vibeID
+    @Published var showStory = false
+    
     private var cancellables: [AnyCancellable] = []
 
     init() {
@@ -239,7 +243,7 @@ class StoriesViewModel: ObservableObject {
 }
 
 struct VibeCoverImage: Identifiable {
-    let id = UUID()
+    let id = UUID().uuidString
     let image: UIImage
     let title: String
 }

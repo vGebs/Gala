@@ -28,30 +28,50 @@ struct StoryTransitionView: View {
             if vibesDict[selectedVibe.title] != nil {
                 ForEach(0..<vibesDict[selectedVibe.title]!.count) { i in //vibesDict[selectedVibe.title]!.count
                     GeometryReader { proxy in
-                        SnapCard(storyImg: vibesDict[selectedVibe.title]![i].posts[postIndex].storyImage) //
-                            .rotation3DEffect(yOffset > 50 ? .degrees(0) : .degrees(proxy.frame(in: .global).minX / -10), axis: (x: 0, y: 1, z: 0))
-                            .onTapGesture {
-                                if postIndex == vibesDict[selectedVibe.title]![i].posts.count - 1{
-                                    postIndex = 0
-                                    
-                                    if userIndex == vibesDict[selectedVibe.title]!.count - 1{
-                                        withAnimation {
-                                            //userIndex = 0
-                                            postIndex = 0
-                                            showVibe = false
-                                            userIndex = 0
+                        ZStack{
+                            SnapCard(storyImg: vibesDict[selectedVibe.title]![userIndex].posts[postIndex].storyImage) //
+                                .rotation3DEffect(yOffset > 50 ? .degrees(0) : .degrees(proxy.frame(in: .global).minX / -10), axis: (x: 0, y: 1, z: 0))
+                                .onTapGesture {
+                                    //Posts are done
+                                    //userIndex = i
+    
+                                    if postIndex == vibesDict[selectedVibe.title]![userIndex].posts.count - 1{
+                                        postIndex = 0
+                                        
+                                        //Users are done
+                                        if userIndex == vibesDict[selectedVibe.title]!.count - 1{
+                                            withAnimation {
+                                                self.selectedVibe = VibeCoverImage(image: UIImage(), title: "")
+                                                showVibe = false
+                                                userIndex = 0
+                                            }
+                                        } else {
+                                            //still users left
+                                            withAnimation {
+                                                userIndex += 1
+                                            }
                                         }
                                     } else {
-                                        withAnimation {
-                                            postIndex = 0
-                                            userIndex += 1
-                                        }
+                                        //still posts left
+                                        postIndex += 1
                                     }
-                                } else {
-                                    postIndex += 1
+                                }.gesture(DragGesture().onChanged({ value in
+                                    if abs(value.translation.width) > 10 {
+                                        userIndex = i
+                                        postIndex = 0
+                                    }
+                                }))
+                                
+                                .tag(i)
+                            
+                            VStack {
+                                Text("UserIndex: \(userIndex)")
+                                if userIndex == i {
+                                    Text("UserIndex == i")
                                 }
+                                Text("PostIndex: \(postIndex)")
                             }
-                            .tag(i)
+                        }
                     }
                 }
             }
@@ -70,11 +90,12 @@ struct SnapCard: View {
             Image(uiImage: storyImg!)
                 .resizable()
                 .scaledToFill()
+                .frame(width: screenWidth)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         } else {
             RoundedRectangle(cornerRadius: 10)
                 .foregroundColor(.primary)
+                .frame(width: screenWidth)
         }
     }
 }
-
