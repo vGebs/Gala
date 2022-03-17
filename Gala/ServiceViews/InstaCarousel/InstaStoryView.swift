@@ -7,13 +7,20 @@
 
 import SwiftUI
 
+enum StoryMode {
+    case match
+    case vibe
+}
+
 struct InstaStoryView: View {
     @ObservedObject var storyData: StoriesViewModel
+    var mode: StoryMode = .vibe
+    
     var body: some View {
-        if storyData.showStory {
+        if storyData.showVibeStory || storyData.showMatchStory {
             TabView(selection: $storyData.currentStory) {
-                ForEach($storyData.currentVibe) { $bundle in
-                    StoryCardView(bundle: $bundle, storyData: storyData)
+                ForEach(mode == .vibe ? $storyData.currentVibe : $storyData.matchedStories) { $bundle in
+                    StoryCardView(bundle: $bundle, storyData: storyData, mode: mode)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -30,6 +37,8 @@ struct StoryCardView: View {
     @State var timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     @State var timerProgress: CGFloat = 0
         
+    var mode: StoryMode
+    
     var body: some View {
         //For 3d rotation
         GeometryReader { proxy in
@@ -97,7 +106,9 @@ struct StoryCardView: View {
                     
                     Button(action: {
                         withAnimation {
-                            storyData.showStory = false
+                            storyData.showMatchStory = false
+                            storyData.currentVibe = []
+                            storyData.currentStory = ""
                         }
                     }, label: {
                         Image(systemName: "xmark")
@@ -164,6 +175,16 @@ struct StoryCardView: View {
     }
     
     func updatingStory(forward: Bool = true){
+        
+        switch mode {
+        case .vibe:
+            updateVibeStory(forward)
+        case .match:
+            updateMatchStory(forward)
+        }
+    }
+    
+    func updateVibeStory(_ forward: Bool) {
         let index = min(Int(timerProgress), bundle.posts.count - 1)
         
         let story = bundle.posts[index]
@@ -194,7 +215,7 @@ struct StoryCardView: View {
             // else, closing view
             if let lastBundle = storyData.currentVibe.last, lastBundle.id == bundle.id {
                 withAnimation {
-                    storyData.showStory = false
+                    storyData.showVibeStory = false
                 }
             } else {
                 //updating to next bundle
@@ -204,6 +225,52 @@ struct StoryCardView: View {
                 
                 withAnimation {
                     storyData.currentStory = storyData.currentVibe[bundleIndex + 1].id
+                }
+            }
+        }
+    }
+    
+    func updateMatchStory(_ forward: Bool) {
+        let index = min(Int(timerProgress), bundle.posts.count - 1)
+        
+        let story = bundle.posts[index]
+        
+        if !forward {
+            //moving index backward
+            //else set timer to 0
+            
+            if let first = storyData.matchedStories.first, first.id != bundle.id {
+                let bundleIndex = storyData.matchedStories.firstIndex { currentBundle in
+                    return bundle.id == currentBundle.id
+                } ?? 0
+                
+                withAnimation {
+                    storyData.currentStory = storyData.matchedStories[bundleIndex - 1].id
+                }
+                
+            } else {
+                timerProgress = 0
+            }
+            
+            return
+        }
+        
+        //checking if its the last
+        if let last = bundle.posts.last, last.id == story.id {
+            //if there is another story, move to it
+            // else, closing view
+            if let lastBundle = storyData.matchedStories.last, lastBundle.id == bundle.id {
+                withAnimation {
+                    storyData.showMatchStory = false
+                }
+            } else {
+                //updating to next bundle
+                let bundleIndex = storyData.matchedStories.firstIndex { currentBundle in
+                    return bundle.id == currentBundle.id
+                } ?? 0
+                
+                withAnimation {
+                    storyData.currentStory = storyData.matchedStories[bundleIndex + 1].id
                 }
             }
         }

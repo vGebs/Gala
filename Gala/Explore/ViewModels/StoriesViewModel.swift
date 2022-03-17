@@ -18,11 +18,11 @@ class StoriesViewModel: ObservableObject {
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
     
     @Published var matchedStories: [UserPostSimple] = []
-        
+    
     @Published var currentVibe: [UserPostSimple] = [] //Will contain all stories from a particular vibe
     @Published var currentStory = "" //Will contain the current vibeID
-    @Published var showStory = false
-    
+    @Published var showVibeStory = false
+    @Published var showMatchStory = false
     private var cancellables: [AnyCancellable] = []
 
     init() {

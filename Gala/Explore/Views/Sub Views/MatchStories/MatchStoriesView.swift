@@ -27,7 +27,7 @@ struct MatchStoriesView: View {
                 ScrollView(.horizontal){
                     HStack{
                         ForEach(viewModel.matchedStories){ story in //stories, id: \.id
-                            MatchedStoryView(story: story)
+                            MatchedStoryView(storyVM: viewModel, story: story)
                                 .padding(.top, 2)
                         }
                     }

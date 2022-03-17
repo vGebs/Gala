@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct MatchedStoryView: View {
+    @ObservedObject var storyVM: StoriesViewModel
     @ObservedObject var story: UserPostSimple
-    @State var showStory = false
     var body: some View {
         VStack{
             Button(action: {
-                showStory = true
+                storyVM.currentStory = story.id
+                storyVM.showMatchStory = true
             }){
                 if story.posts[story.posts.count - 1].storyImage == nil { //viewModel.img
                     ZStack{
@@ -46,8 +47,8 @@ struct MatchedStoryView: View {
                 .foregroundColor(.primary)
         }
         .frame(width: screenWidth / 6)
-        .sheet(isPresented: $showStory, content: {
-            MultipleStoryView(posts: story.posts, show: $showStory)
+        .sheet(isPresented: $storyVM.showMatchStory, content: {
+            InstaStoryView(storyData: storyVM, mode: .match)
         })
     }
 }

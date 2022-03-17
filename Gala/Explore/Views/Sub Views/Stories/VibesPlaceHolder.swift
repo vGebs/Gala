@@ -63,7 +63,7 @@ struct VibesPlaceHolder: View {
                                     if let vibe = viewModel.vibesDict[vibe.title] {
                                         viewModel.currentVibe = vibe
                                         viewModel.currentStory = vibe[0].id
-                                        viewModel.showStory = true
+                                        viewModel.showVibeStory = true
                                     }
                                 }
                             }){
@@ -77,7 +77,7 @@ struct VibesPlaceHolder: View {
             }
             .frame(width: screenWidth * 0.95)
         }
-        .sheet(isPresented: $viewModel.showStory, content: {
+        .sheet(isPresented: $viewModel.showVibeStory, content: {
             InstaStoryView(storyData: viewModel)
         })
         .fullScreenCover(isPresented: $showAllForVibe, content: {
