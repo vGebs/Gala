@@ -15,7 +15,7 @@ class StoriesViewModel: ObservableObject {
     private var matchService = MatchService.shared
     
     @Published var vibeImages: [VibeCoverImage] = []
-    @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[String: [UserPostSimple]]
+    @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[input->vibe title: [UserPostSimple]]
     
     @Published var matchedStories: [UserPostSimple] = []
     
