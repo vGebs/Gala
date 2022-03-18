@@ -23,7 +23,6 @@ class StoryViewModel: ObservableObject, StoryViewModelProtocol {
     @Published private(set) var age: String = ""
     @Published private(set) var liked: Bool = false
     
-    
     private var cancellables: [AnyCancellable] = []
     
     init(pid: Date, name: String, birthdate: Date, uid: String) {

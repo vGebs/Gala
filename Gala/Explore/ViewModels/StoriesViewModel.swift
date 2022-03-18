@@ -19,15 +19,29 @@ class StoriesViewModel: ObservableObject {
     
     @Published var matchedStories: [UserPostSimple] = []
     
+    @Published var postsILiked: [SimpleStoryLike] = []
+    
     @Published var currentVibe: [UserPostSimple] = [] //Will contain all stories from a particular vibe
     @Published var currentStory = "" //Will contain the current vibeID
     @Published var showVibeStory = false
     @Published var showMatchStory = false
+    
     private var cancellables: [AnyCancellable] = []
 
     init() {
         // We will be using this class in for both the vibes view stories and the matchedStories
         fetch()
+        //observeStoriesILiked()
+    }
+    
+    func fetch() {
+        matchService.getMatches()
+            .flatMap { matches in
+                self.fetchStories(matches)
+            }
+            .flatMap { _ in
+                self.fetchVibeImages()
+            }
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -40,20 +54,61 @@ class StoriesViewModel: ObservableObject {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
+            //.eraseToAnyPublisher()
     }
     
-    func fetch() -> AnyPublisher<Void, Error> {
-        matchService.getMatches()
-            .flatMap { matches in
-                self.fetchStories(matches)
+    func postIsLiked(uid: String, pid: Date) -> Bool {
+        for story in postsILiked {
+            if story.likedUID == uid && story.pid == pid {
+                return true
             }
-            .flatMap { _ in
-                self.fetchVibeImages()
-            }
-            .eraseToAnyPublisher()
+        }
+        return false
     }
     
-    func fetchStories(_ matches: [String]) -> AnyPublisher<Void, Error> {
+    func likePost(uid: String, pid: Date) {
+        LikesService.shared.likePost(uid: uid, postID: pid)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("StoryCardViewModel: Failed to like post")
+                    print("StoryCardViewModel-err: \(e)")
+                case .finished:
+                    print("StoryCardViewModel: Successfully liked post")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+    
+    func unLikePost(uid: String, pid: Date) {
+        var docID = ""
+        for story in postsILiked {
+            if story.pid == pid && story.likedUID == uid {
+                docID = story.docID
+                break
+            }
+        }
+        
+        LikesService.shared.unLikePost(docID: docID)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("StoriesViewModel: Failed to unlike post")
+                    print("StoriesViewModel-err: \(e)")
+                case .finished:
+                    print("StoriesViewModel: Successfully unliked user")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+}
+
+extension StoriesViewModel {
+    private func fetchStories(_ matches: [String]) -> AnyPublisher<Void, Error> {
 
         return Future<Void, Error> { promise in
             self.storyMetaService.getStories()
@@ -209,7 +264,7 @@ class StoriesViewModel: ObservableObject {
         }.eraseToAnyPublisher()
     }
     
-    func fetchVibeImages() -> AnyPublisher<Void, Error>{
+    private func fetchVibeImages() -> AnyPublisher<Void, Error>{
         self.vibeImages = []
         let count = vibesDict.keys.count
         var counter = 0
@@ -242,15 +297,40 @@ class StoriesViewModel: ObservableObject {
     }
 }
 
-struct VibeCoverImage: Identifiable {
-    let id = UUID().uuidString
-    let image: UIImage
-    let title: String
+extension StoriesViewModel {
+    private func observeStoriesILiked() {
+        LikesService.shared.observeStoriesILiked { [weak self] storyLikes, change in
+            switch change {
+                
+            case .added:
+                for like in storyLikes {
+                    print(like)
+                    self?.postsILiked.append(like)
+                }
+                
+            case .modified:
+                for like in storyLikes {
+                    for i in 0..<(self?.postsILiked.count)! {
+                        if like.docID == (self?.postsILiked[i].docID)! {
+                            self?.postsILiked[i] = like
+                        }
+                    }
+                }
+                
+            case .removed:
+                for story in storyLikes {
+                    for i in 0..<(self?.postsILiked.count)! {
+                        if story.docID == self?.postsILiked[i].docID {
+                            self?.postsILiked.remove(at: i)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-struct StoryModel: Identifiable {
-    var id = UUID()
-    var story: UIImage
-    var name: String
-    var userID: String
-}
+//add a property to Post -> liked: Bool
+// 1. Push a new like to db
+// 2. wait for observer, look up the user and update the liked bool

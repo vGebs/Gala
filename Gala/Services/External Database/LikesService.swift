@@ -60,6 +60,18 @@ class LikesService: LikesServiceProtocol {
         .eraseToAnyPublisher()
     }
     
+    func unLikePost(docID: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            self.db.collection("Likes").document(docID).delete() { err in
+                if let e = err {
+                    print("LikesService: Failed to unlike post")
+                    promise(.failure(e))
+                }
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
     func unLikeUser(uid: String) -> AnyPublisher<Void, Error> {
         self.getPeopleILiked().flatMap { users in
             self.unLikeUser_(uid: uid, inComingLikes: users)
@@ -221,6 +233,85 @@ extension LikesService {
             }
         }
         .eraseToAnyPublisher()
+    }
+}
+
+extension LikesService {
+    func observeStoriesILiked(completion: @escaping ([SimpleStoryLike], DocumentChangeType) -> Void) {
+        db.collection("Likes")
+            .whereField("likerUID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .addSnapshotListener { docSnapshot, err in
+                guard let  _ = docSnapshot?.documents else {
+                    print("Error fetching document: \(err!)")
+                    return
+                }
+                
+                var returns: [SimpleStoryLike] = []
+                var docChange: DocumentChangeType = .added
+
+                docSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    let docID = change.document.documentID
+                    
+                    if data["postID"] != nil {
+                        let likedUID = data["likedUID"] as? String ?? ""
+                        let pid = data["postID"] as? Timestamp
+                        
+                        if let finalPid = pid?.dateValue() {
+                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID)
+                            returns.append(simpleLike)
+                        }
+                    }
+                    
+                    if change.type == .modified {
+                        docChange = .modified
+                        
+                    } else if change.type == .removed {
+                        docChange = .removed
+                    }
+                })
+                
+                completion(returns, docChange)
+            }
+    }
+    
+    func observeIfILikedThisUser(uid: String, completion: @escaping ([SimpleStoryLike], DocumentChangeType) -> Void) {
+        db.collection("Likes")
+            .whereField("likerUID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .whereField("likedUID", isEqualTo: uid)
+            .addSnapshotListener { docSnapshot, err in
+                guard let  _ = docSnapshot?.documents else {
+                    print("Error fetching document: \(err!)")
+                    return
+                }
+                
+                var returns: [SimpleStoryLike] = []
+                var docChange: DocumentChangeType = .removed
+
+                docSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    let docID = change.document.documentID
+                    
+                    if data["postID"] != nil {
+                        let likedUID = data["likedUID"] as? String ?? ""
+                        let pid = data["postID"] as? Timestamp
+                        
+                        if let finalPid = pid?.dateValue() {
+                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID)
+                            returns.append(simpleLike)
+                        }
+                    }
+                    
+                    if change.type == .modified {
+                        docChange = .modified
+                        
+                    } else if change.type == .added {
+                        docChange = .added
+                    }
+                })
+                
+                completion(returns, docChange)
+            }
     }
 }
 

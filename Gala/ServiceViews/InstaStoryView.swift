@@ -38,14 +38,14 @@ struct StoryCardView: View {
     @State var timerProgress: CGFloat = 0
         
     var mode: StoryMode
-
+    
     var body: some View {
         //For 3d rotation
         GeometryReader { proxy in
             ZStack {
                 //Getting current index
                 let index = min(Int(timerProgress), bundle.posts.count - 1)
-
+                
                 VStack {
                     ZStack {
                         if let story = bundle.posts[index] {
@@ -64,7 +64,20 @@ struct StoryCardView: View {
                     if mode == .match {
                         textfield_camButton
                     } else {
-                        likeButton
+                        Button(action: {
+                            //like user
+                            if bundle.liked {
+                                storyData.unLikePost(uid: bundle.uid, pid: bundle.posts[index].pid)
+                            } else {
+                                storyData.likePost(uid: bundle.uid, pid: bundle.posts[index].pid)
+                            }
+                        }){
+                            if bundle.liked {
+                                unlikeButton
+                            } else {
+                                likeButton
+                            }
+                        }
                     }
                 }
                 
@@ -125,7 +138,6 @@ struct StoryCardView: View {
                             }
                         }
                         
-                        
                         Spacer()
                         
                         Button(action: {
@@ -167,26 +179,42 @@ struct StoryCardView: View {
         }
     }
     
+    var unlikeButton: some View {
+        HStack {
+            ZStack{
+                Capsule().stroke()
+                    .frame(width: screenWidth * 0.95, height: screenHeight * 0.045)
+                    .foregroundColor(.buttonPrimary)
+                
+                HStack {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    Text("Unlike")
+                        .font(.system(size: 21, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+        .offset(y: -2)
+        .padding(.horizontal, 5)
+    }
+    
     var likeButton: some View {
         HStack {
-            Button(action: {
-                //like user
-            }){
-                ZStack{
-                    Capsule().stroke()
-                        .frame(width: screenWidth * 0.95, height: screenHeight * 0.045)
-                        .foregroundColor(.buttonPrimary)
-                    
-                    HStack {
-                        Image(systemName: "heart")
-                            .font(.system(size: 19, weight: .bold, design: .rounded))
-                            .foregroundColor(.primary)
-                        Text("Like")
-                            .font(.system(size: 21, weight: .bold, design: .rounded))
-                            .foregroundColor(.primary)
-                    }
-                }
+            ZStack{
+                Capsule().stroke()
+                    .frame(width: screenWidth * 0.95, height: screenHeight * 0.045)
+                    .foregroundColor(.buttonPrimary)
                 
+                HStack {
+                    Image(systemName: "heart")
+                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    Text("Like")
+                        .font(.system(size: 21, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                }
             }
         }
         .offset(y: -2)

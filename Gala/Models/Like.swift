@@ -17,6 +17,12 @@ struct Like {
     var storyID: Date?
 }
 
+struct SimpleStoryLike {
+    var likedUID: String
+    var pid: Date
+    var docID: String
+}
+
 struct InComingLike {
     var like: Like
     var docID: String

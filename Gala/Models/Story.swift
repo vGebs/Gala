@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import FirebaseFirestore
 
 //Some changes:
 //  - We are going to make 'postID_timeAndDatePosted' an array
@@ -73,6 +74,7 @@ class Post: Identifiable, ObservableObject {
             }.store(in: &cancellables)
 
         self.timeSincePost = secondsToHoursMinutesSeconds(Int(pid.timeIntervalSinceNow))
+        
     }
     
     // extract this method and add it to date.
@@ -101,6 +103,8 @@ class UserPostSimple: Identifiable, ObservableObject {
     let coordinates: Coordinate
     
     @Published var profileImg: UIImage?
+    
+    @Published var liked = false
     
     private var cancellables: [AnyCancellable] = []
     
@@ -134,10 +138,22 @@ class UserPostSimple: Identifiable, ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        
+        if uid != AuthService.shared.currentUser?.uid {
+            observeIfILikedThisUser()
+        }
     }
-}
-
-struct Coordinate {
-    var lat: Double
-    var lng: Double
+    
+    func observeIfILikedThisUser() {
+        LikesService.shared.observeIfILikedThisUser(uid: uid) { [weak self] storyLikes, change in
+            switch change {
+            case .added:
+                self?.liked = true
+            case .modified:
+                self?.liked = true
+            case .removed:
+                self?.liked = false 
+            }
+        }
+    }
 }
