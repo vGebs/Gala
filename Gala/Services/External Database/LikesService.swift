@@ -98,6 +98,74 @@ class LikesService: LikesServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
+    func observeLikesForPost(pid: Date, completion: @escaping ([Like], DocumentChangeType) -> Void) {
+        print("PID: \(pid)")
+        print("PID2: \(pid.addingTimeInterval(-6 * 60 * 60))")
+        
+//        let utcDateFormatter = DateFormatter()
+//        utcDateFormatter.dateStyle = .medium
+//        utcDateFormatter.timeStyle = .medium
+//
+//        // The default timeZone on DateFormatter is the device’s
+//        // local time zone. Set timeZone to UTC to get UTC time.
+//        utcDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+//
+//        // Printing a Date
+//        print(utcDateFormatter.string(from: pid))
+//
+//        // Parsing a string representing a date
+//        let utcDate = utcDateFormatter.date(from: utcDateFormatter.string(from: pid))!.addingTimeInterval(-6 * 60 * 60)
+        
+        let timestamp = Timestamp(date: pid)
+        
+        self.db.collection("Likes")
+            .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .whereField("postID", isEqualTo: timestamp)
+            .addSnapshotListener { docSnapshot, err in
+                if let e = err {
+                    print("LikesService: Failed to fetch likes for story -> \(timestamp)")
+                    print("LikesService-err: \(e.localizedDescription)")
+                    return
+                }
+                
+                var returns: [Like] = []
+                var docChange: DocumentChangeType = .removed
+                print("fired bitch")
+                docSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    
+                    let likerUID = data["likerUID"] as? String ?? ""
+                    let likedUID = data["likedUID"] as? String ?? ""
+                    let birthdayOfLiker = data["birthdayOfLiker"] as? String ?? ""
+                    let name = data["nameOfLiker"] as? String ?? ""
+                    let date = data["dateOfLike"] as? Timestamp
+                    let pid = data["postID"] as? Timestamp
+                    
+                    if let finalPid = pid?.dateValue(), let finalDate = date?.dateValue() {
+                        let newLike = Like(
+                            dateOfLike: finalDate,
+                            likerUID: likerUID,
+                            likedUID: likedUID,
+                            nameOfLiker: name,
+                            birthdayOfLiker: birthdayOfLiker,
+                            storyID: finalPid
+                        )
+                        print("new like here bitch")
+                        returns.append(newLike)
+                    }
+                    
+                    if change.type == .modified {
+                        docChange = .modified
+                        
+                    } else if change.type == .added {
+                        docChange = .added
+                    }
+                })
+                
+                completion(returns, docChange)
+            }
+    }
+    
     //This function returns all users that have liked the current user
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
         return Future<[Like], Error> { promise in

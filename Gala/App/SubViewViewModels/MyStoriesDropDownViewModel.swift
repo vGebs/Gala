@@ -15,6 +15,12 @@ class MyStoriesDropDownViewModel: ObservableObject {
     
     init() {
         //Fetch all new stories
+        
+        fetchStories()
+        //Fetch Likes for each story (need the stories first before we can get likes)
+    }
+    
+    private func fetchStories() {
         StoryMetaService.shared.getMyStories()
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
@@ -27,15 +33,12 @@ class MyStoriesDropDownViewModel: ObservableObject {
                     print("MyStoriesDropDownViewModel: Successfully fetched my stories")
                 }
             } receiveValue: { [weak self] stories in
-                print("Posts: \(stories)")
-                //self?.stories = postIDs
                 for post in stories {
-                    let newStory = StoryViewable(pid: post.pid, title: post.title, likes: [])
+                    let newStory = StoryViewable(pid: post.pid, title: post.title)
                     self?.stories.insert(newStory, at: 0)
                 }
             }
             .store(in: &cancellables)
-        //Fetch Likes for each story (need the stories first before we can get likes)
     }
     
     func deleteStory(storyID: Date, vibe: String) {

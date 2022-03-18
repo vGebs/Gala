@@ -28,11 +28,45 @@ struct StoryWithVibe: Identifiable {
     var title: String
 }
 
-struct StoryViewable: Identifiable {
-    var id = UUID()
+class StoryViewable: ObservableObject, Identifiable {
+    var id = UUID().uuidString
+    
     var pid: Date
     var title: String
-    var likes: [Int]
+    
+    var likes: [Like] {
+        willSet{
+            objectWillChange.send()
+        }
+    }
+    
+    init(pid: Date, title: String) {
+        self.title = title
+        self.likes = []
+        self.pid = pid
+        
+        LikesService.shared.observeLikesForPost(pid: pid) { [weak self] likes, change in
+            print("Likes n shit: \(likes)")
+            switch change {
+            case .added:
+                print("added: Likes n shit")
+                for like in likes {
+                    self?.likes.append(like)
+                }
+            case .modified:
+                print("")
+            case .removed:
+                for like in likes {
+                    for i in 0..<(self?.likes.count)! {
+                        if like.likerUID == self?.likes[i].likerUID {
+                            self?.likes.remove(at: i)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 class Post: Identifiable, ObservableObject {

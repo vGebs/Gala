@@ -129,15 +129,19 @@ extension StoriesViewModel {
                     
                     var indexes: [Int] = []
                     
+                    print("Match Count: \(matches.count)")
                     for match in matches {
                         for i in 0..<userPostCopy.count {
                             if userPostCopy[i].uid == match {
                                 print("Found match in stories")
                                 self?.matchedStories.append(userPostCopy[i])
                                 indexes.append(i)
+                                print("added index: \(i)")
                             }
                         }
                     }
+                    
+                    indexes.sort()
                     
                     for index in indexes.reversed() {
                         userPostCopy.remove(at: index)
