@@ -31,7 +31,7 @@ class StoriesViewModel: ObservableObject {
     init() {
         // We will be using this class in for both the vibes view stories and the matchedStories
         fetch()
-        //observeStoriesILiked()
+        observeStoriesILiked()
     }
     
     func fetch() {
@@ -87,10 +87,11 @@ class StoriesViewModel: ObservableObject {
         for story in postsILiked {
             if story.pid == pid && story.likedUID == uid {
                 docID = story.docID
+                print("DocID: \(docID)")
                 break
             }
         }
-        
+        print("DocID: \(docID)")
         LikesService.shared.unLikePost(docID: docID)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -308,7 +309,7 @@ extension StoriesViewModel {
                 
             case .added:
                 for like in storyLikes {
-                    print(like)
+                    print("I liked a story: \(like)")
                     self?.postsILiked.append(like)
                 }
                 

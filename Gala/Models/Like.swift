@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Like {
+struct Like: Identifiable {
+    let id = UUID().uuidString
     var dateOfLike: Date
     var likerUID: String
     var likedUID: String

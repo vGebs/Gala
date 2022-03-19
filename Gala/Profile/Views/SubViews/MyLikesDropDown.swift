@@ -13,9 +13,8 @@ struct MyLikesDropDown: View {
     @State var expanded = false
     
     @ObservedObject var viewModel: MyStoriesDropDownViewModel
-    @ObservedObject var likesVM: MyLikesDropDownViewModel
     
-    var story: StoryViewable
+    @ObservedObject var story: StoryViewable
     
     @Binding var addedHeight: CGFloat
         
@@ -23,7 +22,6 @@ struct MyLikesDropDown: View {
         self.story = story
         self._addedHeight = addedHeight
         self.viewModel = viewModel
-        self.likesVM = MyLikesDropDownViewModel(story: story)
     }
     
     var body: some View {
@@ -31,19 +29,24 @@ struct MyLikesDropDown: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke()
                 .foregroundColor(.accent)
+                //.frame(height: height)
             VStack {
                 
                 storyPlaceHolder
+                    .frame(height: 50)
                 
                 if expanded {
                     MyDivider()
                         .frame(width: screenWidth * 0.85)
+                    ForEach(story.likes) { like in
+                        SmallUserView(viewModel: LikesViewModel(), user: SmallUserViewModel(uid: like.likerUID), width: screenWidth * 0.85)
+                    }
                     Spacer()
                 }
             }
         }
         .animation(.easeInOut(duration: 0.2))
-        .frame(width: screenWidth * 0.9, height: height)
+        .frame(width: screenWidth * 0.9)
     }
     
     var storyPlaceHolder: some View {
@@ -52,7 +55,7 @@ struct MyLikesDropDown: View {
             Button(action: {
                 //View the story
             }){
-                if likesVM.image == nil {
+                if story.storyImg == nil {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke()
                         .foregroundColor(.buttonPrimary)
@@ -60,7 +63,7 @@ struct MyLikesDropDown: View {
                         .padding(.horizontal)
                 } else {
                     ZStack{
-                        Image(uiImage: likesVM.image!)
+                        Image(uiImage: story.storyImg!)
                             .resizable()
                             .scaledToFill()
                             .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -104,13 +107,13 @@ struct MyLikesDropDown: View {
                 Button(action: {
                     //expandview
                     if expanded {
-                        addedHeight -= height - 50
+                        addedHeight -= height + (CGFloat(story.likes.count) * 19)
                         height = 50
                         expanded.toggle()
                         
                     } else {
-                        height = (50 * CGFloat(story.likes.count))
-                        addedHeight += height - 50
+                        height = (screenWidth / 9 * CGFloat(story.likes.count))
+                        addedHeight += height + (CGFloat(story.likes.count) * 19)
                         expanded.toggle()
                     }
                 }){
@@ -140,13 +143,13 @@ struct MyLikesDropDown: View {
                     Button(action: {
                         //expandview
                         if expanded {
-                            addedHeight -= height - 50
+                            addedHeight -= height + (CGFloat(story.likes.count) * 19)
                             height = 50
                             expanded.toggle()
                             
                         } else {
-                            height = (50 * CGFloat(story.likes.count))
-                            addedHeight += height - 50
+                            height = (screenWidth / 9 * CGFloat(story.likes.count))
+                            addedHeight += height + (CGFloat(story.likes.count) * 19)
                             expanded.toggle()
                         }
                     }){
@@ -163,6 +166,7 @@ struct MyLikesDropDown: View {
                 }
             }
         }
+        .frame(height: height)
         .padding(.vertical, expanded ? 10 : 0)
     }
 }

@@ -34,16 +34,42 @@ class StoryViewable: ObservableObject, Identifiable {
     var pid: Date
     var title: String
     
+    var storyImg: UIImage? {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    
     var likes: [Like] {
         willSet{
             objectWillChange.send()
         }
     }
     
+    private var cancellables: [AnyCancellable] = []
+    
     init(pid: Date, title: String) {
         self.title = title
         self.likes = []
         self.pid = pid
+        
+        StoryContentService.shared.getStory(uid: AuthService.shared.currentUser!.uid, storyID: pid)
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion{
+                case .failure(let e):
+                    print("StoryViewable: Failed to fetch story")
+                    print("StoryViewable-err: \(e)")
+                case .finished:
+                    print("StoryViewable: Successfully fetched story")
+                }
+            } receiveValue: { [weak self] img in
+                if let img = img {
+                    self?.storyImg = img
+                }
+            }.store(in: &cancellables)
+
         
         LikesService.shared.observeLikesForPost(pid: pid) { [weak self] likes, change in
             print("Likes n shit: \(likes)")

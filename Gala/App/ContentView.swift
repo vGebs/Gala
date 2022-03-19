@@ -114,7 +114,7 @@ struct ContentView: View {
     var storiesInfoPopupView: some View {
         VStack{
             Spacer()
-            MyStoriesDropDown(popup: true)
+            //MyStoriesDropDown(popup: true)
             //.offset(x: storiesPopup ? 0 : -screenWidth)
             //.animation(.easeInOut)
                 .padding(.bottom, 50)

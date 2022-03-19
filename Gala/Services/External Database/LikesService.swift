@@ -61,6 +61,7 @@ class LikesService: LikesServiceProtocol {
     }
     
     func unLikePost(docID: String) -> AnyPublisher<Void, Error> {
+        print("DocID: \(docID)")
         return Future<Void, Error> { promise in
             self.db.collection("Likes").document(docID).delete() { err in
                 if let e = err {
@@ -99,23 +100,7 @@ class LikesService: LikesServiceProtocol {
     }
     
     func observeLikesForPost(pid: Date, completion: @escaping ([Like], DocumentChangeType) -> Void) {
-        print("PID: \(pid)")
-        print("PID2: \(pid.addingTimeInterval(-6 * 60 * 60))")
-        
-//        let utcDateFormatter = DateFormatter()
-//        utcDateFormatter.dateStyle = .medium
-//        utcDateFormatter.timeStyle = .medium
-//
-//        // The default timeZone on DateFormatter is the device’s
-//        // local time zone. Set timeZone to UTC to get UTC time.
-//        utcDateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-//
-//        // Printing a Date
-//        print(utcDateFormatter.string(from: pid))
-//
-//        // Parsing a string representing a date
-//        let utcDate = utcDateFormatter.date(from: utcDateFormatter.string(from: pid))!.addingTimeInterval(-6 * 60 * 60)
-        
+
         let timestamp = Timestamp(date: pid)
         
         self.db.collection("Likes")

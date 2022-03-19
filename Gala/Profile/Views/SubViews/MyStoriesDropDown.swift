@@ -11,7 +11,7 @@ struct MyStoriesDropDown: View {
     @State var expanded = false
     @State var initialHeight: CGFloat = 50
     
-    @ObservedObject var viewModel = MyStoriesDropDownViewModel()
+    @ObservedObject var viewModel: MyStoriesDropDownViewModel
     
     @State var addedHeight: CGFloat = 0
     
@@ -24,11 +24,10 @@ struct MyStoriesDropDown: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
                     .foregroundColor(.black)
-                
                 RoundedRectangle(cornerRadius: 15)
                     .stroke()
                     .foregroundColor(.accent)
-                
+
                 VStack {
                     Button(action: {
                         if expanded {
@@ -36,7 +35,7 @@ struct MyStoriesDropDown: View {
                             addedHeight = 0
                             expanded.toggle()
                         } else {
-                            initialHeight = (60 * CGFloat(Double(viewModel.stories.count + 1)))
+                            initialHeight = (63 * CGFloat(Double(viewModel.stories.count + 1)))
                             expanded.toggle()
                         }
                     }){

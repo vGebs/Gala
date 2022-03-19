@@ -26,7 +26,6 @@
 		FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */; };
 		FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67C6D526FA605700B77D30 /* VibesService.swift */; };
 		FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33F0278D7B010087127B /* CameraBtn.swift */; };
-		FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */; };
 		FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FE278FF8F00087127B /* StoryPublisher.swift */; };
 		FA6A34032791145E0087127B /* VibesPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A34022791145E0087127B /* VibesPopup.swift */; };
 		FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */; };
@@ -108,6 +107,7 @@
 		FAAAA75B27E2A23300663816 /* InstaStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA75A27E2A23300663816 /* InstaStoryView.swift */; };
 		FAAAA76527E3DD3700663816 /* VibeCoverImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76427E3DD3700663816 /* VibeCoverImage.swift */; };
 		FAAAA76727E40B2300663816 /* Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76627E40B2300663816 /* Coordinate.swift */; };
+		FAAAA76927E54A9700663816 /* LikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76827E54A9700663816 /* LikesViewModel.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -168,7 +168,6 @@
 		FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOptionsView.swift; sourceTree = "<group>"; };
 		FA67C6D526FA605700B77D30 /* VibesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesService.swift; sourceTree = "<group>"; };
 		FA6A33F0278D7B010087127B /* CameraBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBtn.swift; sourceTree = "<group>"; };
-		FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLikesDropDownViewModel.swift; sourceTree = "<group>"; };
 		FA6A33FE278FF8F00087127B /* StoryPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPublisher.swift; sourceTree = "<group>"; };
 		FA6A34022791145E0087127B /* VibesPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibesPopup.swift; sourceTree = "<group>"; };
 		FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserSexualityAndGender.swift; sourceTree = "<group>"; };
@@ -248,6 +247,7 @@
 		FAAAA75A27E2A23300663816 /* InstaStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstaStoryView.swift; sourceTree = "<group>"; };
 		FAAAA76427E3DD3700663816 /* VibeCoverImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeCoverImage.swift; sourceTree = "<group>"; };
 		FAAAA76627E40B2300663816 /* Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinate.swift; sourceTree = "<group>"; };
+		FAAAA76827E54A9700663816 /* LikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewModel.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -709,7 +709,7 @@
 			isa = PBXGroup;
 			children = (
 				FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */,
-				FA6A33FA278FA9350087127B /* MyLikesDropDownViewModel.swift */,
+				FAAAA76827E54A9700663816 /* LikesViewModel.swift */,
 			);
 			path = SubViewViewModels;
 			sourceTree = "<group>";
@@ -942,7 +942,6 @@
 				FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */,
-				FA6A33FB278FA9350087127B /* MyLikesDropDownViewModel.swift in Sources */,
 				FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */,
 				FA9E53FA27D2A803002DDF99 /* MatchGeometryTest.swift in Sources */,
 				FA8774342640A03100D5D5CB /* ShowcaseView.swift in Sources */,
@@ -1044,6 +1043,7 @@
 				FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */,
 				FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */,
 				FA8774532640A26000D5D5CB /* ProfilePersistenceService.swift in Sources */,
+				FAAAA76927E54A9700663816 /* LikesViewModel.swift in Sources */,
 				FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */,
 				FA72A17326681CAE004DEF77 /* AppState.swift in Sources */,
 				FAA88B1F26492960007F042D /* SwipeViewModel.swift in Sources */,

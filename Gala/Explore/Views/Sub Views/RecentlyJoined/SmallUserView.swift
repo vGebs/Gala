@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import Combine
 
-struct SmallUserView: View {
+protocol SmallUserViewModelProtocol: ObservableObject {
+    func likeUser(with id: String)
+    func unLikeUser(with id: String)
+}
+
+struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
     
-    @ObservedObject var viewModel: RecentlyJoinedViewModel
+    @ObservedObject var viewModel: Model
     @ObservedObject var user: SmallUserViewModel
     
     @State var likePressed = false
     @State var showProfile = false
+    var width: CGFloat
     
     var body: some View {
         HStack{
@@ -32,7 +39,7 @@ struct SmallUserView: View {
                             .foregroundColor(Color(.systemTeal))
                             .frame(width: screenWidth / 20, height: screenWidth / 20)
                             .padding(.trailing)
-                        
+                            
                     } else {
                         Image(uiImage: user.img!)
                             .resizable()
@@ -53,7 +60,7 @@ struct SmallUserView: View {
                     }){
                         VStack {
                             HStack {
-                                Text("\(user.profile!.name), \(user.profile!.age.ageString())")
+                                Text("\(user.profile?.name ?? ""), \(user.profile?.age.ageString() ?? "")")
                                     .font(.system(size: 17, weight: .medium, design: .rounded))
                                     .foregroundColor(.white)
                                 
@@ -94,7 +101,7 @@ struct SmallUserView: View {
             }
             Spacer()
         }
-        .frame(width: screenWidth * 0.95, height: screenWidth / 9)
+        .frame(width: width, height: screenWidth / 9)
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.name, age: user.profile!.age, mode: .otherAccount, uid: user.profile!.uid), showProfile: $showProfile)
         })

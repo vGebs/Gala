@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class RecentlyJoinedViewModel: ObservableObject {
+class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     
     private var recents = RecentlyJoinedUserService.shared
     private var likeService = LikesService.shared
