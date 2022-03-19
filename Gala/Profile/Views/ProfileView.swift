@@ -15,9 +15,7 @@ struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
     
     @AppStorage("isDarkMode") private var isDarkMode = true
-    
-    @StateObject var dropDownVM = MyStoriesDropDownViewModel()
-    
+        
 //MARK: - Main Body
     
     var body: some View {
@@ -62,7 +60,7 @@ struct ProfileView: View {
                         
                         if viewModel.editPressed == false {
                             if viewModel.mode != .otherAccount {
-                                MyStoriesDropDown(viewModel: dropDownVM, popup: false)
+                                MyStoriesDropDown(viewModel: viewModel.dropDownVM, popup: false)
                                     .padding(.bottom, 7)
                             }
                         }

@@ -40,7 +40,7 @@ class StoryViewable: ObservableObject, Identifiable {
         }
     }
     
-    var likes: [Like] {
+    var likes: [LikeWithProfile] {
         willSet{
             objectWillChange.send()
         }
@@ -72,19 +72,36 @@ class StoryViewable: ObservableObject, Identifiable {
 
         
         LikesService.shared.observeLikesForPost(pid: pid) { [weak self] likes, change in
-            print("Likes n shit: \(likes)")
             switch change {
             case .added:
-                print("added: Likes n shit")
                 for like in likes {
-                    self?.likes.append(like)
+                    ProfileService.shared.getProfile(uid: like.likerUID)
+                        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                        .receive(on: DispatchQueue.main)
+                        .sink { completion in
+                            switch completion {
+                            case .failure(let e):
+                                print("StoryViewable: failed to fetch userCore and img")
+                                print("StoryViewable-err: \(e)")
+                            case .finished:
+                                print("StoryViewable: Successfully fetched userCore and img")
+                            }
+                        } receiveValue: { uc, img in
+                            if let uc = uc, let img = img {
+                                let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: img)
+                                self?.likes.append(newLike)
+                            } else if let uc = uc {
+                                let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: nil)
+                                self?.likes.append(newLike)
+                            }
+                        }.store(in: &self!.cancellables)
                 }
             case .modified:
                 print("")
             case .removed:
                 for like in likes {
                     for i in 0..<(self?.likes.count)! {
-                        if like.likerUID == self?.likes[i].likerUID {
+                        if like.likerUID == self?.likes[i].like.likerUID {
                             self?.likes.remove(at: i)
                             break
                         }

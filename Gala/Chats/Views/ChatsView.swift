@@ -99,7 +99,7 @@ struct ChatsView: View {
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
-        .fullScreenCover(isPresented: $showChat, content: {
+        .sheet(isPresented: $showChat, content: {
             ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)

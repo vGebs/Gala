@@ -46,6 +46,37 @@ class StoryMetaService: ObservableObject {
             .eraseToAnyPublisher()
     }
     
+    func observeMyStories(completion: @escaping ([StoryWithVibe]) -> Void) {
+        db.collection("Stories").document(AuthService.shared.currentUser!.uid)
+            .addSnapshotListener { docSnapshot, error in
+                guard let document = docSnapshot else {
+                    print("StoryMetaService: Error fetching doc")
+                    return
+                }
+                
+                var f: [StoryWithVibe] = []
+                
+                if let data = document.data() {
+                    if let posts = data["posts"] as? [[String: Any]] {
+                        for i in 0..<posts.count {
+                            let id = posts[i]["id"] as? Timestamp
+                            let idFinal = id?.dateValue()
+                            
+                            let title = posts[i]["title"] as? String
+                            
+                            if let idd = idFinal, let title = title {
+                                let storyWithVibe = StoryWithVibe(pid: idd, title: title)
+                                //print(storyWithVibe)
+                                f.append(storyWithVibe)
+                            }
+                        }
+                    }
+                }
+                
+                completion(f)
+            }
+    }
+    
     func getMyStories() -> AnyPublisher<[StoryWithVibe], Error> {
         let currrentUser = UserCoreService.shared.currentUserCore!
         return Future<[StoryWithVibe], Error>{ promise in

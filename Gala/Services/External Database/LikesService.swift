@@ -60,19 +60,6 @@ class LikesService: LikesServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func unLikePost(docID: String) -> AnyPublisher<Void, Error> {
-        print("DocID: \(docID)")
-        return Future<Void, Error> { promise in
-            self.db.collection("Likes").document(docID).delete() { err in
-                if let e = err {
-                    print("LikesService: Failed to unlike post")
-                    promise(.failure(e))
-                }
-                promise(.success(()))
-            }
-        }.eraseToAnyPublisher()
-    }
-    
     func unLikeUser(uid: String) -> AnyPublisher<Void, Error> {
         self.getPeopleILiked().flatMap { users in
             self.unLikeUser_(uid: uid, inComingLikes: users)
@@ -99,57 +86,7 @@ class LikesService: LikesServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func observeLikesForPost(pid: Date, completion: @escaping ([Like], DocumentChangeType) -> Void) {
-
-        let timestamp = Timestamp(date: pid)
-        
-        self.db.collection("Likes")
-            .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .whereField("postID", isEqualTo: timestamp)
-            .addSnapshotListener { docSnapshot, err in
-                if let e = err {
-                    print("LikesService: Failed to fetch likes for story -> \(timestamp)")
-                    print("LikesService-err: \(e.localizedDescription)")
-                    return
-                }
-                
-                var returns: [Like] = []
-                var docChange: DocumentChangeType = .removed
-                print("fired bitch")
-                docSnapshot?.documentChanges.forEach({ change in
-                    let data = change.document.data()
-                    
-                    let likerUID = data["likerUID"] as? String ?? ""
-                    let likedUID = data["likedUID"] as? String ?? ""
-                    let birthdayOfLiker = data["birthdayOfLiker"] as? String ?? ""
-                    let name = data["nameOfLiker"] as? String ?? ""
-                    let date = data["dateOfLike"] as? Timestamp
-                    let pid = data["postID"] as? Timestamp
-                    
-                    if let finalPid = pid?.dateValue(), let finalDate = date?.dateValue() {
-                        let newLike = Like(
-                            dateOfLike: finalDate,
-                            likerUID: likerUID,
-                            likedUID: likedUID,
-                            nameOfLiker: name,
-                            birthdayOfLiker: birthdayOfLiker,
-                            storyID: finalPid
-                        )
-                        print("new like here bitch")
-                        returns.append(newLike)
-                    }
-                    
-                    if change.type == .modified {
-                        docChange = .modified
-                        
-                    } else if change.type == .added {
-                        docChange = .added
-                    }
-                })
-                
-                completion(returns, docChange)
-            }
-    }
+    
     
     //This function returns all users that have liked the current user
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
@@ -261,6 +198,30 @@ class LikesService: LikesServiceProtocol {
     }
 }
 
+extension LikesService {
+    func likeRecentlyJoinedUser(uid: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            self.db.collection("Likes").addDocument(data: [
+                "dateOfLike" : Date(),
+                "likerUID" : self.currentUserCore.uid,
+                "likedUID" : uid,
+                "nameOfLiker" : self.currentUserCore.name,
+                "birthdayOfLiker" : self.currentUserCore.age.formatDate(),
+                "recentlyJoinedLike": true
+            ]) { err in
+                if let err = err {
+                    print("LikesService: Failed to like user with id: \(uid)")
+                    print("LikesService-Error: \(err.localizedDescription)")
+                    promise(.failure(err))
+                } else {
+                    print("LikesService: Successfully likes user with id: \(uid)")
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
 //Post like service
 //likes on posts will be stored in the same collection
 //Likes on posts will expire after the post expires
@@ -286,6 +247,71 @@ extension LikesService {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    func unLikePost(docID: String) -> AnyPublisher<Void, Error> {
+        print("DocID: \(docID)")
+        return Future<Void, Error> { promise in
+            self.db.collection("Likes").document(docID).delete() { err in
+                if let e = err {
+                    print("LikesService: Failed to unlike post")
+                    promise(.failure(e))
+                }
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func observeLikesForPost(pid: Date, completion: @escaping ([Like], DocumentChangeType) -> Void) {
+
+        let timestamp = Timestamp(date: pid)
+        
+        self.db.collection("Likes")
+            .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .whereField("postID", isEqualTo: timestamp)
+            .addSnapshotListener { docSnapshot, err in
+                if let e = err {
+                    print("LikesService: Failed to fetch likes for story -> \(timestamp)")
+                    print("LikesService-err: \(e.localizedDescription)")
+                    return
+                }
+                
+                var returns: [Like] = []
+                var docChange: DocumentChangeType = .removed
+                print("fired bitch")
+                docSnapshot?.documentChanges.forEach({ change in
+                    let data = change.document.data()
+                    
+                    let likerUID = data["likerUID"] as? String ?? ""
+                    let likedUID = data["likedUID"] as? String ?? ""
+                    let birthdayOfLiker = data["birthdayOfLiker"] as? String ?? ""
+                    let name = data["nameOfLiker"] as? String ?? ""
+                    let date = data["dateOfLike"] as? Timestamp
+                    let pid = data["postID"] as? Timestamp
+                    
+                    if let finalPid = pid?.dateValue(), let finalDate = date?.dateValue() {
+                        let newLike = Like(
+                            dateOfLike: finalDate,
+                            likerUID: likerUID,
+                            likedUID: likedUID,
+                            nameOfLiker: name,
+                            birthdayOfLiker: birthdayOfLiker,
+                            storyID: finalPid
+                        )
+                        print("new like here bitch")
+                        returns.append(newLike)
+                    }
+                    
+                    if change.type == .modified {
+                        docChange = .modified
+                        
+                    } else if change.type == .added {
+                        docChange = .added
+                    }
+                })
+                
+                completion(returns, docChange)
+            }
     }
 }
 

@@ -39,7 +39,7 @@ struct MyLikesDropDown: View {
                     MyDivider()
                         .frame(width: screenWidth * 0.85)
                     ForEach(story.likes) { like in
-                        SmallUserView(viewModel: LikesViewModel(), user: SmallUserViewModel(uid: like.likerUID), width: screenWidth * 0.85)
+                        SmallUserView(viewModel: LikesViewModel(), user: SmallUserViewModel(profile: like.userCore, img: like.profileImg), width: screenWidth * 0.85)
                     }
                     Spacer()
                 }

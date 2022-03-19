@@ -309,7 +309,6 @@ extension StoriesViewModel {
                 
             case .added:
                 for like in storyLikes {
-                    print("I liked a story: \(like)")
                     self?.postsILiked.append(like)
                 }
                 
@@ -335,7 +334,3 @@ extension StoriesViewModel {
         }
     }
 }
-
-//add a property to Post -> liked: Bool
-// 1. Push a new like to db
-// 2. wait for observer, look up the user and update the liked bool

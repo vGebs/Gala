@@ -11,10 +11,11 @@ import Combine
 import FirebaseStorage
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import UIKit
 
 protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
-    func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
+    func getFullProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
 
@@ -45,7 +46,11 @@ class ProfileService: ProfileServiceProtocol {
         return createProfile_(profile, allImages: allImages)
     }
     
-    func getUserProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
+    func getProfile(uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error> {
+        return getProfile_(uid)
+    }
+    
+    func getFullProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
         return getUserProfile_(uid)
     }
     
@@ -168,6 +173,27 @@ extension ProfileService {
 
 //MARK: - getUserProfile()
 extension ProfileService {
+    
+    private func getProfile_(_ uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error> {
+        return Future<(UserCore?, UIImage?), Error> { [weak self] promise in
+            Publishers.Zip(
+                UserCoreService.shared.getUserCore(uid: uid),
+                ProfileImageService.shared.getProfileImage(id: uid, index: "0")
+            ).sink { completion in
+                switch completion{
+                case .failure(let e):
+                    print("ProfileService: Failed to fetch UserCore and ProfileImg")
+                    print("ProfileService-err: \(e)")
+                case .finished:
+                    print("ProfileService: Successfully fetched usercore and img")
+                }
+            } receiveValue: { uc, img in
+                promise(.success((uc, img)))
+            }
+            .store(in: &self!.cancellables)
+        }.eraseToAnyPublisher()
+    }
+    
     private func getUserProfile_(_ uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>{
         
         return Future<(UserCore?, UserAbout?, [ImageModel]?), Error> { [weak self] promise in

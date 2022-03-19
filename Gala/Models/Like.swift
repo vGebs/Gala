@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Like: Identifiable {
     let id = UUID().uuidString
@@ -16,6 +17,13 @@ struct Like: Identifiable {
     var nameOfLiker: String
     var birthdayOfLiker: String
     var storyID: Date?
+}
+
+struct LikeWithProfile: Identifiable {
+    let id = UUID().uuidString
+    let like: Like
+    let userCore: UserCore
+    let profileImg: UIImage?
 }
 
 struct SimpleStoryLike {

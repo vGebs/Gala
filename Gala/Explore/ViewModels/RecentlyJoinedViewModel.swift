@@ -66,16 +66,15 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     }
     
     func likeUser(with uid: String) {
-        LikesService.shared.likeUser(uid: uid)
+        LikesService.shared.likeRecentlyJoinedUser(uid: uid)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .sink { completion in
                 switch completion {
                 case .failure(let error):
                     print("SmallUserViewModel: Failed to like user")
                     print("SmallUserViewModel-Error: \(error.localizedDescription)")
-                
                 case .finished:
-                    print("SmallUserViewModel: Liked user with id: \(uid)")
+                    print("SmallUserViewModel: Liked recently joined user with id: \(uid)")
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.users.count)! {

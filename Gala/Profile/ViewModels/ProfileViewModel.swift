@@ -53,6 +53,8 @@ final class ProfileViewModel: ObservableObject {
     
     //@Published var showStories = StoryService.shared.postIDs.count > 0 ? true : false
     
+    @Published var dropDownVM = MyStoriesDropDownViewModel()
+    
     @Published var profileImage: [ImageModel] = []
     @Published var oneProfilePic: Int = 1
     
@@ -544,7 +546,7 @@ extension ProfileViewModel {
     
     private func readProfileFromFirebase(uid: String) {
         
-        ProfileService.shared.getUserProfile(uid: uid)
+        ProfileService.shared.getFullProfile(uid: uid)
             .sink { completion in
                 switch completion {
                 case let .failure(error):

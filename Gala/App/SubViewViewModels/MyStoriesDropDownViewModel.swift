@@ -16,8 +16,19 @@ class MyStoriesDropDownViewModel: ObservableObject {
     init() {
         //Fetch all new stories
         
-        fetchStories()
+        //fetchStories()
         //Fetch Likes for each story (need the stories first before we can get likes)
+        observeStories()
+    }
+    
+    private func observeStories() {
+        StoryMetaService.shared.observeMyStories { [weak self] stories in
+            self?.stories = []
+            for post in stories {
+                let newStory = StoryViewable(pid: post.pid, title: post.title)
+                self?.stories.insert(newStory, at: 0)
+            }
+        }
     }
     
     private func fetchStories() {

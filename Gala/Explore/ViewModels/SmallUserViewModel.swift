@@ -23,6 +23,12 @@ class SmallUserViewModel: ObservableObject {
         getProfileImage()
     }
     
+    init(profile: UserCore, img: UIImage?) {
+        self.profile = profile
+        self.img = img
+        getCityAndCountry()
+    }
+    
     //Need to make getUserCore in UserCoreService using async and await
     // then pull the usercore, followed by getCityAndCountry and getProfileImage
     init(uid: String) {

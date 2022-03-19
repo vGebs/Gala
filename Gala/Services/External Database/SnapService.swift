@@ -32,7 +32,7 @@ class SnapService: SnapServiceProtocol {
             .order(by: "snapID_timestamp")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
-                    print("Error fetching document: \(error!)")
+                    print("Error fetching snaps to me: \(error!)")
                     return
                 }
                 
