@@ -54,7 +54,8 @@ final class ProfileViewModel: ObservableObject {
     //@Published var showStories = StoryService.shared.postIDs.count > 0 ? true : false
     
     @Published var dropDownVM = MyStoriesDropDownViewModel()
-    
+    @Published var newComerLikesVM = NewcomerLikesViewModel()
+        
     @Published var profileImage: [ImageModel] = []
     @Published var oneProfilePic: Int = 1
     

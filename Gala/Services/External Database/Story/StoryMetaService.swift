@@ -15,7 +15,7 @@ class StoryMetaService: ObservableObject {
     
     private let db = Firestore.firestore()
     
-    private var currentUserCore = UserCoreService.shared.currentUserCore!
+    private var currentUserCore = UserCoreService.shared.currentUserCore
     
     private var cancellables: [AnyCancellable] = []
     

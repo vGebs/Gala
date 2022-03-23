@@ -28,7 +28,6 @@ class LikesViewModel: SmallUserViewModelProtocol {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
-
     }
     
     func unLikeUser(with id: String) {

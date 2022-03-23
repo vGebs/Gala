@@ -64,6 +64,11 @@ struct ProfileView: View {
                                     .padding(.bottom, 7)
                             }
                         }
+                        
+                        if viewModel.editPressed == false && viewModel.mode != .otherAccount {
+                            //NewComer DropDown
+                            NewcomerLikesDropDown(viewModel: viewModel.newComerLikesVM)
+                        }
                     }
                     
                     if (viewModel.showBio && viewModel.bioText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {

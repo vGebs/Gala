@@ -30,7 +30,7 @@ protocol LikesServiceProtocol {
 class LikesService: LikesServiceProtocol {
     
     private let db = Firestore.firestore()
-    private var currentUserCore = UserCoreService.shared.currentUserCore!
+    private var currentUserCore = UserCoreService.shared.currentUserCore
     
     private var cancellables: [AnyCancellable] = []
     
@@ -42,10 +42,10 @@ class LikesService: LikesServiceProtocol {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore.uid,
+                "likerUID" : self.currentUserCore!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore.name,
-                "birthdayOfLiker" : self.currentUserCore.age.formatDate()
+                "nameOfLiker" : self.currentUserCore!.name,
+                "birthdayOfLiker" : self.currentUserCore!.age.formatDate()
             ]) { err in
                 if let err = err {
                     print("LikesService: Failed to like user with id: \(uid)")
@@ -92,7 +92,7 @@ class LikesService: LikesServiceProtocol {
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
         return Future<[Like], Error> { promise in
             self.db.collection("Likes")
-                .whereField("likedUID", isEqualTo: self.currentUserCore.uid)
+                .whereField("likedUID", isEqualTo: self.currentUserCore!.uid)
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("LikesService: failed to get Likes")
@@ -113,7 +113,7 @@ class LikesService: LikesServiceProtocol {
     func getPeopleILiked() -> AnyPublisher<[StoryLike], Error> {
         return Future<[StoryLike], Error> { promise in
             self.db.collection("Likes")
-                .whereField("likerUID", isEqualTo: self.currentUserCore.uid)
+                .whereField("likerUID", isEqualTo: AuthService.shared.currentUser!.uid)
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("LikesService: failed to get Likes")
@@ -203,10 +203,10 @@ extension LikesService {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore.uid,
+                "likerUID" : self.currentUserCore!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore.name,
-                "birthdayOfLiker" : self.currentUserCore.age.formatDate(),
+                "nameOfLiker" : self.currentUserCore!.name,
+                "birthdayOfLiker" : self.currentUserCore!.age.formatDate(),
                 "recentlyJoinedLike": true
             ]) { err in
                 if let err = err {
@@ -220,6 +220,55 @@ extension LikesService {
             }
         }.eraseToAnyPublisher()
     }
+    
+    func observeNewcomerLikes(completion: @escaping ([Like], DocumentChangeType) -> Void) {
+        db.collection("Likes")
+            .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
+            .whereField("recentlyJoinedLike", isEqualTo: true)
+            .addSnapshotListener { snap, err in
+                if let e = err {
+                    print("LikesService: failed to observe recently joined likes")
+                    print("LikesService-err: \(e)")
+                    return
+                }
+                
+                var docChange: DocumentChangeType = .added
+                var f: [Like] = []
+                
+                if let snap = snap {
+                    snap.documentChanges.forEach({ change in
+                        let data = change.document.data()
+                        
+                        let likerUID = data["likerUID"] as? String ?? ""
+                        let likedUID = data["likedUID"] as? String ?? ""
+                        let birthdayOfLiker = data["birthdayOfLiker"] as? String ?? ""
+                        let name = data["nameOfLiker"] as? String ?? ""
+                        let date = data["dateOfLike"] as? Timestamp
+                        
+                        if let finalDate = date?.dateValue() {
+                            let newLike = Like(
+                                dateOfLike: finalDate,
+                                likerUID: likerUID,
+                                likedUID: likedUID,
+                                nameOfLiker: name,
+                                birthdayOfLiker: birthdayOfLiker,
+                                storyID: nil
+                            )
+
+                            f.append(newLike)
+                        }
+                        
+                        if change.type == .modified {
+                            docChange = .modified
+                            
+                        } else if change.type == .added {
+                            docChange = .added
+                        }
+                    })
+                }
+                completion(f, docChange)
+            }
+    }
 }
 
 //Post like service
@@ -230,10 +279,10 @@ extension LikesService {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore.uid,
+                "likerUID" : self.currentUserCore!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore.name,
-                "birthdayOfLiker" : self.currentUserCore.age.formatDate(),
+                "nameOfLiker" : self.currentUserCore!.name,
+                "birthdayOfLiker" : self.currentUserCore!.age.formatDate(),
                 "postID": postID
             ]) { err in
                 if let err = err {
@@ -278,7 +327,7 @@ extension LikesService {
                 
                 var returns: [Like] = []
                 var docChange: DocumentChangeType = .removed
-                print("fired bitch")
+
                 docSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
                     
