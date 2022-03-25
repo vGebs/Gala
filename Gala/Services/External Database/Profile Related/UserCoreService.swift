@@ -18,7 +18,7 @@ protocol UserCoreServiceProtocol {
 }
 
 class UserCoreService: ObservableObject, UserCoreServiceProtocol {
-    var currentUserCore: UserCore?
+    @Published var currentUserCore: UserCore?
     
     private let db = Firestore.firestore()
     private let currentUID = AuthService.shared.currentUser?.uid
@@ -36,7 +36,7 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         
         let hash = GFUtils.geoHash(forLocation: location)
         
-        if core.uid == currentUID {
+        if core.uid == AuthService.shared.currentUser?.uid {
             print("UserCoreService-addNewUser: Setting currentUserCore")
             self.currentUserCore = core
             print("CurrentUserCore: \(String(describing: self.currentUserCore))")
@@ -101,7 +101,8 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                     )
                     print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
                     print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUID))")
-                    if uid == self?.currentUID{
+                    
+                    if uid == AuthService.shared.currentUser?.uid{
                         self?.currentUserCore = userCore
                         print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUserCore))")
                     }

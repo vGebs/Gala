@@ -30,7 +30,6 @@ protocol LikesServiceProtocol {
 class LikesService: LikesServiceProtocol {
     
     private let db = Firestore.firestore()
-    private var currentUserCore = UserCoreService.shared.currentUserCore
     
     private var cancellables: [AnyCancellable] = []
     
@@ -42,10 +41,10 @@ class LikesService: LikesServiceProtocol {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore!.uid,
+                "likerUID" : AuthService.shared.currentUser!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore!.name,
-                "birthdayOfLiker" : self.currentUserCore!.age.formatDate()
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate()
             ]) { err in
                 if let err = err {
                     print("LikesService: Failed to like user with id: \(uid)")
@@ -92,7 +91,7 @@ class LikesService: LikesServiceProtocol {
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
         return Future<[Like], Error> { promise in
             self.db.collection("Likes")
-                .whereField("likedUID", isEqualTo: self.currentUserCore!.uid)
+                .whereField("likedUID", isEqualTo: UserCoreService.shared.currentUserCore!.uid)
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("LikesService: failed to get Likes")
@@ -203,10 +202,10 @@ extension LikesService {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore!.uid,
+                "likerUID" : AuthService.shared.currentUser!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore!.name,
-                "birthdayOfLiker" : self.currentUserCore!.age.formatDate(),
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate(),
                 "recentlyJoinedLike": true
             ]) { err in
                 if let err = err {
@@ -279,10 +278,10 @@ extension LikesService {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : self.currentUserCore!.uid,
+                "likerUID" : UserCoreService.shared.currentUserCore!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : self.currentUserCore!.name,
-                "birthdayOfLiker" : self.currentUserCore!.age.formatDate(),
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate(),
                 "postID": postID
             ]) { err in
                 if let err = err {
