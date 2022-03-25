@@ -23,17 +23,9 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var combinedSnapsAndMessages: [Any] = []
     
     init() {
-        observeSnaps()
         observeMatches()
+        observeSnaps()
         observeChats()
-        
-        //try the function that was made first for this before trying below.
-        //For the function made, we can call the function everytime we enter the chat and also when we send a message
-        //but that will not work if we receive a message.
-        //
-        //Because we need the merged list for a single user chat. What we can do, is make a uid variable and set it when we enter a chat
-        //from there we will retreive the messages and snaps and have them sorted
-        //
     }
     
     func getUnopenedSnapsFrom(uid: String) -> [Snap] {
@@ -162,11 +154,50 @@ extension ChatsViewModel {
                     } receiveValue: { [weak self] uc, img in
                         if let uc = uc {
                             if let img = img {
-                                let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
-                                self?.matches.append(newUCimg)
+                                
+                                if let n = self?.snaps[uc.uid] {
+                                    if let j = self?.matchMessages[uc.uid] {
+                                        if n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp > j[(self?.matchMessages[uc.uid]?.count)! - 1].time {
+                                            
+                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                            self?.matches.append(newUCimg)
+                                            self?.sortMatches()
+                                        } else {
+                                            
+                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.uid]?.count)! - 1].time)
+                                            self?.matches.append(newUCimg)
+                                            self?.sortMatches()
+                                        }
+                                    } else {
+                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                        
+                                        self?.matches.append(newUCimg)
+                                        self?.sortMatches()
+                                    }
+                                } else {
+                                    if let j = self?.matchMessages[uc.uid] {
+                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.uid]?.count)! - 1].time)
+                                        self?.matches.append(newUCimg)
+                                        self?.sortMatches()
+                                    } else {
+                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
+                                        self?.matches.append(newUCimg)
+                                        self?.sortMatches()
+                                    }
+                                }
+                                
                             } else {
-                                let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
-                                self?.matches.append(newUCimg)
+                                
+                                if let n = self?.snaps[uc.uid] {
+                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                    
+                                    self?.matches.append(newUCimg)
+                                    self?.sortMatches()
+                                } else {
+                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
+                                    self?.matches.append(newUCimg)
+                                    self?.sortMatches()
+                                }
                             }
                         }
                     }.store(in: &self!.cancellables)
@@ -205,6 +236,8 @@ extension ChatsViewModel {
                             if let i = img {
                                 let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: i, docID: snap.docID)
                                 
+                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+
                                 if let _ = self?.snaps[snap.fromID] {
                                     let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                                     
@@ -246,12 +279,48 @@ extension ChatsViewModel {
         }
     }
     
+    private func setNewLastMessage(uid: String, date: Date) {
+        for i in 0..<self.matches.count {
+            if matches[i].uc.uid == uid {
+                if matches[i].lastMessage == nil {
+                    matches[i].lastMessage = date
+                    sortMatches()
+                } else if matches[i].lastMessage! < date {
+                    matches[i].lastMessage = date
+                    sortMatches()
+                }
+            }
+        }
+    }
+    
+    private func sortMatches() {
+        matches.sort { (i1, i2) -> Bool in
+            let t1 = i1.lastMessage ?? i1.timeMatched
+            let t2 = i2.lastMessage ?? i2.timeMatched
+            return t1 < t2
+        }
+        
+        matches = matches.reversed()
+        
+//        for match in matches {
+//            print("MatchName: \(match.uc.name)")
+//            if let ll = match.lastMessage {
+//                print("LastMessage: \(ll)")
+//            } else {
+//                print("MatchedDate: \(match.timeMatched)")
+//            }
+//            print("")
+//        }
+    }
+    
     private func observeSnapsFromMe() {
         SnapService.shared.observerSnapsfromMe { [weak self] snaps, docChange in
             if docChange == .added {
                 // if the snap is newly added,
                 // add it in the correct position (we do not need to pull the image because it is from us.
                 for snap in snaps {
+                    self?.setNewLastMessage(uid: snap.toID, date: snap.snapID_timestamp)
+
                     if let _ = self?.snaps[snap.toID] {
                         let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                         
@@ -327,6 +396,8 @@ extension ChatsViewModel {
                             if let o = opened {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
                                 
+                                self?.setNewLastMessage(uid: message.toID, date: message.time)
+                                
                                 if let _ = self?.matchMessages[toID] {
                                     let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                     self?.matchMessages[toID]?.insert(message, at: insertIndex!)
@@ -338,6 +409,8 @@ extension ChatsViewModel {
                                 }
                             } else {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
+                                
+                                self?.setNewLastMessage(uid: message.toID, date: message.time)
                                 
                                 if let _ = self?.matchMessages[toID] {
                                     let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
@@ -404,6 +477,9 @@ extension ChatsViewModel {
                         if let date = timestamp?.dateValue() {
                             if let o = opened {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
+                                
+                                self?.setNewLastMessage(uid: message.fromID, date: message.time)
+                                
                                 if let _ = self?.matchMessages[fromID] {
                                     let insertIndex = self?.matchMessages[fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                     
@@ -415,6 +491,9 @@ extension ChatsViewModel {
                                 }
                             } else {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
+                                
+                                self?.setNewLastMessage(uid: message.fromID, date: message.time)
+                                
                                 if let _ = self?.matchMessages[fromID] {
                                     let insertIndex = self?.matchMessages[fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                     

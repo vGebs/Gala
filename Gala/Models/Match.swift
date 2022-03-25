@@ -19,4 +19,5 @@ struct MatchedUserCore: Identifiable {
     let uc: UserCore
     var profileImg: UIImage?
     var timeMatched: Date
+    var lastMessage: Date?
 }
