@@ -235,8 +235,7 @@ extension ProfileService {
                     } receiveValue: { img in
                         if let img = img {
                             print("image coming from firebase: \(img)")
-                            let image = ImageModel(image: img)
-                            //profileImgs?.insert(image, at: i)
+                            let image = ImageModel(image: img, index: i)
                             if profileImgs == nil {
                                 let tempArr = [image]
                                 profileImgs = tempArr
@@ -255,7 +254,12 @@ extension ProfileService {
                         }
                         
                         if (imgsRecieved + imgsNotFound) == 7 {
-                            //print("total search for images: \(imgsRecieved + imgsNotFound)")
+                            if let _ = profileImgs {
+                                profileImgs!.sort { (i1, i2) -> Bool in
+                                    return i1.index < i2.index
+                                }
+                            }
+                            
                             promise(.success(profileImgs))
                         }
                     }

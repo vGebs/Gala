@@ -15,6 +15,7 @@ import SwiftUI
 struct ImageModel: Identifiable {
     var image: UIImage
     var id = UUID().uuidString
+    var index: Int
 }
 
 class ImageContainer: Identifiable {

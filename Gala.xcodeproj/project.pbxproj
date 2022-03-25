@@ -696,8 +696,8 @@
 		FAAAA77227EBC33C00663816 /* Profile_ */ = {
 			isa = PBXGroup;
 			children = (
-				FA8773F726409AAB00D5D5CB /* ViewModels */,
 				FA8773F626409AA300D5D5CB /* Views */,
+				FA8773F726409AAB00D5D5CB /* ViewModels */,
 			);
 			path = Profile_;
 			sourceTree = "<group>";

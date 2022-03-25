@@ -480,8 +480,8 @@ extension ProfilePersistenceService {
                 if imageProfile.id == id {
                     if let profilePicData = imageProfile.profilePic {
                         if let img = UIImage(data: profilePicData){
-                            let imgM = ImageModel(image: img)
-                            arr.append(imgM)
+//                            let imgM = ImageModel(image: img)
+//                            arr.append(imgM)
                             promise(.success(arr))
                         }
                     }
@@ -498,8 +498,8 @@ extension ProfilePersistenceService {
                 if img.id == id {
                     if let sideImgData = img.img {
                         if let unCompressed = UIImage(data: sideImgData){
-                            let imgModel = ImageModel(image: unCompressed)
-                            arr.append(imgModel)
+//                            let imgModel = ImageModel(image: unCompressed)
+//                            arr.append(imgModel)
                         }
                     }
                 }
