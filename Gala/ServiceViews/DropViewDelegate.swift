@@ -26,14 +26,15 @@ struct DropViewDelegate: DropDelegate{
         
         if fromIndex != toIndex {
             withAnimation(.default) {
-                //let fromIndex = viewModel.images[fromIndex].position
                 let fromPage = viewModel.images[fromIndex]
                 
-                //viewModel.images[fromIndex].position = viewModel.images[toIndex].position
                 viewModel.images[fromIndex] = viewModel.images[toIndex]
-                
-                //viewModel.images[toIndex].position = fromIndex
+
                 viewModel.images[toIndex] = fromPage
+                
+                for i in 0..<viewModel.images.count {
+                    viewModel.images[i].index = i + 1
+                }
             }
         }
     }

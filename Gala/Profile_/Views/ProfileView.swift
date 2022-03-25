@@ -39,6 +39,14 @@ struct ProfileView: View {
                         
                         if viewModel.mode != .otherAccount {
                             editButton
+                            
+                            Button(action: {
+                                viewModel.printImgOrder()
+                            }){
+                               Text("Img order")
+                                    .foregroundColor(.buttonPrimary)
+                            }
+                            .padding()
                         }
                         
                         if viewModel.editPressed == false {
