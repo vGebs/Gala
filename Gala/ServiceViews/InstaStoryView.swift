@@ -143,8 +143,9 @@ struct StoryCardView: View {
                         Button(action: {
                             withAnimation {
                                 storyData.showMatchStory = false
-                                storyData.currentVibe = []
-                                storyData.currentStory = ""
+                                storyData.showVibeStory = false
+//                                storyData.currentVibe = []
+//                                storyData.currentStory = ""
                             }
                         }, label: {
                             Image(systemName: "xmark")

@@ -141,14 +141,6 @@ final class ProfileViewModel: ObservableObject {
         }
     }
     
-    func printImgOrder() {
-        for img in images {
-            print("Img: \(img.index)")
-        }
-        print("")
-        print("")
-    }
-    
     //Add email to initializer so I can make the profileModel
     //Add default initializers so that we dont have to enter a name, age, or email when using .profileStandard
     init(
