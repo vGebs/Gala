@@ -22,6 +22,9 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     @Published var combinedSnapsAndMessages: [Any] = []
     
+    @Published private var timer = Timer()
+
+    
     init() {
         observeMatches()
         observeSnaps()
@@ -47,50 +50,48 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
         
     }
     
-    func combineMessagesAndSnapsFor(uid: String) -> [Any] {
-        var final: [Any] = []
-        var i = 0
-        var j = 0
-        
-        if matchMessages[uid] == nil && snaps[uid] == nil {
-            return final
-        } else if matchMessages[uid] != nil && snaps[uid] == nil {
-            return matchMessages[uid]!
-        } else if matchMessages[uid] == nil && snaps[uid] != nil {
-            return snaps[uid]!
-        } else {
-            while i < matchMessages[uid]!.count && j < snaps[uid]!.count{
-                //we want the oldest messages first, so itll be less than
-                if matchMessages[uid]![i].time < snaps[uid]![j].snapID_timestamp {
-                    final.append(matchMessages[uid]![i])
-                    i += 1
-                } else {
-                    final.append(snaps[uid]![j])
-                    j += 1
-                }
-            }
-            
-            if i < matchMessages[uid]!.count {
-                final.append(matchMessages[uid]![i])
-            }
-            
-            if j < snaps[uid]!.count {
-                final.append(snaps[uid]![j])
-            }
-            
-            return final
-        }
-    }
-    
     func openSnap(snap: Snap) {
-        //opening a snap is trickier than opening a message
-        //we need to open all snaps instead of just the most recent
-        //the snaps arr will work as a queue
         // the first snap will always be opened first (arr[0])
         // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
         //
-        self.openSnap_(snap)
-        //print("ChatsViewModel: opened snap with id: \(snap.snapID_timestamp)")
+        
+        if let snaps = snaps[snap.fromID] {
+            
+            //check to see how many openedSnaps there are
+            var unopenedCounter = 0
+            
+            for snap in snaps {
+                if snap.openedDate == nil {
+                    unopenedCounter += 1
+                }
+            }
+            
+            if unopenedCounter > 1 {
+                deleteSnap_(snap)
+            } else {
+                openSnap_(snap)
+            }
+
+//            var openedSnaps: [Snap] = []
+//
+//            //we need to determine which snaps we can delete
+//            for snap in snaps {
+//                if snap.openedDate != nil {
+//                    openedSnaps.append(snap)
+//                }
+//            }
+//
+//            openedSnaps.sort { i1, i2 -> Bool in
+//                return i1.snapID_timestamp > i2.snapID_timestamp
+//            }
+//
+//            for snap in openedSnaps {
+//                print("OpenedSnapTimes: \(snap.snapID_timestamp)")
+//            }
+            
+        } else {
+            openSnap_(snap)
+        }
     }
     
     private func openSnap_(_ snap: Snap) {
@@ -110,7 +111,19 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     }
     
     private func deleteSnap_(_ snap: Snap){
-        
+        SnapService.shared.deleteSnap(snap: snap)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to delete snap")
+                    print("ChatsViewModel-err: \(e)")
+                case .finished:
+                    print("ChatsViewModel: Successfully deleted snap")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     func openMessage(message: Message) {
@@ -245,6 +258,18 @@ extension ChatsViewModel {
                                 } else {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
+                            } else {
+                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
+
+                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+
+                                if let _ = self?.snaps[snap.fromID] {
+                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                    
+                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                } else {
+                                    self?.snaps[snap.fromID] = [newSnap]
+                                }
                             }
                         }
                         .store(in: &self!.cancellables)
@@ -279,40 +304,6 @@ extension ChatsViewModel {
         }
     }
     
-    private func setNewLastMessage(uid: String, date: Date) {
-        for i in 0..<self.matches.count {
-            if matches[i].uc.uid == uid {
-                if matches[i].lastMessage == nil {
-                    matches[i].lastMessage = date
-                    sortMatches()
-                } else if matches[i].lastMessage! < date {
-                    matches[i].lastMessage = date
-                    sortMatches()
-                }
-            }
-        }
-    }
-    
-    private func sortMatches() {
-        matches.sort { (i1, i2) -> Bool in
-            let t1 = i1.lastMessage ?? i1.timeMatched
-            let t2 = i2.lastMessage ?? i2.timeMatched
-            return t1 < t2
-        }
-        
-        matches = matches.reversed()
-        
-//        for match in matches {
-//            print("MatchName: \(match.uc.name)")
-//            if let ll = match.lastMessage {
-//                print("LastMessage: \(ll)")
-//            } else {
-//                print("MatchedDate: \(match.timeMatched)")
-//            }
-//            print("")
-//        }
-    }
-    
     private func observeSnapsFromMe() {
         SnapService.shared.observerSnapsfromMe { [weak self] snaps, docChange in
             if docChange == .added {
@@ -329,7 +320,6 @@ extension ChatsViewModel {
                         self?.snaps[snap.toID] = [snap]
                     }
                 }
-                
             } else if docChange == .modified {
                 //cycle through the snaps received and the snaps we have,
                 // if there is a match, replace the snap with the new one
@@ -544,5 +534,34 @@ extension ChatsViewModel {
                     }
                 })
             }
+    }
+}
+
+//MARK: ----------------------------------------------------------------------------------------------------------->
+//MARK: - Helpers ------------------------------------------------------------------------------------------------->
+//MARK: ----------------------------------------------------------------------------------------------------------->
+extension ChatsViewModel {
+    private func setNewLastMessage(uid: String, date: Date) {
+        for i in 0..<self.matches.count {
+            if matches[i].uc.uid == uid {
+                if matches[i].lastMessage == nil {
+                    matches[i].lastMessage = date
+                    sortMatches()
+                } else if matches[i].lastMessage! < date {
+                    matches[i].lastMessage = date
+                    sortMatches()
+                }
+            }
+        }
+    }
+    
+    private func sortMatches() {
+        matches.sort { (i1, i2) -> Bool in
+            let t1 = i1.lastMessage ?? i1.timeMatched
+            let t2 = i2.lastMessage ?? i2.timeMatched
+            return t1 < t2
+        }
+        
+        matches = matches.reversed()
     }
 }

@@ -238,7 +238,6 @@ struct StoryCardView: View {
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                         .foregroundColor(.buttonPrimary)
                 }
-                
             }
         }
         .offset(y: -2)

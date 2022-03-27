@@ -179,7 +179,7 @@ class SnapService: SnapServiceProtocol {
             imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
                 if let error = error {
                     print("SnapService: Non lethal fetching error: \(error.localizedDescription)")
-                    promise(.failure(error))
+                    promise(.success(nil))
                 }
                 
                 if let data = data {
@@ -193,6 +193,26 @@ class SnapService: SnapServiceProtocol {
     }
     
     func openSnap(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            Publishers.Zip(self!.openSnap_(snap: snap),
+                           self!.deleteAsset(snap: snap)
+            )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("SnapService: Failed to open snap and delete asset")
+                        print("SnapService-err: \(e)")
+                        promise(.failure(e))
+                    case .finished:
+                        print("SnapService: Finished opening snap meta and deleting asset")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _, _ in }
+                .store(in: &self!.cancellables)
+        }.eraseToAnyPublisher()
+    }
+    
+    private func openSnap_(snap: Snap) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
             self?.db.collection("Snaps").document(snap.docID)
                 .updateData(["openedDate": Date()]) { err in
@@ -209,20 +229,62 @@ class SnapService: SnapServiceProtocol {
     }
     
     func deleteSnap(snap: Snap) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
+        return Future<Void, Error> { [weak self] promise in
+            Publishers.Zip(
+                self!.deletMeta(snap: snap),
+                self!.deleteAsset(snap: snap)
+            )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("SnapService: Failed to delete snap meta and asset")
+                        print("SnapService-err: \(e)")
+                        promise(.failure(e))
+                    case .finished:
+                        print("SnapService: Finished deleting snap meta and asset")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _, _ in }
+                .store(in: &self!.cancellables)
             
         }.eraseToAnyPublisher()
     }
     
-    func deletMeta(snap: Snap) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            
+    private func deletMeta(snap: Snap) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            self!.db.collection("Snaps").document(snap.docID).delete() { err in
+                if let e = err {
+                    print("SnapService: Failed to delete snap meta")
+                    print("SnapService-err: \(e)")
+                    promise(.failure(e))
+                } else {
+                    print("SnapService: Successfully deleted snap meta")
+                    promise(.success(()))
+                }
+            }
         }.eraseToAnyPublisher()
     }
     
-    func deleteAsset(snap: Snap) -> AnyPublisher<Void, Error> {
+    private func deleteAsset(snap: Snap) -> AnyPublisher<Void, Error> {
+        let storageRef = storage.reference()
+        let snapsFolderName = "Snaps"
+        let snapFolderRef = storageRef.child(snapsFolderName)
+        
+        //we only want to delete the snaps that are sent to us
+        let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
+        let imgFileRef = toImgRef.child("\(snap.snapID_timestamp).jpeg")
+        
         return Future<Void, Error> { promise in
-            
+            imgFileRef.delete { err in
+                if let e = err {
+                    print("SnapService: Failed to delete snap asset")
+                    print("SnapService-err: \(e)")
+                    promise(.failure(e))
+                } else {
+                    print("SnapServie: Successfully deleted snap asset")
+                    promise(.success(()))
+                }
+            }
         }.eraseToAnyPublisher()
     }
 }
