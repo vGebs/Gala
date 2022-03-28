@@ -48,7 +48,6 @@ struct SliderView: View {
                                 .highPriorityGesture(slider.lowHandle!.sliderDragGesture)
                         }
                         
-                        
                         //High Handle
                         SliderHandleView(handle: slider.highHandle)
                             .highPriorityGesture(slider.highHandle.sliderDragGesture)

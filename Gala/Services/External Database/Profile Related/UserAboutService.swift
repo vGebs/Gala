@@ -46,6 +46,27 @@ class UserAboutService: UserAboutServiceProtocol {
         .eraseToAnyPublisher()
     }
     
+    func setUserAbout(bio: String, job: String, school: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            
+            self.db.collection("UserAbout").document(self.currentUID!).setData([
+                "bio" : bio,
+                "job" : job,
+                "school" : school
+            ]) { err in
+                if let err = err {
+                    print("UserAboutService: Error writing document: \(err)")
+                    promise(.failure(err))
+                } else {
+                    print("UserAboutService: Document successfully written!")
+                    promise(.success(()))
+                }
+            }
+            
+        }
+        .eraseToAnyPublisher()
+    }
+    
     func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error> {
         Future<UserAbout?, Error> { promise in
             let docRef = self.db.collection("UserAbout").document(uid)

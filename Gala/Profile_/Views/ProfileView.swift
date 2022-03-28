@@ -162,24 +162,23 @@ struct ProfileView: View {
                 .sheet(item: $viewModel.activeSheet){ item in
                     switch item {
                     case .profileImagePicker:
-                        ImagePicker(isPresented: $viewModel.presentProfileImagePicker, activeSheet: $viewModel.activeSheet, pickerResult: $viewModel.profileImage, numImages: $viewModel.oneProfilePic)
+                        ImagePicker(isPresented: $viewModel.presentProfileImagePicker, activeSheet: $viewModel.activeSheet, pickerResult: $viewModel.profileImage, numImages: $viewModel.oneProfilePic, isProfilePic: true, didAddImg: $viewModel.profileImgChanged)
                             .edgesIgnoringSafeArea(.all)
                         
                     case .showcaseImagePicker:
-                        ImagePicker(isPresented: $viewModel.showAddImages, activeSheet: $viewModel.activeSheet, pickerResult: $viewModel.images, numImages: $viewModel.maxImages)
+                        ImagePicker(isPresented: $viewModel.showAddImages, activeSheet: $viewModel.activeSheet, pickerResult: $viewModel.images, numImages: $viewModel.maxImages, isProfilePic: false, didAddImg: $viewModel.imgsChanged)
                             .edgesIgnoringSafeArea(.all)
                         
                     case .profileImageCropper:
-                        ImageCropper(image: $viewModel.profileImage[0].image, isShowing: $viewModel.presentCropProfilePic, activeSheet: $viewModel.activeSheet)
+                        ImageCropper(image: $viewModel.profileImage[0].image, isShowing: $viewModel.presentCropProfilePic, activeSheet: $viewModel.activeSheet, didCrop: $viewModel.profileImgChanged)
                             .edgesIgnoringSafeArea(.all)
                         
                     case .showCaseImageCropper:
-                        ImageCropper(image: $viewModel.images[self.viewModel.presentImageCropperWithIndex].image, isShowing: $viewModel.presentImageCropper, activeSheet: $viewModel.activeSheet)
+                        ImageCropper(image: $viewModel.images[self.viewModel.presentImageCropperWithIndex].image, isShowing: $viewModel.presentImageCropper, activeSheet: $viewModel.activeSheet, didCrop: $viewModel.imgsChanged)
                             .edgesIgnoringSafeArea(.all)
                     }
                 }
                 .padding(.horizontal)
-                //.padding(.top)
                 .padding(.bottom)
             }
             .frame(width: screenWidth * 0.98)
@@ -188,9 +187,9 @@ struct ProfileView: View {
             }
             
             if viewModel.loading == true {
-                Color.black.opacity(0.4)
+                Color.black.opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
-                ProgressView()
+                LoadingView()
             }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
@@ -284,7 +283,7 @@ struct ProfileView: View {
     }
     
     var removeProfilePicButton: some View {
-        Button(action: { viewModel.removeProfilePic() }){
+        Button(action: { viewModel.deleteProfilePic() }){
             Image(systemName: "trash")
                 .font(.system(size: 12, weight: .bold, design: .rounded))
         }
@@ -320,9 +319,7 @@ struct ProfileView: View {
     
     var editButton: some View{
         Button(action: {
-            //withAnimation {
-                viewModel.editPressed.toggle()
-            //}
+            viewModel.editProfile()            
         }){
             HStack {
                 Text(viewModel.editPressed ? "submit changes" : "edit" )
@@ -367,6 +364,7 @@ struct ProfileView: View {
             VStack {
                 TextEditor(text: $viewModel.bioText)
                     .onChange(of: viewModel.bioText) { value in
+                        self.viewModel.aboutChanged = true
                         self.viewModel.bioCharCount = value.count
                     }
                     //.font(.system(size: 16, weight: .medium, design: .rounded))
@@ -484,8 +482,18 @@ struct ProfileView: View {
             if viewModel.mode == .createAccount || viewModel.editPressed{
                 
                 Menu(viewModel.selectGenderDropDownText.rawValue.capitalized){
-                    Button("Female", action: { viewModel.selectGenderDropDownText = .female })
-                    Button("Male", action: { viewModel.selectGenderDropDownText = .male })
+                    Button("Female", action: {
+                        if viewModel.selectGenderDropDownText != .female {
+                            viewModel.selectGenderDropDownText = .female
+                            self.viewModel.coreChanged = true
+                        }
+                    })
+                    Button("Male", action: {
+                        if viewModel.selectGenderDropDownText != .male {
+                            viewModel.selectGenderDropDownText = .male
+                            self.viewModel.coreChanged = true
+                        }
+                    })
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 
@@ -548,9 +556,24 @@ struct ProfileView: View {
             if viewModel.mode == .createAccount || viewModel.editPressed{
                 
                 Menu(viewModel.selectSexualityDropDownText.rawValue.capitalized){
-                    Button("Straight", action: { viewModel.selectSexualityDropDownText = .straight })
-                    Button("Gay", action: { viewModel.selectSexualityDropDownText = .gay })
-                    Button("Bisexual", action: { viewModel.selectSexualityDropDownText = .bisexual })
+                    Button("Straight", action: {
+                        if viewModel.selectSexualityDropDownText != .straight {
+                            viewModel.selectSexualityDropDownText = .straight
+                            self.viewModel.coreChanged = true
+                        }
+                    })
+                    Button("Gay", action: {
+                        if viewModel.selectSexualityDropDownText != .gay {
+                            viewModel.selectSexualityDropDownText = .gay
+                            viewModel.coreChanged = true
+                        }
+                    })
+                    Button("Bisexual", action: {
+                        if viewModel.selectSexualityDropDownText != .bisexual {
+                            viewModel.selectSexualityDropDownText = .bisexual
+                            viewModel.coreChanged = true
+                        }
+                    })
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
             } else {
@@ -628,11 +651,13 @@ struct ProfileView: View {
     
     var jobTextField: some View {
         iTextField("", text: $viewModel.jobText, isEditing: $editingJob)
-            .onReturn { self.editingSchool = true}
+            .onReturn { self.editingSchool = true }
             .foregroundColor(.primary)
+            .onChange(of: viewModel.jobText, perform: { _ in
+                viewModel.aboutChanged = true
+            })
             .padding()
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
-        
     }
     
     var jobText: some View {
@@ -675,6 +700,9 @@ struct ProfileView: View {
         iTextField("", text: $viewModel.schoolText, isEditing: $editingSchool)
             .onReturn { self.editingSchool = false }
             .foregroundColor(.primary)
+            .onChange(of: viewModel.schoolText, perform: { _ in
+                viewModel.aboutChanged = true
+            })
             .padding()
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accent))
     }
@@ -803,7 +831,7 @@ struct ShowcaseProfileImageView: View {
                                 Spacer()
                                 if viewModel.mode == .createAccount || viewModel.editPressed{
                                     
-                                    Button(action: { viewModel.removePicture(at: i) }) {
+                                    Button(action: { viewModel.deleteImage(at: i) }) {
                                         removeImageButton
                                     }
                                 }

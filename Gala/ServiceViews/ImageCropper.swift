@@ -17,6 +17,7 @@ struct ImageCropper: UIViewControllerRepresentable{
     @Binding var image: UIImage
     @Binding var isShowing: Bool
     @Binding var activeSheet: ActiveSheet?
+    @Binding var didCrop: Bool
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImageCropper>) -> some Mantis.CropViewController {
         let cropper = Mantis.cropViewController(image: image)
@@ -26,7 +27,7 @@ struct ImageCropper: UIViewControllerRepresentable{
     }
     
     func makeCoordinator() -> ImageCropperCoordinator {
-        return ImageCropperCoordinator(image: $image, isShowing: $isShowing, activeSheet: $activeSheet)
+        return ImageCropperCoordinator(image: $image, isShowing: $isShowing, activeSheet: $activeSheet, didCrop: $didCrop)
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) { }
@@ -38,15 +39,18 @@ class ImageCropperCoordinator: NSObject, CropViewControllerDelegate{
     @Binding var image: UIImage
     @Binding var isShowing: Bool
     @Binding var activeSheet: ActiveSheet?
+    @Binding var didCrop: Bool
     
-    init(image: Binding<UIImage>, isShowing: Binding<Bool>, activeSheet: Binding<ActiveSheet?>){
+    init(image: Binding<UIImage>, isShowing: Binding<Bool>, activeSheet: Binding<ActiveSheet?>, didCrop: Binding<Bool>){
         self._image = image
         self._isShowing = isShowing
         self._activeSheet = activeSheet
+        self._didCrop = didCrop
     }
     
     func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage, transformation: Transformation) {
         image = cropped
+        didCrop = true
         isShowing = false
         activeSheet = nil
     }

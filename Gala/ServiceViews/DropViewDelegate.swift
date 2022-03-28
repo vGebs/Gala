@@ -34,6 +34,8 @@ struct DropViewDelegate: DropDelegate{
 
                 viewModel.images[toIndex] = fromPage
                 
+                viewModel.imgsChanged = true 
+                
                 for i in 0..<viewModel.images.count {
                     viewModel.images[i].index = i + 1
                 }

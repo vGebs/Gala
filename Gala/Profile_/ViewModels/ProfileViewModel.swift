@@ -105,6 +105,11 @@ final class ProfileViewModel: ObservableObject {
     
     @Published var loading = false
     
+    @Published var aboutChanged = false
+    @Published var coreChanged = false
+    @Published var profileImgChanged = false 
+    @Published var imgsChanged = false 
+    
     var mode: Mode
     
 //MARK: - Enums
@@ -314,6 +319,24 @@ final class ProfileViewModel: ObservableObject {
                 }
             }
             .assign(to: &$schoolHeader)
+        
+        doubleKnobSlider.highHandle.objectWillChange.sink { [weak self] _ in
+            if self!.editPressed {
+                self!.coreChanged = true
+            }
+        }.store(in: &cancellables)
+        
+        doubleKnobSlider.lowHandle!.objectWillChange.sink { [weak self] _ in
+            if self!.editPressed {
+                self!.coreChanged = true
+            }
+        }.store(in: &cancellables)
+        
+        singleKnobSlider.highHandle.objectWillChange.sink { [weak self] _ in
+            if self!.editPressed {
+                self!.coreChanged = true
+            }
+        }.store(in: &cancellables)
     }
     
 //MARK: - Public Methods ------------------------------------------------------------------------------------->
@@ -331,6 +354,199 @@ final class ProfileViewModel: ObservableObject {
             
         case .submitProfileChanges:
             print("Profile changed")
+        }
+    }
+    
+    public func editProfile() {
+        if editPressed {
+            //check all flags
+            if coreChanged {
+                handleUpdateUserCore()
+                coreChanged = false
+            }
+            
+            if aboutChanged {
+                handleUpdateUserAbout()
+                aboutChanged = false
+            }
+            
+            if imgsChanged {
+                handleUpdateImgs()
+                imgsChanged = false
+            }
+            
+            if profileImgChanged {
+                handleUpdateProfilePic()
+                profileImgChanged = false
+            }
+            
+            editPressed = false 
+        } else {
+            editPressed = true
+        }
+    }
+    
+    private func handleUpdateUserCore() {
+        print("CoreChanged")
+        //when we update our UserCore, we need to:
+        //  1. Update the UserCore
+        //  2. Update the current UserCore
+        //  3. Refetch stories on explore that match new userCore
+        let updateUC = UserCore(
+            uid: AuthService.shared.currentUser!.uid,
+            name: nameText,
+            age: age,
+            gender: selectGenderDropDownText.rawValue,
+            sexuality: selectSexualityDropDownText.rawValue,
+            ageMinPref: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
+            ageMaxPref: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
+            willingToTravel: Int(singleKnobSlider.highHandle.currentValue),
+            longitude: LocationService.shared.coordinates.longitude,
+            latitude: LocationService.shared.coordinates.latitude
+        )
+        
+        UserCoreService.shared.addNewUser(core: updateUC)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ProfileViewModel: Failed to update UserCore")
+                    print("ProfileViewModel-err: \(e.localizedDescription)")
+                case .finished:
+                    print("ProfileViewModel: Finished updating UserCore")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+        
+        //Refetch RecentlyJoined and refetch vibe stories
+    }
+    
+    private func handleUpdateUserAbout() {
+        print("About Changed")
+        //When we update our UserAbout, we need to:
+        //  1. Update the UserAbout document
+        
+        UserAboutService.shared.setUserAbout(bio: bioText, job: jobText, school: schoolText)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ProfileViewModel: Failed to update User About")
+                    print("ProfileViewModel-err: \(e.localizedDescription)")
+                case .finished:
+                    print("ProfileViewModel: Finished updating User About")
+                }
+            } receiveValue: { _ in}
+            .store(in: &cancellables)
+    }
+    
+    private func handleUpdateImgs() {
+        print("Imgs Changed")
+        //When we update our imgs, we need to:
+        //  1. Push all images with their new indexes
+        //  2. If we do not have exactly 6 imgs in array, we need to delete the higher indexes
+        let maxImgCount = 6
+        let currentImgCount = images.count
+        
+        //The indexes should already be correct
+        // This is just to be sure
+        for i in 0..<images.count {
+            images[i].index = i + 1
+        }
+        
+        if maxImgCount - currentImgCount == 0 {
+            //Overwrite all images
+            for img in images {
+                ProfileImageService.shared.uploadProfileImage(img: img, name: "\(img.index)")
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ProfileViewModel: Failed to update img w index -> \(img.index)")
+                            print("ProfileViewModel-err: \(e.localizedDescription)")
+                        case .finished:
+                            print("ProfileViewModel: Finished updating img w index -> \(img.index)")
+                        }
+                    } receiveValue: { _ in }
+                    .store(in: &cancellables)
+            }
+        } else {
+            //We do not have full images
+            //Overwrite the images we already have
+            for img in images {
+                ProfileImageService.shared.uploadProfileImage(img: img, name: "\(img.index)")
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ProfileViewModel: Failed to update img w index -> \(img.index)")
+                            print("ProfileViewModel-err: \(e.localizedDescription)")
+                        case .finished:
+                            print("ProfileViewModel: Finished updating img w index -> \(img.index)")
+                        }
+                    } receiveValue: { _ in }
+                    .store(in: &cancellables)
+            }
+            
+            //We now need to delete the remaining images
+            let loopTimes = maxImgCount - currentImgCount
+            
+            for i in 0..<loopTimes {
+                ProfileImageService.shared.deleteProfileImage(index: "\(maxImgCount - i)")
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ProfileViewModel: Failed to delete img w index -> \(maxImgCount - i)")
+                            print("ProfileViewModel-err: \(e.localizedDescription)")
+                        case .finished:
+                            print("ProfileViewModel: Finished delete img w index -> \(maxImgCount - i)")
+                        }
+                    } receiveValue: { _ in }
+                    .store(in: &cancellables)
+            }
+        }
+    }
+    
+    private func handleUpdateProfilePic() {
+        print("Profile pic changed")
+        //When we update the profile pic, we need to:
+        //  1. Check to see if there is an image in profilePics
+        //      a. if there is an image, we overwrite the img in place 1
+        //      b. if there is not an image, we delete the current 0th place img
+        if profileImage.count == 0 {
+            ProfileImageService.shared.deleteProfileImage(index: "0")
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("ProfilViewModel: Failed to delete profile img")
+                        print("ProfileViewModel-err: \(e)")
+                    case .finished:
+                        print("ProfileViewModel: Finished deleting Profile pic")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
+        } else {
+            ProfileImageService.shared.uploadProfileImage(img: profileImage[0], name: "0")
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("ProfilViewModel: Failed to update profile img")
+                        print("ProfileViewModel-err: \(e)")
+                    case .finished:
+                        print("ProfileViewModel: Finished update Profile pic")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
         }
     }
     
@@ -356,10 +572,6 @@ final class ProfileViewModel: ObservableObject {
             } receiveValue: { _ in }
             .store(in: &cancellables)
     }
-    
-//    func getNumPosts() -> Int {
-//        return StoryService.shared.postIDs.count
-//    }
 }
 
 //MARK: - Image options ------------------------------------------------------------------------------------->
@@ -373,9 +585,15 @@ extension ProfileViewModel {
         }
     }
     
-    public func removePicture(at i: Int){
+    public func deleteImage(at i: Int){
         if images.count > i {
             images.remove(at: i)
+            
+            for i in 0..<images.count {
+                images[i].index = i + 1
+            }
+                        
+            imgsChanged = true
         }
     }
     
@@ -387,9 +605,23 @@ extension ProfileViewModel {
         }
     }
     
-    public func removeProfilePic() {
+    public func deleteProfilePic() {
         if profileImage.count == 1 {
             profileImage.remove(at: 0)
+            
+            profileImgChanged = true
+        }
+    }
+    
+    func printImageIndexes() {
+        for img in images {
+            print("Image -> \(img.index)")
+        }
+    }
+    
+    func printProfileImageIndex() {
+        for img in profileImage {
+            print("Image -> \(img.index)")
         }
     }
 }

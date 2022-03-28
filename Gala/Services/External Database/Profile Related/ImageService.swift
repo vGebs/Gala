@@ -14,7 +14,7 @@ protocol ProfileImageServiceProtocol {
     func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error>
     func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error>
     func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error>
-    func deleteProfileImage(name: String) ->AnyPublisher<Void, Error>
+    func deleteProfileImage(index: String) ->AnyPublisher<Void, Error>
 }
 
 class ProfileImageService: ProfileImageServiceProtocol{
@@ -96,20 +96,20 @@ class ProfileImageService: ProfileImageServiceProtocol{
     //Function is not being used yet.
     //Images are not being retrieved with id so we cannot delete the correct image
     //P.S., this function should work tho assuming proper input
-    func deleteProfileImage(name: String) -> AnyPublisher<Void, Error> {
+    func deleteProfileImage(index: String) -> AnyPublisher<Void, Error> {
         let uid = currentUser!
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
         let myProfileRef = profileRef.child(uid)
-        let imgFileRef = myProfileRef.child("\(name).png")
+        let imgFileRef = myProfileRef.child("\(index).png")
         
         return Future<Void, Error> { promise in
             imgFileRef.delete { err in
                 if let err = err {
-                    print("ImageService: Failed to delete image with id: \(name)")
+                    print("ImageService: Failed to delete image with id: \(index)")
                     print("ImageService-err: \(err)")
                 } else {
-                    print("ImageService: Successfully deleted image with id: \(name)")
+                    print("ImageService: Successfully deleted image with id: \(index)")
                     promise(.success(()))
                 }
             }
