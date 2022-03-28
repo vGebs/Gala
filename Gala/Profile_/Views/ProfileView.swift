@@ -55,11 +55,7 @@ struct ProfileView: View {
                                 
                                 AddToStoryButton()
                                     .padding(.bottom, 5)
-                            }
-                        }
-                        
-                        if viewModel.editPressed == false {
-                            if viewModel.mode != .otherAccount {
+                                
                                 MyStoriesDropDown(viewModel: viewModel.dropDownVM, popup: false)
                                     .padding(.bottom, 7)
                             }

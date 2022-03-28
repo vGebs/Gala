@@ -231,9 +231,9 @@ final class ProfileViewModel: ObservableObject {
             }
             .assign(to: &$sexualityIsReady)
 
-        $bioCharCount
-            .flatMap { num -> AnyPublisher<Bool, Never> in
-                if num == 0 {
+        $bioText
+            .flatMap { text -> AnyPublisher<Bool, Never> in
+                if text == "" {
                     return Just(false).eraseToAnyPublisher()
                 } else {
                     return Just(true).eraseToAnyPublisher()
