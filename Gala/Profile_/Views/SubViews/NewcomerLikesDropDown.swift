@@ -11,11 +11,11 @@ struct NewcomerLikesDropDown: View {
     @State var expanded = false
     @State var initialHeight: CGFloat = 50
     
-    @ObservedObject var viewModel: NewcomerLikesViewModel
+    @ObservedObject var viewModel: BasicLikesViewModel
             
     var body: some View {
         
-        if viewModel.likes.count > 0 {
+        if viewModel.theyLikeMe.count > 0 {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
@@ -31,7 +31,7 @@ struct NewcomerLikesDropDown: View {
                             expanded.toggle()
                         } else {
                             
-                            initialHeight = ((screenWidth / 9) * CGFloat(viewModel.likes.count + 1)) + (CGFloat(viewModel.likes.count) * 25) //(63 * CGFloat(Double(viewModel.likes.count + 1)))
+                            initialHeight = ((screenWidth / 9) * CGFloat(viewModel.theyLikeMe.count + 1)) + (CGFloat(viewModel.theyLikeMe.count) * 25) //(63 * CGFloat(Double(viewModel.likes.count + 1)))
                             expanded.toggle()
                         }
                     }){
@@ -42,7 +42,7 @@ struct NewcomerLikesDropDown: View {
                         MyDivider()
                             .frame(width: screenWidth * 0.9)
                         
-                        ForEach(viewModel.likes) { like in
+                        ForEach(viewModel.theyLikeMe) { like in
                             SmallUserView(viewModel: LikesViewModel(), user: SmallUserViewModel(profile: like.userCore, img: like.profileImg), width: screenWidth * 0.9)
                         }
 
@@ -62,12 +62,12 @@ struct NewcomerLikesDropDown: View {
                 .font(.system(size: 22, weight: .regular, design: .rounded))
                 .padding(.horizontal)
             
-            if viewModel.likes.count > 1 {
-                Text("You have \(viewModel.likes.count) likes")
+            if viewModel.theyLikeMe.count > 1 {
+                Text("You have \(viewModel.theyLikeMe.count) likes")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
-            } else if viewModel.likes.count == 1 {
-                Text("You have \(viewModel.likes.count) like")
+            } else if viewModel.theyLikeMe.count == 1 {
+                Text("You have \(viewModel.theyLikeMe.count) like")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.accent)
             } else {
@@ -77,7 +77,7 @@ struct NewcomerLikesDropDown: View {
             }
             
             Spacer()
-            if viewModel.likes.count > 0 {
+            if viewModel.theyLikeMe.count > 0 {
                 Image(systemName: expanded ? "chevron.up" : "chevron.down")
                     .foregroundColor(.buttonPrimary)
                     .font(.system(size: 16, weight: .semibold, design: .rounded))

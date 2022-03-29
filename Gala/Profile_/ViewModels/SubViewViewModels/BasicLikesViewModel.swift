@@ -8,15 +8,15 @@
 import FirebaseFirestore
 import Combine
 
-class NewcomerLikesViewModel: ObservableObject {
-    @Published var likes: [LikeWithProfile] = []
+class BasicLikesViewModel: ObservableObject {
+    @Published var theyLikeMe: [LikeWithProfile] = []
     
     private var cancellables: [AnyCancellable] = []
     
     init() { observeNewcomerLikes() }
     
     private func observeNewcomerLikes() {
-        LikesService.shared.observeNewcomerLikes { [weak self] likes, change in
+        LikesService.shared.observeBasicLikes { [weak self] likes, change in
             switch change {
             case .added:
                 for like in likes {
@@ -34,18 +34,19 @@ class NewcomerLikesViewModel: ObservableObject {
                         } receiveValue: { [weak self] uc, img in
                             if let uc = uc, let img = img {
                                 let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: img)
-                                self?.likes.append(newLike)
+                                self?.theyLikeMe.append(newLike)
                             } else if let uc = uc {
                                 let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: nil)
-                                self?.likes.append(newLike)
+                                self?.theyLikeMe.append(newLike)
                             }
                         }.store(in: &self!.cancellables)
                 }
+                
             case .removed:
                 for like in likes {
-                    for i in 0..<(self?.likes.count)! {
-                        if like.likerUID == self?.likes[i].like.likerUID {
-                            self?.likes.remove(at: i)
+                    for i in 0..<(self?.theyLikeMe.count)! {
+                        if like.likerUID == self?.theyLikeMe[i].like.likerUID {
+                            self?.theyLikeMe.remove(at: i)
                             break
                         }
                     }

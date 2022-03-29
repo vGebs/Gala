@@ -206,7 +206,7 @@ extension LikesService {
                 "likedUID" : uid,
                 "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
                 "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate(),
-                "recentlyJoinedLike": true
+                "basicLike": true
             ]) { err in
                 if let err = err {
                     print("LikesService: Failed to like user with id: \(uid)")
@@ -220,10 +220,10 @@ extension LikesService {
         }.eraseToAnyPublisher()
     }
     
-    func observeNewcomerLikes(completion: @escaping ([Like], DocumentChangeType) -> Void) {
+    func observeBasicLikes(completion: @escaping ([Like], DocumentChangeType) -> Void) {
         db.collection("Likes")
             .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .whereField("recentlyJoinedLike", isEqualTo: true)
+            .whereField("basicLike", isEqualTo: true)
             .addSnapshotListener { snap, err in
                 if let e = err {
                     print("LikesService: failed to observe recently joined likes")
@@ -260,8 +260,8 @@ extension LikesService {
                         if change.type == .modified {
                             docChange = .modified
                             
-                        } else if change.type == .added {
-                            docChange = .added
+                        } else if change.type == .removed {
+                            docChange = .removed
                         }
                     })
                 }

@@ -110,7 +110,7 @@
 		FAAAA76927E54A9700663816 /* LikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76827E54A9700663816 /* LikesViewModel.swift */; };
 		FAAAA76B27EA621900663816 /* DraggableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76A27EA621900663816 /* DraggableTextView.swift */; };
 		FAAAA76D27EBC10D00663816 /* NewcomerLikesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76C27EBC10D00663816 /* NewcomerLikesDropDown.swift */; };
-		FAAAA76F27EBC1E000663816 /* NewcomerLikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76E27EBC1E000663816 /* NewcomerLikesViewModel.swift */; };
+		FAAAA76F27EBC1E000663816 /* BasicLikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA76E27EBC1E000663816 /* BasicLikesViewModel.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -253,7 +253,7 @@
 		FAAAA76827E54A9700663816 /* LikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewModel.swift; sourceTree = "<group>"; };
 		FAAAA76A27EA621900663816 /* DraggableTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableTextView.swift; sourceTree = "<group>"; };
 		FAAAA76C27EBC10D00663816 /* NewcomerLikesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewcomerLikesDropDown.swift; sourceTree = "<group>"; };
-		FAAAA76E27EBC1E000663816 /* NewcomerLikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewcomerLikesViewModel.swift; sourceTree = "<group>"; };
+		FAAAA76E27EBC1E000663816 /* BasicLikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicLikesViewModel.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -716,7 +716,7 @@
 		FABAABF22788E75800154363 /* SubViewViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				FAAAA76E27EBC1E000663816 /* NewcomerLikesViewModel.swift */,
+				FAAAA76E27EBC1E000663816 /* BasicLikesViewModel.swift */,
 				FABAABF32788E76A00154363 /* MyStoriesDropDownViewModel.swift */,
 				FAAAA76827E54A9700663816 /* LikesViewModel.swift */,
 			);
@@ -999,7 +999,7 @@
 				FADC11622698129D0070465C /* UserCoreService.swift in Sources */,
 				FA8774372640A07900D5D5CB /* DateExtension.swift in Sources */,
 				FA87745F2640A3F700D5D5CB /* BaseView.swift in Sources */,
-				FAAAA76F27EBC1E000663816 /* NewcomerLikesViewModel.swift in Sources */,
+				FAAAA76F27EBC1E000663816 /* BasicLikesViewModel.swift in Sources */,
 				FA6BE60227B6015C0058B78C /* MessageView.swift in Sources */,
 				FA8774402640A12500D5D5CB /* ActiveSheetEnum.swift in Sources */,
 				FA8773F926409AD400D5D5CB /* ProfileView.swift in Sources */,
