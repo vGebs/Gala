@@ -147,6 +147,7 @@ struct GalaApp: App {
         WindowGroup {
             LaunchView()
             //DraggableTextView()
+            //TestSwipableCardSystem()
         }
     }
 }

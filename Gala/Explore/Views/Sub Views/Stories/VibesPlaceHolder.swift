@@ -14,18 +14,12 @@ struct VibesPlaceHolder: View {
     
     @ObservedObject var viewModel: StoriesViewModel
     
-    var animation: Namespace.ID
-    @Binding var selectedVibe: VibeCoverImage
-    @Binding var showVibe: Bool
-    @State var showAllForVibe = false
+    @State var selectedVibe: VibeCoverImage = VibeCoverImage(image: UIImage(), title: "")
+    //@State var showAllForVibe = false
     
     var response: CGFloat = 0.3
     var dampingFactor: CGFloat = 0.9
     var blendDuration: CGFloat = 0.01
-    
-    @Binding var vibesDict: OrderedDictionary<String, [UserPostSimple]>
-    
-    //@StateObject var vm = InstaStoryViewModel()
     
     var body: some View {
         ZStack {
@@ -68,7 +62,6 @@ struct VibesPlaceHolder: View {
                                 }
                             }){
                                 VibeView(vibe: vibe)
-                                    .matchedGeometryEffect(id: vibe.title, in: animation)
                             }
                             .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                         }
@@ -80,9 +73,9 @@ struct VibesPlaceHolder: View {
         .sheet(isPresented: $viewModel.showVibeStory, content: {
             InstaStoryView(storyData: viewModel)
         })
-        .fullScreenCover(isPresented: $showAllForVibe, content: {
-            StoryListView(show: $showAllForVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
-        })
+//        .fullScreenCover(isPresented: $showAllForVibe, content: {
+//            StoryListView(show: $showAllForVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)
+//        })
     }
 }
 

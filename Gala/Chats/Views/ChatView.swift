@@ -8,7 +8,7 @@
 import SwiftUI
 import OrderedCollections
 
-struct ChatView: View {
+struct ChatView: View, KeyboardReadable {
     @Binding var showChat: Bool
     @Binding var userChat: UserChat?
     
@@ -20,6 +20,9 @@ struct ChatView: View {
     @Binding var timeMatched: Date?
     
     @State var showProfile = false
+    
+    @Namespace var topID
+    @Namespace var bottomID
     
     var body: some View {
         ZStack {
@@ -83,9 +86,11 @@ struct ChatView: View {
             Spacer()
             
             Button(action: {
-                self.showChat = false
+                withAnimation(Animation.interactiveSpring()) {
+                    self.showChat = false
+                }
             }){
-                Image(systemName: "arrow.down")
+                Image(systemName: "chevron.right")
             }
             .padding(.trailing)
         }
@@ -97,6 +102,13 @@ struct ChatView: View {
         ScrollViewReader{ proxy in
             ScrollView(showsIndicators: false){
                 macthedDateView
+                Button("Scroll to Bottom") {
+                    withAnimation {
+                        proxy.scrollTo(bottomID)
+                    }
+                }
+                .id(topID)
+                
                 if messages[userChat!.uid] != nil {
                     ForEach(messages[userChat!.uid]!){ message in
                         if message.toID == AuthService.shared.currentUser!.uid {
@@ -107,8 +119,19 @@ struct ChatView: View {
                                 .padding(.trailing, 3)
                         }
                     }
+                    .onChange(of: messages[userChat!.uid]!.count) { _ in
+                        withAnimation {
+                            proxy.scrollTo(bottomID)
+                        }
+                    }
+                    .onReceive(keyboardPublisher, perform: { isVisible in
+                        //Change height of scrollview
+                        withAnimation {
+                            proxy.scrollTo(bottomID)
+                        }
+                    })
                 }
-                
+                                
                 if snaps[userChat!.uid] != nil {
                     ForEach(snaps[userChat!.uid]!){ snap in
                         if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid{
@@ -118,12 +141,20 @@ struct ChatView: View {
                     }
                 }
                 
+//                Button("Top") {
+//                    withAnimation {
+//                        proxy.scrollTo(topID)
+//                    }
+//                }
+//                .id(bottomID)
+                
                 HStack { Spacer() }
                 .frame(width: screenWidth, height: screenHeight * 0.001)
+                .id(bottomID)
             }
             .onAppear{
                 if messages[userChat!.uid] != nil {
-                    proxy.scrollTo(messages[userChat!.uid]!.count)
+                    proxy.scrollTo(bottomID)
                 }
             }
             .cornerRadius(20)
@@ -183,7 +214,7 @@ struct ChatView: View {
         .padding(.bottom)
         .padding(.horizontal)
     }
-    
+
     private func endEditing() {
         UIApplication.shared.endEditing()
     }
@@ -232,5 +263,29 @@ struct ChatView: View {
 extension UIApplication {
     func endEditing() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
+import Combine
+import UIKit
+
+
+/// Publisher to read keyboard changes.
+protocol KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> { get }
+}
+
+extension KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillShowNotification)
+                .map { _ in true },
+            
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
     }
 }

@@ -22,6 +22,10 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     @Published var combinedSnapsAndMessages: [Any] = []
     
+    @Published var showChat = false
+    @Published var userChat: UserChat? = nil
+    @Published var timeMatched: Date? = nil
+    
     @Published var messageText = ""
     
     init() {
@@ -66,7 +70,6 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
             }
             
             if unopenedCounter > 1 {
-                print("ChatsViewModel: Deleting snap from openSnap(snap: Snap")
                 deleteSnap_(snap)
             } else {
                 openSnap_(snap)

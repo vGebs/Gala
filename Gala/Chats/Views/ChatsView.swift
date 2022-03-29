@@ -20,11 +20,8 @@ struct ChatsView: View {
     
     @State var showProfile = false
     
-    @State var showChat: Bool = false
-    @State var userChat: UserChat? = nil
-    
-    @State var timeMatched: Date? = nil
-    
+    @State var draggedOffset: CGFloat = -screenWidth * 2
+
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     init(viewModel: ChatsViewModel, profile: ProfileViewModel){
@@ -34,74 +31,76 @@ struct ChatsView: View {
     }
     
     var body: some View {
-        VStack {
-            ZStack{
-                Color.black.edgesIgnoringSafeArea(.all)
-                VStack {
-                    Spacer()
-                    RoundedRectangle(cornerRadius: 20)
-                        .foregroundColor(isDarkMode ? .black : .white)
+        ZStack {
+            VStack {
+                ZStack{
+                    Color.black.edgesIgnoringSafeArea(.all)
+                    VStack {
+                        Spacer()
+                        RoundedRectangle(cornerRadius: 20)
+                            .foregroundColor(isDarkMode ? .black : .white)
+                            .frame(width: screenWidth, height: screenHeight * 0.81)
+                            .shadow(radius: 10)
+                    }
+                    
+                    VStack {
+                        Spacer()
+                        
+                        ScrollView(showsIndicators: false) {
+                            RoundedRectangle(cornerRadius: 2)
+                                .foregroundColor(.black)
+                                .frame(height: screenHeight * 0.015)
+                            
+                            ForEach(viewModel.matches){ match in
+                                ConvoPreview(ucMatch: match, showChat: $viewModel.showChat, user: $viewModel.userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $viewModel.timeMatched, chatsViewModel: viewModel)
+                                    .padding(.horizontal)
+                            }
+                        }
                         .frame(width: screenWidth, height: screenHeight * 0.81)
-                        .shadow(radius: 10)
-                }
-                
-                VStack {
-                    Spacer()
-                    
-                    ScrollView(showsIndicators: false) {
-                        RoundedRectangle(cornerRadius: 2)
-                            .foregroundColor(.black)
-                            .frame(height: screenHeight * 0.015)
-                        
-                        ForEach(viewModel.matches){ match in
-                            ConvoPreview(ucMatch: match, showChat: $showChat, user: $userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $timeMatched, chatsViewModel: viewModel)
-                                .padding(.horizontal)
-                        }
+                        .cornerRadius(20)
                     }
-                    .frame(width: screenWidth, height: screenHeight * 0.81)
-                    .cornerRadius(20)
-                }
-                
-                VStack {
-                    HStack {
-                        Button(action: {
-                            self.showProfile = true
-                        }) {
-                            Image(systemName: optionButtonLeft)
-                                .font(.system(size: 20, weight: .regular, design: .rounded))
-                                .foregroundColor(.buttonPrimary)
+                    
+                    VStack {
+                        HStack {
+                            Button(action: {
+                                self.showProfile = true
+                            }) {
+                                Image(systemName: optionButtonLeft)
+                                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                                    .foregroundColor(.buttonPrimary)
+                            }
+                            
+                            Spacer()
+                            
+                            Text(pageName)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            Button(action: { }) {
+                                Image(systemName: optionButtonRight)
+                                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                                    .foregroundColor(.buttonPrimary)
+                            }
                         }
+                        .padding()
                         
                         Spacer()
-                        
-                        Text(pageName)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.primary)
-
-                        Spacer()
-                        
-                        Button(action: { }) {
-                            Image(systemName: optionButtonRight)
-                                .font(.system(size: 20, weight: .regular, design: .rounded))
-                                .foregroundColor(.buttonPrimary)
-                        }
                     }
-                    .padding()
-                    
-                    Spacer()
+                    .padding(.top, screenHeight * 0.0385)
                 }
-                .padding(.top, screenHeight * 0.0385)
+                .frame(width: screenWidth, height: screenHeight * 0.91)
+                .edgesIgnoringSafeArea(.all)
+                Spacer()
             }
-            .frame(width: screenWidth, height: screenHeight * 0.91)
-            .edgesIgnoringSafeArea(.all)
-            Spacer()
+            .sheet(isPresented: $showProfile, content: {
+                ProfileMainView(viewModel: profile, showProfile: $showProfile)
+            })
+//            .sheet(isPresented: $showChat, content: {
+//                ChatView(showChat: $showChat, userChat: $userChat, viewModel: viewModel, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
+//            })
+            .preferredColorScheme(isDarkMode ? .dark : .light)
         }
-        .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: profile, showProfile: $showProfile)
-        })
-        .sheet(isPresented: $showChat, content: {
-            ChatView(showChat: $showChat, userChat: $userChat, viewModel: viewModel, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
-        })
-        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
