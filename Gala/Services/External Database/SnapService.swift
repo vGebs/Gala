@@ -231,7 +231,7 @@ class SnapService: SnapServiceProtocol {
     func deleteSnap(snap: Snap) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip(
-                self!.deletMeta(snap: snap),
+                self!.deleteMeta(snap: snap),
                 self!.deleteAsset(snap: snap)
             )
                 .sink { completion in
@@ -250,7 +250,7 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    private func deletMeta(snap: Snap) -> AnyPublisher<Void, Error> {
+    func deleteMeta(snap: Snap) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
             self!.db.collection("Snaps").document(snap.docID).delete() { err in
                 if let e = err {

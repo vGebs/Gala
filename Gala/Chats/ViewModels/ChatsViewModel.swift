@@ -22,8 +22,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     @Published var combinedSnapsAndMessages: [Any] = []
     
-    @Published private var timer = Timer()
-
+    @Published var messageText = ""
     
     init() {
         observeMatches()
@@ -67,30 +66,11 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
             }
             
             if unopenedCounter > 1 {
+                print("ChatsViewModel: Deleting snap from openSnap(snap: Snap")
                 deleteSnap_(snap)
             } else {
                 openSnap_(snap)
             }
-
-//            var openedSnaps: [Snap] = []
-//
-//            //we need to determine which snaps we can delete
-//            for snap in snaps {
-//                if snap.openedDate != nil {
-//                    openedSnaps.append(snap)
-//                }
-//            }
-//
-//            openedSnaps.sort { i1, i2 -> Bool in
-//                return i1.snapID_timestamp > i2.snapID_timestamp
-//            }
-//
-//            for snap in openedSnaps {
-//                print("OpenedSnapTimes: \(snap.snapID_timestamp)")
-//            }
-            
-        } else {
-            openSnap_(snap)
         }
     }
     
@@ -140,6 +120,58 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
+    }
+    
+    func sendMessage(toUID: String) {
+        //make sure there is at least one character before sending
+        
+        let trimmed = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !messageText.isEmpty && trimmed.count > 0{
+            
+            ChatService.shared.sendMessage(message: messageText, toID: toUID)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+//                .map { [weak self] _  in
+//                    self!.checkForAnyOpenedSnapsAndDelete(toUID)
+//                }
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("ChatViewModel: Failed to send messgae")
+                        print("ChatsViewModel-err: \(e)")
+                    case .finished:
+                        print("ChatsViewModel: Successfully sent message to -> \(toUID)")
+                    }
+                } receiveValue: { [weak self] _ in
+                    self?.messageText = ""
+                }
+                .store(in: &cancellables)
+        }
+    }
+    
+    private func checkForAnyOpenedSnapsAndDelete(_ toUID: String) {
+        //Check to see if there are any openedSnaps, if there are, delete them all
+        if let snaps = snaps[toUID] {
+            if snaps.count > 1 {
+                for i in 0..<snaps.count - 1 {
+                    if snaps[i].openedDate != nil {
+                        SnapService.shared.deleteMeta(snap: snaps[i])
+                            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                            .receive(on: DispatchQueue.main)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let e):
+                                    print("ChatViewModel: Failed to delete snap")
+                                    print("ChatViewModel-err: \(e)")
+                                case .finished:
+                                    print("ChatViewModel: Finished deleting snap")
+                                }
+                            } receiveValue: { _ in }
+                            .store(in: &cancellables)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -387,6 +419,7 @@ extension ChatsViewModel {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
                                 
                                 self?.setNewLastMessage(uid: message.toID, date: message.time)
+                                self?.checkForAnyOpenedSnapsAndDelete(message.toID)
                                 
                                 if let _ = self?.matchMessages[toID] {
                                     let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
@@ -401,7 +434,8 @@ extension ChatsViewModel {
                                 let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
                                 
                                 self?.setNewLastMessage(uid: message.toID, date: message.time)
-                                
+                                self?.checkForAnyOpenedSnapsAndDelete(message.toID)
+
                                 if let _ = self?.matchMessages[toID] {
                                     let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                                     self?.matchMessages[toID]?.insert(message, at: insertIndex!)

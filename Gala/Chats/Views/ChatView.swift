@@ -10,12 +10,13 @@ import OrderedCollections
 
 struct ChatView: View {
     @Binding var showChat: Bool
-    @State var chatText = ""
     @Binding var userChat: UserChat?
     
-    @ObservedObject var viewModel = ChatViewModel()
+    @ObservedObject var viewModel : ChatsViewModel
+    
     @Binding var messages: OrderedDictionary<String, [Message]>
     @Binding var snaps: OrderedDictionary<String, [Snap]>
+    
     @Binding var timeMatched: Date?
     
     @State var showProfile = false

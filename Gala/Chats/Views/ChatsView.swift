@@ -100,7 +100,7 @@ struct ChatsView: View {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
         .sheet(isPresented: $showChat, content: {
-            ChatView(showChat: $showChat, userChat: $userChat, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
+            ChatView(showChat: $showChat, userChat: $userChat, viewModel: viewModel, messages: $viewModel.matchMessages, snaps: $viewModel.snaps, timeMatched: $timeMatched)
         })
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
