@@ -142,7 +142,7 @@ var password = UserDefaults.standard.string(forKey: "password")
 struct GalaApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State var offset: CGFloat = 0
+
     var body: some Scene {
         WindowGroup {
             LaunchView()

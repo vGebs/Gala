@@ -141,13 +141,6 @@ struct ChatView: View, KeyboardReadable {
                     }
                 }
                 
-//                Button("Top") {
-//                    withAnimation {
-//                        proxy.scrollTo(topID)
-//                    }
-//                }
-//                .id(bottomID)
-                
                 HStack { Spacer() }
                 .frame(width: screenWidth, height: screenHeight * 0.001)
                 .id(bottomID)
@@ -263,29 +256,5 @@ struct ChatView: View, KeyboardReadable {
 extension UIApplication {
     func endEditing() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
-import Combine
-import UIKit
-
-
-/// Publisher to read keyboard changes.
-protocol KeyboardReadable {
-    var keyboardPublisher: AnyPublisher<Bool, Never> { get }
-}
-
-extension KeyboardReadable {
-    var keyboardPublisher: AnyPublisher<Bool, Never> {
-        Publishers.Merge(
-            NotificationCenter.default
-                .publisher(for: UIResponder.keyboardWillShowNotification)
-                .map { _ in true },
-            
-            NotificationCenter.default
-                .publisher(for: UIResponder.keyboardWillHideNotification)
-                .map { _ in false }
-        )
-        .eraseToAnyPublisher()
     }
 }

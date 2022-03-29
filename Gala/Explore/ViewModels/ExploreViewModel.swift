@@ -13,10 +13,6 @@ class ExploreViewModel: ObservableObject {
     @Published var recentlyJoinedViewModel: RecentlyJoinedViewModel
     @Published var storiesViewModel: StoriesViewModel
     
-    func checkLikes() {
-        print("LikesContainer likes: \(LikesContainer.shared.iLiked)")
-    }
-    
     init() {
         recentlyJoinedViewModel = RecentlyJoinedViewModel()
         storiesViewModel = StoriesViewModel()
