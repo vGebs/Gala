@@ -8,12 +8,6 @@
 import SwiftUI
 import FirebaseFirestoreSwift
 
-
-//add:
-//ageMin
-//ageMax
-//radius away
-//
 struct UserCore: Codable {
     var uid: String 
     var name: String

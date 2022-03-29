@@ -17,6 +17,10 @@ class ExploreViewModel: ObservableObject {
         recentlyJoinedViewModel = RecentlyJoinedViewModel()
         storiesViewModel = StoriesViewModel()
     }
+    
+    deinit {
+        print("ExploreViewModel: Deinitializing")
+    }
 }
 
 //We need to fetch all recents, as well as all of our likes

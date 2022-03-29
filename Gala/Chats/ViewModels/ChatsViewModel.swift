@@ -28,6 +28,10 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     
     @Published var messageText = ""
     
+    deinit {
+        print("ChatsViewModel: Deinitializing")
+    }
+    
     init() {
         observeMatches()
         observeSnaps()
@@ -134,9 +138,6 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
             ChatService.shared.sendMessage(message: messageText, toID: toUID)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)
-//                .map { [weak self] _  in
-//                    self!.checkForAnyOpenedSnapsAndDelete(toUID)
-//                }
                 .sink { completion in
                     switch completion {
                     case .failure(let e):

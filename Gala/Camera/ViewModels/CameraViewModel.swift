@@ -174,6 +174,11 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         }
     }
     
+    deinit {
+        print("CameraViewModel: Deinitializing")
+        print("CameraViewModel: Camera is now off")
+    }
+    
     // Call this on the session queue.
     /// - Tag: ConfigureSession
     private func configureSession() {

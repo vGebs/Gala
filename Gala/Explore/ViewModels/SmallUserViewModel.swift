@@ -16,6 +16,10 @@ class SmallUserViewModel: ObservableObject {
     
     private var cancellables: [AnyCancellable] = []
     
+    deinit {
+        print("SmallUserViewModel: Deinitializing")
+    }
+    
     init(profile: UserCore){
         self.profile = profile
         

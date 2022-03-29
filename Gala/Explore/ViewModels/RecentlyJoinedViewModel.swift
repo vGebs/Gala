@@ -18,6 +18,10 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     
     private var cancellables: [AnyCancellable] = []
     
+    deinit {
+        print("RecentlyJoinedViewModel: Deinitializing")
+    }
+    
     init() {
         Publishers.Zip(
             recents.getRecents(),

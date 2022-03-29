@@ -63,7 +63,13 @@ struct ProfileMainView: View {
                                     }
                                 }
                                 
-                                Button(action: { self.viewModel.logout() }){
+                                Button(action: {
+                                    self.showProfile = false
+                                    
+                                    let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { timer in
+                                        AppState.shared.logout()
+                                    }
+                                }){
                                     HStack{
                                         Image(systemName: "person.fill.xmark")
                                         Text("Log out")

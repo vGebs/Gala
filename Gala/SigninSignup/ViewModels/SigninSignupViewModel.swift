@@ -91,6 +91,10 @@ final class SigninSignupViewModel: ObservableObject{
     
 //MARK: - Initializer
     
+    deinit {
+        print("SigninSignupViewModel: Deinitializing")
+    }
+    
     init(mode: Mode){
         self.mode = mode
         self.validate = SignInSignUpValidation()
@@ -99,75 +103,74 @@ final class SigninSignupViewModel: ObservableObject{
         case .signUp:
             
             $age
-                .flatMap{ age -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] age -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isAgeValid(age)
+                        try self!.validate.isAgeValid(age)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.ageWarning = error.localizedDescription
+                        self!.ageWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
                 .assign(to: &$ageIsValid)
             
             $nameText
-                .flatMap{ name -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] name -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isNameValid(name)
+                        try self!.validate.isNameValid(name)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.nameWarning = error.localizedDescription
+                        self!.nameWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
                 .assign(to: &$nameIsValid)
             
             $emailText
-                .flatMap{ email -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] email -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isEmailValid(email)
+                        try self!.validate.isEmailValid(email)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.emailWarning = error.localizedDescription
+                        self!.emailWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
                 .assign(to: &$emailIsValid)
             
             $passwordText
-                .flatMap{ pword -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] pword -> AnyPublisher<Bool, Never> in
                     //pword.isPasswordStringValid()
                     do {
-                        try self.validate.isPasswordValid(pword)
+                        try self!.validate.isPasswordValid(pword)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.passwordWarning = error.localizedDescription
+                        self!.passwordWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
                 .assign(to: &$passwordIsValid)
             
             Publishers.CombineLatest($passwordText, $reEnterPasswordText)
-                .flatMap{ (pword, rPword) -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] (pword, rPword) -> AnyPublisher<Bool, Never> in
                     //pword.isReEnterPasswordStringValid(rPword)
                     do {
-                        try self.validate.isReEnterPasswordValid(pword, rPword)
+                        try self!.validate.isReEnterPasswordValid(pword, rPword)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.rePasswordWarning = error.localizedDescription
+                        self!.rePasswordWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
                 .assign(to: &$rePasswordIsValid)
             
             $cellNumberText
-                .flatMap{ cellNum -> AnyPublisher<Bool, Never> in
-                    //cellNum.isCellNumberStringValid()
+                .flatMap{ [weak self] cellNum -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isCellValid(cellNum)
+                        try self!.validate.isCellValid(cellNum)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.cellNumWarning = error.localizedDescription
+                        self!.cellNumWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
@@ -176,12 +179,12 @@ final class SigninSignupViewModel: ObservableObject{
         case .login:
             
             $emailText
-                .flatMap{ email -> AnyPublisher<Bool, Never> in
+                .flatMap{ [weak self] email -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isEmailValid(email)
+                        try self!.validate.isEmailValid(email)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.emailWarning = error.localizedDescription
+                        self!.emailWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
@@ -194,12 +197,12 @@ final class SigninSignupViewModel: ObservableObject{
 //                .assign(to: &$cellNumIsValid)
             
             $passwordText
-                .flatMap { pword -> AnyPublisher<Bool, Never> in
+                .flatMap { [weak self] pword -> AnyPublisher<Bool, Never> in
                     do {
-                        try self.validate.isPasswordValid(pword)
+                        try self!.validate.isPasswordValid(pword)
                         return Just(true).eraseToAnyPublisher()
                     } catch {
-                        self.passwordWarning = error.localizedDescription
+                        self!.passwordWarning = error.localizedDescription
                         return Just(false).eraseToAnyPublisher()
                     }
                 }
@@ -256,24 +259,25 @@ final class SigninSignupViewModel: ObservableObject{
         authService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
-            .sink{ completion in
+            .sink{ [weak self] completion in
                 switch completion {
                 case let .failure(error):
                     print(error.localizedDescription)
-                    self.signUpError = true
-                    self.loading = false
+                    self!.signUpError = true
+                    self!.loading = false
                 case .finished:
                     print("Succesfully Signed up")
-                    self.loading = false
-                    withAnimation {
-                        AppState.shared.profileInfo.name = self.nameText
-                        AppState.shared.profileInfo.email = self.emailText
-                        AppState.shared.profileInfo.age = self.age
-                        AppState.shared.createAccountPressed = true
-                        AppState.shared.signUpPageActive = false
-                    }
                 }
-            } receiveValue: { _ in }
+            } receiveValue: { [weak self] _ in
+                self!.loading = false
+                withAnimation {
+                    AppState.shared.profileInfo.name = self!.nameText
+                    AppState.shared.profileInfo.email = self!.emailText
+                    AppState.shared.profileInfo.age = self!.age
+                    AppState.shared.createAccountPressed = true
+                    AppState.shared.signUpPageActive = false
+                }
+            }
             .store(in: &cancellables)
     }
     
@@ -283,21 +287,21 @@ final class SigninSignupViewModel: ObservableObject{
         authService.signIn(email: self.emailText, password: self.passwordText)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
-            .sink { completion in
+            .sink { [weak self] completion in
                 switch completion {
                 case let .failure(error):
                     print(error.localizedDescription)
-                    self.loginError = false
-                    self.loading = false
+                    self!.loginError = false
+                    self!.loading = false
                 case .finished:
                     print("Succesfully Signed in")
-                    UserDefaults.standard.set(true, forKey: "loggedIn")
-                    UserDefaults.standard.set(self.emailText, forKey: "email")
-                    UserDefaults.standard.set(self.passwordText, forKey: "password")
-                //self.loading = false
                 }
-            } receiveValue: { _ in
-                self.loading = false
+            } receiveValue: { [weak self] _ in
+                UserDefaults.standard.set(true, forKey: "loggedIn")
+                UserDefaults.standard.set(self!.emailText, forKey: "email")
+                UserDefaults.standard.set(self!.passwordText, forKey: "password")
+                
+                self!.loading = false
                 withAnimation {
                     AppState.shared.signUpPageActive = false
                     AppState.shared.loginPageActive = false

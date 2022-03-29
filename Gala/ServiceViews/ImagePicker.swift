@@ -60,7 +60,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                         } else {
                             DispatchQueue.main.async {
                                 self?.parent.pickerResult.append(ImageModel(image: newImage as! UIImage, index: self!.isProfilePic ? 0 : self!.parent.pickerResult.count + 1))
-                                self!.didAddImg = true
+                                self?.didAddImg = true
                             }
                         }
                     }

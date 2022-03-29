@@ -12,14 +12,13 @@ class AppState: ObservableObject {
     
     @AppStorage("isDarkMode") var isDarkMode = true
     
-    //Shared Instance (Singleton)
     static let shared = AppState()
     
     var location = LocationService.shared
     
     //ViewState variables
-    @Published var allowAccess: Bool = false //UserService.shared.currentUser == nil ? false : true
-    @Published var onLandingPage: Bool = true //UserService.shared.currentUser == nil ? true : false
+    @Published var allowAccess: Bool = false
+    @Published var onLandingPage: Bool = true
     @Published var loginPageActive = false
     @Published var signUpPageActive = false
     @Published var createAccountPressed = false
@@ -34,73 +33,50 @@ class AppState: ObservableObject {
     }
     
     //Auth ViewModels
-    //@Published var landingVM: LandingPageViewModel?
-    @Published var loginVM: SigninSignupViewModel?
-    @Published var signUpVM: SigninSignupViewModel?
-    @Published var createProfileVM: ProfileViewModel?
+    @Published var loginVM: SigninSignupViewModel? //DONE
+    @Published var signUpVM: SigninSignupViewModel? //DONE
+    @Published var createProfileVM: ProfileViewModel? //DONE
     
     //Main ViewModels
-    @Published var profileVM: ProfileViewModel?
-    @Published var chatsVM: ChatsViewModel?
-    @Published var cameraVM: CameraViewModel?
-    @Published var exploreVM: ExploreViewModel?
-    //@Published var showcaseVM: ShowCaseViewModel?
+    @Published var profileVM: ProfileViewModel? //DONE
+    @Published var chatsVM: ChatsViewModel? //DONE
+    @Published var cameraVM: CameraViewModel? //DONE //deinit when camera.tearDownCamera() is called (see logout() func)
+    @Published var exploreVM: ExploreViewModel? //DONE
     
-    //Side ViewModels
-    //@Published var settingVM: SettingsViewModel?
-    //...
+    private var cancellables: [AnyCancellable] = []
     
     private init() {
-//        UserService.shared
-//            .observeAuthChanges()
-//            .map { $0 != nil }
-//            .assign(to: &$allowAccess)
-
-//        UserService.shared
-//            .observeAuthChanges()
-//            .map { $0 == nil }
-//            .assign(to: &$onLandingPage)
-        
-//        $onLandingPage
-//            .flatMap{ on -> AnyPublisher<LandingPageViewModel?, Never> in
-//                if on {
-//                    return Just(LandingPageViewModel()).eraseToAnyPublisher()
-//                } else {
-//                    print("Setting Landing VM to nil: AppState.swift")
-//                    return Just(nil).eraseToAnyPublisher()
-//                }
-//            }.assign(to: &$landingVM)
         
         $loginPageActive
-            .flatMap{ on -> AnyPublisher<SigninSignupViewModel?, Never> in
+            .flatMap{ [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
-                    self.onLandingPage = false
+                    self?.onLandingPage = false
                     return Just(SigninSignupViewModel(mode: .login)).eraseToAnyPublisher()
                 } else {
-                    print("Setting Login VM to nil: AppState.swift")
+                    print("AppState: Setting Login VM to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
             .assign(to: &$loginVM)
         
         $signUpPageActive
-            .flatMap { on -> AnyPublisher<SigninSignupViewModel?, Never> in
+            .flatMap { [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
-                    self.onLandingPage = false
+                    self?.onLandingPage = false
                     return Just(SigninSignupViewModel(mode: .signUp)).eraseToAnyPublisher()
                 } else {
-                    print("Setting Signup VM to nil: AppState.swift")
+                    print("AppState: Setting Signup VM to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
             .assign(to: &$signUpVM)
         
         $createAccountPressed
-            .flatMap{ on -> AnyPublisher<ProfileViewModel?, Never> in
+            .flatMap{ [weak self] on -> AnyPublisher<ProfileViewModel?, Never> in
                 if on {
-                    return Just(ProfileViewModel(name: self.profileInfo.name, age: self.profileInfo.age, email: self.profileInfo.email, mode: .createAccount, uid: nil)).eraseToAnyPublisher()
+                    return Just(ProfileViewModel(name: self!.profileInfo.name, age: self!.profileInfo.age, email: self!.profileInfo.email, mode: .createAccount, uid: nil)).eraseToAnyPublisher()
                 } else {
-                    print("Setting Create profile VM = nil: AppState.swift")
+                    print("AppState: Setting Create profile VM to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
@@ -111,7 +87,7 @@ class AppState: ObservableObject {
                 if allow {
                     return Just(ProfileViewModel(mode: .profileStandard, uid: AuthService.shared.currentUser!.uid)).eraseToAnyPublisher()
                 } else {
-                    print("Setting Profile Standard = nil: AppState.swift")
+                    print("AppState: Setting Profile Standard to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
@@ -120,9 +96,9 @@ class AppState: ObservableObject {
         $allowAccess
             .flatMap { allow -> AnyPublisher<CameraViewModel?, Never> in
                 if allow {
-                    return Just(CameraViewModel()).eraseToAnyPublisher() //volumeCameraButton: false
+                    return Just(CameraViewModel()).eraseToAnyPublisher()
                 } else {
-                    print("Setting Camera VM to nil: AppState.swift")
+                    print("AppState: Setting CameraVM to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }
@@ -133,6 +109,7 @@ class AppState: ObservableObject {
                 if allow {
                     return Just(ExploreViewModel()).eraseToAnyPublisher()
                 } else {
+                    print("AppState: Setting ExploreViewModel to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }.assign(to: &$exploreVM)
@@ -142,9 +119,35 @@ class AppState: ObservableObject {
                 if allow {
                     return Just(ChatsViewModel()).eraseToAnyPublisher()
                 } else {
+                    print("AppState: Setting ChatsViewModel to nil")
                     return Just(nil).eraseToAnyPublisher()
                 }
             }.assign(to: &$chatsVM)
+    }
+        
+    public func logout() {
+        cameraVM?.tearDownCamera()
+        AppState.shared.allowAccess = false
+        AppState.shared.onLandingPage = true
+        
+        AuthService.shared.logout()
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("AppState: Failed to logout")
+                    print("AppState-err: \(e)")
+                case .finished:
+                    print("AppState: Finished logging out")
+//                    UserDefaults.standard.set(false, forKey: "loggedIn")
+//                    UserDefaults.standard.set("", forKey: "email")
+//                    UserDefaults.standard.set("", forKey: "password")
+//                    AppState.shared.allowAccess = false
+//                    AppState.shared.onLandingPage = true
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     public func toggleDarkMode() {

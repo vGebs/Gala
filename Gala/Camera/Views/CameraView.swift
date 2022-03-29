@@ -71,10 +71,6 @@ struct CameraView: View {
             if camera.image != nil {
                 PicTakenView(camera: camera, sendPressed: $sendPressed)
             }
-            
-//            Color.white
-//                .edgesIgnoringSafeArea(.all)
-//                .opacity(camera.frontFlashActive && camera.currentCamera == .front ? 1 : 0)
         }
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)

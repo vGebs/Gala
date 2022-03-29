@@ -135,15 +135,11 @@ final class ProfileViewModel: ObservableObject {
 //MARK: - Initializer
     
     deinit {
-        print("ProfileViewModel = nil")
+        print("ProfileViewModel: Deinitializing")
         
-        for i in 0..<profileImage.count {
-            profileImage.remove(at: i)
-        }
-        
-        for i in 0..<images.count {
-            images.remove(at: i)
-        }
+        profileImage.removeAll()
+        images.removeAll()
+        cancellables.removeAll()
     }
     
     //Add email to initializer so I can make the profileModel
@@ -155,9 +151,7 @@ final class ProfileViewModel: ObservableObject {
         mode: Mode,
         uid: String?
     ){
-        
-        //self.dropDownViewModel = MyStoriesDropDownViewModel()
-        
+                
         self.mode = mode
         
         switch mode {
@@ -194,12 +188,12 @@ final class ProfileViewModel: ObservableObject {
         }
         
         $bioCharCount
-            .flatMap { count -> AnyPublisher<String, Never> in
-                if count > self.maxBioCharCount {
-                    let newBio = self.bioText.dropLast()
+            .flatMap { [weak self] count -> AnyPublisher<String, Never> in
+                if count > self!.maxBioCharCount {
+                    let newBio = self!.bioText.dropLast()
                     return Just(String(newBio)).eraseToAnyPublisher()
                 } else {
-                    let newBio = self.bioText
+                    let newBio = self!.bioText
                     return Just(String(newBio)).eraseToAnyPublisher()
                 }
             }
@@ -225,14 +219,14 @@ final class ProfileViewModel: ObservableObject {
             }.assign(to: &$maxImages)
         
         $selectGenderDropDownText
-            .flatMap{ gender -> AnyPublisher<Bool, Never> in
-                return self.checkGender(gender)
+            .flatMap{ [weak self] gender -> AnyPublisher<Bool, Never> in
+                return self!.checkGender(gender)
             }
             .assign(to: &$genderIsReady)
         
         $selectSexualityDropDownText
-            .flatMap { sexuality -> AnyPublisher<Bool, Never> in
-                return self.checkSexuality(sexuality)
+            .flatMap { [weak self] sexuality -> AnyPublisher<Bool, Never> in
+                return self!.checkSexuality(sexuality)
             }
             .assign(to: &$sexualityIsReady)
 
@@ -277,8 +271,8 @@ final class ProfileViewModel: ObservableObject {
             .assign(to: &$showSchool)
         
         $editPressed
-            .flatMap { pressed -> AnyPublisher<String, Never> in
-                if pressed == true || self.mode == .createAccount {
+            .flatMap { [weak self] pressed -> AnyPublisher<String, Never> in
+                if pressed == true || self!.mode == .createAccount {
                     return Just("Tell us about yourself").eraseToAnyPublisher()
                 } else {
                     return Just("A little bit about me").eraseToAnyPublisher()
@@ -287,8 +281,8 @@ final class ProfileViewModel: ObservableObject {
             .assign(to: &$bioHeader)
         
         $editPressed
-            .flatMap { pressed -> AnyPublisher<String, Never> in
-                if pressed == true || self.mode == .createAccount{
+            .flatMap { [weak self] pressed -> AnyPublisher<String, Never> in
+                if pressed == true || self!.mode == .createAccount{
                     return Just("Let's see your best looks").eraseToAnyPublisher()
                 } else {
                     return Just("Best moments").eraseToAnyPublisher()
@@ -297,11 +291,11 @@ final class ProfileViewModel: ObservableObject {
             .assign(to: &$pictureHeader)
         
         $editPressed
-            .flatMap { pressed -> AnyPublisher<String, Never> in
-                if pressed == true || self.mode == .createAccount {
+            .flatMap { [weak self] pressed -> AnyPublisher<String, Never> in
+                if pressed == true || self!.mode == .createAccount {
                     return Just("What do you do for a living?").eraseToAnyPublisher()
                 } else {
-                    if self.checkForVowel(self.jobText){
+                    if self!.checkForVowel(self!.jobText){
                         return Just("I'm an").eraseToAnyPublisher()
                     } else {
                         return Just("I'm a").eraseToAnyPublisher()
@@ -311,8 +305,8 @@ final class ProfileViewModel: ObservableObject {
             .assign(to: &$jobHeader)
         
         $editPressed
-            .flatMap { bool -> AnyPublisher<String, Never> in
-                if bool == true || self.mode == .createAccount {
+            .flatMap { [weak self] bool -> AnyPublisher<String, Never> in
+                if bool == true || self!.mode == .createAccount {
                     return Just("Where did you go to school?").eraseToAnyPublisher()
                 } else {
                     return Just("I went to").eraseToAnyPublisher()
@@ -549,29 +543,6 @@ final class ProfileViewModel: ObservableObject {
                 .store(in: &cancellables)
         }
     }
-    
-//    public func toggleDarkMode() {
-//        isDarkMode.toggle()
-//    }
-    
-    public func logout(){
-        self.userService.logout()
-            .sink{ completion in
-                switch completion {
-                case let .failure(error):
-                    print("ProfileViewModel: Failed to logout")
-                    print("ProfileViewModel-error: \(error.localizedDescription)")
-                case .finished:
-                    print("Succesfully logged out")
-                    UserDefaults.standard.set(false, forKey: "loggedIn")
-                    UserDefaults.standard.set("", forKey: "email")
-                    UserDefaults.standard.set("", forKey: "password")
-                    AppState.shared.allowAccess = false
-                    AppState.shared.onLandingPage = true
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
-    }
 }
 
 //MARK: - Image options ------------------------------------------------------------------------------------->
@@ -686,13 +657,13 @@ extension ProfileViewModel {
                     print(error.localizedDescription)
                 case .finished:
                     print("Profile Successfully added to firebase: ProfileViewModel")
-                    self.loading = false
-                    AppState.shared.allowAccess = true
-                    AppState.shared.createAccountPressed = false
-                    self.submitPressed = true
                 }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
+            } receiveValue: { [weak self] _ in
+                self!.loading = false
+                AppState.shared.allowAccess = true
+                AppState.shared.createAccountPressed = false
+                self!.submitPressed = true
+            }.store(in: &cancellables)
     }
     
     private func pushProfileToCoreData(_ profile: ProfileModel, _ imgs: [ImageModel]) {
@@ -722,49 +693,49 @@ extension ProfileViewModel {
                 case .finished:
                     print("Finished fetching profile from Core Data: ProfileViewModel")
                 }
-            } receiveValue: { text, mainImgs, sideImgs in
+            } receiveValue: { [weak self] text, mainImgs, sideImgs in
                 if text == nil || mainImgs == nil || sideImgs == nil {
                     returnedNil = true
                 } else {
                     //Populate UI w/ text
-                    self.nameText = text!.name
-                    self.age = text!.birthday
-                    self.ageText = self.age.ageString()
+                    self!.nameText = text!.name
+                    self!.age = text!.birthday
+                    self!.ageText = self!.age.ageString()
                     
                     if let bio = text?.bio {
-                        self.bioText = bio
+                        self!.bioText = bio
                     }
                     
                     if text?.gender == "male" || text?.gender == "Male" {
-                        self.selectGenderDropDownText = .male
+                        self!.selectGenderDropDownText = .male
                     } else {
-                        self.selectGenderDropDownText = .female
+                        self!.selectGenderDropDownText = .female
                     }
                     
                     if text?.sexuality == "gay" || text?.sexuality == "Gay"{
-                        self.selectSexualityDropDownText = .gay
+                        self!.selectSexualityDropDownText = .gay
                     } else if text?.sexuality == "Straight" || text?.sexuality == "straight" {
-                        self.selectSexualityDropDownText = .straight
+                        self!.selectSexualityDropDownText = .straight
                     } else {
-                        self.selectSexualityDropDownText = .bisexual
+                        self!.selectSexualityDropDownText = .bisexual
                     }
                     
                     if let job = text?.job {
-                        self.jobText = job
+                        self!.jobText = job
                     }
                     
                     if let school = text?.school {
-                        self.schoolText = school
+                        self!.schoolText = school
                     }
                     
                     //Populate UI w/ mainImg
                     if let main = mainImgs {
-                        self.profileImage += main
+                        self!.profileImage += main
                     }
                     
                     //Populate UI w/ sideImgs
                     if let side = sideImgs {
-                        self.images += side
+                        self!.images += side
                     }
                 }
             }
@@ -787,22 +758,22 @@ extension ProfileViewModel {
                 case .finished:
                     print("getting profile from firebase: ProfileViewModel")
                 }
-            } receiveValue: { core, abt, imgs in
+            } receiveValue: { [weak self] core, abt, imgs in
 
                 if let core = core {
                     //Assign Core profile to UserService
                     
-                    self.age = core.age
-                    self.ageText = self.age.ageString()
-                    self.nameText = core.name
-                    self.selectGenderDropDownText = "male" == core.gender || "Male" == core.gender ? .male : .female
+                    self!.age = core.age
+                    self!.ageText = self!.age.ageString()
+                    self!.nameText = core.name
+                    self!.selectGenderDropDownText = "male" == core.gender || "Male" == core.gender ? .male : .female
                     
                     if core.sexuality == "Gay" || core.sexuality == "gay" {
-                        self.selectSexualityDropDownText = .gay
+                        self!.selectSexualityDropDownText = .gay
                     } else if core.sexuality == "Straight" || core.sexuality == "straight" {
-                        self.selectSexualityDropDownText = .straight
+                        self!.selectSexualityDropDownText = .straight
                     } else {
-                        self.selectSexualityDropDownText = .bisexual
+                        self!.selectSexualityDropDownText = .bisexual
                     }
                     
                     let ageMin = 18
@@ -812,24 +783,24 @@ extension ProfileViewModel {
                     let ageMinPrefPercent = Double((core.ageMinPref - ageMin)) / Double(range)
                     let ageMaxPrefPercent = Double((core.ageMaxPref - ageMin)) / Double(range)
                         
-                    self.doubleKnobSlider.lowHandle!.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
-                    self.doubleKnobSlider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
+                    self!.doubleKnobSlider.lowHandle!.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
+                    self!.doubleKnobSlider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
                                         
-                    self.doubleKnobSlider.lowHandle!.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self.doubleKnobSlider.lowHandle!.sliderWidth, y: self.doubleKnobSlider.lowHandle!.sliderHeight / 2)
-                    self.doubleKnobSlider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self.doubleKnobSlider.highHandle.sliderWidth, y: self.doubleKnobSlider.highHandle.sliderHeight / 2)
+                    self!.doubleKnobSlider.lowHandle!.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self!.doubleKnobSlider.lowHandle!.sliderWidth, y: self!.doubleKnobSlider.lowHandle!.sliderHeight / 2)
+                    self!.doubleKnobSlider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self!.doubleKnobSlider.highHandle.sliderWidth, y: self!.doubleKnobSlider.highHandle.sliderHeight / 2)
                 }
                 
                 if let abt = abt {
-                    self.bioText = abt.bio ?? ""
-                    self.jobText = abt.job ?? ""
-                    self.schoolText = abt.school ?? ""
+                    self!.bioText = abt.bio ?? ""
+                    self!.jobText = abt.job ?? ""
+                    self!.schoolText = abt.school ?? ""
                 }
                 
                 if let imgs = imgs {
-                    self.profileImage.append(imgs[0])
+                    self!.profileImage.append(imgs[0])
                     
                     for i in 1 ..< imgs.count {
-                        self.images.append(imgs[i])
+                        self!.images.append(imgs[i])
                     }
                 }
             }

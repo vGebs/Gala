@@ -10,10 +10,7 @@ import SwiftUI
 import OrderedCollections
 
 class StoriesViewModel: ObservableObject {
-    
-    private var storyMetaService = StoryMetaService.shared
-    private var matchService = MatchService.shared
-    
+        
     @Published var vibeImages: [VibeCoverImage] = []
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[input->vibe title: [UserPostSimple]]
     
@@ -28,6 +25,10 @@ class StoriesViewModel: ObservableObject {
     
     private var cancellables: [AnyCancellable] = []
 
+    deinit {
+        print("StoriesViewModel: Deinitializing")
+    }
+    
     init() {
         // We will be using this class in for both the vibes view stories and the matchedStories
         fetch()
@@ -35,12 +36,12 @@ class StoriesViewModel: ObservableObject {
     }
     
     func fetch() {
-        matchService.getMatches()
-            .flatMap { matches in
-                self.fetchStories(matches)
+        MatchService.shared.getMatches()
+            .flatMap { [weak self] matches in
+                self!.fetchStories(matches)
             }
-            .flatMap { _ in
-                self.fetchVibeImages()
+            .flatMap { [weak self] _ in
+                self!.fetchVibeImages()
             }
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
@@ -112,7 +113,7 @@ extension StoriesViewModel {
     private func fetchStories(_ matches: [String]) -> AnyPublisher<Void, Error> {
 
         return Future<Void, Error> { promise in
-            self.storyMetaService.getStories()
+            StoryMetaService.shared.getStories()
                 .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                 .receive(on: DispatchQueue.main)
                 .sink { completion in
