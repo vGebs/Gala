@@ -257,6 +257,9 @@ final class SigninSignupViewModel: ObservableObject{
         print("signup")
         self.loading = true
         authService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
+            .flatMap { [weak self] _ -> AnyPublisher<Void,Error> in
+                UserCoreService.shared.addNewUser(core: UserCore(uid: AuthService.shared.currentUser!.uid, name: self!.nameText, age: self!.age, gender: "", sexuality: "", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 150, longitude: LocationService.shared.coordinates.longitude, latitude: LocationService.shared.coordinates.latitude))
+            }
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] completion in
@@ -290,22 +293,40 @@ final class SigninSignupViewModel: ObservableObject{
             .sink { [weak self] completion in
                 switch completion {
                 case let .failure(error):
-                    print(error.localizedDescription)
+                    print("SignInSignUpViewModel: Failed to login")
+                    print("SignInSignUpViewModel-err: \(error)")
                     self!.loginError = false
                     self!.loading = false
                 case .finished:
                     print("Succesfully Signed in")
                 }
-            } receiveValue: { [weak self] _ in
-                UserDefaults.standard.set(true, forKey: "loggedIn")
-                UserDefaults.standard.set(self!.emailText, forKey: "email")
-                UserDefaults.standard.set(self!.passwordText, forKey: "password")
-                
-                self!.loading = false
-                withAnimation {
-                    AppState.shared.signUpPageActive = false
-                    AppState.shared.loginPageActive = false
-                    AppState.shared.allowAccess = true
+            } receiveValue: { [weak self] uc in
+                if let uc = uc {
+                    
+                    UserDefaults.standard.set(true, forKey: "loggedIn")
+                    UserDefaults.standard.set(self!.emailText, forKey: "email")
+                    UserDefaults.standard.set(self!.passwordText, forKey: "password")
+                    
+                    self!.loading = false
+                    
+                    if uc.gender == "" {
+                        //send user to createprofile page
+                        AppState.shared.profileInfo.age = uc.age
+                        AppState.shared.profileInfo.name = uc.name
+                        
+                        withAnimation {
+                            AppState.shared.signUpPageActive = false
+                            AppState.shared.loginPageActive = false
+                            AppState.shared.createAccountPressed = true
+                        }
+                    } else {
+                        //User is good to enter app
+                        withAnimation {
+                            AppState.shared.signUpPageActive = false
+                            AppState.shared.loginPageActive = false
+                            AppState.shared.allowAccess = true
+                        }
+                    }
                 }
             }
             .store(in: &cancellables)

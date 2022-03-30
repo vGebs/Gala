@@ -138,17 +138,32 @@ class AppState: ObservableObject {
                 case .finished:
                     print("AppState: Finished fetching usercore")
                 }
-            } receiveValue: { [weak self] _ in
-                self?.allowAccess = true
+            } receiveValue: { [weak self] uc in
+                if let uc = uc {
+                    if uc.gender == "" {
+                        
+                        self?.profileInfo.name = uc.name
+                        self?.profileInfo.age = uc.age
+                        
+                        withAnimation {
+                            self?.signUpPageActive = false
+                            self?.loginPageActive = false
+                            self?.createAccountPressed = true
+                        }
+                    } else {
+                        self?.allowAccess = true
+                    }
+                }
             }
             .store(in: &cancellables)
-
     }
         
     public func logout() {
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
         AppState.shared.onLandingPage = true
+        
+        UserCoreService.shared.currentUserCore = nil
         
         AuthService.shared.logout()
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))

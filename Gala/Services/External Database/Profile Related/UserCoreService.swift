@@ -43,7 +43,7 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         }
         
         return Future<Void, Error> { promise in
-            self.db.collection("UserCore").document(self.currentUID!).setData([
+            self.db.collection("UserCore").document(core.uid).setData([
                 "name" : core.name,
                 "age" : core.age.formatDate(),
                 "dateJoined" : Date().formatDate(),
@@ -68,10 +68,6 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    enum UserCoreError: Error {
-        case emptyUID
-    }
-    
     func getUserCore(uid: String?) -> AnyPublisher<UserCore?, Error> {
         return Future<UserCore?, Error> { promise in
             if let uid = uid  {
@@ -88,10 +84,7 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                         format.dateFormat = "yyyy/MM/dd"
                         
                         let age = format.date(from: date)!
-                        
-                        //                    print("UserCore birthday: \(age)")
-                        //                    print("UserCore age: \(age.ageString())")
-                        
+                                                
                         let userCore = UserCore(
                             uid: doc.data()?["id"] as? String ?? "",
                             name: doc.data()?["name"] as? String ?? "",
@@ -114,8 +107,9 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                         
                         promise(.success(userCore))
                         
+                    } else {
+                        promise(.failure(UserCoreError.noDocumentFound))
                     }
-                    promise(.success(nil))
                 }
             } else {
                 promise(.failure(UserCoreError.emptyUID))
@@ -164,4 +158,10 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
             return nil
         }
     }
+}
+
+enum UserCoreError: Error {
+    case emptyUID
+    case missingFields
+    case noDocumentFound
 }
