@@ -31,14 +31,14 @@ struct ContentView: View {
                     .gesture(
                         DragGesture()
                             .onChanged{ val in
-                                if val.translation.width < 0 && val.startLocation.x > screenWidth * 0.8 {
+                                if val.translation.width < 0 {
                                     withAnimation(Animation.interactiveSpring()) {
                                         self.draggedOffset = val.translation.width
                                     }
                                 }
                             }
                             .onEnded { val in
-                                if abs(val.translation.width) > screenWidth / 4 && val.startLocation.x > screenWidth * 0.8 {
+                                if abs(val.translation.width) > screenWidth / 4 && val.startLocation.x > val.predictedEndLocation.x { //&& val.startLocation.x > 'whatever'
                                     withAnimation(Animation.interactiveSpring()) {
                                         draggedOffset = -screenWidth * 2
                                         chat.showChat = false

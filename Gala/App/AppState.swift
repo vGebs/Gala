@@ -128,7 +128,6 @@ class AppState: ObservableObject {
                 }
             }.assign(to: &$chatsVM)
         
-        //need to pull uc before moving on
         $currentUser
             .flatMap { UserCoreService.shared.getUserCore(uid: $0?.uid) }
             .sink { completion in
