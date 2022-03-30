@@ -102,12 +102,6 @@ struct ChatView: View, KeyboardReadable {
         ScrollViewReader{ proxy in
             ScrollView(showsIndicators: false){
                 macthedDateView
-                Button("Scroll to Bottom") {
-                    withAnimation {
-                        proxy.scrollTo(bottomID)
-                    }
-                }
-                .id(topID)
                 
                 if messages[userChat!.uid] != nil {
                     ForEach(messages[userChat!.uid]!){ message in

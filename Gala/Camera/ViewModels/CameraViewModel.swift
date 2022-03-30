@@ -44,6 +44,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     @Published public private(set) var photoSaved = false
     @Published public var flashEnabled = false
     @Published public var isRecording = false
+    @Published public var sendPressed = false
     
     // MARK: - Outputs
     

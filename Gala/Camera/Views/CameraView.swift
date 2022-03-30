@@ -17,7 +17,6 @@ struct CameraView: View {
     
     let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight * 0.91))
     
-    @State var sendPressed = false
     @State var isRecording = false
     @State var showProfile = false
         
@@ -66,10 +65,6 @@ struct CameraView: View {
                         Spacer()
                     }
                 }
-            }
-            
-            if camera.image != nil {
-                PicTakenView(camera: camera, sendPressed: $sendPressed)
             }
         }
         .sheet(isPresented: $showProfile, content: {
