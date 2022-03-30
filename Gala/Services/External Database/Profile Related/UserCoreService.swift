@@ -14,7 +14,7 @@ import FirebaseFirestoreSwift
 protocol UserCoreServiceProtocol {
     var currentUserCore: UserCore? { get set }
     func addNewUser(core: UserCore) -> AnyPublisher<Void, Error>
-    func getUserCore(uid: String) -> AnyPublisher<UserCore?, Error>
+    func getUserCore(uid: String?) -> AnyPublisher<UserCore?, Error>
 }
 
 class UserCoreService: ObservableObject, UserCoreServiceProtocol {
@@ -68,49 +68,57 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func getUserCore(uid: String) -> AnyPublisher<UserCore?, Error> {
+    enum UserCoreError: Error {
+        case emptyUID
+    }
+    
+    func getUserCore(uid: String?) -> AnyPublisher<UserCore?, Error> {
         return Future<UserCore?, Error> { promise in
-            let docRef = self.db.collection("UserCore").document(uid)
-            
-            docRef.getDocument { [weak self] (document, error) in
+            if let uid = uid  {
+                let docRef = self.db.collection("UserCore").document(uid)
                 
-                if let error = error { promise(.failure(error)) }
-                
-                if let doc = document {
+                docRef.getDocument { [weak self] (document, error) in
                     
-                    let date = doc.data()?["age"] as? String ?? ""
-                    let format = DateFormatter()
-                    format.dateFormat = "yyyy/MM/dd"
+                    if let error = error { promise(.failure(error)) }
                     
-                    let age = format.date(from: date)!
-                    
-                    //                    print("UserCore birthday: \(age)")
-                    //                    print("UserCore age: \(age.ageString())")
-                    
-                    let userCore = UserCore(
-                        uid: doc.data()?["id"] as? String ?? "",
-                        name: doc.data()?["name"] as? String ?? "",
-                        age: age,
-                        gender: doc.data()?["gender"] as? String ?? "",
-                        sexuality: doc.data()?["sexuality"] as? String ?? "",
-                        ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
-                        ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
-                        willingToTravel: doc.data()?["willingToTravel"] as? Int ?? 25,
-                        longitude: doc.data()?["longitude"] as? Double ?? 0,
-                        latitude: doc.data()?["latitude"] as? Double ?? 0
-                    )
-                    print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
-                    print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUID))")
-                    
-                    if uid == AuthService.shared.currentUser?.uid{
-                        self?.currentUserCore = userCore
-                        print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUserCore))")
+                    if let doc = document {
+                        
+                        let date = doc.data()?["age"] as? String ?? ""
+                        let format = DateFormatter()
+                        format.dateFormat = "yyyy/MM/dd"
+                        
+                        let age = format.date(from: date)!
+                        
+                        //                    print("UserCore birthday: \(age)")
+                        //                    print("UserCore age: \(age.ageString())")
+                        
+                        let userCore = UserCore(
+                            uid: doc.data()?["id"] as? String ?? "",
+                            name: doc.data()?["name"] as? String ?? "",
+                            age: age,
+                            gender: doc.data()?["gender"] as? String ?? "",
+                            sexuality: doc.data()?["sexuality"] as? String ?? "",
+                            ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
+                            ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
+                            willingToTravel: doc.data()?["willingToTravel"] as? Int ?? 25,
+                            longitude: doc.data()?["longitude"] as? Double ?? 0,
+                            latitude: doc.data()?["latitude"] as? Double ?? 0
+                        )
+                        print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
+                        print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUID))")
+                        
+                        if uid == AuthService.shared.currentUser?.uid{
+                            self?.currentUserCore = userCore
+                            print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUserCore))")
+                        }
+                        
+                        promise(.success(userCore))
+                        
                     }
-                    
-                    promise(.success(userCore))
-                    
+                    promise(.success(nil))
                 }
-                promise(.success(nil))
+            } else {
+                promise(.failure(UserCoreError.emptyUID))
             }
         }.eraseToAnyPublisher()
     }

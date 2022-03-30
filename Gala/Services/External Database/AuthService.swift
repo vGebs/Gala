@@ -19,7 +19,7 @@ protocol AuthServiceProtocol {
 
 class AuthService: AuthServiceProtocol{
 
-    var currentUser: User?
+    var currentUser: User? = Auth.auth().currentUser
     
     private var cancellables: [AnyCancellable] = []
     

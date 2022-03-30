@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Combine
+import FirebaseAuth
+import Firebase
 
 class AppState: ObservableObject {
     
@@ -43,42 +45,12 @@ class AppState: ObservableObject {
     @Published var cameraVM: CameraViewModel? //DONE //deinit when camera.tearDownCamera() is called (see logout() func)
     @Published var exploreVM: ExploreViewModel? //DONE
     
-    @Published var currentPage: CGFloat = screenWidth {
-        didSet {
-            if currentPage != screenWidth {
-                cameraVM?.tearDownCamera()
-            } else {
-                cameraVM?.buildCamera()
-            }
-        }
-    }
-    
     private var cancellables: [AnyCancellable] = []
     
+    @Published var currentUser = AuthService.shared.currentUser
+    
     private init() {
-        
-        $currentPage
-            .map { [weak self] val in
-                if val != screenWidth {
-                    self?.cameraVM?.tearDownCamera()
-                }
-            }
-            .sink { _ in
-                print("AppState: Camera is being turned off")
-            }
-            .store(in: &cancellables)
-        
-        $currentPage
-            .map { [weak self] val in
-                if val == screenWidth {
-                    self?.cameraVM?.buildCamera()
-                }
-            }
-            .sink { _ in
-                print("AppState: Camera is being turned on")
-            }
-            .store(in: &cancellables)
-        
+
         $loginPageActive
             .flatMap{ [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
@@ -155,6 +127,23 @@ class AppState: ObservableObject {
                     return Just(nil).eraseToAnyPublisher()
                 }
             }.assign(to: &$chatsVM)
+        
+        //need to pull uc before moving on
+        $currentUser
+            .flatMap { UserCoreService.shared.getUserCore(uid: $0?.uid) }
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("AppState: CurrentUser is empty")
+                    print("AppState-err: \(e)")
+                case .finished:
+                    print("AppState: Finished fetching usercore")
+                }
+            } receiveValue: { [weak self] _ in
+                self?.allowAccess = true
+            }
+            .store(in: &cancellables)
+
     }
         
     public func logout() {

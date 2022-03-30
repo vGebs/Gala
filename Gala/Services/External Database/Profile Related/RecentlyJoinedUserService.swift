@@ -72,9 +72,7 @@ extension RecentlyJoinedUserService {
 
 //MARK: - getRecents()
 extension RecentlyJoinedUserService {
-    
-    
-    
+        
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()

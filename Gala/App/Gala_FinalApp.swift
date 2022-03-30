@@ -154,29 +154,11 @@ struct GalaApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate{
     
-    var userService = AuthService.shared
     private var cancellables: [AnyCancellable] = []
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("setting up firebase")
+        print("Gala_FinalApp: Setting up firebase")
         FirebaseApp.configure()
-        
-//        if loggedIn && (userService.currentUser == nil){
-//            if let email = email, let password = password {
-//                userService.signInWithEmail(email: email, password: password)
-//                    .sink { completion in
-//                        switch completion {
-//                        case .failure(let error):
-//                            print(error.localizedDescription)
-//                            fatalError()
-//                        case .finished:
-//                            print("Logged in")
-//                            return true
-//                        }
-//                    } receiveValue: { _ in }
-//                    .store(in: &cancellables)
-//            }
-//        }
         
         return true
     }
