@@ -43,9 +43,41 @@ class AppState: ObservableObject {
     @Published var cameraVM: CameraViewModel? //DONE //deinit when camera.tearDownCamera() is called (see logout() func)
     @Published var exploreVM: ExploreViewModel? //DONE
     
+    @Published var currentPage: CGFloat = screenWidth {
+        didSet {
+            if currentPage != screenWidth {
+                cameraVM?.tearDownCamera()
+            } else {
+                cameraVM?.buildCamera()
+            }
+        }
+    }
+    
     private var cancellables: [AnyCancellable] = []
     
     private init() {
+        
+        $currentPage
+            .map { [weak self] val in
+                if val != screenWidth {
+                    self?.cameraVM?.tearDownCamera()
+                }
+            }
+            .sink { _ in
+                print("AppState: Camera is being turned off")
+            }
+            .store(in: &cancellables)
+        
+        $currentPage
+            .map { [weak self] val in
+                if val == screenWidth {
+                    self?.cameraVM?.buildCamera()
+                }
+            }
+            .sink { _ in
+                print("AppState: Camera is being turned on")
+            }
+            .store(in: &cancellables)
         
         $loginPageActive
             .flatMap{ [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in

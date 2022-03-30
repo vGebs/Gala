@@ -16,10 +16,10 @@ struct ContentView: View {
     
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") private var isDarkMode = true
-
-    @State var offset: CGFloat = screenWidth //* 2
     
     @State var draggedOffset: CGFloat = -screenWidth * 2
+        
+    @StateObject var navBarVM = NavBarViewModel()
     
     var body: some View {
         ZStack {
@@ -66,7 +66,7 @@ struct ContentView: View {
         GeometryReader { proxy in
             let rect = proxy.frame(in: .global)
             
-            Pager(tabs: tabs, rect: rect, offset: $offset) {
+            Pager(tabs: tabs, rect: rect, offset: $navBarVM.currentPage) {
                 
                 HStack(spacing: 0){
                     ChatsView(viewModel: chat, profile: profile)
@@ -77,7 +77,7 @@ struct ContentView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .overlay(
-            NavBar(offset: $offset)
+            NavBar(offset: $navBarVM.currentPage)
                 .opacity(camera.image != nil ? 0 : 1)
                 .padding(.bottom, screenHeight * 0.03),
             alignment: .bottom
@@ -89,3 +89,4 @@ struct ContentView: View {
 
 //var tabs = ["Profile", "Chats", "Camera", "Explore", "Showcase"]
 var tabs = ["Chats", "Camera", "Explore"]
+

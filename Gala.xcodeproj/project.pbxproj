@@ -105,6 +105,7 @@
 		FAAAA77627F3A16500663816 /* KeyboardPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77527F3A16500663816 /* KeyboardPublisher.swift */; };
 		FAAAA77827F3C5E800663816 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77727F3C5E800663816 /* Post.swift */; };
 		FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77927F3C63F00663816 /* UserPostSimple.swift */; };
+		FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -236,6 +237,7 @@
 		FAAAA77527F3A16500663816 /* KeyboardPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardPublisher.swift; sourceTree = "<group>"; };
 		FAAAA77727F3C5E800663816 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		FAAAA77927F3C63F00663816 /* UserPostSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostSimple.swift; sourceTree = "<group>"; };
+		FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewModel.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -638,7 +640,7 @@
 				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
-				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
+				FAAAA77D27F3E63C00663816 /* NavBar */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -650,6 +652,15 @@
 				FA8773F726409AAB00D5D5CB /* ViewModels */,
 			);
 			path = Profile_;
+			sourceTree = "<group>";
+		};
+		FAAAA77D27F3E63C00663816 /* NavBar */ = {
+			isa = PBXGroup;
+			children = (
+				FA8773EF26409A4500D5D5CB /* NavBar.swift */,
+				FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */,
+			);
+			path = NavBar;
 			sourceTree = "<group>";
 		};
 		FABAABE92787F63400154363 /* SubViews */ = {
@@ -911,6 +922,7 @@
 				FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */,
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
+				FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */,
 				FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */,
 				FA6BE5FE27B5FC1A0058B78C /* Message.swift in Sources */,
 				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
