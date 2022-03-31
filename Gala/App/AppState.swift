@@ -157,32 +157,30 @@ class AppState: ObservableObject {
             }
             .store(in: &cancellables)
     }
-        
+
     public func logout() {
+        
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
         AppState.shared.onLandingPage = true
         
         UserCoreService.shared.currentUserCore = nil
         
-        AuthService.shared.logout()
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("AppState: Failed to logout")
-                    print("AppState-err: \(e)")
-                case .finished:
-                    print("AppState: Finished logging out")
-//                    UserDefaults.standard.set(false, forKey: "loggedIn")
-//                    UserDefaults.standard.set("", forKey: "email")
-//                    UserDefaults.standard.set("", forKey: "password")
-//                    AppState.shared.allowAccess = false
-//                    AppState.shared.onLandingPage = true
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+            AuthService.shared.logout()
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("AppState: Failed to logout")
+                        print("AppState-err: \(e)")
+                    case .finished:
+                        print("AppState: Finished logging out")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self!.cancellables)
+        }
     }
     
     public func toggleDarkMode() {

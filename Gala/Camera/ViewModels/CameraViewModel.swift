@@ -95,7 +95,8 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     
     
     // MARK: - Capturing Photos/Videos
-    private var cameraIsBuilt = false
+    @Published var cameraIsBuilt = false
+    private var setupComplete = false
     private let photoOutput = AVCapturePhotoOutput()
     private var photoOutputEnabled = false
     private var movieFileOutput: AVCaptureMovieFileOutput?
@@ -149,7 +150,8 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     private var photoQualityPrioritization: Bool
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera, .builtInDualWideCamera], mediaType: .video, position: .unspecified)
     
-    
+    private var cancellables: [AnyCancellable] = []
+        
     // MARK: - Initializer
     init() {
         self.camFlipEnabled = false
@@ -159,6 +161,23 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         //self.livePhotoEnabled = false
         self.depthEnabled = false
         self.photoQualityPrioritization = false
+        
+        $image
+            .debounce(for: .seconds(2.5), scheduler: DispatchQueue.main)
+            .map { [weak self] img in
+                if img != nil && self!.cameraIsBuilt{
+                    self?.tearDownCamera()
+                }
+            }.sink { _ in }
+            .store(in: &cancellables)
+        
+        $image
+            .map { [weak self] img in
+                if img == nil && !self!.cameraIsBuilt && self!.setupComplete {
+                    self?.buildCamera()
+                }
+            }.sink { _ in }
+            .store(in: &cancellables)
         
         /*
          Setup the capture session.
@@ -340,11 +359,15 @@ extension CameraViewModel {
             switch self.setupResult {
             case .success:
                 // Only setup observers and start the session if setup succeeded.
-                self.cameraIsBuilt = true
                 self.addObservers()
                 self.session.startRunning()
                 self.isSessionRunning = self.session.isRunning
                 
+                DispatchQueue.main.async {
+                    self.cameraIsBuilt = true
+                    self.setupComplete = true
+                }
+
             case .notAuthorized:
                 DispatchQueue.main.async {
                     print("Gala doesn't have permission to use the camera, please change privacy settings")
@@ -611,10 +634,14 @@ extension CameraViewModel {
         if cameraIsBuilt {
             sessionQueue.async {
                 if self.setupResult == .success {
-                    self.cameraIsBuilt = false
+                    DispatchQueue.main.async {
+                        self.cameraIsBuilt = false
+                    }
+                    
                     self.session.stopRunning()
                     self.isSessionRunning = self.session.isRunning
                     self.removeObservers()
+                    
                 }
             }
         }

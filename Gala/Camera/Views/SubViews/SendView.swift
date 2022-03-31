@@ -109,7 +109,7 @@ struct SendView: View {
             
             ForEach(chatsViewModel.matches) { match in
                 //Show matches that we can send to
-                SendToSelector(user: match, selected: $viewModel.selectedMatch)
+                SendToSelector(user: match, selected: $viewModel.selectedMatch, location: LocationViewModel(coordinate: Coordinate(lat: match.uc.latitude, lng: match.uc.longitude)))
                     .onTapGesture {
                         if viewModel.selectedMatch == match.uc.uid {
                             viewModel.selectedMatch = ""

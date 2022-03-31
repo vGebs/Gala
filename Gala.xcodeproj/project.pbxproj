@@ -106,6 +106,7 @@
 		FAAAA77827F3C5E800663816 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77727F3C5E800663816 /* Post.swift */; };
 		FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77927F3C63F00663816 /* UserPostSimple.swift */; };
 		FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */; };
+		FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -238,6 +239,7 @@
 		FAAAA77727F3C5E800663816 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		FAAAA77927F3C63F00663816 /* UserPostSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostSimple.swift; sourceTree = "<group>"; };
 		FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewModel.swift; sourceTree = "<group>"; };
+		FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 			isa = PBXGroup;
 			children = (
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
+				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
 			);
 			path = "General Services";
 			sourceTree = "<group>";
@@ -933,6 +936,7 @@
 				FA7BAD4826FD0FAD002F25E0 /* PostSelector.swift in Sources */,
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
+				FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */,
 				FA6BE60627BDB0F10058B78C /* ArrayExtensions.swift in Sources */,
 				FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */,
 				FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */,

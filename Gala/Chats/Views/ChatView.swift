@@ -12,7 +12,9 @@ struct ChatView: View, KeyboardReadable {
     @Binding var showChat: Bool
     @Binding var userChat: UserChat?
     
-    @ObservedObject var viewModel : ChatsViewModel
+    @ObservedObject var locationViewModel: LocationViewModel
+    
+    @ObservedObject var viewModel: ChatsViewModel
     
     @Binding var messages: OrderedDictionary<String, [Message]>
     @Binding var snaps: OrderedDictionary<String, [Snap]>
@@ -74,7 +76,7 @@ struct ChatView: View, KeyboardReadable {
                             .font(.system(size: 11, weight: .bold, design: .rounded))
                             .foregroundColor(.buttonPrimary)
                         
-                        Text("Poop Town")
+                        Text("\(locationViewModel.city), \(locationViewModel.country)")
                             .font(.system(size: 13, weight: .regular, design: .rounded))
                             .foregroundColor(.white)
                         Spacer()

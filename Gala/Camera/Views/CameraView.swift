@@ -60,6 +60,8 @@ struct CameraView: View {
                                     .font(.system(size: 22, weight: .regular, design: .rounded))
                                     .padding()
                             }
+                            .disabled(!self.camera.cameraIsBuilt)
+                            
                             Spacer()
                         }
                         Spacer()

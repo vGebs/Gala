@@ -75,7 +75,7 @@ struct ConvoPreview: View {
                             if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
                                 
                                 //Show SnapView
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                                 
                                 showSnapView = true
                                 
@@ -88,9 +88,9 @@ struct ConvoPreview: View {
                                 if let _ = messages[ucMatch.uc.uid]{
                                     //we just need to check ucMatch when its a chat, not a snap
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                                     }
                                     
                                     timeMatchedBinding = timeMatched
@@ -108,9 +108,9 @@ struct ConvoPreview: View {
                         } else if let _ = messages[ucMatch.uc.uid]{
                             //we just need to check ucMatch when its a chat, not a snap
                             if let img = ucMatch.profileImg {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
                             } else {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                             }
                             
                             timeMatchedBinding = timeMatched
@@ -127,9 +127,9 @@ struct ConvoPreview: View {
                             }
                         } else {
                             if let img = ucMatch.profileImg {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
                             } else {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                             }
                             
                             timeMatchedBinding = timeMatched
@@ -273,9 +273,9 @@ struct ConvoPreview: View {
                                 if let _ = messages[ucMatch.uc.uid]{
                                     //we just need to check ucMatch when its a chat, not a snap
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                                     }
                                     
                                     timeMatchedBinding = timeMatched
@@ -292,9 +292,9 @@ struct ConvoPreview: View {
                                     }
                                 } else {
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
                                     }
                                     
                                     timeMatchedBinding = timeMatched

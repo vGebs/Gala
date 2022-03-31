@@ -10,6 +10,7 @@ import SwiftUI
 struct SendToSelector: View {
     var user: MatchedUserCore
     @Binding var selected: String
+    @ObservedObject var location: LocationViewModel
     
     var body: some View {
         HStack{
@@ -51,7 +52,7 @@ struct SendToSelector: View {
                             Image(systemName: "mappin.and.ellipse")
                                 .font(.system(size: 12, weight: .regular, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
-                            Text("Poop Town")
+                            Text("\(location.city), \(location.country)")
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
                                 .foregroundColor(.white)
                             Spacer()
