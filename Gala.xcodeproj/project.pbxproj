@@ -83,8 +83,6 @@
 		FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774472640A19B00D5D5CB /* ProfileModel.swift */; };
 		FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744C2640A1F200D5D5CB /* ProfileService.swift */; };
 		FA87744F2640A20F00D5D5CB /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744E2640A20F00D5D5CB /* AuthService.swift */; };
-		FA8774532640A26000D5D5CB /* ProfilePersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */; };
-		FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA8774542640A2C700D5D5CB /* GalaPersistence.xcdatamodeld */; };
 		FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774582640A39700D5D5CB /* ImagePicker.swift */; };
 		FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745A2640A3B200D5D5CB /* ImageCropper.swift */; };
 		FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */; };
@@ -107,6 +105,12 @@
 		FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77927F3C63F00663816 /* UserPostSimple.swift */; };
 		FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */; };
 		FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */; };
+		FAAAA78227F64D4200663816 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA78127F64D4200663816 /* DataStore.swift */; };
+		FAAAA7A327F6769500663816 /* UserCorePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A227F6769500663816 /* UserCorePersistence.swift */; };
+		FAAAA7AA27F6796000663816 /* UserCore_CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A827F6796000663816 /* UserCore_CoreData.xcdatamodeld */; };
+		FAAAA7B327F7C1E200663816 /* ChatsDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */; };
+		FAAAA7B527F7C67F00663816 /* RecentlyJoinedDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */; };
+		FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -216,8 +220,6 @@
 		FA8774472640A19B00D5D5CB /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		FA87744C2640A1F200D5D5CB /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		FA87744E2640A20F00D5D5CB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
-		FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePersistenceService.swift; sourceTree = "<group>"; };
-		FA8774552640A2C700D5D5CB /* GalaPersistence.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GalaPersistence.xcdatamodel; sourceTree = "<group>"; };
 		FA8774582640A39700D5D5CB /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		FA87745A2640A3B200D5D5CB /* ImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropper.swift; sourceTree = "<group>"; };
 		FA87745C2640A3E300D5D5CB /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
@@ -240,6 +242,12 @@
 		FAAAA77927F3C63F00663816 /* UserPostSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostSimple.swift; sourceTree = "<group>"; };
 		FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewModel.swift; sourceTree = "<group>"; };
 		FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
+		FAAAA78127F64D4200663816 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		FAAAA7A227F6769500663816 /* UserCorePersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCorePersistence.swift; sourceTree = "<group>"; };
+		FAAAA7A927F6796000663816 /* UserCore_CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserCore_CoreData.xcdatamodel; sourceTree = "<group>"; };
+		FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsDataStore.swift; sourceTree = "<group>"; };
+		FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedDataStore.swift; sourceTree = "<group>"; };
+		FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesDataStore.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -600,8 +608,8 @@
 		FA87744A2640A1DA00D5D5CB /* Internal Database */ = {
 			isa = PBXGroup;
 			children = (
-				FA8774522640A26000D5D5CB /* ProfilePersistenceService.swift */,
-				FA8774542640A2C700D5D5CB /* GalaPersistence.xcdatamodeld */,
+				FAAAA7AB27F6E45A00663816 /* CoreData */,
+				FAAAA7A427F676E200663816 /* UserCore */,
 			);
 			path = "Internal Database";
 			sourceTree = "<group>";
@@ -664,6 +672,33 @@
 				FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */,
 			);
 			path = NavBar;
+			sourceTree = "<group>";
+		};
+		FAAAA78027F64D2500663816 /* DataStore */ = {
+			isa = PBXGroup;
+			children = (
+				FAAAA78127F64D4200663816 /* DataStore.swift */,
+				FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */,
+				FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */,
+				FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */,
+			);
+			path = DataStore;
+			sourceTree = "<group>";
+		};
+		FAAAA7A427F676E200663816 /* UserCore */ = {
+			isa = PBXGroup;
+			children = (
+				FAAAA7A227F6769500663816 /* UserCorePersistence.swift */,
+				FAAAA7A827F6796000663816 /* UserCore_CoreData.xcdatamodeld */,
+			);
+			path = UserCore;
+			sourceTree = "<group>";
+		};
+		FAAAA7AB27F6E45A00663816 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		FABAABE92787F63400154363 /* SubViews */ = {
@@ -736,6 +771,7 @@
 				FA8773F326409A7B00D5D5CB /* Camera */,
 				FA8773F426409A8500D5D5CB /* Explore */,
 				FA8774492640A1CD00D5D5CB /* Services */,
+				FAAAA78027F64D2500663816 /* DataStore */,
 				FA8774442640A16800D5D5CB /* Models */,
 				FA8774572640A37D00D5D5CB /* ServiceViews */,
 				FA8774352640A03F00D5D5CB /* Extensions */,
@@ -894,6 +930,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
+				FAAAA78227F64D4200663816 /* DataStore.swift in Sources */,
+				FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */,
 				FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
 				FA2E23D027BF58AA000C131A /* Snap.swift in Sources */,
@@ -907,6 +945,7 @@
 				FA6BE5FB27B5FA040058B78C /* UserChat.swift in Sources */,
 				FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */,
 				FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */,
+				FAAAA7A327F6769500663816 /* UserCorePersistence.swift in Sources */,
 				FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */,
 				FADC1164269813EC0070465C /* UserCore.swift in Sources */,
 				FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */,
@@ -971,12 +1010,12 @@
 				FAEDCFE4269E524400A2C4A1 /* AllRecentsView.swift in Sources */,
 				FA58F53726C8842E00AE3B7C /* UIViewExtension.swift in Sources */,
 				FA38DCE12723DA33003B4C90 /* VideoCaptureProcessor.swift in Sources */,
+				FAAAA7B327F7C1E200663816 /* ChatsDataStore.swift in Sources */,
 				FA87740626409CAE00D5D5CB /* ProfileViewModel.swift in Sources */,
 				FABAABE82787F49A00154363 /* AddToStoryButton.swift in Sources */,
 				FA87743D2640A0DB00D5D5CB /* ColorExtension.swift in Sources */,
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
-				FA8774562640A2C700D5D5CB /* GalaPersistence.xcdatamodeld in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
@@ -988,6 +1027,7 @@
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
+				FAAAA7AA27F6796000663816 /* UserCore_CoreData.xcdatamodeld in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,
@@ -1002,12 +1042,12 @@
 				FAD33A0C27D0313800FC9553 /* UserStoryView.swift in Sources */,
 				FAFD431926D75FA700C535D2 /* TestView.swift in Sources */,
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
+				FAAAA7B527F7C67F00663816 /* RecentlyJoinedDataStore.swift in Sources */,
 				FA7BAD4526FC48CD002F25E0 /* SendView.swift in Sources */,
 				FA6BE5F927B5F7E30058B78C /* ChatService.swift in Sources */,
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,
 				FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */,
 				FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */,
-				FA8774532640A26000D5D5CB /* ProfilePersistenceService.swift in Sources */,
 				FAAAA76927E54A9700663816 /* LikesViewModel.swift in Sources */,
 				FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */,
 				FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */,
@@ -1254,13 +1294,13 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		FA8774542640A2C700D5D5CB /* GalaPersistence.xcdatamodeld */ = {
+		FAAAA7A827F6796000663816 /* UserCore_CoreData.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				FA8774552640A2C700D5D5CB /* GalaPersistence.xcdatamodel */,
+				FAAAA7A927F6796000663816 /* UserCore_CoreData.xcdatamodel */,
 			);
-			currentVersion = FA8774552640A2C700D5D5CB /* GalaPersistence.xcdatamodel */;
-			path = GalaPersistence.xcdatamodeld;
+			currentVersion = FAAAA7A927F6796000663816 /* UserCore_CoreData.xcdatamodel */;
+			path = UserCore_CoreData.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

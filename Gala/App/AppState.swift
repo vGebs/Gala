@@ -160,6 +160,7 @@ class AppState: ObservableObject {
 
     public func logout() {
         
+        DataStore.shared.clear()
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
         AppState.shared.onLandingPage = true
@@ -180,7 +181,7 @@ class AppState: ObservableObject {
                     }
                 } receiveValue: { _ in }
                 .store(in: &self!.cancellables)
-        }
+        }        
     }
     
     public func toggleDarkMode() {

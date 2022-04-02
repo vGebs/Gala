@@ -23,7 +23,7 @@ final class ProfileViewModel: ObservableObject {
         
     //@Published var dropDownViewModel: MyStoriesDropDownViewModel
     
-    private let profileManager = ProfilePersistenceService()
+    //private let profileManager = ProfilePersistenceService()
     private var userService: AuthServiceProtocol = AuthService.shared
     
     private var cancellables: [AnyCancellable] = []
@@ -169,12 +169,8 @@ final class ProfileViewModel: ObservableObject {
             self.ageText = age.ageString()
             self.email = email
             
-            //guard let currentUser = userService.currentUser?.uid else { return }
             if let uid = uid {
-                //if !self.readProfileFromCoreData(id: currentUser) {
-                    self.readProfileFromFirebase(uid: uid)
-                   // print("could not get core data")
-                //}
+                self.readProfileFromFirebase(uid: uid)
             }
         case .otherAccount:
             self.nameText = name
@@ -644,7 +640,6 @@ extension ProfileViewModel {
         
         //Create Firebase Profile
         pushProfileFirestore(profile, allImgs)
-        //pushProfileToCoreData(profile, allImgs)
     }
     
     private func pushProfileFirestore(_ profile: ProfileModel, _ imgs: [ImageModel]) {
@@ -666,88 +661,6 @@ extension ProfileViewModel {
             }.store(in: &cancellables)
     }
     
-    private func pushProfileToCoreData(_ profile: ProfileModel, _ imgs: [ImageModel]) {
-        profileManager.createProfile(profile, images: imgs)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let error):
-                    print("Could not create Core Data profile: \(error.localizedDescription)")
-                case .finished:
-                    print("Finished creating Core Data Profile")
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
-    }
-    
-    private func readProfileFromCoreData(id: String) -> Bool {
-        
-        var returnedNil = false
-        
-        profileManager.fetchProfile(id: id)
-            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("Finished fetching profile from Core Data: ProfileViewModel")
-                }
-            } receiveValue: { [weak self] text, mainImgs, sideImgs in
-                if text == nil || mainImgs == nil || sideImgs == nil {
-                    returnedNil = true
-                } else {
-                    //Populate UI w/ text
-                    self!.nameText = text!.name
-                    self!.age = text!.birthday
-                    self!.ageText = self!.age.ageString()
-                    
-                    if let bio = text?.bio {
-                        self!.bioText = bio
-                    }
-                    
-                    if text?.gender == "male" || text?.gender == "Male" {
-                        self!.selectGenderDropDownText = .male
-                    } else {
-                        self!.selectGenderDropDownText = .female
-                    }
-                    
-                    if text?.sexuality == "gay" || text?.sexuality == "Gay"{
-                        self!.selectSexualityDropDownText = .gay
-                    } else if text?.sexuality == "Straight" || text?.sexuality == "straight" {
-                        self!.selectSexualityDropDownText = .straight
-                    } else {
-                        self!.selectSexualityDropDownText = .bisexual
-                    }
-                    
-                    if let job = text?.job {
-                        self!.jobText = job
-                    }
-                    
-                    if let school = text?.school {
-                        self!.schoolText = school
-                    }
-                    
-                    //Populate UI w/ mainImg
-                    if let main = mainImgs {
-                        self!.profileImage += main
-                    }
-                    
-                    //Populate UI w/ sideImgs
-                    if let side = sideImgs {
-                        self!.images += side
-                    }
-                }
-            }
-            .store(in: &self.cancellables)
-
-        if returnedNil {
-            return false
-        } else {
-            return true
-        }
-    }
-    
     private func readProfileFromFirebase(uid: String) {
         
         ProfileService.shared.getFullProfile(uid: uid)
@@ -756,7 +669,7 @@ extension ProfileViewModel {
                 case let .failure(error):
                     print(error.localizedDescription)
                 case .finished:
-                    print("getting profile from firebase: ProfileViewModel")
+                    print("ProfileViewModel: Getting profile from firebase")
                 }
             } receiveValue: { [weak self] core, abt, imgs in
 
