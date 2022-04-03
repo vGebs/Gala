@@ -140,10 +140,10 @@ class AppState: ObservableObject {
                 }
             } receiveValue: { [weak self] uc in
                 if let uc = uc {
-                    if uc.gender == "" {
+                    if uc.userBasic.gender == "" {
                         
-                        self?.profileInfo.name = uc.name
-                        self?.profileInfo.age = uc.age
+                        self?.profileInfo.name = uc.userBasic.name
+                        self?.profileInfo.age = uc.userBasic.birthdate
                         
                         withAnimation {
                             self?.signUpPageActive = false
@@ -160,7 +160,7 @@ class AppState: ObservableObject {
 
     public func logout() {
         
-        DataStore.shared.clear()
+        DataContainer.shared.clear()
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
         AppState.shared.onLandingPage = true

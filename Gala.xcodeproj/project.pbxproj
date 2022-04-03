@@ -81,7 +81,7 @@
 		FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774422640A14D00D5D5CB /* AuthPublisher.swift */; };
 		FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774452640A17900D5D5CB /* ImageModel.swift */; };
 		FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774472640A19B00D5D5CB /* ProfileModel.swift */; };
-		FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744C2640A1F200D5D5CB /* ProfileService.swift */; };
+		FA87744D2640A1F200D5D5CB /* ProfileService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744C2640A1F200D5D5CB /* ProfileService_Firebase.swift */; };
 		FA87744F2640A20F00D5D5CB /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87744E2640A20F00D5D5CB /* AuthService.swift */; };
 		FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8774582640A39700D5D5CB /* ImagePicker.swift */; };
 		FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87745A2640A3B200D5D5CB /* ImageCropper.swift */; };
@@ -105,12 +105,14 @@
 		FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77927F3C63F00663816 /* UserPostSimple.swift */; };
 		FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */; };
 		FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */; };
-		FAAAA78227F64D4200663816 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA78127F64D4200663816 /* DataStore.swift */; };
+		FAAAA78227F64D4200663816 /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA78127F64D4200663816 /* DataContainer.swift */; };
 		FAAAA7A327F6769500663816 /* UserCorePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A227F6769500663816 /* UserCorePersistence.swift */; };
 		FAAAA7AA27F6796000663816 /* UserCore_CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A827F6796000663816 /* UserCore_CoreData.xcdatamodeld */; };
 		FAAAA7B327F7C1E200663816 /* ChatsDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */; };
 		FAAAA7B527F7C67F00663816 /* RecentlyJoinedDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */; };
 		FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */; };
+		FAAAA7BA27F9342700663816 /* ProfileService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */; };
+		FAAAA7BC27F936AF00663816 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7BB27F936AF00663816 /* ProfileService.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -218,7 +220,7 @@
 		FA8774422640A14D00D5D5CB /* AuthPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPublisher.swift; sourceTree = "<group>"; };
 		FA8774452640A17900D5D5CB /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		FA8774472640A19B00D5D5CB /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
-		FA87744C2640A1F200D5D5CB /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		FA87744C2640A1F200D5D5CB /* ProfileService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService_Firebase.swift; sourceTree = "<group>"; };
 		FA87744E2640A20F00D5D5CB /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FA8774582640A39700D5D5CB /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		FA87745A2640A3B200D5D5CB /* ImageCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropper.swift; sourceTree = "<group>"; };
@@ -242,12 +244,14 @@
 		FAAAA77927F3C63F00663816 /* UserPostSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostSimple.swift; sourceTree = "<group>"; };
 		FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewModel.swift; sourceTree = "<group>"; };
 		FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
-		FAAAA78127F64D4200663816 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		FAAAA78127F64D4200663816 /* DataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
 		FAAAA7A227F6769500663816 /* UserCorePersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCorePersistence.swift; sourceTree = "<group>"; };
 		FAAAA7A927F6796000663816 /* UserCore_CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserCore_CoreData.xcdatamodel; sourceTree = "<group>"; };
 		FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsDataStore.swift; sourceTree = "<group>"; };
 		FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentlyJoinedDataStore.swift; sourceTree = "<group>"; };
 		FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesDataStore.swift; sourceTree = "<group>"; };
+		FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService_CoreData.swift; sourceTree = "<group>"; };
+		FAAAA7BB27F936AF00663816 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -337,6 +341,7 @@
 			children = (
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
+				FAAAA7BB27F936AF00663816 /* ProfileService.swift */,
 			);
 			path = "General Services";
 			sourceTree = "<group>";
@@ -394,7 +399,7 @@
 		FA7E3B3A26EAD74000A6653C /* Profile Related */ = {
 			isa = PBXGroup;
 			children = (
-				FA87744C2640A1F200D5D5CB /* ProfileService.swift */,
+				FA87744C2640A1F200D5D5CB /* ProfileService_Firebase.swift */,
 				FADC11612698129D0070465C /* UserCoreService.swift */,
 				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
 				FA2D6EDD2643604000551EE3 /* ImageService.swift */,
@@ -608,6 +613,7 @@
 		FA87744A2640A1DA00D5D5CB /* Internal Database */ = {
 			isa = PBXGroup;
 			children = (
+				FAAAA7B827F9340A00663816 /* Profile Related */,
 				FAAAA7AB27F6E45A00663816 /* CoreData */,
 				FAAAA7A427F676E200663816 /* UserCore */,
 			);
@@ -677,7 +683,7 @@
 		FAAAA78027F64D2500663816 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-				FAAAA78127F64D4200663816 /* DataStore.swift */,
+				FAAAA78127F64D4200663816 /* DataContainer.swift */,
 				FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */,
 				FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */,
 				FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */,
@@ -699,6 +705,14 @@
 			children = (
 			);
 			path = CoreData;
+			sourceTree = "<group>";
+		};
+		FAAAA7B827F9340A00663816 /* Profile Related */ = {
+			isa = PBXGroup;
+			children = (
+				FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */,
+			);
+			path = "Profile Related";
 			sourceTree = "<group>";
 		};
 		FABAABE92787F63400154363 /* SubViews */ = {
@@ -930,7 +944,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
-				FAAAA78227F64D4200663816 /* DataStore.swift in Sources */,
+				FAAAA78227F64D4200663816 /* DataContainer.swift in Sources */,
 				FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */,
 				FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
@@ -970,9 +984,10 @@
 				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
 				FA8CE4362717B45500BE8BB4 /* PhotoCaptureProcessor.swift in Sources */,
 				FA7E3B3226E808CF00A6653C /* Story.swift in Sources */,
-				FA87744D2640A1F200D5D5CB /* ProfileService.swift in Sources */,
+				FA87744D2640A1F200D5D5CB /* ProfileService_Firebase.swift in Sources */,
 				FAAAA75B27E2A23300663816 /* InstaStoryView.swift in Sources */,
 				FA7BAD4826FD0FAD002F25E0 /* PostSelector.swift in Sources */,
+				FAAAA7BC27F936AF00663816 /* ProfileService.swift in Sources */,
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
 				FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */,
@@ -1053,6 +1068,7 @@
 				FA87741626409DEA00D5D5CB /* ChatsViewModel.swift in Sources */,
 				FA72A17326681CAE004DEF77 /* AppState.swift in Sources */,
 				FA72A17526688949004DEF77 /* CameraViewModel.swift in Sources */,
+				FAAAA7BA27F9342700663816 /* ProfileService_CoreData.swift in Sources */,
 				FA87744F2640A20F00D5D5CB /* AuthService.swift in Sources */,
 				FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */,
 				FA6BE60427B7446B0058B78C /* Match.swift in Sources */,

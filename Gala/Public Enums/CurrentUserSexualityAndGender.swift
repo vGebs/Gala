@@ -18,13 +18,13 @@ enum CurrentUserSexualityAndGender {
 }
 
 func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
-    print("RecentlyJoinedUserService: \(String(describing: UserCoreService.shared.currentUserCore?.sexuality))")
-    if UserCoreService.shared.currentUserCore?.gender == "male" {
-        if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
+    print("RecentlyJoinedUserService: \(String(describing: UserCoreService.shared.currentUserCore?.userBasic.sexuality))")
+    if UserCoreService.shared.currentUserCore?.userBasic.gender == "male" {
+        if UserCoreService.shared.currentUserCore?.userBasic.sexuality == "straight" {
             print("RecentlyJoinedUserService: Straight male")
             return .straightMale
         
-        } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
+        } else if UserCoreService.shared.currentUserCore?.userBasic.sexuality == "gay"{
             print("RecentlyJoinedUserService: Gay male")
             return .gayMale
             
@@ -33,11 +33,11 @@ func getCurrentUserSexualityAndGender() -> CurrentUserSexualityAndGender {
             return .biMale
         }
     } else {
-        if UserCoreService.shared.currentUserCore?.sexuality == "straight" {
+        if UserCoreService.shared.currentUserCore?.userBasic.sexuality == "straight" {
             print("RecentlyJoinedUserService: Straight Female")
             return .straightFemale
             
-        } else if UserCoreService.shared.currentUserCore?.sexuality == "gay"{
+        } else if UserCoreService.shared.currentUserCore?.userBasic.sexuality == "gay"{
             print("RecentlyJoinedUserService: Gay Female")
             return .gayFemale
             

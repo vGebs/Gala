@@ -23,8 +23,24 @@ class ChatsDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
+        
+        //Fetch all core data before calling firestore listeners
+        //we want the most recent date of any transaction. ie, match, snap, message
+        //try fetching matches from Core data
+        //  if there is data
+        //      call observeMatches(fromDate: mostRecentMatchDate)
+        //  if there isnt data
+        //      call observeMatches(fromDate: year1977)
         observeMatches()
+        
+        //try fetching snaps from Core data
+        //  if there is data
+        //      do not call observeSnaps(fromDate: lastMessage/Snap)
         observeSnaps()
+        
+        //try fetching snaps from Core data
+        //  if there is data
+        //      do not call observeChats(fromDate: lastMessage/Snap)
         observeChats()
     }
     
@@ -61,28 +77,28 @@ extension ChatsDataStore {
                         if let uc = uc {
                             if let img = img {
                                 
-                                if let n = self?.snaps[uc.uid] {
-                                    if let j = self?.matchMessages[uc.uid] {
-                                        if n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp > j[(self?.matchMessages[uc.uid]?.count)! - 1].time {
+                                if let n = self?.snaps[uc.userBasic.uid] {
+                                    if let j = self?.matchMessages[uc.userBasic.uid] {
+                                        if n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp > j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time {
                                             
-                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
                                             self?.matches.append(newUCimg)
                                             self?.sortMatches()
                                         } else {
                                             
-                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.uid]?.count)! - 1].time)
+                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time)
                                             self?.matches.append(newUCimg)
                                             self?.sortMatches()
                                         }
                                     } else {
-                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
                                         
                                         self?.matches.append(newUCimg)
                                         self?.sortMatches()
                                     }
                                 } else {
-                                    if let j = self?.matchMessages[uc.uid] {
-                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.uid]?.count)! - 1].time)
+                                    if let j = self?.matchMessages[uc.userBasic.uid] {
+                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time)
                                         self?.matches.append(newUCimg)
                                         self?.sortMatches()
                                     } else {
@@ -94,8 +110,8 @@ extension ChatsDataStore {
                                 
                             } else {
                                 
-                                if let n = self?.snaps[uc.uid] {
-                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.uid]?.count)! - 1].snapID_timestamp)
+                                if let n = self?.snaps[uc.userBasic.uid] {
+                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
                                     
                                     self?.matches.append(newUCimg)
                                     self?.sortMatches()
@@ -438,7 +454,7 @@ extension ChatsDataStore {
 extension ChatsDataStore {
     private func setNewLastMessage(uid: String, date: Date) {
         for i in 0..<self.matches.count {
-            if matches[i].uc.uid == uid {
+            if matches[i].uc.userBasic.uid == uid {
                 if matches[i].lastMessage == nil {
                     matches[i].lastMessage = date
                     sortMatches()

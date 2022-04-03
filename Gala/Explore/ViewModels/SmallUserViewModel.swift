@@ -50,7 +50,7 @@ class SmallUserViewModel: ObservableObject {
     }
     
     private func getCityAndCountry() {
-        LocationService.shared.getCityAndCountry(lat: profile!.latitude, long: profile!.longitude)
+        LocationService.shared.getCityAndCountry(lat: profile!.searchRadiusComponents.coordinate.lat, long: profile!.searchRadiusComponents.coordinate.lng)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -73,7 +73,7 @@ class SmallUserViewModel: ObservableObject {
     }
     
     private func getProfileImage() {
-        ProfileImageService.shared.getProfileImage(id: profile!.uid, index: "0")
+        ProfileImageService.shared.getProfileImage(id: profile!.userBasic.uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in

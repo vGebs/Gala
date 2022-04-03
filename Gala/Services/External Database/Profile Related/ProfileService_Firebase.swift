@@ -14,7 +14,8 @@ import FirebaseFirestoreSwift
 import UIKit
 
 protocol ProfileServiceProtocol {
-    func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error>
+    func createProfile(_ profile: ProfileModel) -> AnyPublisher<Void, Error>
+    func getProfile(uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error>
     func getFullProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
     func updateCurrentUserProfile(profile: ProfileModel) -> AnyPublisher<Void, Error>
 }
@@ -23,7 +24,7 @@ protocol ProfileServiceProtocol {
 //Objective:
 //      To push and pull full profiles (profile text & all Profile Images) from firestore
 //
-class ProfileService: ProfileServiceProtocol {
+class ProfileService_Firebase: ProfileServiceProtocol {
     
     private let coreService: UserCoreServiceProtocol
     private let aboutService: UserAboutServiceProtocol
@@ -34,7 +35,7 @@ class ProfileService: ProfileServiceProtocol {
     
     private var cancellables: [AnyCancellable] = []
     
-    static let shared = ProfileService()
+    static let shared = ProfileService_Firebase()
     private init() {
         coreService = UserCoreService.shared
         aboutService = UserAboutService.shared
@@ -42,8 +43,8 @@ class ProfileService: ProfileServiceProtocol {
         recentService = RecentlyJoinedUserService.shared
     }
     
-    func createProfile(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
-        return createProfile_(profile, allImages: allImages)
+    func createProfile(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+        return createProfile_(profile)
     }
     
     func getProfile(uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error> {
@@ -61,16 +62,16 @@ class ProfileService: ProfileServiceProtocol {
 
 
 //MARK: - createProfile()
-extension ProfileService {
+extension ProfileService_Firebase {
     
-    private func createProfile_(_ profile: ProfileModel, allImages: [ImageModel]) -> AnyPublisher<Void, Error> {
+    private func createProfile_(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
         //Call profileText & addImages
         return Future<Void,Error> { [weak self] promise in
             Publishers.Zip4(
-                self!.addUserCore(profile),
-                self!.addUserAbout(profile),
-                self!.addRecent(profile),
-                self!.addImages(allImages)
+                self!.addUserCore(profile.userCore),
+                self!.addUserAbout(profile.userAbout),
+                self!.addRecent(profile.userCore),
+                self!.addImages(profile.images)
             )
             .sink { completion in
                 switch completion {
@@ -86,23 +87,10 @@ extension ProfileService {
         .eraseToAnyPublisher()
     }
     
-    private func addUserCore(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
-        
-        let uCore = UserCore(
-            uid: profile.userID,
-            name: profile.name,
-            age: profile.birthday,
-            gender: profile.gender,
-            sexuality: profile.sexuality,
-            ageMinPref: profile.ageMinPref,
-            ageMaxPref: profile.ageMaxPref,
-            willingToTravel: profile.willingToTravel,
-            longitude: profile.longitude,
-            latitude: profile.latitude
-        )
+    private func addUserCore(_ userCore: UserCore) -> AnyPublisher<Void, Error> {
         
         return Future<Void, Error> { [weak self] promise in
-            self!.coreService.addNewUser(core: uCore)
+            self!.coreService.addNewUser(core: userCore)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -117,9 +105,9 @@ extension ProfileService {
         }.eraseToAnyPublisher()
     }
     
-    private func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>{
+    private func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error>{
         return Future<Void, Error> { [weak self] promise in
-            self!.aboutService.addUserAbout(profile)
+            self!.aboutService.addUserAbout(userAbout)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink{ completion in
                     switch completion{
@@ -135,22 +123,9 @@ extension ProfileService {
         }.eraseToAnyPublisher()
     }
     
-    private func addRecent(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
-        let uCore = UserCore(
-            uid: profile.userID,
-            name: profile.name,
-            age: profile.birthday,
-            gender: profile.gender,
-            sexuality: profile.sexuality,
-            ageMinPref: profile.ageMinPref,
-            ageMaxPref: profile.ageMaxPref,
-            willingToTravel: profile.willingToTravel,
-            longitude: profile.longitude,
-            latitude: profile.latitude
-        )
-        
+    private func addRecent(_ userCore: UserCore) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
-            self!.recentService.addNewUser(core: uCore)
+            self!.recentService.addNewUser(core: userCore)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .sink { completion in
                     switch completion {
@@ -172,7 +147,7 @@ extension ProfileService {
 
 
 //MARK: - getUserProfile()
-extension ProfileService {
+extension ProfileService_Firebase {
     
     private func getProfile_(_ uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error> {
         return Future<(UserCore?, UIImage?), Error> { [weak self] promise in
@@ -271,7 +246,7 @@ extension ProfileService {
 
 //MARK: - updateCurrentUserProfile()
 
-extension ProfileService {
+extension ProfileService_Firebase {
     func updateCurrentUserProfile_(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             

@@ -60,7 +60,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                     }){
                         VStack {
                             HStack {
-                                Text("\(user.profile?.name ?? ""), \(user.profile?.age.ageString() ?? "")")
+                                Text("\(user.profile?.userBasic.name ?? ""), \(user.profile?.userBasic.birthdate.ageString() ?? "")")
                                     .font(.system(size: 17, weight: .medium, design: .rounded))
                                     .foregroundColor(.white)
                                 
@@ -84,7 +84,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                     
                     Button(action: {
                         if self.likePressed == false {
-                            self.viewModel.likeUser(with: user.profile!.uid)
+                            self.viewModel.likeUser(with: user.profile!.userBasic.uid)
                             self.likePressed.toggle()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
                                 self.likePressed.toggle()
@@ -103,7 +103,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
         }
         .frame(width: width, height: screenWidth / 9)
         .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.name, age: user.profile!.age, mode: .otherAccount, uid: user.profile!.uid), showProfile: $showProfile)
+            ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.userBasic.name, age: user.profile!.userBasic.birthdate, mode: .otherAccount, uid: user.profile!.userBasic.uid), showProfile: $showProfile)
         })
     }
 }

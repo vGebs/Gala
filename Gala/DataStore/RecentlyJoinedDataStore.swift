@@ -50,7 +50,7 @@ class RecentlyJoinedDataStore: ObservableObject {
                         .filter { user in
                             var dontAdd = false
                             for i in 0..<iLiked.count {
-                                if user.element.uid == iLiked[i].like.likedUID {
+                                if user.element.userBasic.uid == iLiked[i].like.likedUID {
                                     dontAdd = true
                                 }
                             }

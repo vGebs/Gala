@@ -43,8 +43,8 @@ class LikesService: LikesServiceProtocol {
                 "dateOfLike" : Date(),
                 "likerUID" : AuthService.shared.currentUser!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
-                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate()
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.birthdate.formatDate()
             ]) { err in
                 if let err = err {
                     print("LikesService: Failed to like user with id: \(uid)")
@@ -91,7 +91,7 @@ class LikesService: LikesServiceProtocol {
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
         return Future<[Like], Error> { promise in
             self.db.collection("Likes")
-                .whereField("likedUID", isEqualTo: UserCoreService.shared.currentUserCore!.uid)
+                .whereField("likedUID", isEqualTo: UserCoreService.shared.currentUserCore!.userBasic.uid)
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("LikesService: failed to get Likes")
@@ -204,8 +204,8 @@ extension LikesService {
                 "dateOfLike" : Date(),
                 "likerUID" : AuthService.shared.currentUser!.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
-                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate(),
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.birthdate.formatDate(),
                 "basicLike": true
             ]) { err in
                 if let err = err {
@@ -278,10 +278,10 @@ extension LikesService {
         return Future<Void, Error> { promise in
             self.db.collection("Likes").addDocument(data: [
                 "dateOfLike" : Date(),
-                "likerUID" : UserCoreService.shared.currentUserCore!.uid,
+                "likerUID" : UserCoreService.shared.currentUserCore!.userBasic.uid,
                 "likedUID" : uid,
-                "nameOfLiker" : UserCoreService.shared.currentUserCore!.name,
-                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.age.formatDate(),
+                "nameOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.name,
+                "birthdayOfLiker" : UserCoreService.shared.currentUserCore!.userBasic.birthdate.formatDate(),
                 "postID": postID
             ]) { err in
                 if let err = err {

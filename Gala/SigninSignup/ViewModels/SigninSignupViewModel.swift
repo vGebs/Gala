@@ -258,7 +258,25 @@ final class SigninSignupViewModel: ObservableObject{
         self.loading = true
         authService.createAcountWithEmail(email: self.emailText, password: self.passwordText)
             .flatMap { [weak self] _ -> AnyPublisher<Void,Error> in
-                UserCoreService.shared.addNewUser(core: UserCore(uid: AuthService.shared.currentUser!.uid, name: self!.nameText, age: self!.age, gender: "", sexuality: "", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 150, longitude: LocationService.shared.coordinates.longitude, latitude: LocationService.shared.coordinates.latitude))
+                UserCoreService.shared.addNewUser(core:
+                                                    UserCore(
+                                                        userBasic: UserBasic(
+                                                            uid: AuthService.shared.currentUser!.uid,
+                                                            name: self!.nameText,
+                                                            birthdate: self!.age,
+                                                            gender: "",
+                                                            sexuality: ""
+                                                        ),
+                                                        ageRangePreference: AgeRangePreference(minAge: 18, maxAge: 99),
+                                                        searchRadiusComponents: SearchRadiusComponents(
+                                                            coordinate: Coordinate(
+                                                                lat: LocationService.shared.coordinates.latitude,
+                                                                lng: LocationService.shared.coordinates.longitude
+                                                            ),
+                                                            willingToTravel: 150
+                                                        )
+                                                    )
+                )
             }
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -309,10 +327,10 @@ final class SigninSignupViewModel: ObservableObject{
                     
                     self!.loading = false
                     
-                    if uc.gender == "" {
+                    if uc.userBasic.gender == "" {
                         //send user to createprofile page
-                        AppState.shared.profileInfo.age = uc.age
-                        AppState.shared.profileInfo.name = uc.name
+                        AppState.shared.profileInfo.age = uc.userBasic.birthdate
+                        AppState.shared.profileInfo.name = uc.userBasic.name
                         
                         withAnimation {
                             AppState.shared.signUpPageActive = false

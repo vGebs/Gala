@@ -23,7 +23,7 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     }
     
     init() {
-        DataStore.shared.recents.$users
+        DataContainer.shared.recents.$users
             .sink { [weak self] users in
                 self?.users = users
             }.store(in: &cancellables)
@@ -42,7 +42,7 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.users.count)! {
-                    if self?.users[i].profile?.uid == uid {
+                    if self?.users[i].profile?.userBasic.uid == uid {
                         self?.users.remove(at: i)
                         break
                     }
@@ -65,7 +65,7 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
                 }
             } receiveValue: { [weak self] _ in
                 for i in 0..<(self?.users.count)! {
-                    if self?.users[i].profile?.uid == uid {
+                    if self?.users[i].profile?.userBasic.uid == uid {
                         self?.users.remove(at: i)
                         break
                     }

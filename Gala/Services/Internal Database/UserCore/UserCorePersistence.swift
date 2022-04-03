@@ -36,20 +36,20 @@ class UserCorePersistence {
 
         return Future<Void, Error> { promise in
             
-            uc.uid = user.uid
-            uc.birthdate = user.age
-            uc.name = user.name
-            uc.gender = user.gender
-            uc.sexuality = user.sexuality
-            uc.ageMinPref = Int16(user.ageMinPref)
-            uc.ageMaxPref = Int16(user.ageMaxPref)
-            uc.willingToTravel = Int16(user.willingToTravel)
+//            uc.uid = user.uid
+//            uc.birthdate = user.age
+//            uc.name = user.name
+//            uc.gender = user.gender
+//            uc.sexuality = user.sexuality
+//            uc.ageMinPref = Int16(user.ageMinPref)
+//            uc.ageMaxPref = Int16(user.ageMaxPref)
+//            uc.willingToTravel = Int16(user.willingToTravel)
             
             do {
                 try privateContext.save()
                 promise(.success(()))
             } catch {
-                print("UserCorePersistence: Failed to save new UserCore w/ id -> \(user.uid)")
+                print("UserCorePersistence: Failed to save new UserCore w/ id -> \(user.userBasic.uid)")
                 print("UserCorePersistence-err: \(error)")
                 promise(.failure(error))
             }
@@ -71,16 +71,16 @@ class UserCorePersistence {
                 }
                 
                 if let u = userToUpdate {
-                    u.uid = userCore.uid
-                    u.birthdate = userCore.age
-                    u.name = userCore.name
-                    u.gender = userCore.gender
-                    u.sexuality = userCore.sexuality
-                    u.ageMinPref = Int16(userCore.ageMinPref)
-                    u.ageMaxPref = Int16(userCore.ageMaxPref)
-                    u.willingToTravel = Int16(userCore.willingToTravel)
-                    u.longitude = userCore.longitude
-                    u.latitude = userCore.latitude
+//                    u.uid = userCore.uid
+//                    u.birthdate = userCore.age
+//                    u.name = userCore.name
+//                    u.gender = userCore.gender
+//                    u.sexuality = userCore.sexuality
+//                    u.ageMinPref = Int16(userCore.ageMinPref)
+//                    u.ageMaxPref = Int16(userCore.ageMaxPref)
+//                    u.willingToTravel = Int16(userCore.willingToTravel)
+//                    u.longitude = userCore.longitude
+//                    u.latitude = userCore.latitude
                     
                     do {
                         try self!.persistentContainer.viewContext.save()

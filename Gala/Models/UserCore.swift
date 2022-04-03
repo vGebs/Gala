@@ -8,30 +8,29 @@
 import SwiftUI
 import FirebaseFirestoreSwift
 
-struct UserCore: Codable {
-    var uid: String 
+
+struct SearchRadiusComponents {
+    var coordinate: Coordinate
+    var willingToTravel: Int
+}
+
+struct AgeRangePreference {
+    var minAge: Int
+    var maxAge: Int
+}
+
+struct UserBasic {
+    var uid: String
     var name: String
-    var age: Date
+    var birthdate: Date
     var gender: String
     var sexuality: String
-    var ageMinPref: Int
-    var ageMaxPref: Int
-    var willingToTravel: Int
-    var longitude: Double
-    var latitude: Double
-    
-    enum CodingKeys: String, CodingKey{
-        case uid
-        case name
-        case age
-        case gender
-        case sexuality
-        case ageMinPref
-        case ageMaxPref
-        case willingToTravel
-        case longitude
-        case latitude
-    }
+}
+
+struct UserCore {
+    var userBasic: UserBasic
+    var ageRangePreference: AgeRangePreference
+    var searchRadiusComponents: SearchRadiusComponents
 }
 
 struct InComingUserCore {

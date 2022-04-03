@@ -11,7 +11,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 protocol UserAboutServiceProtocol {
-    func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error>
+    func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error>
     func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error>
 }
 
@@ -23,15 +23,15 @@ class UserAboutService: UserAboutServiceProtocol {
     
     private init() {}
 
-    func addUserAbout(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
+    func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
-            if profile.bio == "" && profile.job == "" && profile.school == "" {
+            if userAbout.bio == "" && userAbout.job == "" && userAbout.school == "" {
                 promise(.success(()))
             } else {
                 self.db.collection("UserAbout").document(self.currentUID!).setData([
-                    "bio" : profile.bio!,
-                    "job" : profile.job!,
-                    "school" : profile.school!
+                    "bio" : userAbout.bio!,
+                    "job" : userAbout.job!,
+                    "school" : userAbout.school!
                 ]) { err in
                     if let err = err {
                         print("UserAboutService: Error writing document: \(err)")

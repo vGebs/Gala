@@ -42,7 +42,7 @@ struct SendToSelector: View {
                 HStack {
                     VStack {
                         HStack {
-                            Text("\(user.uc.name), \(user.uc.age.ageString())")
+                            Text("\(user.uc.userBasic.name), \(user.uc.userBasic.birthdate.ageString())")
                                 .font(.system(size: 17, weight: .medium, design: .rounded))
                                 .foregroundColor(.primary)
                             
@@ -60,7 +60,7 @@ struct SendToSelector: View {
                     }
                     Spacer()
                     
-                    Image(systemName: selected == user.uc.uid ? "checkmark.square" : "square")
+                    Image(systemName: selected == user.uc.userBasic.uid ? "checkmark.square" : "square")
                         .font(.system(size: 18, weight: .regular, design: .rounded))
                         .foregroundColor(.buttonPrimary)
                         .padding(.trailing)

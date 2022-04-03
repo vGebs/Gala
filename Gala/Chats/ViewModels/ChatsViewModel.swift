@@ -27,22 +27,24 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     
     @Published var messageText = ""
     
+    @Published var lastMatchUpdate: Date?
+    
     deinit {
         print("ChatsViewModel: Deinitializing")
     }
     
     init() {
-        DataStore.shared.chatsData.$matches
+        DataContainer.shared.chatsData.$matches
             .sink(receiveValue: { [weak self] matches in
                 self?.matches = matches
             }).store(in: &cancellables)
 
-        DataStore.shared.chatsData.$snaps
+        DataContainer.shared.chatsData.$snaps
             .sink(receiveValue: { [weak self] snaps in
                 self?.snaps = snaps
             }).store(in: &cancellables)
             
-        DataStore.shared.chatsData.$matchMessages
+        DataContainer.shared.chatsData.$matchMessages
             .sink(receiveValue: { [weak self] messages in
                 self?.matchMessages = messages
             }).store(in: &cancellables)

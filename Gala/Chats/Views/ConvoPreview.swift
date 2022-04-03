@@ -66,31 +66,58 @@ struct ConvoPreview: View {
                 Spacer()
                 HStack {
                     Button(action: {
-                        if let _ = chatsViewModel.snaps[ucMatch.uc.uid] {
+                        
+                        let uid = ucMatch.uc.userBasic.uid
+                        
+                        if let _ = chatsViewModel.snaps[uid] {
                             //open snap
                             // if the last snap is not already opened and was not sent by me
                             
                             //if there is a snap that is not opened, open the snap but not the ChatView
                             //
-                            if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
+                            
+                            if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
                                 
                                 //Show SnapView
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(
+                                    name: ucMatch.uc.userBasic.name,
+                                    uid: uid,
+                                    location:
+                                        Coordinate(
+                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                        ),
+                                    bday: ucMatch.uc.userBasic.birthdate,
+                                    profileImg: nil
+                                )
                                 
                                 showSnapView = true
                                 
-                                //Move this bit of functionality to the ChatsViewModel
-//                                if let snap = chatsViewModel.snaps[ucMatch.uc.uid]?[0] {
-//                                    chatsViewModel.openSnap(snap: snap)
-//                                }
-                                
                             } else {
-                                if let _ = messages[ucMatch.uc.uid]{
+                                if let _ = messages[ucMatch.uc.userBasic.uid]{
                                     //we just need to check ucMatch when its a chat, not a snap
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: img
+                                        )
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: nil
+                                        )
                                     }
                                     
                                     timeMatchedBinding = timeMatched
@@ -98,19 +125,37 @@ struct ConvoPreview: View {
                                     //open message
                                     // if the last message is not already opened and was not sent by me
                                     
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
                                         //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
                                         
-                                        chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
+                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
                                     }
                                 }
                             } 
-                        } else if let _ = messages[ucMatch.uc.uid]{
+                        } else if let _ = messages[uid]{
                             //we just need to check ucMatch when its a chat, not a snap
                             if let img = ucMatch.profileImg {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
+                                userChat = UserChat(
+                                    name: ucMatch.uc.userBasic.name,
+                                    uid: uid,
+                                    location: Coordinate(
+                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                    ),
+                                    bday: ucMatch.uc.userBasic.birthdate,
+                                    profileImg: img
+                                )
                             } else {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(
+                                    name: ucMatch.uc.userBasic.name,
+                                    uid: uid,
+                                    location: Coordinate(
+                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                    ),
+                                    bday: ucMatch.uc.userBasic.birthdate,
+                                    profileImg: nil
+                                )
                             }
                             
                             timeMatchedBinding = timeMatched
@@ -118,18 +163,36 @@ struct ConvoPreview: View {
                             //open message
                             // if the last message is not already opened and was not sent by me
                             
-                            if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+                            if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
 
                                 timeMatchedBinding = timeMatched
                                 showChat = true
                                 
-                                chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
+                                chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
                             }
                         } else {
                             if let img = ucMatch.profileImg {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
+                                userChat = UserChat(
+                                    name: ucMatch.uc.userBasic.name,
+                                    uid: uid,
+                                    location: Coordinate(
+                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                    ),
+                                    bday: ucMatch.uc.userBasic.birthdate,
+                                    profileImg: img
+                                )
                             } else {
-                                userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                userChat = UserChat(
+                                    name: ucMatch.uc.userBasic.name,
+                                    uid: uid,
+                                    location: Coordinate(
+                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                    ),
+                                    bday: ucMatch.uc.userBasic.birthdate,
+                                    profileImg: nil
+                                )
                             }
                             
                             timeMatchedBinding = timeMatched
@@ -138,7 +201,7 @@ struct ConvoPreview: View {
                     }){
                         VStack {
                             HStack {
-                                Text("\(ucMatch.uc.name), \(ucMatch.uc.age.ageString())")
+                                Text("\(ucMatch.uc.userBasic.name), \(ucMatch.uc.userBasic.birthdate.ageString())")
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                                     .foregroundColor(.white)
                                 
@@ -153,16 +216,16 @@ struct ConvoPreview: View {
                             //  3. most recently opened/ sent (either snap or message [does depend on date])
                             //
                             
-                            if chatsViewModel.snaps[ucMatch.uc.uid] != nil && messages[ucMatch.uc.uid] != nil {
-                                if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil && messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil{
+                            if chatsViewModel.snaps[ucMatch.uc.userBasic.uid] != nil && messages[ucMatch.uc.userBasic.uid] != nil {
+                                if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil && messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil{
                                     //There is unopened snaps and messages, we need to render the most recently sent
                                     //the current functionality is good, but a new snap overrides a new message, regardless of time. we only want time if the last message was sent from us
-                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid{
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid{
                                         unopenedSnapToMe
-                                    } else if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp > messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time{
+                                    } else if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp > messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time{
                                         // show unopened snap
                                         //check to see who its from
-                                        if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                             //its from me
                                             unopenedSnapFromMe
                                         } else {
@@ -172,7 +235,7 @@ struct ConvoPreview: View {
                                     } else {
                                         //show unopened message
                                         //check to see who its from
-                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                             //its from me
                                             unopenedMessageFromMe
                                         } else {
@@ -180,18 +243,18 @@ struct ConvoPreview: View {
                                             unopenedMessageToMe
                                         }
                                     }
-                                } else if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate != nil {
+                                } else if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate != nil {
                                     //There is unopened chats but no snaps
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         //its from me
                                         unopenedMessageFromMe
                                     } else {
                                         //its to me
                                         unopenedMessageToMe
                                     }
-                                } else if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate != nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil{
+                                } else if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate != nil && chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil{
                                     //there are unopened snaps but no chats
-                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         //its from me
                                         unopenedSnapFromMe
                                     } else {
@@ -200,10 +263,10 @@ struct ConvoPreview: View {
                                     }
                                 } else {
                                     //if they're both opened find which one is newer and display the receipt
-                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate! > messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate! {
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate! > messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate! {
                                         //show opened snap
                                         //check to see who its from
-                                        if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                             // its from me
                                             openedSnapFromMe
                                         } else {
@@ -213,7 +276,7 @@ struct ConvoPreview: View {
                                     } else {
                                         //show opened message
                                         //check to see who its from
-                                        if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                        if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                             //its from me
                                             openedMessageFromMe
                                         } else {
@@ -222,28 +285,28 @@ struct ConvoPreview: View {
                                         }
                                     }
                                 }
-                            } else if chatsViewModel.snaps[ucMatch.uc.uid] != nil && messages[ucMatch.uc.uid] == nil {
+                            } else if chatsViewModel.snaps[ucMatch.uc.userBasic.uid] != nil && messages[ucMatch.uc.userBasic.uid] == nil {
                                 //there is snaps but no messages
-                                if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil {
+                                if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil {
                                     // show unopened snap
-                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         unopenedSnapFromMe
                                     } else {
                                         unopenedSnapToMe
                                     }
                                 } else {
                                         //show opened snap
-                                    if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         openedSnapFromMe
                                     } else {
                                         openedSnapToMe
                                     }
                                 }
-                            } else if chatsViewModel.snaps[ucMatch.uc.uid] == nil && messages[ucMatch.uc.uid] != nil {
+                            } else if chatsViewModel.snaps[ucMatch.uc.userBasic.uid] == nil && messages[ucMatch.uc.userBasic.uid] != nil {
                                 // there are messages but no snaps
-                                if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil {
+                                if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil {
                                     //show unopened message
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         //its from me
                                         unopenedMessageFromMe
                                     } else {
@@ -252,7 +315,7 @@ struct ConvoPreview: View {
                                     }
                                 } else {
                                     //show opened message
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
+                                    if messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
                                         //its from me
                                         openedMessageFromMe
                                     } else {
@@ -267,15 +330,35 @@ struct ConvoPreview: View {
                         }
                     }
                     
-                    if chatsViewModel.snaps[ucMatch.uc.uid] != nil {
-                        if chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid{
+                    let uid = ucMatch.uc.userBasic.uid
+                    
+                    if chatsViewModel.snaps[uid] != nil {
+                        if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid{
                             Button(action: {
-                                if let _ = messages[ucMatch.uc.uid]{
+                                if let _ = messages[uid]{
                                     //we just need to check ucMatch when its a chat, not a snap
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: ucMatch.uc.userBasic.uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: img
+                                        )
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: ucMatch.uc.userBasic.uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: nil
+                                        )
                                     }
                                     
                                     timeMatchedBinding = timeMatched
@@ -283,18 +366,36 @@ struct ConvoPreview: View {
                                     //open message
                                     // if the last message is not already opened and was not sent by me
                                     
-                                    if messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].openedDate == nil && (messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
 
                                         timeMatchedBinding = timeMatched
                                         showChat = true
                                         
-                                        chatsViewModel.openMessage(message: messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1])
+                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
                                     }
                                 } else {
                                     if let img = ucMatch.profileImg {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: img)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: img
+                                        )
                                     } else {
-                                        userChat = UserChat(name: ucMatch.uc.name, uid: ucMatch.uc.uid, location: Coordinate(lat: ucMatch.uc.latitude, lng: ucMatch.uc.longitude), bday: ucMatch.uc.age, profileImg: nil)
+                                        userChat = UserChat(
+                                            name: ucMatch.uc.userBasic.name,
+                                            uid: uid,
+                                            location: Coordinate(
+                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                            ),
+                                            bday: ucMatch.uc.userBasic.birthdate,
+                                            profileImg: nil
+                                        )
                                     }
                                     
                                     timeMatchedBinding = timeMatched
@@ -316,7 +417,7 @@ struct ConvoPreview: View {
             SnapView(show: $showSnapView, snaps: chatsViewModel.getUnopenedSnapsFrom(uid: userChat!.uid), snapViewModel: chatsViewModel)
         })
         .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.uid), showProfile: $showProfile)
+            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.userBasic.uid), showProfile: $showProfile)
         })
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
@@ -331,7 +432,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -348,7 +449,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -365,7 +466,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -382,7 +483,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.uid]![chatsViewModel.snaps[ucMatch.uc.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -399,7 +500,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -416,7 +517,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -433,7 +534,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -450,7 +551,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.uid]![messages[ucMatch.uc.uid]!.count - 1].time.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()

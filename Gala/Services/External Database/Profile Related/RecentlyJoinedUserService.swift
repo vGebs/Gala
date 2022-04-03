@@ -44,18 +44,18 @@ extension RecentlyJoinedUserService {
         
         return Future<Void, Error> { promise in
             self.db.collection("RecentlyJoined").document(self.currentUID!).setData([
-                "name" : core.name,
-                "age" : core.age.formatDate(),
+                "name" : core.userBasic.name,
+                "age" : core.userBasic.birthdate.formatDate(),
                 "dateJoined" : Date().formatDate(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
-                "gender" : core.gender,
-                "sexuality" : core.sexuality,
-                "ageMinPref" : core.ageMinPref,
-                "ageMaxPref" : core.ageMaxPref,
-                "willingToTravel" : core.willingToTravel,
-                "id" : core.uid
+                "gender" : core.userBasic.gender,
+                "sexuality" : core.userBasic.sexuality,
+                "ageMinPref" : core.ageRangePreference.minAge,
+                "ageMaxPref" : core.ageRangePreference.maxAge,
+                "willingToTravel" : core.searchRadiusComponents.willingToTravel,
+                "id" : core.userBasic.uid
             ]) { err in
                 if let err = err {
                     print("UserCoreService: \(err)")
@@ -76,9 +76,9 @@ extension RecentlyJoinedUserService {
     private func getRecents_() -> AnyPublisher<[UserCore]?, Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
-        let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
-        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
-        let travelDistance = UserCoreService.shared.currentUserCore?.willingToTravel
+        let ageMinPref = UserCoreService.shared.currentUserCore?.ageRangePreference.minAge
+        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageRangePreference.maxAge
+        let travelDistance = UserCoreService.shared.currentUserCore?.searchRadiusComponents.willingToTravel
         
         return Future<[UserCore]?, Error> { promise in
 
@@ -333,7 +333,7 @@ extension RecentlyJoinedUserService {
                         
                         let ageMinPref = documents[j].data()["ageMinPref"] as? Int ?? 18
                         let ageMaxPref = documents[j].data()["ageMaxPref"] as? Int ?? 99
-                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
+                        let myAge = Int((UserCoreService.shared.currentUserCore?.userBasic.birthdate.ageString())!)
                         
                         let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
                         let lat = documents[j].data()["latitude"] as? Double ?? 0
@@ -349,15 +349,28 @@ extension RecentlyJoinedUserService {
                         {
                             let gender = documents[j].data()["gender"] as? String ?? ""
                             let id = documents[j].data()["id"] as? String ?? ""
-//                            let lat = documents[j].data()["latitude"] as? Double ?? 0
-//                            let lng = documents[j].data()["longitude"] as? Double ?? 0
                             let name = documents[j].data()["name"] as? String ?? ""
                             let sexuality = documents[j].data()["sexuality"] as? String ?? ""
-//                            let willingToTravel = documents[j].data()["willingToTravel"] as? Int ?? 25
                             
-                            let uSimp = UserCore(uid: id, name: name, age: age, gender: gender, sexuality: sexuality, ageMinPref: ageMinPref, ageMaxPref: ageMaxPref, willingToTravel: willingToTravel, longitude: lng, latitude: lat)
+                            let uc = UserCore(
+                                userBasic: UserBasic(
+                                    uid: id,
+                                    name: name,
+                                    birthdate: age,
+                                    gender: gender,
+                                    sexuality: sexuality
+                                ),
+                                ageRangePreference: AgeRangePreference(
+                                    minAge: ageMinPref, maxAge: ageMaxPref
+                                ),
+                                searchRadiusComponents: SearchRadiusComponents(
+                                    coordinate: Coordinate(lat: lat, lng: lng),
+                                    willingToTravel: willingToTravel
+                                )
+                            )
+                            
                             if id != self.currentUID {
-                                results.append(uSimp)
+                                results.append(uc)
                             }
                             
                             if j == (documents.count - 1){

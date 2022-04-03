@@ -10,9 +10,9 @@ import Combine
 import FirebaseFirestore
 import OrderedCollections
 
-class DataStore: ObservableObject {
+class DataContainer: ObservableObject {
     
-    static let shared = DataStore()
+    static let shared = DataContainer()
     
     @Published var chatsData: ChatsDataStore
     @Published var recents: RecentlyJoinedDataStore

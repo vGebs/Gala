@@ -722,8 +722,7 @@ struct ProfileView: View {
     
     var submitChangesButton: some View {
         Button(action: {
-            viewModel.actionPressed(.createProfile)
-            //viewModel.submitPressed = true
+            viewModel.createProfile()
         }){
             ZStack{
                 RoundedRectangle(cornerRadius: 16)

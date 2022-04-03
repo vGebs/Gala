@@ -80,7 +80,7 @@ class StoryMetaService: ObservableObject {
     func getMyStories() -> AnyPublisher<[StoryWithVibe], Error> {
         let currrentUser = UserCoreService.shared.currentUserCore!
         return Future<[StoryWithVibe], Error>{ promise in
-            self.db.collection("Stories").document(currrentUser.uid)
+            self.db.collection("Stories").document(currrentUser.userBasic.uid)
                 .getDocument { snap, err in
                     if let err = err {
                         print("StoryMetaService: Failed to fetch stories")
@@ -133,22 +133,22 @@ extension StoryMetaService {
             let hash = GFUtils.geoHash(forLocation: location)
             
             //Because we need to query these posts, we need to also add the current UserCore
-            self.db.collection("Stories").document(currentUserCore.uid).setData([
+            self.db.collection("Stories").document(currentUserCore.userBasic.uid).setData([
                 "userCore" : [
-                    "uid" : currentUserCore.uid,
-                    "name" : currentUserCore.name,
-                    "birthday" : currentUserCore.age.formatDate(),
-                    "gender" : currentUserCore.gender,
-                    "sexuality" : currentUserCore.sexuality,
+                    "uid" : currentUserCore.userBasic.uid,
+                    "name" : currentUserCore.userBasic.name,
+                    "birthday" : currentUserCore.userBasic.birthdate.formatDate(),
+                    "gender" : currentUserCore.userBasic.gender,
+                    "sexuality" : currentUserCore.userBasic.sexuality,
                     "agePref" : [
-                        "min" : currentUserCore.ageMinPref,
-                        "max" : currentUserCore.ageMaxPref,
+                        "min" : currentUserCore.ageRangePreference.minAge,
+                        "max" : currentUserCore.ageRangePreference.maxAge,
                     ],
-                    "willingToTravel" : currentUserCore.willingToTravel,
+                    "willingToTravel" : currentUserCore.searchRadiusComponents.willingToTravel,
                     "location" : [
                         "geoHash" : hash,
-                        "longitude" : currentUserCore.longitude,
-                        "latitude" : currentUserCore.latitude,
+                        "longitude" : currentUserCore.searchRadiusComponents.coordinate.lng,
+                        "latitude" : currentUserCore.searchRadiusComponents.coordinate.lat,
                     ]
                 ],
                 "posts" : [
@@ -179,7 +179,7 @@ extension StoryMetaService {
             
             let hash = GFUtils.geoHash(forLocation: location)
             
-            self.db.collection("Stories").document(currentUserCore.uid)
+            self.db.collection("Stories").document(currentUserCore.userBasic.uid)
                 .updateData([
                     "posts" : FieldValue.arrayUnion(
                         [
@@ -219,7 +219,7 @@ extension StoryMetaService {
         let currentUser = UserCoreService.shared.currentUserCore!
         
         return Future<Void, Error>{ promise in
-            self.db.collection("Stories").document(currentUser.uid)
+            self.db.collection("Stories").document(currentUser.userBasic.uid)
                 .delete() { err in
                     if let err = err {
                         print("StoryMetaService: Failed to delete last post")
@@ -236,7 +236,7 @@ extension StoryMetaService {
         let currentUser = UserCoreService.shared.currentUserCore!
 
         return Future<Void, Error> { promise in
-            self.db.collection("Stories").document(currentUser.uid)
+            self.db.collection("Stories").document(currentUser.userBasic.uid)
                 .updateData([
                     "posts" : FieldValue.arrayRemove(
                         [
@@ -263,9 +263,9 @@ extension StoryMetaService {
     private func getStories_() -> AnyPublisher<[UserPostSimple], Error> {
         
         let sexaulityAndGender = getCurrentUserSexualityAndGender()
-        let ageMinPref = UserCoreService.shared.currentUserCore?.ageMinPref
-        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageMaxPref
-        let travelDistance = UserCoreService.shared.currentUserCore?.willingToTravel
+        let ageMinPref = UserCoreService.shared.currentUserCore?.ageRangePreference.minAge
+        let ageMaxPref = UserCoreService.shared.currentUserCore?.ageRangePreference.maxAge
+        let travelDistance = UserCoreService.shared.currentUserCore?.searchRadiusComponents.willingToTravel
         
         return Future<[UserPostSimple], Error> { promise in
             
@@ -504,7 +504,7 @@ extension StoryMetaService {
                         let agePref = userCore!["agePref"] as? [String: Any]
                         let ageMinPref = agePref!["min"] as? Int ?? 18
                         let ageMaxPref = agePref!["max"] as? Int ?? 99
-                        let myAge = Int((UserCoreService.shared.currentUserCore?.age.ageString())!)
+                        let myAge = Int((UserCoreService.shared.currentUserCore?.userBasic.birthdate.ageString())!)
                         
                         let willingToTravel = userCore!["willingToTravel"] as? Int ?? 25
                         let location = userCore!["location"] as? [String: Any]

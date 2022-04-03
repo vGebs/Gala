@@ -36,26 +36,26 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
         
         let hash = GFUtils.geoHash(forLocation: location)
         
-        if core.uid == AuthService.shared.currentUser?.uid {
+        if core.userBasic.uid == AuthService.shared.currentUser?.uid {
             print("UserCoreService-addNewUser: Setting currentUserCore")
             self.currentUserCore = core
             print("CurrentUserCore: \(String(describing: self.currentUserCore))")
         }
         
         return Future<Void, Error> { promise in
-            self.db.collection("UserCore").document(core.uid).setData([
-                "name" : core.name,
-                "age" : core.age.formatDate(),
+            self.db.collection("UserCore").document(core.userBasic.uid).setData([
+                "name" : core.userBasic.name,
+                "age" : core.userBasic.birthdate.formatDate(),
                 "dateJoined" : Date().formatDate(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
-                "gender" : core.gender,
-                "sexuality" : core.sexuality,
-                "ageMinPref" : core.ageMinPref,
-                "ageMaxPref" : core.ageMaxPref,
-                "willingToTravel" : core.willingToTravel,
-                "id" : core.uid
+                "gender" : core.userBasic.gender,
+                "sexuality" : core.userBasic.sexuality,
+                "ageMinPref" : core.ageRangePreference.minAge,
+                "ageMaxPref" : core.ageRangePreference.maxAge,
+                "willingToTravel" : core.searchRadiusComponents.willingToTravel,
+                "id" : core.userBasic.uid
             ]) { err in
                 if let err = err {
                     print("UserCoreService: \(err)")
@@ -84,18 +84,31 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                         format.dateFormat = "yyyy/MM/dd"
                         
                         let age = format.date(from: date)!
-                                                
+                        
+                        let uid = doc.data()?["id"] as? String ?? ""
+                        let name = doc.data()?["name"] as? String ?? ""
+                        let ageFinal = age
+                        let gender = doc.data()?["gender"] as? String ?? ""
+                        let sexuality = doc.data()?["sexuality"] as? String ?? ""
+                        let ageMinPref = doc.data()?["ageMinPref"] as? Int ?? 18
+                        let ageMaxPref = doc.data()?["ageMaxPref"] as? Int ?? 99
+                        let willingToTravel = doc.data()?["willingToTravel"] as? Int ?? 25
+                        let longitude = doc.data()?["longitude"] as? Double ?? 0
+                        let latitude = doc.data()?["latitude"] as? Double ?? 0
+                        
                         let userCore = UserCore(
-                            uid: doc.data()?["id"] as? String ?? "",
-                            name: doc.data()?["name"] as? String ?? "",
-                            age: age,
-                            gender: doc.data()?["gender"] as? String ?? "",
-                            sexuality: doc.data()?["sexuality"] as? String ?? "",
-                            ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
-                            ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
-                            willingToTravel: doc.data()?["willingToTravel"] as? Int ?? 25,
-                            longitude: doc.data()?["longitude"] as? Double ?? 0,
-                            latitude: doc.data()?["latitude"] as? Double ?? 0
+                            userBasic: UserBasic(
+                                uid: uid,
+                                name: name,
+                                birthdate: ageFinal,
+                                gender: gender,
+                                sexuality: sexuality
+                            ),
+                            ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
+                            searchRadiusComponents: SearchRadiusComponents(
+                                coordinate: Coordinate(lat: latitude, lng: longitude),
+                                willingToTravel: willingToTravel
+                            )
                         )
                         print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
                         print("UserCoreService: setting CurrentUserCore: \(String(describing: self?.currentUID))")
@@ -132,18 +145,32 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
             //                    print("UserCore birthday: \(age)")
             //                    print("UserCore age: \(age.ageString())")
             
+            let uid = doc.data()?["id"] as? String ?? ""
+            let name = doc.data()?["name"] as? String ?? ""
+            let ageFinal = age
+            let gender = doc.data()?["gender"] as? String ?? ""
+            let sexuality = doc.data()?["sexuality"] as? String ?? ""
+            let ageMinPref = doc.data()?["ageMinPref"] as? Int ?? 18
+            let ageMaxPref = doc.data()?["ageMaxPref"] as? Int ?? 99
+            let willingToTravel = doc.data()?["willingToTravel"] as? Int ?? 25
+            let longitude = doc.data()?["longitude"] as? Double ?? 0
+            let latitude = doc.data()?["latitude"] as? Double ?? 0
+            
             let userCore = UserCore(
-                uid: doc.data()?["id"] as? String ?? "",
-                name: doc.data()?["name"] as? String ?? "",
-                age: age,
-                gender: doc.data()?["gender"] as? String ?? "",
-                sexuality: doc.data()?["sexuality"] as? String ?? "",
-                ageMinPref: doc.data()?["ageMinPref"] as? Int ?? 18,
-                ageMaxPref: doc.data()?["ageMaxPref"] as? Int ?? 99,
-                willingToTravel: doc.data()?["willingToTravel"] as? Int ?? 25,
-                longitude: doc.data()?["longitude"] as? Double ?? 0,
-                latitude: doc.data()?["latitude"] as? Double ?? 0
+                userBasic: UserBasic(
+                    uid: uid,
+                    name: name,
+                    birthdate: ageFinal,
+                    gender: gender,
+                    sexuality: sexuality
+                ),
+                ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
+                searchRadiusComponents: SearchRadiusComponents(
+                    coordinate: Coordinate(lat: latitude, lng: longitude),
+                    willingToTravel: willingToTravel
+                )
             )
+            
             print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
             print("UserCoreService: setting CurrentUserCore: \(String(describing: self.currentUID))")
             if uid == self.currentUID{

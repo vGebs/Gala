@@ -154,8 +154,8 @@ extension LocationService {
     }
     
     func getTravelDistance(to: CLLocation) -> Int {
-        let lon = (UserCoreService.shared.currentUserCore?.longitude)!
-        let lat = (UserCoreService.shared.currentUserCore?.latitude)!
+        let lon = (UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lng)!
+        let lat = (UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lat)!
         
         let myLocation = CLLocation(latitude: lat, longitude: lon)
         
@@ -164,8 +164,8 @@ extension LocationService {
     }
     
     func getTravelDistance_String(to: CLLocation) -> String {
-        let lon = (UserCoreService.shared.currentUserCore?.longitude)!
-        let lat = (UserCoreService.shared.currentUserCore?.latitude)!
+        let lon = (UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lng)!
+        let lat = (UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lat)!
         
         let myLocation = CLLocation(latitude: lat, longitude: lon)
         
