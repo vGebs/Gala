@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import SwiftUI
 
-
 //This class combines the ProfileService_CoreData & ProfileService_Firebase
 class ProfileService: ObservableObject, ProfileServiceProtocol {
     
@@ -32,6 +31,9 @@ class ProfileService: ObservableObject, ProfileServiceProtocol {
     }
     
     func getFullProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error> {
+        //When fetching a profile, we want to fetch core data first
+        //If the result is there, we return it,
+        //If there is no value, we fetch firestore
         return getFullProfile_(uid)
     }
     
