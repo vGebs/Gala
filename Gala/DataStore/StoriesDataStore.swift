@@ -22,17 +22,27 @@ class StoriesDataStore: ObservableObject {
     @Published var postsILiked: [SimpleStoryLike] = []
     
     private var cancellables: [AnyCancellable] = []
+        
+    private init() {
+        initializer()
+    }
+    
+    public func initializer() {
+        if empty {
+            fetchStories()
+            observeStoriesILiked()
+            empty = false
+        }
+    }
+    
+    @Published private var empty = true
     
     func clear() {
         vibeImages.removeAll()
         vibesDict.removeAll()
         matchedStories.removeAll()
         postsILiked.removeAll()
-    }
-    
-    private init() {
-        fetchStories()
-        observeStoriesILiked()
+        empty = true
     }
     
     func fetchStories() {

@@ -198,15 +198,9 @@ struct ProfileView: View {
     //MARK: - View Variables
     
     var title: some View {
-        VStack {
             Text(viewModel.title)
                 .multilineTextAlignment(.center)
                 .font(.system(size: 35, weight: .bold, design: .rounded))
-            
-            Text(AuthService.shared.currentUser?.uid == nil ? "nil" : "\(AuthService.shared.currentUser!.uid)")
-                .foregroundColor(.white)
-                .font(.system(size: 20))
-        }
     }
     
     var subtitle: some View {

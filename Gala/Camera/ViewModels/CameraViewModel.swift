@@ -215,7 +215,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         
         self.addPhotoOutput()
         
-        self.addVideoOutput()
+        //self.addVideoOutput()
         
         session.commitConfiguration()
         

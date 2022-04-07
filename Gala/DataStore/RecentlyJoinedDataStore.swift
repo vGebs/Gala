@@ -19,11 +19,21 @@ class RecentlyJoinedDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        getUsers()
+        initialier()
     }
+    
+    public func initialier() {
+        if empty {
+            getUsers()
+            empty = false
+        }
+    }
+    
+    @Published private var empty = true
     
     func clear() {
         users.removeAll()
+        empty = true
     }
     
     private func getUsers() {

@@ -54,10 +54,6 @@ struct LandingView: View {
             }
             .offset(y: -screenHeight * 0.12)
             
-            Text(AuthService.shared.currentUser?.uid == nil ? "nil" : "\(AuthService.shared.currentUser!.uid)")
-                .foregroundColor(.white)
-                .font(.system(size: 25))
-            
             VStack {
                 Button(action: {
                     withAnimation {

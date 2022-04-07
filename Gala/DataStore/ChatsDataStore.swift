@@ -23,31 +23,41 @@ class ChatsDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        
-        //Fetch all core data before calling firestore listeners
-        //we want the most recent date of any transaction. ie, match, snap, message
-        //try fetching matches from Core data
-        //  if there is data
-        //      call observeMatches(fromDate: mostRecentMatchDate)
-        //  if there isnt data
-        //      call observeMatches(fromDate: year1977)
-        observeMatches()
-        
-        //try fetching snaps from Core data
-        //  if there is data
-        //      do not call observeSnaps(fromDate: lastMessage/Snap)
-        observeSnaps()
-        
-        //try fetching snaps from Core data
-        //  if there is data
-        //      do not call observeChats(fromDate: lastMessage/Snap)
-        observeChats()
+        initializer()
     }
+    
+    public func initializer() {
+        if empty {
+            //Fetch all core data before calling firestore listeners
+            //we want the most recent date of any transaction. ie, match, snap, message
+            //try fetching matches from Core data
+            //  if there is data
+            //      call observeMatches(fromDate: mostRecentMatchDate)
+            //  if there isnt data
+            //      call observeMatches(fromDate: year1977)
+            observeMatches()
+            
+            //try fetching snaps from Core data
+            //  if there is data
+            //      do not call observeSnaps(fromDate: lastMessage/Snap)
+            observeSnaps()
+            
+            //try fetching snaps from Core data
+            //  if there is data
+            //      do not call observeChats(fromDate: lastMessage/Snap)
+            observeChats()
+            
+            empty = false
+        }
+    }
+    
+    @Published private var empty = true
     
     func clear() {
         matches.removeAll()
         snaps.removeAll()
         matchMessages.removeAll()
+        empty = true
     }
 }
 

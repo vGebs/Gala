@@ -317,6 +317,7 @@ final class SigninSignupViewModel: ObservableObject{
                     self!.loading = false
                 case .finished:
                     print("Succesfully Signed in")
+                    DataStore.shared.initialize()
                 }
             } receiveValue: { [weak self] uc in
                 if let uc = uc {

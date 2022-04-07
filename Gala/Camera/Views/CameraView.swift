@@ -33,9 +33,6 @@ struct CameraView: View {
                 CameraViewHeader(showProfile: $showProfile, camera: camera)
                     .padding(.top, 5)
                 Spacer()
-                Text(AuthService.shared.currentUser?.uid == nil ? "nil" : "\(AuthService.shared.currentUser!.uid)")
-                    .foregroundColor(.white)
-                    .font(.system(size: 25))
                 CameraBtn(camera: camera)
                     .padding(.bottom, screenHeight * 0.08)
             }

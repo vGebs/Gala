@@ -24,6 +24,12 @@ class DataStore: ObservableObject {
         stories = StoriesDataStore.shared
     }
     
+    public func initialize() {
+        chatsData.initializer()
+        recents.initialier()
+        stories.initializer()
+    }
+    
     func clear() {
         chatsData.clear()
         recents.clear()
