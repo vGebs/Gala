@@ -20,7 +20,7 @@ class BasicLikesViewModel: ObservableObject {
             switch change {
             case .added:
                 for like in likes {
-                    ProfileService_Firebase.shared.getProfile(uid: like.likerUID)
+                    ProfileService.shared.getProfile(uid: like.likerUID)
                         .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                         .receive(on: DispatchQueue.main)
                         .sink { completion in

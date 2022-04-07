@@ -23,7 +23,7 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     }
     
     init() {
-        DataContainer.shared.recents.$users
+        DataStore.shared.recents.$users
             .sink { [weak self] users in
                 self?.users = users
             }.store(in: &cancellables)

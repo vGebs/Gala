@@ -12,7 +12,6 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 protocol UserCoreServiceProtocol {
-    var currentUserCore: UserCore? { get set }
     func addNewUser(core: UserCore) -> AnyPublisher<Void, Error>
     func getUserCore(uid: String?) -> AnyPublisher<UserCore?, Error>
 }

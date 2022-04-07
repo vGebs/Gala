@@ -61,6 +61,7 @@ class AuthService: AuthServiceProtocol{
         Future<Void, Error> { promise in
             do {
                 try Auth.auth().signOut()
+                
                 self.currentUser = nil
                 promise(.success(()))
             } catch {

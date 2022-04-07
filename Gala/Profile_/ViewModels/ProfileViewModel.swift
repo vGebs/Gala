@@ -327,24 +327,47 @@ final class ProfileViewModel: ObservableObject {
     public func editProfile() {
         if editPressed {
             //check all flags
+            var uc: UserCore?
+            var abt: UserAbout?
+            var profImage: [ImageModel]?
+            var imgs: [ImageModel]?
+            
             if coreChanged {
-                handleUpdateUserCore()
+                uc = bundleUserCore()
                 coreChanged = false
             }
             
             if aboutChanged {
-                handleUpdateUserAbout()
+                abt = UserAbout(bio: bioText, job: jobText, school: schoolText)
                 aboutChanged = false
             }
             
+            if profileImgChanged {
+                profImage = profileImage
+                profileImgChanged = false
+            }
+            
             if imgsChanged {
-                handleUpdateImgs()
+                imgs = images
                 imgsChanged = false
             }
             
-            if profileImgChanged {
-                handleUpdateProfilePic()
-                profileImgChanged = false
+            if uc != nil || abt != nil || profImage != nil || imgs != nil {
+                ProfileService.shared.updateCurrentUserProfile(uc: uc, abt: abt, profImage: profImage, imgs: imgs)
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ProfileViewModel: Failed to update profile")
+                            print("ProfileViewModel-err: \(e)")
+                        case .finished:
+                            print("ProfileViewModel: Finished updating profile")
+                        }
+                    } receiveValue: { _ in }
+                    .store(in: &cancellables)
+            } else {
+                print("ProfileViewModel: Nothing to update")
             }
             
             editPressed = false 
@@ -353,191 +376,6 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 }
-
-
-//MARK: - EditProfile functions -------------------------------------------------------------------------->
-extension ProfileViewModel {
-    private func handleUpdateUserCore() {
-        print("CoreChanged")
-        //when we update our UserCore, we need to:
-        //  1. Update the UserCore
-        //  2. Update the current UserCore
-        //  3. Refetch stories on explore that match new userCore
-        
-        let basic = UserBasic(
-            uid: AuthService.shared.currentUser!.uid,
-            name: nameText,
-            birthdate: age,
-            gender: selectGenderDropDownText.rawValue,
-            sexuality: selectSexualityDropDownText.rawValue
-        )
-        
-        let agePref = AgeRangePreference(
-            minAge: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
-            maxAge: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue))
-        )
-        
-        let search = SearchRadiusComponents(
-            coordinate: Coordinate(
-                lat: LocationService.shared.coordinates.latitude,
-                lng: LocationService.shared.coordinates.longitude
-            ),
-            willingToTravel: Int(singleKnobSlider.highHandle.currentValue)
-        )
-        
-        let uc = UserCore(
-            userBasic: basic,
-            ageRangePreference: agePref,
-            searchRadiusComponents: search
-        )
-        
-        
-        UserCoreService.shared.addNewUser(core: uc)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("ProfileViewModel: Failed to update UserCore")
-                    print("ProfileViewModel-err: \(e.localizedDescription)")
-                case .finished:
-                    print("ProfileViewModel: Finished updating UserCore")
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
-        
-        //Refetch RecentlyJoined and refetch vibe stories
-    }
-    
-    private func handleUpdateUserAbout() {
-        print("About Changed")
-        //When we update our UserAbout, we need to:
-        //  1. Update the UserAbout document
-        
-        UserAboutService.shared.setUserAbout(bio: bioText, job: jobText, school: schoolText)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("ProfileViewModel: Failed to update User About")
-                    print("ProfileViewModel-err: \(e.localizedDescription)")
-                case .finished:
-                    print("ProfileViewModel: Finished updating User About")
-                }
-            } receiveValue: { _ in}
-            .store(in: &cancellables)
-    }
-    
-    private func handleUpdateImgs() {
-        print("Imgs Changed")
-        //When we update our imgs, we need to:
-        //  1. Push all images with their new indexes
-        //  2. If we do not have exactly 6 imgs in array, we need to delete the higher indexes
-        let maxImgCount = 6
-        let currentImgCount = images.count
-        
-        //The indexes should already be correct
-        // This is just to be sure
-        for i in 0..<images.count {
-            images[i].index = i + 1
-        }
-        
-        if maxImgCount - currentImgCount == 0 {
-            //Overwrite all images
-            for img in images {
-                ProfileImageService.shared.uploadProfileImage(img: img, name: "\(img.index)")
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let e):
-                            print("ProfileViewModel: Failed to update img w index -> \(img.index)")
-                            print("ProfileViewModel-err: \(e.localizedDescription)")
-                        case .finished:
-                            print("ProfileViewModel: Finished updating img w index -> \(img.index)")
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &cancellables)
-            }
-        } else {
-            //We do not have full images
-            //Overwrite the images we already have
-            for img in images {
-                ProfileImageService.shared.uploadProfileImage(img: img, name: "\(img.index)")
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let e):
-                            print("ProfileViewModel: Failed to update img w index -> \(img.index)")
-                            print("ProfileViewModel-err: \(e.localizedDescription)")
-                        case .finished:
-                            print("ProfileViewModel: Finished updating img w index -> \(img.index)")
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &cancellables)
-            }
-            
-            //We now need to delete the remaining images
-            let loopTimes = maxImgCount - currentImgCount
-            
-            for i in 0..<loopTimes {
-                ProfileImageService.shared.deleteProfileImage(index: "\(maxImgCount - i)")
-                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let e):
-                            print("ProfileViewModel: Failed to delete img w index -> \(maxImgCount - i)")
-                            print("ProfileViewModel-err: \(e.localizedDescription)")
-                        case .finished:
-                            print("ProfileViewModel: Finished delete img w index -> \(maxImgCount - i)")
-                        }
-                    } receiveValue: { _ in }
-                    .store(in: &cancellables)
-            }
-        }
-    }
-    
-    private func handleUpdateProfilePic() {
-        print("Profile pic changed")
-        //When we update the profile pic, we need to:
-        //  1. Check to see if there is an image in profilePics
-        //      a. if there is an image, we overwrite the img in place 1
-        //      b. if there is not an image, we delete the current 0th place img
-        if profileImage.count == 0 {
-            ProfileImageService.shared.deleteProfileImage(index: "0")
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case .failure(let e):
-                        print("ProfilViewModel: Failed to delete profile img")
-                        print("ProfileViewModel-err: \(e)")
-                    case .finished:
-                        print("ProfileViewModel: Finished deleting Profile pic")
-                    }
-                } receiveValue: { _ in }
-                .store(in: &cancellables)
-        } else {
-            ProfileImageService.shared.uploadProfileImage(img: profileImage[0], name: "0")
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case .failure(let e):
-                        print("ProfilViewModel: Failed to update profile img")
-                        print("ProfileViewModel-err: \(e)")
-                    case .finished:
-                        print("ProfileViewModel: Finished update Profile pic")
-                    }
-                } receiveValue: { _ in }
-                .store(in: &cancellables)
-        }
-    }
-}
-
 
 //MARK: - Image options ------------------------------------------------------------------------------------->
 //NOTE: Make a image container class that deals with the sorting of images based on some ID
@@ -598,41 +436,14 @@ extension ProfileViewModel {
         if schoolText != "" {
             school = schoolText
         }
-        
-        guard let currentUID = userService.currentUser?.uid else { return }
-        
+                
         let userAbout = UserAbout(
             bio: bio,
             job: job,
             school: school
         )
         
-        let basic = UserBasic(
-            uid: currentUID,
-            name: nameText,
-            birthdate: age,
-            gender: selectGenderDropDownText.rawValue,
-            sexuality: selectSexualityDropDownText.rawValue
-        )
-        
-        let agePref = AgeRangePreference(
-            minAge: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
-            maxAge: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue))
-        )
-        
-        let search = SearchRadiusComponents(
-            coordinate: Coordinate(
-                lat: LocationService.shared.coordinates.latitude,
-                lng: LocationService.shared.coordinates.longitude
-            ),
-            willingToTravel: Int(singleKnobSlider.highHandle.currentValue)
-        )
-        
-        let uc = UserCore(
-            userBasic: basic,
-            ageRangePreference: agePref,
-            searchRadiusComponents: search
-        )
+        let uc = bundleUserCore()
         
         let allImgs = profileImage + images
         
@@ -663,7 +474,7 @@ extension ProfileViewModel {
     
     private func readProfile(uid: String) {
         
-        ProfileService_Firebase.shared.getFullProfile(uid: uid)
+        ProfileService.shared.getFullProfile(uid: uid)
             .sink { completion in
                 switch completion {
                 case let .failure(error):
@@ -699,8 +510,27 @@ extension ProfileViewModel {
                     self!.doubleKnobSlider.lowHandle!.currentPercentage = SliderValue(wrappedValue: ageMinPrefPercent)
                     self!.doubleKnobSlider.highHandle.currentPercentage = SliderValue(wrappedValue: ageMaxPrefPercent)
                                         
-                    self!.doubleKnobSlider.lowHandle!.currentLocation = CGPoint(x: (CGFloat(ageMinPrefPercent)/1.0) *        self!.doubleKnobSlider.lowHandle!.sliderWidth, y: self!.doubleKnobSlider.lowHandle!.sliderHeight / 2)
-                    self!.doubleKnobSlider.highHandle.currentLocation = CGPoint(x: (CGFloat(ageMaxPrefPercent)/1.0) * self!.doubleKnobSlider.highHandle.sliderWidth, y: self!.doubleKnobSlider.highHandle.sliderHeight / 2)
+                    self!.doubleKnobSlider.lowHandle!.currentLocation = CGPoint(
+                        x: (CGFloat(ageMinPrefPercent)/1.0) * self!.doubleKnobSlider.lowHandle!.sliderWidth,
+                        y: self!.doubleKnobSlider.lowHandle!.sliderHeight / 2
+                    )
+                    
+                    self!.doubleKnobSlider.highHandle.currentLocation = CGPoint(
+                        x: (CGFloat(ageMaxPrefPercent)/1.0) * self!.doubleKnobSlider.highHandle.sliderWidth,
+                        y: self!.doubleKnobSlider.highHandle.sliderHeight / 2
+                    )
+                    
+                    let start = 1
+                    let end = 250
+                    
+                    let range2 = end - start
+                    let percent = Double((core.searchRadiusComponents.willingToTravel - start)) / Double(range2)
+                    
+                    self!.singleKnobSlider.highHandle.currentPercentage = SliderValue(wrappedValue: percent)
+                    self!.singleKnobSlider.highHandle.currentLocation = CGPoint(
+                        x: (CGFloat(percent)/1.0) * self!.singleKnobSlider.highHandle.sliderWidth,
+                        y: self!.singleKnobSlider.highHandle.sliderHeight / 2
+                    )
                 }
                 
                 if let abt = abt {
@@ -760,5 +590,39 @@ extension ProfileViewModel {
         case .bisexual:
             return Just(true).eraseToAnyPublisher()
         }
+    }
+}
+
+//MARK: - Helpers
+extension ProfileViewModel {
+    private func bundleUserCore() -> UserCore {
+        let basic = UserBasic(
+            uid: AuthService.shared.currentUser!.uid,
+            name: nameText,
+            birthdate: age,
+            gender: selectGenderDropDownText.rawValue,
+            sexuality: selectSexualityDropDownText.rawValue
+        )
+        
+        let agePref = AgeRangePreference(
+            minAge: Int(min(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue)),
+            maxAge: Int(max(doubleKnobSlider.lowHandle!.currentValue, doubleKnobSlider.highHandle.currentValue))
+        )
+        
+        let search = SearchRadiusComponents(
+            coordinate: Coordinate(
+                lat: LocationService.shared.coordinates.latitude,
+                lng: LocationService.shared.coordinates.longitude
+            ),
+            willingToTravel: Int(singleKnobSlider.highHandle.currentValue)
+        )
+        
+        let uc = UserCore(
+            userBasic: basic,
+            ageRangePreference: agePref,
+            searchRadiusComponents: search
+        )
+        
+        return uc
     }
 }

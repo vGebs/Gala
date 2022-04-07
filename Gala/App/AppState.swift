@@ -160,7 +160,7 @@ class AppState: ObservableObject {
 
     public func logout() {
         
-        DataContainer.shared.clear()
+        DataStore.shared.clear()
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
         AppState.shared.onLandingPage = true

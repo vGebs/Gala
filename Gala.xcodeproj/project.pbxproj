@@ -105,7 +105,7 @@
 		FAAAA77A27F3C63F00663816 /* UserPostSimple.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77927F3C63F00663816 /* UserPostSimple.swift */; };
 		FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */; };
 		FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */; };
-		FAAAA78227F64D4200663816 /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA78127F64D4200663816 /* DataContainer.swift */; };
+		FAAAA78227F64D4200663816 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA78127F64D4200663816 /* DataStore.swift */; };
 		FAAAA7A327F6769500663816 /* UserCorePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A227F6769500663816 /* UserCorePersistence.swift */; };
 		FAAAA7AA27F6796000663816 /* UserCore_CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7A827F6796000663816 /* UserCore_CoreData.xcdatamodeld */; };
 		FAAAA7B327F7C1E200663816 /* ChatsDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */; };
@@ -113,6 +113,9 @@
 		FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */; };
 		FAAAA7BA27F9342700663816 /* ProfileService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */; };
 		FAAAA7BC27F936AF00663816 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7BB27F936AF00663816 /* ProfileService.swift */; };
+		FAAAA7BF27FBB12600663816 /* UserAboutPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7BE27FBB12600663816 /* UserAboutPersistence.swift */; };
+		FAAAA7C227FBB21300663816 /* ProfileImagePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7C127FBB21300663816 /* ProfileImagePersistence.swift */; };
+		FAAAA7C627FBCE5600663816 /* ProfileServiceWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7C527FBCE5600663816 /* ProfileServiceWrapper.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -244,7 +247,7 @@
 		FAAAA77927F3C63F00663816 /* UserPostSimple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostSimple.swift; sourceTree = "<group>"; };
 		FAAAA77B27F3E61500663816 /* NavBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarViewModel.swift; sourceTree = "<group>"; };
 		FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
-		FAAAA78127F64D4200663816 /* DataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
+		FAAAA78127F64D4200663816 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		FAAAA7A227F6769500663816 /* UserCorePersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCorePersistence.swift; sourceTree = "<group>"; };
 		FAAAA7A927F6796000663816 /* UserCore_CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserCore_CoreData.xcdatamodel; sourceTree = "<group>"; };
 		FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsDataStore.swift; sourceTree = "<group>"; };
@@ -252,6 +255,9 @@
 		FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesDataStore.swift; sourceTree = "<group>"; };
 		FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService_CoreData.swift; sourceTree = "<group>"; };
 		FAAAA7BB27F936AF00663816 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		FAAAA7BE27FBB12600663816 /* UserAboutPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutPersistence.swift; sourceTree = "<group>"; };
+		FAAAA7C127FBB21300663816 /* ProfileImagePersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImagePersistence.swift; sourceTree = "<group>"; };
+		FAAAA7C527FBCE5600663816 /* ProfileServiceWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileServiceWrapper.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -342,6 +348,7 @@
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
 				FAAAA7BB27F936AF00663816 /* ProfileService.swift */,
+				FAAAA7C527FBCE5600663816 /* ProfileServiceWrapper.swift */,
 			);
 			path = "General Services";
 			sourceTree = "<group>";
@@ -613,6 +620,8 @@
 		FA87744A2640A1DA00D5D5CB /* Internal Database */ = {
 			isa = PBXGroup;
 			children = (
+				FAAAA7C027FBB1FD00663816 /* ProfileImages */,
+				FAAAA7BD27FBB11800663816 /* UserAbout */,
 				FAAAA7B827F9340A00663816 /* Profile Related */,
 				FAAAA7AB27F6E45A00663816 /* CoreData */,
 				FAAAA7A427F676E200663816 /* UserCore */,
@@ -683,7 +692,7 @@
 		FAAAA78027F64D2500663816 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-				FAAAA78127F64D4200663816 /* DataContainer.swift */,
+				FAAAA78127F64D4200663816 /* DataStore.swift */,
 				FAAAA7B227F7C1E200663816 /* ChatsDataStore.swift */,
 				FAAAA7B427F7C67F00663816 /* RecentlyJoinedDataStore.swift */,
 				FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */,
@@ -713,6 +722,22 @@
 				FAAAA7B927F9342700663816 /* ProfileService_CoreData.swift */,
 			);
 			path = "Profile Related";
+			sourceTree = "<group>";
+		};
+		FAAAA7BD27FBB11800663816 /* UserAbout */ = {
+			isa = PBXGroup;
+			children = (
+				FAAAA7BE27FBB12600663816 /* UserAboutPersistence.swift */,
+			);
+			path = UserAbout;
+			sourceTree = "<group>";
+		};
+		FAAAA7C027FBB1FD00663816 /* ProfileImages */ = {
+			isa = PBXGroup;
+			children = (
+				FAAAA7C127FBB21300663816 /* ProfileImagePersistence.swift */,
+			);
+			path = ProfileImages;
 			sourceTree = "<group>";
 		};
 		FABAABE92787F63400154363 /* SubViews */ = {
@@ -944,7 +969,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8774482640A19B00D5D5CB /* ProfileModel.swift in Sources */,
-				FAAAA78227F64D4200663816 /* DataContainer.swift in Sources */,
+				FAAAA78227F64D4200663816 /* DataStore.swift in Sources */,
 				FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */,
 				FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */,
 				FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */,
@@ -975,6 +1000,7 @@
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,
 				FAD33A0E27D0489000FC9553 /* LoadingView.swift in Sources */,
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,
+				FAAAA7BF27FBB12600663816 /* UserAboutPersistence.swift in Sources */,
 				FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */,
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
@@ -986,6 +1012,7 @@
 				FA7E3B3226E808CF00A6653C /* Story.swift in Sources */,
 				FA87744D2640A1F200D5D5CB /* ProfileService_Firebase.swift in Sources */,
 				FAAAA75B27E2A23300663816 /* InstaStoryView.swift in Sources */,
+				FAAAA7C627FBCE5600663816 /* ProfileServiceWrapper.swift in Sources */,
 				FA7BAD4826FD0FAD002F25E0 /* PostSelector.swift in Sources */,
 				FAAAA7BC27F936AF00663816 /* ProfileService.swift in Sources */,
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
@@ -1051,6 +1078,7 @@
 				FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */,
 				FAAAA77827F3C5E800663816 /* Post.swift in Sources */,
 				FA8774432640A14D00D5D5CB /* AuthPublisher.swift in Sources */,
+				FAAAA7C227FBB21300663816 /* ProfileImagePersistence.swift in Sources */,
 				FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */,
 				FAD73C7F27A9AA1A007221B0 /* VibeImageService.swift in Sources */,
 				FA7E3B2426E1F28300A6653C /* LikesService.swift in Sources */,

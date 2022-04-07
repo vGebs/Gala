@@ -30,29 +30,29 @@ class StoriesViewModel: ObservableObject {
     }
     
     init() {
-        DataContainer.shared.stories.$vibeImages
+        DataStore.shared.stories.$vibeImages
             .sink { [weak self] vibeImgs in
                 self?.vibeImages = vibeImgs
             }.store(in: &cancellables)
         
-        DataContainer.shared.stories.$vibesDict
+        DataStore.shared.stories.$vibesDict
             .sink { [weak self] vibes in
                 self?.vibesDict = vibes
             }.store(in: &cancellables)
         
-        DataContainer.shared.stories.$matchedStories
+        DataStore.shared.stories.$matchedStories
             .sink { [weak self] matchStories in
                 self?.matchedStories = matchStories
             }.store(in: &cancellables)
         
-        DataContainer.shared.stories.$postsILiked
+        DataStore.shared.stories.$postsILiked
             .sink { [weak self] likes in
                 self?.postsILiked = likes
             }.store(in: &cancellables)
     }
     
     func fetch() {
-        DataContainer.shared.stories.fetchStories()
+        DataStore.shared.stories.fetchStories()
     }
     
     func postIsLiked(uid: String, pid: Date) -> Bool {

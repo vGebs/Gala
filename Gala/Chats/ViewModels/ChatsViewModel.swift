@@ -34,17 +34,17 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     }
     
     init() {
-        DataContainer.shared.chatsData.$matches
+        DataStore.shared.chatsData.$matches
             .sink(receiveValue: { [weak self] matches in
                 self?.matches = matches
             }).store(in: &cancellables)
 
-        DataContainer.shared.chatsData.$snaps
+        DataStore.shared.chatsData.$snaps
             .sink(receiveValue: { [weak self] snaps in
                 self?.snaps = snaps
             }).store(in: &cancellables)
             
-        DataContainer.shared.chatsData.$matchMessages
+        DataStore.shared.chatsData.$matchMessages
             .sink(receiveValue: { [weak self] messages in
                 self?.matchMessages = messages
             }).store(in: &cancellables)
