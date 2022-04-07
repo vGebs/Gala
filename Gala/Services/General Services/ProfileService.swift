@@ -24,6 +24,8 @@ class ProfileService: ObservableObject, ProfileServiceProtocol {
     let firebase: ProfileServiceProtocol
     let coreData: ProfileServiceProtocol
     
+    private var cancellables: [AnyCancellable] = []
+    
     private init() {
         firebase = ProfileServiceWrapper(
             coreService: UserCoreService.shared,
@@ -68,10 +70,24 @@ class ProfileService: ObservableObject, ProfileServiceProtocol {
 // MARK: - createProfile()
 extension ProfileService {
     private func createProfile_(_ profile: ProfileModel) -> AnyPublisher<Void, Error> {
-        return firebase.createProfile(profile)
-            .flatMap { [weak self] _ -> AnyPublisher<Void, Error> in
-                self!.coreData.createProfile(profile)
-            }.eraseToAnyPublisher()
+        return Future<Void, Error> { [weak self] promise in
+            Publishers.Zip(
+                self!.firebase.createProfile(profile),
+                RecentlyJoinedUserService.shared.addNewUser(core: profile.userCore)
+            )
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("ProfileService: Failed to create profile and add RecentlyJoinedUser")
+                        print("ProfileService-err: \(e)")
+                        promise(.failure(e))
+                    case .finished:
+                        print("ProfileService: Finished creating user and pushing RecentlyJoinedUser")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _, _ in }
+                .store(in: &self!.cancellables)
+        }.eraseToAnyPublisher()
     }
 }
 

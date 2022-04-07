@@ -7,6 +7,7 @@
 
 import Combine
 import FirebaseAuth
+import SwiftUI
 
 protocol AuthServiceProtocol {
     var currentUser: User? { get }
@@ -19,7 +20,7 @@ protocol AuthServiceProtocol {
 
 class AuthService: AuthServiceProtocol{
 
-    var currentUser: User? = Auth.auth().currentUser
+    @Published var currentUser: User? = Auth.auth().currentUser 
     
     private var cancellables: [AnyCancellable] = []
     
@@ -27,8 +28,8 @@ class AuthService: AuthServiceProtocol{
     private init() { }
     
     func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
-            Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
+        Future<Void, Error> { [weak self] promise in
+            Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
                 self?.currentUser = authResult?.user
                 return promise(.success(()))
@@ -46,8 +47,8 @@ class AuthService: AuthServiceProtocol{
     }
     
     private func signInWithEmail(_ email: String, _ password: String) -> AnyPublisher<User, Error> {
-        Future<User, Error> { promise in
-            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+        Future<User, Error> { [weak self] promise in
+            Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 if let error = error { return promise(.failure(error)) }
                 if let auth = authResult {
                     self?.currentUser = auth.user
@@ -58,11 +59,10 @@ class AuthService: AuthServiceProtocol{
     }
     
     func logout() -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
+        Future<Void, Error> { [weak self] promise in
             do {
                 try Auth.auth().signOut()
-                
-                self.currentUser = nil
+                self!.currentUser = nil
                 promise(.success(()))
             } catch {
                 promise(.failure(error))

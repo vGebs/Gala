@@ -20,7 +20,6 @@ protocol ProfileImageServiceProtocol {
 class ProfileImageService: ProfileImageServiceProtocol{
     
     private let storage = Storage.storage()
-    private let currentUser = AuthService.shared.currentUser?.uid
     
     static let shared = ProfileImageService()
     private var cancellables: [AnyCancellable] = []
@@ -32,7 +31,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
         let storageRef = storage.reference()
         let profileFolder = "ProfileImages"
         let profileRef = storageRef.child(profileFolder)
-        let myProfileRef = profileRef.child(currentUser!)
+        let myProfileRef = profileRef.child(AuthService.shared.currentUser!.uid)
         let imgFileRef = myProfileRef.child("\(name).png")
         
         return Future<Void, Error> { promise in
@@ -97,7 +96,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
     //Images are not being retrieved with id so we cannot delete the correct image
     //P.S., this function should work tho assuming proper input
     func deleteProfileImage(index: String) -> AnyPublisher<Void, Error> {
-        let uid = currentUser!
+        let uid = AuthService.shared.currentUser!.uid
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
         let myProfileRef = profileRef.child(uid)

@@ -460,6 +460,7 @@ extension ProfileViewModel {
             .sink{ completion in
                 switch completion{
                 case let .failure(error):
+                    print("ProfileViewModel: Failed to create profile")
                     print(error.localizedDescription)
                 case .finished:
                     print("Profile Successfully added to firebase: ProfileViewModel")

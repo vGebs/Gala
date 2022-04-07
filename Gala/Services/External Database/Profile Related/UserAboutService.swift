@@ -17,7 +17,6 @@ protocol UserAboutServiceProtocol {
 
 class UserAboutService: UserAboutServiceProtocol {
     private let db = Firestore.firestore()
-    private let currentUID: String? = AuthService.shared.currentUser?.uid
     
     static let shared = UserAboutService()
     
@@ -28,7 +27,7 @@ class UserAboutService: UserAboutServiceProtocol {
             if userAbout.bio == "" && userAbout.job == "" && userAbout.school == "" {
                 promise(.success(()))
             } else {
-                self.db.collection("UserAbout").document(self.currentUID!).setData([
+                self.db.collection("UserAbout").document(AuthService.shared.currentUser!.uid).setData([
                     "bio" : userAbout.bio!,
                     "job" : userAbout.job!,
                     "school" : userAbout.school!
@@ -49,7 +48,7 @@ class UserAboutService: UserAboutServiceProtocol {
     func setUserAbout(bio: String, job: String, school: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             
-            self.db.collection("UserAbout").document(self.currentUID!).setData([
+            self.db.collection("UserAbout").document(AuthService.shared.currentUser!.uid).setData([
                 "bio" : bio,
                 "job" : job,
                 "school" : school
