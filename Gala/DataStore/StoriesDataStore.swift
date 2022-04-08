@@ -265,8 +265,8 @@ extension StoriesDataStore {
         self.vibeImages = []
         let count = vibesDict.keys.count
         var counter = 0
-        return Future<Void, Error> { promise in
-            for key in self.vibesDict.keys {
+        return Future<Void, Error> { [weak self] promise in
+            for key in self!.vibesDict.keys {
                 VibeImageService.shared.fetchImage(name: key)
                     .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                     .receive(on: DispatchQueue.main)
@@ -288,7 +288,7 @@ extension StoriesDataStore {
                             promise(.success(()))
                         }
                     }
-                    .store(in: &self.cancellables)
+                    .store(in: &self!.cancellables)
             }
         }.eraseToAnyPublisher()
     }

@@ -48,7 +48,7 @@ extension ProfileServiceWrapper {
         return Future<Void,Error> { [weak self] promise in
             Publishers.Zip3(
                 self!.addUserCore(profile.userCore),
-                self!.addUserAbout(profile.userAbout),
+                self!.addUserAbout(profile.userAbout, uid: profile.userCore.userBasic.uid),
                 self!.addImages(profile.images)
             )
             .sink { completion in
@@ -69,8 +69,8 @@ extension ProfileServiceWrapper {
         return coreService.addNewUser(core: userCore)
     }
     
-    private func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error>{
-        return aboutService.addUserAbout(userAbout)
+    private func addUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error>{
+        return aboutService.addUserAbout(userAbout, uid: uid)
     }
     
     private func addImages(_ allImages: [ImageModel]) -> AnyPublisher<Void, Error>{
@@ -181,7 +181,7 @@ extension ProfileServiceWrapper {
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip4(
                 self!.handleUpdateUserCore(uc: uc),
-                self!.handleUpdateUserAbout(abt: abt),
+                self!.handleUpdateUserAbout(abt: abt, uid: uc?.userBasic.uid),
                 self!.handleUpdateProfilePic(profileImage: profImage),
                 self!.handleUpdateImgs(images: imgs)
             ).sink { completion in
@@ -202,7 +202,7 @@ extension ProfileServiceWrapper {
         
         return Future<Void, Error> { [weak self] promise in
             if let u = uc {
-                self!.coreService.addNewUser(core: u)
+                self!.coreService.updateUser(userCore: u)
                     .sink { completion in
                         switch completion {
                         case .failure(let e):
@@ -223,10 +223,10 @@ extension ProfileServiceWrapper {
         //Refetch RecentlyJoined and refetch vibe stories
     }
     
-    private func handleUpdateUserAbout(abt: UserAbout?) -> AnyPublisher<Void, Error> {
+    private func handleUpdateUserAbout(abt: UserAbout?, uid: String?) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
-            if let a = abt {
-                self!.aboutService.addUserAbout(a)
+            if let a = abt, let uid = uid {
+                self!.aboutService.updateUserAbout(a, uid: uid)
                     .sink { completion in
                         switch completion {
                         case .failure(let e):

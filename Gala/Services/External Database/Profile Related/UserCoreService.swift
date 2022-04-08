@@ -14,6 +14,7 @@ import FirebaseFirestoreSwift
 protocol UserCoreServiceProtocol {
     func addNewUser(core: UserCore) -> AnyPublisher<Void, Error>
     func getUserCore(uid: String?) -> AnyPublisher<UserCore?, Error>
+    func updateUser(userCore: UserCore) -> AnyPublisher<Void, Error>
 }
 
 class UserCoreService: ObservableObject, UserCoreServiceProtocol {
@@ -127,6 +128,10 @@ class UserCoreService: ObservableObject, UserCoreServiceProtocol {
                 promise(.failure(UserCoreError.emptyUID))
             }
         }.eraseToAnyPublisher()
+    }
+    
+    func updateUser(userCore: UserCore) -> AnyPublisher<Void, Error> {
+        return addNewUser(core: userCore)
     }
     
     func getUserCore_iOS15(uid: String) async -> UserCore? {

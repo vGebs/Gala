@@ -49,8 +49,45 @@ class AppState: ObservableObject {
     
     @Published var currentUser = AuthService.shared.currentUser
     
+    private func userCoreIsEmpty(_ uc: UserCore) -> Bool {
+        if uc.userBasic.gender == "" {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     private init() {
 
+        $currentUser
+            .flatMap { UserCoreService.shared.getUserCore(uid: $0?.uid) }
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("AppState: CurrentUser is empty")
+                    print("AppState-err: \(e)")
+                case .finished:
+                    print("AppState: Finished fetching usercore")
+                }
+            } receiveValue: { [weak self] uc in
+                if let uc = uc {
+                    if self!.userCoreIsEmpty(uc) {
+                        
+                        self?.profileInfo.name = uc.userBasic.name
+                        self?.profileInfo.age = uc.userBasic.birthdate
+                        
+                        withAnimation {
+                            self?.signUpPageActive = false
+                            self?.loginPageActive = false
+                            self?.createAccountPressed = true
+                        }
+                    } else {
+                        self?.allowAccess = true
+                    }
+                }
+            }
+            .store(in: &cancellables)
+        
         $loginPageActive
             .flatMap{ [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in
                 if on {
@@ -127,35 +164,6 @@ class AppState: ObservableObject {
                     return Just(nil).eraseToAnyPublisher()
                 }
             }.assign(to: &$chatsVM)
-        
-        $currentUser
-            .flatMap { UserCoreService.shared.getUserCore(uid: $0?.uid) }
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("AppState: CurrentUser is empty")
-                    print("AppState-err: \(e)")
-                case .finished:
-                    print("AppState: Finished fetching usercore")
-                }
-            } receiveValue: { [weak self] uc in
-                if let uc = uc {
-                    if uc.userBasic.gender == "" {
-                        
-                        self?.profileInfo.name = uc.userBasic.name
-                        self?.profileInfo.age = uc.userBasic.birthdate
-                        
-                        withAnimation {
-                            self?.signUpPageActive = false
-                            self?.loginPageActive = false
-                            self?.createAccountPressed = true
-                        }
-                    } else {
-                        self?.allowAccess = true
-                    }
-                }
-            }
-            .store(in: &cancellables)
     }
 
     public func logout() {

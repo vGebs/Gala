@@ -96,7 +96,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     
     // MARK: - Capturing Photos/Videos
     @Published var cameraIsBuilt = false
-    private var setupComplete = false
+    @Published private var classSetupComplete = false
     private let photoOutput = AVCapturePhotoOutput()
     private var photoOutputEnabled = false
     private var movieFileOutput: AVCaptureMovieFileOutput?
@@ -162,6 +162,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         self.depthEnabled = false
         self.photoQualityPrioritization = false
         
+        //Tear down camera when picture has been taken
         $image
             .debounce(for: .seconds(2.5), scheduler: DispatchQueue.main)
             .map { [weak self] img in
@@ -171,9 +172,10 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
             }.sink { _ in }
             .store(in: &cancellables)
         
+        //Build if image is nil, camera isnt build, and classSetupIsComplete
         $image
             .map { [weak self] img in
-                if img == nil && !self!.cameraIsBuilt && self!.setupComplete {
+                if img == nil && !self!.cameraIsBuilt && self!.classSetupComplete {
                     self?.buildCamera()
                 }
             }.sink { _ in }
@@ -215,7 +217,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         
         self.addPhotoOutput()
         
-        //self.addVideoOutput()
+        self.addVideoOutput()
         
         session.commitConfiguration()
         
@@ -333,23 +335,23 @@ extension CameraViewModel {
     }
     
     private func addVideoOutput() {
-        sessionQueue.async {
-            let movieFileOutput = AVCaptureMovieFileOutput()
-
-            if self.session.canAddOutput(movieFileOutput) {
-                self.session.addOutput(movieFileOutput)
-                self.session.sessionPreset = .high
-                
-                if let connection = movieFileOutput.connection(with: .video) {
-                    if connection.isVideoStabilizationSupported {
-                        connection.preferredVideoStabilizationMode = .auto
-                    }
+        
+        let movieFileOutput = AVCaptureMovieFileOutput()
+        
+        if self.session.canAddOutput(movieFileOutput) {
+            self.session.addOutput(movieFileOutput)
+            self.session.sessionPreset = .high
+            
+            if let connection = movieFileOutput.connection(with: .video) {
+                if connection.isVideoStabilizationSupported {
+                    connection.preferredVideoStabilizationMode = .auto
                 }
-                
-                self.movieFileOutput = movieFileOutput
-            } else {
-                print("CamerViewModel-Error: Failed to add movieFileOutput")
             }
+            
+            self.movieFileOutput = movieFileOutput
+            print("CameraViewModel: MovieFileOutput added")
+        } else {
+            print("CamerViewModel-Error: Failed to add movieFileOutput")
         }
     }
     
@@ -365,7 +367,7 @@ extension CameraViewModel {
                 
                 DispatchQueue.main.async {
                     self.cameraIsBuilt = true
-                    self.setupComplete = true
+                    self.classSetupComplete = true
                 }
 
             case .notAuthorized:

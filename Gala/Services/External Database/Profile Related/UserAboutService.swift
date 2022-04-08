@@ -11,18 +11,20 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 protocol UserAboutServiceProtocol {
-    func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error>
+    func addUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error>
     func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error>
+    func updateUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error>
 }
 
 class UserAboutService: UserAboutServiceProtocol {
+    
     private let db = Firestore.firestore()
     
     static let shared = UserAboutService()
     
     private init() {}
 
-    func addUserAbout(_ userAbout: UserAbout) -> AnyPublisher<Void, Error> {
+    func addUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             if userAbout.bio == "" && userAbout.job == "" && userAbout.school == "" {
                 promise(.success(()))
@@ -41,27 +43,6 @@ class UserAboutService: UserAboutServiceProtocol {
                     }
                 }
             }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    func setUserAbout(bio: String, job: String, school: String) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { promise in
-            
-            self.db.collection("UserAbout").document(AuthService.shared.currentUser!.uid).setData([
-                "bio" : bio,
-                "job" : job,
-                "school" : school
-            ]) { err in
-                if let err = err {
-                    print("UserAboutService: Error writing document: \(err)")
-                    promise(.failure(err))
-                } else {
-                    print("UserAboutService: Document successfully written!")
-                    promise(.success(()))
-                }
-            }
-            
         }
         .eraseToAnyPublisher()
     }
@@ -92,5 +73,9 @@ class UserAboutService: UserAboutServiceProtocol {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    func updateUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error> {
+        return addUserAbout(userAbout, uid: uid)
     }
 }
