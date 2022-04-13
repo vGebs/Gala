@@ -11,10 +11,10 @@ import FirebaseStorage
 
 //Rename to ProfileImageService
 protocol ProfileImageServiceProtocol {
-    func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error>
-    func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error>
-    func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error>
-    func deleteProfileImage(index: String) ->AnyPublisher<Void, Error>
+    func uploadProfileImage(uid: String, img: ImageModel) -> AnyPublisher<Void, Error>
+    func uploadProfileImages(uid: String, imgs: [ImageModel]) -> AnyPublisher<Void, Error>
+    func getProfileImage(uid: String, index: String) -> AnyPublisher<UIImage?, Error>
+    func deleteProfileImage(uid: String, index: String) ->AnyPublisher<Void, Error>
 }
 
 class ProfileImageService: ProfileImageServiceProtocol{
@@ -26,13 +26,13 @@ class ProfileImageService: ProfileImageServiceProtocol{
     
     private init() {  }
     
-    func uploadProfileImage(img: ImageModel, name: String) -> AnyPublisher<Void, Error> {
+    func uploadProfileImage(uid: String, img: ImageModel) -> AnyPublisher<Void, Error> {
         let data = img.image.jpegData(compressionQuality: compressionQuality)!
         let storageRef = storage.reference()
         let profileFolder = "ProfileImages"
         let profileRef = storageRef.child(profileFolder)
         let myProfileRef = profileRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = myProfileRef.child("\(name).png")
+        let imgFileRef = myProfileRef.child("\(img.index).png")
         
         return Future<Void, Error> { promise in
             let _ = imgFileRef.putData(data, metadata: nil) { (metaData, error) in
@@ -45,13 +45,13 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    func uploadProfileImages(imgs: [ImageModel]) -> AnyPublisher<Void, Error> {
+    func uploadProfileImages(uid: String, imgs: [ImageModel]) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { promise in
             if imgs.count == 0 {
                 promise(.success(()))
             } else {
                 for i in 0..<imgs.count {
-                    self.uploadProfileImage(img: imgs[i], name: String(i))
+                    self.uploadProfileImage(uid: uid, img: imgs[i])
                         .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                         .sink { completion in
                             switch completion {
@@ -70,10 +70,10 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    func getProfileImage(id: String, index: String) -> AnyPublisher<UIImage?, Error> {
+    func getProfileImage(uid: String, index: String) -> AnyPublisher<UIImage?, Error> {
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
-        let myProfileRef = profileRef.child(id)
+        let myProfileRef = profileRef.child(uid)
         let imgFileRef = myProfileRef.child("\(index).png")
         
         return Future<UIImage?, Error> { promise in
@@ -95,8 +95,8 @@ class ProfileImageService: ProfileImageServiceProtocol{
     //Function is not being used yet.
     //Images are not being retrieved with id so we cannot delete the correct image
     //P.S., this function should work tho assuming proper input
-    func deleteProfileImage(index: String) -> AnyPublisher<Void, Error> {
-        let uid = AuthService.shared.currentUser!.uid
+    func deleteProfileImage(uid: String, index: String) -> AnyPublisher<Void, Error> {
+        //let uid = AuthService.shared.currentUser!.uid
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
         let myProfileRef = profileRef.child(uid)

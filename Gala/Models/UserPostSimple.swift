@@ -40,7 +40,7 @@ class UserPostSimple: Identifiable, ObservableObject {
             }.store(in: &cancellables)
         }
         
-        ProfileImageService.shared.getProfileImage(id: uid, index: "0")
+        ProfileImageService.shared.getProfileImage(uid: uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in

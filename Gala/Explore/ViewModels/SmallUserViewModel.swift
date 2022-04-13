@@ -73,7 +73,7 @@ class SmallUserViewModel: ObservableObject {
     }
     
     private func getProfileImage() {
-        ProfileImageService.shared.getProfileImage(id: profile!.userBasic.uid, index: "0")
+        ProfileImageService.shared.getProfileImage(uid: profile!.userBasic.uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in

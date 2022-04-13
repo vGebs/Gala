@@ -74,7 +74,7 @@ extension ProfileServiceWrapper {
     }
     
     private func addImages(_ allImages: [ImageModel]) -> AnyPublisher<Void, Error>{
-        return self.imgService.uploadProfileImages(imgs: allImages)
+        return self.imgService.uploadProfileImages(uid: AuthService.shared.currentUser!.uid, imgs: allImages)
     }
 }
 
@@ -83,7 +83,7 @@ extension ProfileServiceWrapper {
         return Future<(UserCore?, UIImage?), Error> { [weak self] promise in
             Publishers.Zip(
                 self!.coreService.getUserCore(uid: uid),
-                self!.imgService.getProfileImage(id: uid, index: "0")
+                self!.imgService.getProfileImage(uid: uid, index: "0")
             ).sink { completion in
                 switch completion{
                 case .failure(let e):
@@ -126,7 +126,7 @@ extension ProfileServiceWrapper {
             var imgsRecieved = 0
             var imgsNotFound = 0
             for i in 0..<7 {
-                self!.imgService.getProfileImage(id: uid, index: String(i))
+                self!.imgService.getProfileImage(uid: uid, index: String(i))
                     .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                     .sink { completion in
                         switch completion{
@@ -258,7 +258,7 @@ extension ProfileServiceWrapper {
                 if maxImgCount - currentImgCount == 0 {
                     //Overwrite all images
                     for i in 0..<imgs.count {
-                        self!.imgService.uploadProfileImage(img: imgs[i], name: "\(imgs[i].index)")
+                        self!.imgService.uploadProfileImage(uid: AuthService.shared.currentUser!.uid, img: imgs[i])
                             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                             .receive(on: DispatchQueue.main)
                             .sink { completion in
@@ -280,7 +280,7 @@ extension ProfileServiceWrapper {
                     //We do not have full images
                     //Overwrite the images we already have
                     for i in 0..<imgs.count {
-                        self!.imgService.uploadProfileImage(img: imgs[i], name: "\(imgs[i].index)")
+                        self!.imgService.uploadProfileImage(uid: AuthService.shared.currentUser!.uid, img: imgs[i])
                             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                             .receive(on: DispatchQueue.main)
                             .sink { completion in
@@ -299,7 +299,7 @@ extension ProfileServiceWrapper {
                     let loopTimes = maxImgCount - currentImgCount
                     
                     for i in 0..<loopTimes {
-                        self!.imgService.deleteProfileImage(index: "\(maxImgCount - i)")
+                        self!.imgService.deleteProfileImage(uid: AuthService.shared.currentUser!.uid, index: "\(maxImgCount - i)")
                             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                             .receive(on: DispatchQueue.main)
                             .sink { completion in
@@ -335,7 +335,7 @@ extension ProfileServiceWrapper {
             
             if let profileImage = profileImage {
                 if profileImage.count == 0 {
-                    self!.imgService.deleteProfileImage(index: "0")
+                    self!.imgService.deleteProfileImage(uid: AuthService.shared.currentUser!.uid, index: "0")
                         .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                         .receive(on: DispatchQueue.main)
                         .sink { completion in
@@ -351,7 +351,7 @@ extension ProfileServiceWrapper {
                         } receiveValue: { _ in }
                         .store(in: &self!.cancellables)
                 } else {
-                    self!.imgService.uploadProfileImage(img: profileImage[0], name: "0")
+                    self!.imgService.uploadProfileImage(uid: AuthService.shared.currentUser!.uid, img: profileImage[0])
                         .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                         .receive(on: DispatchQueue.main)
                         .sink { completion in

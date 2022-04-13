@@ -71,7 +71,7 @@ extension ChatsDataStore {
             for match in matches {
                 Publishers.Zip(
                     UserCoreService.shared.getUserCore(uid: match.matchedUID),
-                    ProfileImageService.shared.getProfileImage(id: match.matchedUID, index: "0")
+                    ProfileImageService.shared.getProfileImage(uid: match.matchedUID, index: "0")
                 )
                     .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                     .receive(on: DispatchQueue.main)

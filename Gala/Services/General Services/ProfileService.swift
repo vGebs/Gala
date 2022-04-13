@@ -27,8 +27,7 @@ class ProfileService: ObservableObject, ProfileServiceProtocol {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        firebase =
-        ProfileServiceWrapper(
+        firebase = ProfileServiceWrapper(
             coreService: UserCoreService.shared,
             aboutService: UserAboutService.shared,
             imgService: ProfileImageService.shared

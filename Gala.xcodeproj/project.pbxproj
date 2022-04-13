@@ -92,6 +92,7 @@
 		FA8CE4382717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */; };
 		FA9149F827FFE3F60015106E /* UserCoreCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA9149F627FFE3F60015106E /* UserCoreCD.xcdatamodeld */; };
 		FA9149FB27FFE5280015106E /* UserAboutCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA9149F927FFE5280015106E /* UserAboutCD.xcdatamodeld */; };
+		FA914A082807639F0015106E /* ProfileImageCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA914A062807639F0015106E /* ProfileImageCD.xcdatamodeld */; };
 		FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA98385F2686834200A76AD5 /* ExploreMainView.swift */; };
 		FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E53F527D15CCB002DDF99 /* MultipleStoryView.swift */; };
 		FA9E53F827D1767A002DDF99 /* CircularLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */; };
@@ -235,6 +236,7 @@
 		FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
 		FA9149F727FFE3F60015106E /* UserCoreCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserCoreCD.xcdatamodel; sourceTree = "<group>"; };
 		FA9149FA27FFE5280015106E /* UserAboutCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserAboutCD.xcdatamodel; sourceTree = "<group>"; };
+		FA914A072807639F0015106E /* ProfileImageCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProfileImageCD.xcdatamodel; sourceTree = "<group>"; };
 		FA98385F2686834200A76AD5 /* ExploreMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreMainView.swift; sourceTree = "<group>"; };
 		FA9E53F527D15CCB002DDF99 /* MultipleStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleStoryView.swift; sourceTree = "<group>"; };
 		FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularLoadingView.swift; sourceTree = "<group>"; };
@@ -731,6 +733,7 @@
 			isa = PBXGroup;
 			children = (
 				FAAAA7C127FBB21300663816 /* ProfileImagePersistence.swift */,
+				FA914A062807639F0015106E /* ProfileImageCD.xcdatamodeld */,
 			);
 			path = ProfileImages;
 			sourceTree = "<group>";
@@ -1013,6 +1016,7 @@
 				FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */,
 				FA7E3B2626E1F40700A6653C /* Like.swift in Sources */,
 				FAAAA77F27F51B0A00663816 /* LocationViewModel.swift in Sources */,
+				FA914A082807639F0015106E /* ProfileImageCD.xcdatamodeld in Sources */,
 				FA6BE60627BDB0F10058B78C /* ArrayExtensions.swift in Sources */,
 				FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */,
 				FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */,
@@ -1351,6 +1355,16 @@
 			);
 			currentVersion = FA9149FA27FFE5280015106E /* UserAboutCD.xcdatamodel */;
 			path = UserAboutCD.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		FA914A062807639F0015106E /* ProfileImageCD.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FA914A072807639F0015106E /* ProfileImageCD.xcdatamodel */,
+			);
+			currentVersion = FA914A072807639F0015106E /* ProfileImageCD.xcdatamodel */;
+			path = ProfileImageCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
