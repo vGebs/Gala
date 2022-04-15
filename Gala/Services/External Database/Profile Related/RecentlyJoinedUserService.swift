@@ -80,6 +80,12 @@ extension RecentlyJoinedUserService {
         let ageMaxPref = UserCoreService.shared.currentUserCore?.ageRangePreference.maxAge
         let travelDistance = UserCoreService.shared.currentUserCore?.searchRadiusComponents.willingToTravel
         
+        print("Travel Distance: \(travelDistance)")
+        print("Sexuality & Gender: \(sexaulityAndGender)")
+        print("age min pref: \(ageMinPref)")
+        print("age max pref: \(ageMaxPref)")
+
+
         return Future<[UserCore]?, Error> { promise in
 
             //print("RecentlyJoinedUserService: Entered getRecents_()")
@@ -262,8 +268,10 @@ extension RecentlyJoinedUserService {
     private func getRecents(forRadiusKM: Double, forGender: String, forSexuality: String, ageMin: Int, ageMax: Int) -> AnyPublisher<[UserCore]?, Error> {
         
         return Future<[UserCore]?, Error> { promise in
-            let lat: Double = LocationService.shared.coordinates.latitude
-            let long: Double = LocationService.shared.coordinates.longitude
+            let lat: Double = UserCoreService.shared.currentUserCore!.searchRadiusComponents.coordinate.lat //LocationService.shared.coordinates.latitude
+            let long: Double = UserCoreService.shared.currentUserCore!.searchRadiusComponents.coordinate.lng //LocationService.shared.coordinates.longitude
+            
+            
             
             let center = CLLocationCoordinate2D(latitude: lat, longitude: long)
             let radiusInM: Double = forRadiusKM * 1000

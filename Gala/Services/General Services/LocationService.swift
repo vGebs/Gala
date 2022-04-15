@@ -21,11 +21,13 @@ class LocationService: NSObject, ObservableObject {
     
     @Published var coordinates = Coordinates()
     
-    @Published var city = ""
-    @Published var country = ""
+    @Published private(set) var city = ""
+    @Published private(set) var country = ""
     
     private let locationManager = CLLocationManager()
 
+    private var subs: [AnyCancellable] = []
+    
     private override init() {
         super.init()
         self.locationManager.delegate = self
@@ -33,7 +35,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             self.locationManager.stopUpdatingLocation()
             print("Stopped updating location")
         }
@@ -54,12 +56,22 @@ extension LocationService: CLLocationManagerDelegate {
         
         let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         
-        loc.fetchCityAndCountry { city, country, error in
+        loc.fetchCityAndCountry { [weak self] city, country, error in
             guard let city = city, let country = country, error == nil else { return }
-            self.city = city
-            print(self.city)
-            self.country = country
+            self!.city = city
+            print(self!.city)
+            self!.country = country
         }
+    }
+}
+
+extension LocationService {
+    func getCity() -> String {
+        return self.city
+    }
+    
+    func getCountry() -> String {
+        return self.country
     }
 }
 

@@ -99,7 +99,9 @@ class ProfileImagePersistence: ProfileImageServiceProtocol {
                 
                 promise(.success(imgFinal))
             } else {
-                promise(.failure(CRUDError.noDocumentFound))
+                //promise(.failure(CRUDError.noDocumentFound))
+                print("ProfileImagePersistence: Failed to find profile img")
+                promise(.success(nil))
             }
         }.eraseToAnyPublisher()
     }

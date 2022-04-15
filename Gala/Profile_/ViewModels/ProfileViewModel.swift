@@ -11,14 +11,15 @@ import SwiftUI
 final class ProfileViewModel: ObservableObject {
     
 //MARK: - General Purpose Variables
-    
-    private var userService: AuthServiceProtocol = AuthService.shared
-    
+        
     private var cancellables: [AnyCancellable] = []
     
     private(set) var nameText: String
-    private(set) var cityText: String = LocationService.shared.city
-    private(set) var countryText: String = LocationService.shared.country
+    
+    @Published private(set) var cityText: String = ""
+    
+    @Published private(set) var countryText: String = ""
+    
     private(set) var ageText: String
     private var age: Date
     private var email: String
@@ -454,23 +455,26 @@ extension ProfileViewModel {
     }
     
     private func pushProfile(_ profile: ProfileModel) {
-        ProfileService.shared.createProfile(profile)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink{ completion in
-                switch completion{
-                case let .failure(error):
-                    print("ProfileViewModel: Failed to create profile")
-                    print(error.localizedDescription)
-                case .finished:
-                    print("Profile Successfully added to firebase: ProfileViewModel")
-                }
-            } receiveValue: { [weak self] _ in
-                self!.loading = false
-                AppState.shared.allowAccess = true
-                AppState.shared.createAccountPressed = false
-                self!.submitPressed = true
-            }.store(in: &cancellables)
+        if mode == .createAccount {
+            ProfileService.shared.updateCurrentUserProfile(uc: profile.userCore, abt: profile.userAbout, profImage: profileImage, imgs: images)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink{ completion in
+                    switch completion{
+                    case let .failure(error):
+                        print("ProfileViewModel: Failed to create profile")
+                        print(error.localizedDescription)
+                    case .finished:
+                        print("Profile Successfully added to firebase: ProfileViewModel")
+                    }
+                } receiveValue: { [weak self] _ in
+                    self!.loading = false
+                    AppState.shared.allowAccess = true
+                    AppState.shared.createAccountPressed = false
+                    self!.submitPressed = true
+                    DataStore.shared.initialize()
+                }.store(in: &cancellables)
+        }
     }
     
     private func readProfile(uid: String) {
@@ -487,6 +491,11 @@ extension ProfileViewModel {
 
                 if let core = core {
                     //Assign Core profile to UserService
+                    
+                    self?.getCityAndCountry(
+                        lat: core.searchRadiusComponents.coordinate.lat,
+                        lng: core.searchRadiusComponents.coordinate.lng
+                    )
                     
                     self!.age = core.userBasic.birthdate
                     self!.ageText = self!.age.ageString()
@@ -546,6 +555,29 @@ extension ProfileViewModel {
                     for i in 1 ..< imgs.count {
                         self!.images.append(imgs[i])
                     }
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func getCityAndCountry(lat: Double, lng: Double) {
+        LocationService.shared.getCityAndCountry(lat: lat, long: lng)
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("")
+                case .finished:
+                    print("")
+                }
+            } receiveValue: { [weak self] tuple in
+                if let city = tuple?.0{
+                    self?.cityText = city
+                }
+                
+                if let country = tuple?.1 {
+                    self?.countryText = country
                 }
             }
             .store(in: &cancellables)

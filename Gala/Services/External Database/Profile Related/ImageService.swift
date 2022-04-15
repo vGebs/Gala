@@ -107,6 +107,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
                 if let err = err {
                     print("ImageService: Failed to delete image with id: \(index)")
                     print("ImageService-err: \(err)")
+                    promise(.success(()))
                 } else {
                     print("ImageService: Successfully deleted image with id: \(index)")
                     promise(.success(()))
