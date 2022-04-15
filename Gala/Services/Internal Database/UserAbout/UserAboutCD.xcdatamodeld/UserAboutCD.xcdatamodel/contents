@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="UserAboutCD" representedClassName="UserAboutCD" syncable="YES" codeGenerationType="class">
-        <attribute name="bio" attributeType="String"/>
-        <attribute name="job" attributeType="String"/>
-        <attribute name="school" attributeType="String"/>
+        <attribute name="bio" optional="YES" attributeType="String"/>
+        <attribute name="job" optional="YES" attributeType="String"/>
+        <attribute name="school" optional="YES" attributeType="String"/>
+        <attribute name="uid" attributeType="String"/>
     </entity>
     <elements>
-        <element name="UserAboutCD" positionX="-45" positionY="0" width="128" height="74"/>
+        <element name="UserAboutCD" positionX="-45" positionY="0" width="128" height="89"/>
     </elements>
 </model>

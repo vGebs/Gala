@@ -354,7 +354,7 @@ final class ProfileViewModel: ObservableObject {
             }
             
             if uc != nil || abt != nil || profImage != nil || imgs != nil {
-                ProfileService.shared.updateCurrentUserProfile(uc: uc, abt: abt, profImage: profImage, imgs: imgs)
+                ProfileService.shared.updateCurrentUserProfile(uc: uc, abt: abt, profImage: profImage, imgs: imgs, uid: AuthService.shared.currentUser!.uid)
                     .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                     .receive(on: DispatchQueue.main)
                     .sink { completion in
@@ -456,7 +456,7 @@ extension ProfileViewModel {
     
     private func pushProfile(_ profile: ProfileModel) {
         if mode == .createAccount {
-            ProfileService.shared.updateCurrentUserProfile(uc: profile.userCore, abt: profile.userAbout, profImage: profileImage, imgs: images)
+            ProfileService.shared.updateCurrentUserProfile(uc: profile.userCore, abt: profile.userAbout, profImage: profileImage, imgs: images, uid: AuthService.shared.currentUser!.uid)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)
                 .sink{ completion in
@@ -468,11 +468,11 @@ extension ProfileViewModel {
                         print("Profile Successfully added to firebase: ProfileViewModel")
                     }
                 } receiveValue: { [weak self] _ in
+                    DataStore.shared.initialize()
                     self!.loading = false
                     AppState.shared.allowAccess = true
                     AppState.shared.createAccountPressed = false
                     self!.submitPressed = true
-                    DataStore.shared.initialize()
                 }.store(in: &cancellables)
         }
     }
@@ -567,9 +567,10 @@ extension ProfileViewModel {
             .sink { completion in
                 switch completion {
                 case .failure(let e):
-                    print("")
+                    print("ProfileViewModel: Failed to get city and country")
+                    print("ProfileViewModel-err: \(e)")
                 case .finished:
-                    print("")
+                    print("ProfileViewModel: Finished getting city and country")
                 }
             } receiveValue: { [weak self] tuple in
                 if let city = tuple?.0{

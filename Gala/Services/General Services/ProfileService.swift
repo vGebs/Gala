@@ -13,13 +13,13 @@ protocol ProfileServiceProtocol {
     func createProfile(_ profile: ProfileModel) -> AnyPublisher<Void, Error>
     func getProfile(uid: String) -> AnyPublisher<(UserCore?, UIImage?), Error>
     func getFullProfile(uid: String) -> AnyPublisher<(UserCore?, UserAbout?, [ImageModel]?), Error>
-    func updateCurrentUserProfile(uc: UserCore?, abt: UserAbout?, profImage: [ImageModel]?, imgs: [ImageModel]?) -> AnyPublisher<Void, Error>
+    func updateCurrentUserProfile(uc: UserCore?, abt: UserAbout?, profImage: [ImageModel]?, imgs: [ImageModel]?, uid: String) -> AnyPublisher<Void, Error>
 }
 
 class ProfileService: ProfileServiceProtocol {
     
     var coreService: UserCoreService
-    var aboutService: UserAboutServiceProtocol
+    var aboutService: UserAboutService
     var imgService: ProfileImageServiceProtocol
     
     private var cancellables: [AnyCancellable] = []
@@ -44,8 +44,8 @@ class ProfileService: ProfileServiceProtocol {
         return getUserProfile_(uid)
     }
     
-    func updateCurrentUserProfile(uc: UserCore?, abt: UserAbout?, profImage: [ImageModel]?, imgs: [ImageModel]?) -> AnyPublisher<Void, Error> {
-        return updateCurrentUserProfile_(uc, abt, profImage, imgs)
+    func updateCurrentUserProfile(uc: UserCore?, abt: UserAbout?, profImage: [ImageModel]?, imgs: [ImageModel]?, uid: String) -> AnyPublisher<Void, Error> {
+        return updateCurrentUserProfile_(uc, abt, profImage, imgs, uid)
     }
 }
 
@@ -185,14 +185,14 @@ extension ProfileService {
 }
 
 extension ProfileService {
-    private func updateCurrentUserProfile_(_ uc: UserCore?, _ abt: UserAbout?, _ profImage: [ImageModel]?, _ imgs: [ImageModel]?) -> AnyPublisher<Void, Error> {
+    private func updateCurrentUserProfile_(_ uc: UserCore?, _ abt: UserAbout?, _ profImage: [ImageModel]?, _ imgs: [ImageModel]?, _ uid: String) -> AnyPublisher<Void, Error> {
 
         //we're calling this function from ProfileViewModel
         
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip4(
                 self!.handleUpdateUserCore(uc: uc),
-                self!.handleUpdateUserAbout(abt: abt, uid: uc?.userBasic.uid),
+                self!.handleUpdateUserAbout(abt: abt, uid: uid),
                 self!.handleUpdateProfilePic(profileImage: profImage),
                 self!.handleUpdateImgs(images: imgs)
             ).sink { completion in
@@ -241,10 +241,10 @@ extension ProfileService {
                     .sink { completion in
                         switch completion {
                         case .failure(let e):
-                            print("ProfileService: Failed to update UserCore")
+                            print("ProfileService: Failed to update UserAbout")
                             promise(.failure(e))
                         case .finished:
-                            print("ProfileService: Finished updating UserCore")
+                            print("ProfileService: Finished updating UserAbout")
                             promise(.success(()))
                         }
                     } receiveValue: { _ in }

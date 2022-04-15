@@ -1,8 +1,8 @@
 //
-//  ProfileTextService.swift
+//  UserAboutService_Firebase.swift
 //  Gala
 //
-//  Created by Vaughn on 2021-06-23.
+//  Created by Vaughn on 2022-04-15.
 //
 
 import Combine
@@ -10,21 +10,18 @@ import FirebaseStorage
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-protocol UserAboutServiceProtocol {
-    func addUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error>
-    func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error>
-    func updateUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error>
-}
-
-class UserAboutService: UserAboutServiceProtocol {
+class UserAboutService_Firebase: UserAboutServiceProtocol {
+    
+    typealias void = AnyPublisher<Void, Error>
+    typealias userAbout = AnyPublisher<UserAbout?, Error>
     
     private let db = Firestore.firestore()
     
-    static let shared = UserAboutService()
+    static let shared = UserAboutService_Firebase()
     
     private init() {}
 
-    func addUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error> {
+    func addUserAbout(_ userAbout: UserAbout, uid: String) -> void {
         return Future<Void, Error> { promise in
             if userAbout.bio == "" && userAbout.job == "" && userAbout.school == "" {
                 promise(.success(()))
@@ -47,7 +44,7 @@ class UserAboutService: UserAboutServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func getUserAbout(uid: String) -> AnyPublisher<UserAbout?, Error> {
+    func getUserAbout(uid: String) -> userAbout {
         Future<UserAbout?, Error> { promise in
             let docRef = self.db.collection("UserAbout").document(uid)
             
@@ -75,7 +72,7 @@ class UserAboutService: UserAboutServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func updateUserAbout(_ userAbout: UserAbout, uid: String) -> AnyPublisher<Void, Error> {
+    func updateUserAbout(_ userAbout: UserAbout, uid: String) -> void {
         return addUserAbout(userAbout, uid: uid)
     }
 }

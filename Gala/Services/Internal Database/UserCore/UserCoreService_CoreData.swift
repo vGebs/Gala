@@ -98,7 +98,9 @@ class UserCoreService_CoreData: UserCoreServiceProtocol {
             return nil
         }
     }
-    
+}
+
+extension UserCoreService_CoreData {
     func removeUser(uid: String) {
         //we need to make sure the user exists first before deleting it
         if let user = getUserCoreCD(uid: uid) {
