@@ -9,24 +9,19 @@ import Combine
 import SwiftUI
 import FirebaseStorage
 
-//Rename to ProfileImageService
-protocol ProfileImageServiceProtocol {
-    func uploadProfileImage(uid: String, img: ImageModel) -> AnyPublisher<Void, Error>
-    func uploadProfileImages(uid: String, imgs: [ImageModel]) -> AnyPublisher<Void, Error>
-    func getProfileImage(uid: String, index: String) -> AnyPublisher<UIImage?, Error>
-    func deleteProfileImage(uid: String, index: String) ->AnyPublisher<Void, Error>
-}
-
-class ProfileImageService: ProfileImageServiceProtocol{
+class ProfileImageService_Firebase: ProfileImageServiceProtocol {
+    
+    typealias void = AnyPublisher<Void, Error>
+    typealias image = AnyPublisher<UIImage?, Error>
     
     private let storage = Storage.storage()
     
-    static let shared = ProfileImageService()
+    static let shared = ProfileImageService_Firebase()
     private var cancellables: [AnyCancellable] = []
     
     private init() {  }
     
-    func uploadProfileImage(uid: String, img: ImageModel) -> AnyPublisher<Void, Error> {
+    func uploadProfileImage(uid: String, img: ImageModel) -> void {
         let data = img.image.jpegData(compressionQuality: compressionQuality)!
         let storageRef = storage.reference()
         let profileFolder = "ProfileImages"
@@ -45,7 +40,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    func uploadProfileImages(uid: String, imgs: [ImageModel]) -> AnyPublisher<Void, Error> {
+    func uploadProfileImages(uid: String, imgs: [ImageModel]) -> void {
         return Future<Void, Error> { promise in
             if imgs.count == 0 {
                 promise(.success(()))
@@ -70,7 +65,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    func getProfileImage(uid: String, index: String) -> AnyPublisher<UIImage?, Error> {
+    func getProfileImage(uid: String, index: String) -> image {
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
         let myProfileRef = profileRef.child(uid)
@@ -92,11 +87,7 @@ class ProfileImageService: ProfileImageServiceProtocol{
         }.eraseToAnyPublisher()
     }
     
-    //Function is not being used yet.
-    //Images are not being retrieved with id so we cannot delete the correct image
-    //P.S., this function should work tho assuming proper input
-    func deleteProfileImage(uid: String, index: String) -> AnyPublisher<Void, Error> {
-        //let uid = AuthService.shared.currentUser!.uid
+    func deleteProfileImage(uid: String, index: String) -> void {
         let storageRef = storage.reference()
         let profileRef = storageRef.child("ProfileImages")
         let myProfileRef = profileRef.child(uid)

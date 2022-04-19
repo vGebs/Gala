@@ -20,7 +20,7 @@ class ProfileService: ProfileServiceProtocol {
     
     var coreService: UserCoreService
     var aboutService: UserAboutService
-    var imgService: ProfileImageServiceProtocol
+    var imgService: ProfileImageService
     
     private var cancellables: [AnyCancellable] = []
     
