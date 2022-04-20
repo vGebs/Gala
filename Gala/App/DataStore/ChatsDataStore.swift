@@ -276,185 +276,79 @@ extension ChatsDataStore {
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
     private func observeChats() {
+        //we need to call coreData then input the date we want to query after
+        
         observeChatsFromMe()
         observeChatsToMe()
     }
     
     private func observeChatsFromMe() {
-        db.collection("Messages")
-            .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .order(by: "timestamp")
-            .addSnapshotListener { [weak self] documentSnapshot, error in
-                guard let  _ = documentSnapshot?.documents else {
-                    print("ChatsDataStore: Failed to observe chats from me")
-                    print("ChatsDataStore-err: \(error!)")
-                    return
-                }
-                
-                documentSnapshot?.documentChanges.forEach({ change in
-                    let data = change.document.data()
-                                            
-                    let fromID = data["fromID"] as? String ?? ""
-                    let toID = data["toID"] as? String ?? ""
-                    let message = data["message"] as? String ?? ""
-                    let opened = data["openedDate"] as? Timestamp
-                    let timestamp = data["timestamp"] as? Timestamp
+        MessageService_Firebase.shared.observeChatsFromMe { [weak self] messages, change in
+            switch change {
+            case .added:
+                for message in messages {
                     
-                    if change.type == .added {
-                        if let date = timestamp?.dateValue() {
-                            if let o = opened {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
-                                
-                                self?.setNewLastMessage(uid: message.toID, date: message.time)
-                                self?.checkForAnyOpenedSnapsAndDelete(message.toID)
-                                
-                                if let _ = self?.matchMessages[toID] {
-                                    let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                                    self?.matchMessages[toID]?.insert(message, at: insertIndex!)
-                                    print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
-                                    
-                                } else {
-                                    self?.matchMessages[toID] = [message]
-                                    print("ChatsDataStore: Fetched message from me (created): \(message.message)")
-                                }
-                            } else {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
-                                
-                                self?.setNewLastMessage(uid: message.toID, date: message.time)
-                                self?.checkForAnyOpenedSnapsAndDelete(message.toID)
-
-                                if let _ = self?.matchMessages[toID] {
-                                    let insertIndex = self?.matchMessages[toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                                    self?.matchMessages[toID]?.insert(message, at: insertIndex!)
-                                    print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
-                                    
-                                } else {
-                                    self?.matchMessages[toID] = [message]
-                                    print("ChatsDataStore: Fetched message from me (created): \(message.message)")
-                                }
-                            }
-                        }
+                    self?.setNewLastMessage(uid: message.toID, date: message.time)
+                    self?.checkForAnyOpenedSnapsAndDelete(message.toID)
+                    
+                    if let _ = self?.matchMessages[message.toID] {
+                        let insertIndex = self?.matchMessages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                        self?.matchMessages[message.toID]?.insert(message, at: insertIndex!)
+                        print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
                         
-                    } else if change.type == .modified {
-                        if let date = timestamp?.dateValue() {
-                            if let o = opened {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
-                                
-                                if let _ = self?.matchMessages[toID] {
-                                    for i in 0..<(self?.matchMessages[toID]!.count)! {
-                                        if self?.matchMessages[toID]![i].docID == change.document.documentID {
-                                            self?.matchMessages[toID]![i] = message
-                                        }
-                                    }
-                                }
-                            } else {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
-                                
-                                if let _ = self?.matchMessages[toID] {
-                                    for i in 0..<(self?.matchMessages[toID]!.count)! {
-                                        if self?.matchMessages[toID]![i].docID == change.document.documentID {
-                                            self?.matchMessages[toID]![i] = message
-                                        }
-                                    }
-                                }
+                    } else {
+                        self?.matchMessages[message.toID] = [message]
+                        print("ChatsDataStore: Fetched message from me (created): \(message.message)")
+                    }
+                }
+            case .modified:
+                for message in messages {
+                    if let _ = self?.matchMessages[message.toID] {
+                        for i in 0..<(self?.matchMessages[message.toID]!.count)! {
+                            if self?.matchMessages[message.toID]![i].docID == message.docID {
+                                self?.matchMessages[message.toID]![i] = message
                             }
                         }
                     }
-                })
+                }
+            case .removed:
+                print("")
             }
+        }
     }
     
     private func observeChatsToMe() {
-        db.collection("Messages")
-            .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .order(by: "timestamp")
-            .addSnapshotListener { [weak self] documentSnapshot, error in
-                guard let  _ = documentSnapshot?.documents else {
-                    print("ChatsDataStore: Failed to observe chats from me")
-                    print("ChatsDataStore-err: \(error!)")
-                    return
-                }
-                
-                documentSnapshot?.documentChanges.forEach({ change in
-                    if change.type == .added {
-                        let data = change.document.data()
-                                                
-                        let fromID = data["fromID"] as? String ?? ""
-                        let toID = data["toID"] as? String ?? ""
-                        let message = data["message"] as? String ?? ""
-                        let opened = data["openedDate"] as? Timestamp
-                        let timestamp = data["timestamp"] as? Timestamp
-                        
-                        if let date = timestamp?.dateValue() {
-                            if let o = opened {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
-                                
-                                self?.setNewLastMessage(uid: message.fromID, date: message.time)
-                                
-                                if let _ = self?.matchMessages[fromID] {
-                                    let insertIndex = self?.matchMessages[fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                                    
-                                    self?.matchMessages[fromID]?.insert(message, at: insertIndex!)
-                                    print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
-                                } else {
-                                    self?.matchMessages[fromID] = [message]
-                                    print("ChatsDataStore: Fetched message to me (created): \(message.message)")
-                                }
-                            } else {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
-                                
-                                self?.setNewLastMessage(uid: message.fromID, date: message.time)
-                                
-                                if let _ = self?.matchMessages[fromID] {
-                                    let insertIndex = self?.matchMessages[fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                                    
-                                    self?.matchMessages[fromID]?.insert(message, at: insertIndex!)
-                                    print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
-                                } else {
-                                    self?.matchMessages[fromID] = [message]
-                                    print("ChatsDataStore: Fetched message to me (created): \(message.message)")
-                                }
-                            }
-                        }
-                    }
+        MessageService_Firebase.shared.observeChatsToMe { [weak self] messages, change in
+            switch change {
+            case .added:
+                for message in messages {
+                    self?.setNewLastMessage(uid: message.fromID, date: message.time)
                     
-                    if change.type == .modified {
+                    if let _ = self?.matchMessages[message.fromID] {
+                        let insertIndex = self?.matchMessages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                         
-                        let data = change.document.data()
-                                                
-                        let fromID = data["fromID"] as? String ?? ""
-                        let toID = data["toID"] as? String ?? ""
-                        let message = data["message"] as? String ?? ""
-                        let opened = data["openedDate"] as? Timestamp
-                        let timestamp = data["timestamp"] as? Timestamp
-                        
-                        if let date = timestamp?.dateValue() {
-                            if let o = opened {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
-                                
-                                if let _ = self?.matchMessages[fromID] {
-                                    for i in 0..<(self?.matchMessages[fromID]!.count)! {
-                                        if self?.matchMessages[fromID]![i].docID == change.document.documentID {
-                                            self?.matchMessages[fromID]![i] = message
-                                            print("ChatsDataStore: Modified message")
-                                        }
-                                    }
-                                }
-                            } else {
-                                let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
-                                
-                                if let _ = self?.matchMessages[fromID] {
-                                    for i in 0..<(self?.matchMessages[fromID]!.count)! {
-                                        if self?.matchMessages[fromID]![i].docID == change.document.documentID {
-                                            self?.matchMessages[fromID]![i] = message
-                                        }
-                                    }
-                                }
+                        self?.matchMessages[message.fromID]?.insert(message, at: insertIndex!)
+                        print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
+                    } else {
+                        self?.matchMessages[message.fromID] = [message]
+                        print("ChatsDataStore: Fetched message to me (created): \(message.message)")
+                    }
+                }
+            case .modified:
+                for message in messages {
+                    if let _ = self?.matchMessages[message.fromID] {
+                        for i in 0..<(self?.matchMessages[message.fromID]!.count)! {
+                            if self?.matchMessages[message.fromID]![i].docID == message.docID {
+                                self?.matchMessages[message.fromID]![i] = message
+                                print("ChatsDataStore: Modified message")
                             }
                         }
                     }
-                })
+                }
+            case .removed:
+                print("")
             }
+        }
     }
 }
 

@@ -84,7 +84,7 @@ extension ProfileService {
     }
     
     private func addImages(_ allImages: [ImageModel]) -> AnyPublisher<Void, Error>{
-        return self.imgService.uploadProfileImages(uid: AuthService.shared.currentUser!.uid, imgs: allImages)
+        return imgService.uploadProfileImages(uid: AuthService.shared.currentUser!.uid, imgs: allImages)
     }
 }
 

@@ -65,7 +65,6 @@ class StoriesDataStore: ObservableObject {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
-            //.eraseToAnyPublisher()
     }
     
     private func observeStoriesILiked() {

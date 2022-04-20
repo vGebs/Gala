@@ -51,7 +51,6 @@ class ProfileImageService_CoreData: ProfileImageServiceProtocol {
                 print("ProfileImageService_CoreData: Failed to add new ImageModel: \(error)")
                 return
             }
-            
         } else {
             do {
                 let imgCD = ProfileImageCD(context: persistentContainer.viewContext)

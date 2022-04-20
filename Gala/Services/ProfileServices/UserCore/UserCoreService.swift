@@ -71,8 +71,6 @@ class UserCoreService: UserCoreServiceProtocol {
             if let uid = uid {
                 if let userCore = self!.coreData.getUserCore(uid: uid) {
                     if userCore.userBasic.uid == AuthService.shared.currentUser!.uid {
-                        print("lat: \(userCore.searchRadiusComponents.coordinate.lat)")
-                        print("lng: \(userCore.searchRadiusComponents.coordinate.lng)")
                         self!.currentUserCore = userCore
                     }
                     promise(.success(userCore))

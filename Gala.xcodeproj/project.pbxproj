@@ -31,7 +31,6 @@
 		FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */; };
 		FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F427B5AA630058B78C /* ChatView.swift */; };
 		FA6BE5F727B5F7620058B78C /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */; };
-		FA6BE5F927B5F7E30058B78C /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F827B5F7E30058B78C /* ChatService.swift */; };
 		FA6BE5FB27B5FA040058B78C /* UserChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5FA27B5FA040058B78C /* UserChat.swift */; };
 		FA6BE5FE27B5FC1A0058B78C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5FD27B5FC1A0058B78C /* Message.swift */; };
 		FA6BE60227B6015C0058B78C /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE60127B6015C0058B78C /* MessageView.swift */; };
@@ -124,6 +123,9 @@
 		FABB97552809FFA10014A21E /* UserAboutService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB97542809FFA10014A21E /* UserAboutService_Firebase.swift */; };
 		FABB975D280F23980014A21E /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB975C280F23980014A21E /* ProfileImageService.swift */; };
 		FABB975F280F24610014A21E /* ProfileImageService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB975E280F24610014A21E /* ProfileImageService_CoreData.swift */; };
+		FABB97682810AB240014A21E /* MessageCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FABB97662810AB240014A21E /* MessageCD.xcdatamodeld */; };
+		FABB976A2810ABFC0014A21E /* MessageService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB97692810ABFC0014A21E /* MessageService_Firebase.swift */; };
+		FABB976C2810AC0D0014A21E /* MessageService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB976B2810AC0D0014A21E /* MessageService_CoreData.swift */; };
 		FAD33A0C27D0313800FC9553 /* UserStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD33A0B27D0313800FC9553 /* UserStoryView.swift */; };
 		FAD33A0E27D0489000FC9553 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD33A0D27D0489000FC9553 /* LoadingView.swift */; };
 		FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C6C27993BA7007221B0 /* VibeView.swift */; };
@@ -139,7 +141,7 @@
 		FADC11622698129D0070465C /* UserCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* UserCoreService.swift */; };
 		FADC1164269813EC0070465C /* UserCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserCore.swift */; };
 		FADF908A2807748400C19A07 /* UserCoreService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */; };
-		FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */; };
+		FAE5E6F2264092D000CC1670 /* GalaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* GalaApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
 		FAE5E6F9264092D100CC1670 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F8264092D100CC1670 /* Preview Assets.xcassets */; };
@@ -177,7 +179,6 @@
 		FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryView.swift; sourceTree = "<group>"; };
 		FA6BE5F427B5AA630058B78C /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
-		FA6BE5F827B5F7E30058B78C /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		FA6BE5FA27B5FA040058B78C /* UserChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChat.swift; sourceTree = "<group>"; };
 		FA6BE5FD27B5FC1A0058B78C /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		FA6BE60127B6015C0058B78C /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -268,6 +269,9 @@
 		FABB97542809FFA10014A21E /* UserAboutService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService_Firebase.swift; sourceTree = "<group>"; };
 		FABB975C280F23980014A21E /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
 		FABB975E280F24610014A21E /* ProfileImageService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService_CoreData.swift; sourceTree = "<group>"; };
+		FABB97672810AB240014A21E /* MessageCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessageCD.xcdatamodel; sourceTree = "<group>"; };
+		FABB97692810ABFC0014A21E /* MessageService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService_Firebase.swift; sourceTree = "<group>"; };
+		FABB976B2810AC0D0014A21E /* MessageService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService_CoreData.swift; sourceTree = "<group>"; };
 		FAD33A0B27D0313800FC9553 /* UserStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoryView.swift; sourceTree = "<group>"; };
 		FAD33A0D27D0489000FC9553 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FAD73C6C27993BA7007221B0 /* VibeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeView.swift; sourceTree = "<group>"; };
@@ -283,7 +287,7 @@
 		FADC1163269813EC0070465C /* UserCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCore.swift; sourceTree = "<group>"; };
 		FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCoreService_Firebase.swift; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gala_FinalApp.swift; sourceTree = "<group>"; };
+		FAE5E6F1264092D000CC1670 /* GalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalaApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FAE5E6F5264092D100CC1670 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAE5E6F8264092D100CC1670 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -336,27 +340,23 @@
 			path = CameraDelegates;
 			sourceTree = "<group>";
 		};
-		FA5DC6BA26A4BC8100F9BD86 /* Sub Views */ = {
+		FA5DC6BA26A4BC8100F9BD86 /* SubSystems */ = {
 			isa = PBXGroup;
 			children = (
-				FA7E3B3E26EF145F00A6653C /* MatchStories */,
 				FA7E3B3D26EF143F00A6653C /* RecentlyJoined */,
 				FA7E3B3F26EF147700A6653C /* Stories */,
 			);
-			path = "Sub Views";
+			path = SubSystems;
 			sourceTree = "<group>";
 		};
-		FA72A1762669ACED004DEF77 /* General Services */ = {
+		FA72A1762669ACED004DEF77 /* GeneralServices */ = {
 			isa = PBXGroup;
 			children = (
+				FA87744E2640A20F00D5D5CB /* AuthService.swift */,
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
-				FAAAA7C527FBCE5600663816 /* ProfileService.swift */,
-				FADC11612698129D0070465C /* UserCoreService.swift */,
-				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
-				FABB975C280F23980014A21E /* ProfileImageService.swift */,
 			);
-			path = "General Services";
+			path = GeneralServices;
 			sourceTree = "<group>";
 		};
 		FA7BAD4626FD0E82002F25E0 /* SubViews */ = {
@@ -403,29 +403,18 @@
 				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
 				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
 				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
-				FA67C6D526FA605700B77D30 /* VibesService.swift */,
-				FAD73C7E27A9AA1A007221B0 /* VibeImageService.swift */,
 			);
 			path = Story;
-			sourceTree = "<group>";
-		};
-		FA7E3B3A26EAD74000A6653C /* Profile Related */ = {
-			isa = PBXGroup;
-			children = (
-				FA2D6EDD2643604000551EE3 /* ProfileImageService_Firebase.swift */,
-				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
-				FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */,
-				FABB97542809FFA10014A21E /* UserAboutService_Firebase.swift */,
-			);
-			path = "Profile Related";
 			sourceTree = "<group>";
 		};
 		FA7E3B3D26EF143F00A6653C /* RecentlyJoined */ = {
 			isa = PBXGroup;
 			children = (
+				FA7E3B2726E43F4600A6653C /* RecentlyJoinedViewModel.swift */,
 				FAD9DB1C266F024A00BC6FDA /* RecentlyJoinedView.swift */,
 				FAEDCFE3269E524400A2C4A1 /* AllRecentsView.swift */,
 				FAD9DB2426743A7900BC6FDA /* SmallUserView.swift */,
+				FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */,
 			);
 			path = RecentlyJoined;
 			sourceTree = "<group>";
@@ -443,8 +432,9 @@
 		FA7E3B3F26EF147700A6653C /* Stories */ = {
 			isa = PBXGroup;
 			children = (
-				FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */,
-				FAD73C6C27993BA7007221B0 /* VibeView.swift */,
+				FA0FCA412684050900434561 /* StoriesViewModel.swift */,
+				FA7E3B3E26EF145F00A6653C /* MatchStories */,
+				FABB9764280FF3F70014A21E /* Vibes */,
 				FAB6103427CC3FF300BD8187 /* StoryListView.swift */,
 				FAD33A0B27D0313800FC9553 /* UserStoryView.swift */,
 			);
@@ -480,8 +470,8 @@
 		FA8773F426409A8500D5D5CB /* Explore */ = {
 			isa = PBXGroup;
 			children = (
-				FAD9DB18266EEFAE00BC6FDA /* Views */,
-				FAD9DB19266EEFB700BC6FDA /* ViewModels */,
+				FAD9DB19266EEFB700BC6FDA /* ExploreView */,
+				FA5DC6BA26A4BC8100F9BD86 /* SubSystems */,
 			);
 			path = Explore;
 			sourceTree = "<group>";
@@ -615,40 +605,18 @@
 		FA8774492640A1CD00D5D5CB /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				FA72A1762669ACED004DEF77 /* General Services */,
-				FA87744B2640A1E000D5D5CB /* External Database */,
-				FA87744A2640A1DA00D5D5CB /* Internal Database */,
+				FABB9762280FEFD40014A21E /* ExploreServices */,
+				FABB9761280FEF990014A21E /* ChatServices */,
+				FABB9760280FEF2B0014A21E /* ProfileServices */,
+				FA72A1762669ACED004DEF77 /* GeneralServices */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		FA87744A2640A1DA00D5D5CB /* Internal Database */ = {
-			isa = PBXGroup;
-			children = (
-				FAAAA7A427F676E200663816 /* UserCore */,
-				FAAAA7BD27FBB11800663816 /* UserAbout */,
-				FAAAA7C027FBB1FD00663816 /* ProfileImages */,
-			);
-			path = "Internal Database";
-			sourceTree = "<group>";
-		};
-		FA87744B2640A1E000D5D5CB /* External Database */ = {
-			isa = PBXGroup;
-			children = (
-				FA87744E2640A20F00D5D5CB /* AuthService.swift */,
-				FA7E3B2326E1F28300A6653C /* LikesService.swift */,
-				FA6BE5EE27B4A5140058B78C /* MatchService.swift */,
-				FA6BE5F827B5F7E30058B78C /* ChatService.swift */,
-				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
-				FA7E3B3A26EAD74000A6653C /* Profile Related */,
-				FA7E3B3926EAD72200A6653C /* Story */,
-			);
-			path = "External Database";
 			sourceTree = "<group>";
 		};
 		FA8774572640A37D00D5D5CB /* ServiceViews */ = {
 			isa = PBXGroup;
 			children = (
+				FAAAA77D27F3E63C00663816 /* NavBar */,
 				FAAAA75A27E2A23300663816 /* InstaStoryView.swift */,
 				FAFD434426DADBCF00C535D2 /* Pager.swift */,
 				FA8774582640A39700D5D5CB /* ImagePicker.swift */,
@@ -666,10 +634,10 @@
 			isa = PBXGroup;
 			children = (
 				FA72A17226681CAE004DEF77 /* AppState.swift */,
-				FAE5E6F1264092D000CC1670 /* Gala_FinalApp.swift */,
+				FAE5E6F1264092D000CC1670 /* GalaApp.swift */,
 				FA43BE6826645A9F001D1368 /* LaunchView.swift */,
 				FAE5E6F3264092D000CC1670 /* ContentView.swift */,
-				FAAAA77D27F3E63C00663816 /* NavBar */,
+				FAAAA78027F64D2500663816 /* DataStore */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -706,6 +674,8 @@
 		FAAAA7A427F676E200663816 /* UserCore */ = {
 			isa = PBXGroup;
 			children = (
+				FADC11612698129D0070465C /* UserCoreService.swift */,
+				FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */,
 				FAAAA7A227F6769500663816 /* UserCoreService_CoreData.swift */,
 				FA9149F627FFE3F60015106E /* UserCoreCD.xcdatamodeld */,
 			);
@@ -715,19 +685,23 @@
 		FAAAA7BD27FBB11800663816 /* UserAbout */ = {
 			isa = PBXGroup;
 			children = (
+				FA0FCA4326840F5500434561 /* UserAboutService.swift */,
+				FABB97542809FFA10014A21E /* UserAboutService_Firebase.swift */,
 				FAAAA7BE27FBB12600663816 /* UserAboutService_CoreData.swift */,
 				FA9149F927FFE5280015106E /* UserAboutCD.xcdatamodeld */,
 			);
 			path = UserAbout;
 			sourceTree = "<group>";
 		};
-		FAAAA7C027FBB1FD00663816 /* ProfileImages */ = {
+		FAAAA7C027FBB1FD00663816 /* ProfileImageService */ = {
 			isa = PBXGroup;
 			children = (
-				FA914A062807639F0015106E /* ProfileImageCD.xcdatamodeld */,
+				FABB975C280F23980014A21E /* ProfileImageService.swift */,
+				FA2D6EDD2643604000551EE3 /* ProfileImageService_Firebase.swift */,
 				FABB975E280F24610014A21E /* ProfileImageService_CoreData.swift */,
+				FA914A062807639F0015106E /* ProfileImageCD.xcdatamodeld */,
 			);
-			path = ProfileImages;
+			path = ProfileImageService;
 			sourceTree = "<group>";
 		};
 		FABAABE92787F63400154363 /* SubViews */ = {
@@ -751,25 +725,74 @@
 			path = SubViewViewModels;
 			sourceTree = "<group>";
 		};
-		FAD9DB18266EEFAE00BC6FDA /* Views */ = {
+		FABB9760280FEF2B0014A21E /* ProfileServices */ = {
 			isa = PBXGroup;
 			children = (
-				FA98385F2686834200A76AD5 /* ExploreMainView.swift */,
-				FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */,
-				FA5DC6BA26A4BC8100F9BD86 /* Sub Views */,
+				FAAAA7C527FBCE5600663816 /* ProfileService.swift */,
+				FA76E30626AE6D1A009A650D /* RecentlyJoinedUserService.swift */,
+				FAAAA7A427F676E200663816 /* UserCore */,
+				FAAAA7BD27FBB11800663816 /* UserAbout */,
+				FAAAA7C027FBB1FD00663816 /* ProfileImageService */,
 			);
-			path = Views;
+			path = ProfileServices;
 			sourceTree = "<group>";
 		};
-		FAD9DB19266EEFB700BC6FDA /* ViewModels */ = {
+		FABB9761280FEF990014A21E /* ChatServices */ = {
 			isa = PBXGroup;
 			children = (
-				FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */,
-				FA7E3B2726E43F4600A6653C /* RecentlyJoinedViewModel.swift */,
-				FAD9DB20266F16C200BC6FDA /* SmallUserViewModel.swift */,
-				FA0FCA412684050900434561 /* StoriesViewModel.swift */,
+				FA6BE5EE27B4A5140058B78C /* MatchService.swift */,
+				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
+				FABB97652810AA4F0014A21E /* Message */,
 			);
-			path = ViewModels;
+			path = ChatServices;
+			sourceTree = "<group>";
+		};
+		FABB9762280FEFD40014A21E /* ExploreServices */ = {
+			isa = PBXGroup;
+			children = (
+				FA7E3B2326E1F28300A6653C /* LikesService.swift */,
+				FABB9763280FF0310014A21E /* Vibes */,
+				FA7E3B3926EAD72200A6653C /* Story */,
+			);
+			path = ExploreServices;
+			sourceTree = "<group>";
+		};
+		FABB9763280FF0310014A21E /* Vibes */ = {
+			isa = PBXGroup;
+			children = (
+				FA67C6D526FA605700B77D30 /* VibesService.swift */,
+				FAD73C7E27A9AA1A007221B0 /* VibeImageService.swift */,
+			);
+			path = Vibes;
+			sourceTree = "<group>";
+		};
+		FABB9764280FF3F70014A21E /* Vibes */ = {
+			isa = PBXGroup;
+			children = (
+				FAD73C6C27993BA7007221B0 /* VibeView.swift */,
+				FAD73C7C27A353A9007221B0 /* VibesPlaceHolder.swift */,
+			);
+			path = Vibes;
+			sourceTree = "<group>";
+		};
+		FABB97652810AA4F0014A21E /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				FABB97692810ABFC0014A21E /* MessageService_Firebase.swift */,
+				FABB976B2810AC0D0014A21E /* MessageService_CoreData.swift */,
+				FABB97662810AB240014A21E /* MessageCD.xcdatamodeld */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		FAD9DB19266EEFB700BC6FDA /* ExploreView */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9DB1A266EF4EF00BC6FDA /* ExploreView.swift */,
+				FA98385F2686834200A76AD5 /* ExploreMainView.swift */,
+				FAD9DB1E266F136A00BC6FDA /* ExploreViewModel.swift */,
+			);
+			path = ExploreView;
 			sourceTree = "<group>";
 		};
 		FAE5E6E5264092D000CC1670 = {
@@ -800,7 +823,6 @@
 				FA8773F326409A7B00D5D5CB /* Camera */,
 				FA8773F426409A8500D5D5CB /* Explore */,
 				FA8774492640A1CD00D5D5CB /* Services */,
-				FAAAA78027F64D2500663816 /* DataStore */,
 				FA8774442640A16800D5D5CB /* Models */,
 				FA8774572640A37D00D5D5CB /* ServiceViews */,
 				FA8774352640A03F00D5D5CB /* Extensions */,
@@ -981,6 +1003,7 @@
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FADF908A2807748400C19A07 /* UserCoreService_Firebase.swift in Sources */,
 				FAAAA76B27EA621900663816 /* DraggableTextView.swift in Sources */,
+				FABB97682810AB240014A21E /* MessageCD.xcdatamodeld in Sources */,
 				FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */,
 				FAD9DB1F266F136A00BC6FDA /* ExploreViewModel.swift in Sources */,
 				FAD9DB1B266EF4EF00BC6FDA /* ExploreView.swift in Sources */,
@@ -1053,6 +1076,7 @@
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
+				FABB976C2810AC0D0014A21E /* MessageService_CoreData.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
 				FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */,
 				FAAAA76527E3DD3700663816 /* VibeCoverImage.swift in Sources */,
@@ -1065,7 +1089,7 @@
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,
-				FAE5E6F2264092D000CC1670 /* Gala_FinalApp.swift in Sources */,
+				FAE5E6F2264092D000CC1670 /* GalaApp.swift in Sources */,
 				FAFD434526DADBCF00C535D2 /* Pager.swift in Sources */,
 				FA7E3B2E26E8072200A6653C /* StoryMetaService.swift in Sources */,
 				FAAAA77827F3C5E800663816 /* Post.swift in Sources */,
@@ -1079,7 +1103,6 @@
 				FA87742026409E9000D5D5CB /* PicTakenView.swift in Sources */,
 				FAAAA7B527F7C67F00663816 /* RecentlyJoinedDataStore.swift in Sources */,
 				FA7BAD4526FC48CD002F25E0 /* SendView.swift in Sources */,
-				FA6BE5F927B5F7E30058B78C /* ChatService.swift in Sources */,
 				FA8773F026409A4500D5D5CB /* NavBar.swift in Sources */,
 				FAD9DB21266F16C200BC6FDA /* SmallUserViewModel.swift in Sources */,
 				FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */,
@@ -1091,6 +1114,7 @@
 				FA87744F2640A20F00D5D5CB /* AuthService.swift in Sources */,
 				FABB975D280F23980014A21E /* ProfileImageService.swift in Sources */,
 				FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */,
+				FABB976A2810ABFC0014A21E /* MessageService_Firebase.swift in Sources */,
 				FA6BE60427B7446B0058B78C /* Match.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1357,6 +1381,16 @@
 			);
 			currentVersion = FA914A072807639F0015106E /* ProfileImageCD.xcdatamodel */;
 			path = ProfileImageCD.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		FABB97662810AB240014A21E /* MessageCD.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FABB97672810AB240014A21E /* MessageCD.xcdatamodel */,
+			);
+			currentVersion = FABB97672810AB240014A21E /* MessageCD.xcdatamodel */;
+			path = MessageCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

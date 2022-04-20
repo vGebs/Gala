@@ -126,7 +126,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     }
     
     func openMessage(message: Message) {
-        ChatService.shared.openMessage(message: message)
+        MessageService_Firebase.shared.openMessage(message: message)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -147,7 +147,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
         let trimmed = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !messageText.isEmpty && trimmed.count > 0{
             
-            ChatService.shared.sendMessage(message: messageText, toID: toUID)
+            MessageService_Firebase.shared.sendMessage(message: messageText, toID: toUID)
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)
                 .sink { completion in
