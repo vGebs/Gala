@@ -281,6 +281,7 @@ extension ChatsDataStore {
         
         if let date = MessageService_CoreData.shared.getMostRecentMessageDate() {
             timestamp = Timestamp(date: date)
+            getMostRecentMessagesCD()
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy/MM/dd HH:mm"
@@ -295,6 +296,9 @@ extension ChatsDataStore {
         MessageService_Firebase.shared.observeChatsFromMe(from: fromDate) { [weak self] messages, change in
             switch change {
             case .added:
+                //we want to only store the most recent message for the receipt
+                // everything else is stored in core data
+                
                 for message in messages {
                     
                     MessageService_CoreData.shared.addMessage(msg: message)
@@ -305,6 +309,12 @@ extension ChatsDataStore {
                     if let _ = self?.matchMessages[message.toID] {
                         let insertIndex = self?.matchMessages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                         self?.matchMessages[message.toID]?.insert(message, at: insertIndex!)
+                        
+                        //After each insertion we will then delete all other values in the array, only leaving the most recent
+                        if let last = self?.matchMessages[message.fromID]?.last {
+                            self?.matchMessages[message.fromID] = [last]
+                        }
+                        
                         print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
                         
                     } else {
@@ -314,6 +324,9 @@ extension ChatsDataStore {
                 }
             case .modified:
                 for message in messages {
+                    
+                    MessageService_CoreData.shared.updateMessage(message: message)
+                    
                     if let _ = self?.matchMessages[message.toID] {
                         for i in 0..<(self?.matchMessages[message.toID]!.count)! {
                             if self?.matchMessages[message.toID]![i].docID == message.docID {
@@ -335,10 +348,18 @@ extension ChatsDataStore {
                 for message in messages {
                     self?.setNewLastMessage(uid: message.fromID, date: message.time)
                     
+                    MessageService_CoreData.shared.addMessage(msg: message)
+                    
                     if let _ = self?.matchMessages[message.fromID] {
                         let insertIndex = self?.matchMessages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                         
                         self?.matchMessages[message.fromID]?.insert(message, at: insertIndex!)
+                        
+                        //After each insertion we will then delete all other values in the array, only leaving the most recent
+                        if let last = self?.matchMessages[message.fromID]?.last {
+                            self?.matchMessages[message.fromID] = [last]
+                        }
+                        
                         print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
                     } else {
                         self?.matchMessages[message.fromID] = [message]
@@ -348,6 +369,9 @@ extension ChatsDataStore {
             case .modified:
                 for message in messages {
                     if let _ = self?.matchMessages[message.fromID] {
+                        
+                        MessageService_CoreData.shared.updateMessage(message: message)
+                        
                         for i in 0..<(self?.matchMessages[message.fromID]!.count)! {
                             if self?.matchMessages[message.fromID]![i].docID == message.docID {
                                 self?.matchMessages[message.fromID]![i] = message
@@ -358,6 +382,33 @@ extension ChatsDataStore {
                 }
             case .removed:
                 print("")
+            }
+        }
+    }
+    
+    private func getMostRecentMessagesCD() {
+        //we want to fetch all messages and place only the newest element in the array
+        if let messages = MessageService_CoreData.shared.getAllMessages() {
+            for message in messages {
+                if message.fromID == AuthService.shared.currentUser!.uid {
+                    if let _ = self.matchMessages[message.toID] {
+                        if self.matchMessages[message.toID]![self.matchMessages[message.toID]!.count - 1].time < message.time {
+                            self.matchMessages[message.toID]?.removeAll()
+                            self.matchMessages[message.toID]?.append(message)
+                        }
+                    } else {
+                        self.matchMessages[message.toID] = [message]
+                    }
+                } else if message.toID == AuthService.shared.currentUser!.uid {
+                    if let _ = self.matchMessages[message.fromID] {
+                        if self.matchMessages[message.fromID]![self.matchMessages[message.fromID]!.count - 1].time < message.time {
+                            self.matchMessages[message.fromID]?.removeAll()
+                            self.matchMessages[message.fromID]?.append(message)
+                        }
+                    } else {
+                        self.matchMessages[message.fromID] = [message]
+                    }
+                }
             }
         }
     }

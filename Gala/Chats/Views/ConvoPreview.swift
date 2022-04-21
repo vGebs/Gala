@@ -120,6 +120,8 @@ struct ConvoPreview: View {
                                         )
                                     }
                                     
+                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
+                                    
                                     timeMatchedBinding = timeMatched
                                     showChat = true
                                     //open message
@@ -158,6 +160,8 @@ struct ConvoPreview: View {
                                 )
                             }
                             
+                            chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
+                            
                             timeMatchedBinding = timeMatched
                             showChat = true
                             //open message
@@ -194,6 +198,8 @@ struct ConvoPreview: View {
                                     profileImg: nil
                                 )
                             }
+                            
+                            chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
                             
                             timeMatchedBinding = timeMatched
                             showChat = true
@@ -361,6 +367,8 @@ struct ConvoPreview: View {
                                         )
                                     }
                                     
+                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
+                                    
                                     timeMatchedBinding = timeMatched
                                     showChat = true
                                     //open message
@@ -397,6 +405,8 @@ struct ConvoPreview: View {
                                             profileImg: nil
                                         )
                                     }
+                                    
+                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
                                     
                                     timeMatchedBinding = timeMatched
                                     showChat = true

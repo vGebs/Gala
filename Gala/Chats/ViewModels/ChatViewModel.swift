@@ -9,15 +9,20 @@ import Foundation
 import Combine
 
 class ChatViewModel: ObservableObject {
-    @Published var messageText = ""
-    
+
     private var cancellables: [AnyCancellable] = []
+
+    @Published var messages: [Message]
     
-    @Published var snaps: [Snap]?
-    
-    init(snaps: [Snap]?) {
-        self.snaps = snaps
+    init(uid: String?) {
+        if let uid = uid {
+            if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
+                self.messages = msgs
+            } else {
+                messages = []
+            }
+        } else {
+            messages = []
+        }        
     }
-    
-    
 }

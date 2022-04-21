@@ -91,6 +91,23 @@ class MessageService_CoreData: MessageService_CoreDataProtocol {
         }
     }
     
+    func updateMessage(message: Message) {
+        if let msg = getMessageCD(with: message.docID) {
+            bundleMessageCD(msg: message, cd: msg)
+            
+            do {
+                try persistentContainer.viewContext.save()
+                print("MessageService_CoreData: Updated message with docID -> \(message.docID)")
+                return
+            } catch {
+                print("MessageService_CoreData: Could not update message with docID -> \(message.docID)")
+                return
+            }
+        } else {
+            print("MessageService_CoreData: No message to update")
+        }
+    }
+    
     func deleteMessage(with docID: String) {
         if let msg = getMessageCD(with: docID) {
             
@@ -129,6 +146,33 @@ extension MessageService_CoreData {
                 }
                 
                 return newestMessageDate
+            }
+            
+            return nil
+            
+        } catch {
+            print("MessageService_CoreData: Failed getting getting all messages")
+            return nil
+        }
+    }
+    
+    func getAllMessages() -> [Message]? {
+        let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
+        let sectionSortDescriptor = NSSortDescriptor(key: "sentDate", ascending: false)
+        let sortDescriptors = [sectionSortDescriptor]
+        
+        fetchRequest.sortDescriptors = sortDescriptors
+        
+        do {
+            let messagesCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            if messagesCD.count > 0 {
+                var final: [Message] = []
+                for msg in messagesCD {
+                    let message = bundleMessage(cd: msg)
+                    final.append(message)
+                }
+                return final
             }
             
             return nil
@@ -247,8 +291,12 @@ extension MessageService_CoreData {
         let fromIDPredicate = NSPredicate(format: "toID == %@", uid)
         let toIDPredicate = NSPredicate(format: "fromID == %@", uid)
         let logicalOrPredicate = NSCompoundPredicate(type: .or, subpredicates: [fromIDPredicate, toIDPredicate])
+
+        let sectionSortDescriptor = NSSortDescriptor(key: "sentDate", ascending: true)
+        let sortDescriptors = [sectionSortDescriptor]
         
         fetchRequest.predicate = logicalOrPredicate
+        fetchRequest.sortDescriptors = sortDescriptors
         
         do {
             let messages = try persistentContainer.viewContext.fetch(fetchRequest)

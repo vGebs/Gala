@@ -16,7 +16,7 @@ struct ChatView: View, KeyboardReadable {
     
     @ObservedObject var viewModel: ChatsViewModel
     
-    @Binding var messages: OrderedDictionary<String, [Message]>
+    @Binding var messages: [Message]
     @Binding var snaps: OrderedDictionary<String, [Snap]>
     
     @Binding var timeMatched: Date?
@@ -105,8 +105,8 @@ struct ChatView: View, KeyboardReadable {
             ScrollView(showsIndicators: false){
                 macthedDateView
                 
-                if messages[userChat!.uid] != nil {
-                    ForEach(messages[userChat!.uid]!){ message in
+                //if messages[userChat!.uid] != nil {
+                    ForEach(messages){ message in
                         if message.toID == AuthService.shared.currentUser!.uid {
                             MessageView(message: message.message, fromMe: false)
                                 .padding(.leading, 3)
@@ -115,7 +115,7 @@ struct ChatView: View, KeyboardReadable {
                                 .padding(.trailing, 3)
                         }
                     }
-                    .onChange(of: messages[userChat!.uid]!.count) { _ in
+                    .onChange(of: messages.count) { _ in
                         withAnimation {
                             proxy.scrollTo(bottomID)
                         }
@@ -126,7 +126,7 @@ struct ChatView: View, KeyboardReadable {
                             proxy.scrollTo(bottomID)
                         }
                     })
-                }
+                //}
                                 
                 if snaps[userChat!.uid] != nil {
                     ForEach(snaps[userChat!.uid]!){ snap in
@@ -142,9 +142,9 @@ struct ChatView: View, KeyboardReadable {
                 .id(bottomID)
             }
             .onAppear{
-                if messages[userChat!.uid] != nil {
+                //if messages[userChat!.uid] != nil {
                     proxy.scrollTo(bottomID)
-                }
+                //}
             }
             .cornerRadius(20)
         }

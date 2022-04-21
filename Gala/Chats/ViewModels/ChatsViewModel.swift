@@ -21,6 +21,8 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
+    @Published var tempMessages: [Message] = []
+    
     @Published var showChat = false
     @Published var userChat: UserChat? = nil
     @Published var timeMatched: Date? = nil
@@ -67,6 +69,14 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
         //If there is an unopened snap, we open the snap(s)
         //if there is no snaps, we open the chat
         
+    }
+    
+    func getTempMessages(uid: String) {
+        if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
+            self.tempMessages = msgs
+        } else {
+            self.tempMessages = []
+        }
     }
     
     func openSnap(snap: Snap) {
