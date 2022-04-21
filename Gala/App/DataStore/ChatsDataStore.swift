@@ -276,17 +276,28 @@ extension ChatsDataStore {
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
     private func observeChats() {
-        //we need to call coreData then input the date we want to query after
         
-        observeChatsFromMe()
-        observeChatsToMe()
+        var timestamp: Timestamp
+        
+        if let date = MessageService_CoreData.shared.getMostRecentMessageDate() {
+            timestamp = Timestamp(date: date)
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
+        }
+        
+        observeChatsFromMe(fromDate: timestamp)
+        observeChatsToMe(fromDate: timestamp)
     }
     
-    private func observeChatsFromMe() {
-        MessageService_Firebase.shared.observeChatsFromMe { [weak self] messages, change in
+    private func observeChatsFromMe(fromDate: Timestamp) {
+        MessageService_Firebase.shared.observeChatsFromMe(from: fromDate) { [weak self] messages, change in
             switch change {
             case .added:
                 for message in messages {
+                    
+                    MessageService_CoreData.shared.addMessage(msg: message)
                     
                     self?.setNewLastMessage(uid: message.toID, date: message.time)
                     self?.checkForAnyOpenedSnapsAndDelete(message.toID)
@@ -317,8 +328,8 @@ extension ChatsDataStore {
         }
     }
     
-    private func observeChatsToMe() {
-        MessageService_Firebase.shared.observeChatsToMe { [weak self] messages, change in
+    private func observeChatsToMe(fromDate: Timestamp) {
+        MessageService_Firebase.shared.observeChatsToMe(from: fromDate) { [weak self] messages, change in
             switch change {
             case .added:
                 for message in messages {
