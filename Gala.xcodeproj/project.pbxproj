@@ -27,7 +27,7 @@
 		FA6A33F1278D7B010087127B /* CameraBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33F0278D7B010087127B /* CameraBtn.swift */; };
 		FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A33FE278FF8F00087127B /* StoryPublisher.swift */; };
 		FA6A340527923DAA0087127B /* CurrentUserSexualityAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */; };
-		FA6BE5EF27B4A5140058B78C /* MatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5EE27B4A5140058B78C /* MatchService.swift */; };
+		FA6BE5EF27B4A5140058B78C /* MatchService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5EE27B4A5140058B78C /* MatchService_Firebase.swift */; };
 		FA6BE5F127B4AB2B0058B78C /* MatchedStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */; };
 		FA6BE5F527B5AA630058B78C /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F427B5AA630058B78C /* ChatView.swift */; };
 		FA6BE5F727B5F7620058B78C /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */; };
@@ -126,6 +126,8 @@
 		FABB97682810AB240014A21E /* MessageCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FABB97662810AB240014A21E /* MessageCD.xcdatamodeld */; };
 		FABB976A2810ABFC0014A21E /* MessageService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB97692810ABFC0014A21E /* MessageService_Firebase.swift */; };
 		FABB976C2810AC0D0014A21E /* MessageService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB976B2810AC0D0014A21E /* MessageService_CoreData.swift */; };
+		FABB9779281249310014A21E /* MatchService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABB9778281249310014A21E /* MatchService_CoreData.swift */; };
+		FABB977C28124B380014A21E /* MatchCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FABB977A28124B380014A21E /* MatchCD.xcdatamodeld */; };
 		FAD33A0C27D0313800FC9553 /* UserStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD33A0B27D0313800FC9553 /* UserStoryView.swift */; };
 		FAD33A0E27D0489000FC9553 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD33A0D27D0489000FC9553 /* LoadingView.swift */; };
 		FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD73C6C27993BA7007221B0 /* VibeView.swift */; };
@@ -175,7 +177,7 @@
 		FA6A33F0278D7B010087127B /* CameraBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBtn.swift; sourceTree = "<group>"; };
 		FA6A33FE278FF8F00087127B /* StoryPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPublisher.swift; sourceTree = "<group>"; };
 		FA6A340427923DAA0087127B /* CurrentUserSexualityAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserSexualityAndGender.swift; sourceTree = "<group>"; };
-		FA6BE5EE27B4A5140058B78C /* MatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchService.swift; sourceTree = "<group>"; };
+		FA6BE5EE27B4A5140058B78C /* MatchService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchService_Firebase.swift; sourceTree = "<group>"; };
 		FA6BE5F027B4AB2B0058B78C /* MatchedStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchedStoryView.swift; sourceTree = "<group>"; };
 		FA6BE5F427B5AA630058B78C /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		FA6BE5F627B5F7620058B78C /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
@@ -272,6 +274,8 @@
 		FABB97672810AB240014A21E /* MessageCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MessageCD.xcdatamodel; sourceTree = "<group>"; };
 		FABB97692810ABFC0014A21E /* MessageService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService_Firebase.swift; sourceTree = "<group>"; };
 		FABB976B2810AC0D0014A21E /* MessageService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService_CoreData.swift; sourceTree = "<group>"; };
+		FABB9778281249310014A21E /* MatchService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchService_CoreData.swift; sourceTree = "<group>"; };
+		FABB977B28124B380014A21E /* MatchCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MatchCD.xcdatamodel; sourceTree = "<group>"; };
 		FAD33A0B27D0313800FC9553 /* UserStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoryView.swift; sourceTree = "<group>"; };
 		FAD33A0D27D0489000FC9553 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FAD73C6C27993BA7007221B0 /* VibeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibeView.swift; sourceTree = "<group>"; };
@@ -740,8 +744,8 @@
 		FABB9761280FEF990014A21E /* ChatServices */ = {
 			isa = PBXGroup;
 			children = (
-				FA6BE5EE27B4A5140058B78C /* MatchService.swift */,
 				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
+				FABB9777281248DC0014A21E /* Matches */,
 				FABB97652810AA4F0014A21E /* Message */,
 			);
 			path = ChatServices;
@@ -783,6 +787,16 @@
 				FABB97662810AB240014A21E /* MessageCD.xcdatamodeld */,
 			);
 			path = Message;
+			sourceTree = "<group>";
+		};
+		FABB9777281248DC0014A21E /* Matches */ = {
+			isa = PBXGroup;
+			children = (
+				FA6BE5EE27B4A5140058B78C /* MatchService_Firebase.swift */,
+				FABB9778281249310014A21E /* MatchService_CoreData.swift */,
+				FABB977A28124B380014A21E /* MatchCD.xcdatamodeld */,
+			);
+			path = Matches;
 			sourceTree = "<group>";
 		};
 		FAD9DB19266EEFB700BC6FDA /* ExploreView */ = {
@@ -1000,6 +1014,7 @@
 				FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */,
 				FADC1164269813EC0070465C /* UserCore.swift in Sources */,
 				FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */,
+				FABB977C28124B380014A21E /* MatchCD.xcdatamodeld in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FADF908A2807748400C19A07 /* UserCoreService_Firebase.swift in Sources */,
 				FAAAA76B27EA621900663816 /* DraggableTextView.swift in Sources */,
@@ -1037,7 +1052,7 @@
 				FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
 				FA7E3B2826E43F4600A6653C /* RecentlyJoinedViewModel.swift in Sources */,
-				FA6BE5EF27B4A5140058B78C /* MatchService.swift in Sources */,
+				FA6BE5EF27B4A5140058B78C /* MatchService_Firebase.swift in Sources */,
 				FA8CE4342717901900BE8BB4 /* OldCameraViewModel.swift in Sources */,
 				FA9838602686834200A76AD5 /* ExploreMainView.swift in Sources */,
 				FA87741026409D8300D5D5CB /* ProfilePreview.swift in Sources */,
@@ -1115,6 +1130,7 @@
 				FABB975D280F23980014A21E /* ProfileImageService.swift in Sources */,
 				FA8774462640A17900D5D5CB /* ImageModel.swift in Sources */,
 				FABB976A2810ABFC0014A21E /* MessageService_Firebase.swift in Sources */,
+				FABB9779281249310014A21E /* MatchService_CoreData.swift in Sources */,
 				FA6BE60427B7446B0058B78C /* Match.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1391,6 +1407,16 @@
 			);
 			currentVersion = FABB97672810AB240014A21E /* MessageCD.xcdatamodel */;
 			path = MessageCD.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		FABB977A28124B380014A21E /* MatchCD.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FABB977B28124B380014A21E /* MatchCD.xcdatamodel */,
+			);
+			currentVersion = FABB977B28124B380014A21E /* MatchCD.xcdatamodel */;
+			path = MatchCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

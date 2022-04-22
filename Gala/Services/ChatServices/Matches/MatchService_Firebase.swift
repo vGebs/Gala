@@ -8,15 +8,15 @@
 import Combine
 import FirebaseFirestore
 
-class MatchService {
+class MatchService_Firebase {
     private var cancellables: [AnyCancellable] = []
     private let db = Firestore.firestore()
 
-    static let shared = MatchService()
+    static let shared = MatchService_Firebase()
     private init() {}
 
-    func getMatches() -> AnyPublisher<[String], Error> {
-        return Future<[String], Error> { promise in
+    func getMatches() -> AnyPublisher<[Match], Error> {
+        return Future<[Match], Error> { promise in
             self.db.collection("Matches")
                 .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
                 .getDocuments { snapshot, error in
@@ -25,15 +25,20 @@ class MatchService {
                         print("MatchService-err: \(error)")
                         promise(.failure(error))
                     } else {
-                        var matches: [String] = []
+                        var matches: [Match] = []
                         
                         for doc in snapshot!.documents {
                             let matchArray = doc.data()["matched"] as? [String]
-                            if let matchArray = matchArray {
-                                for match in matchArray {
-                                    if match != AuthService.shared.currentUser?.uid {
-                                        print("Match: \(match)")
-                                        matches.append(match)
+                            let timestamp = doc.data()["time"] as? Timestamp
+                            
+                            if let matchedDate = timestamp?.dateValue() {
+                                if let matchArray = matchArray {
+                                    for match in matchArray {
+                                        if match != AuthService.shared.currentUser?.uid {
+                                            print("Match: \(match)")
+                                            let m = Match(matchedUID: match, timeMatched: matchedDate)
+                                            matches.append(m)
+                                        }
                                     }
                                 }
                             }
@@ -44,9 +49,10 @@ class MatchService {
         }.eraseToAnyPublisher()
     }
     
-    func observeMatches(completion: @escaping ([Match]) -> Void) {
+    func observeMatches(fromDate: Timestamp, existingMatches: [Match], completion: @escaping ([Match]) -> Void) {
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
+            .whereField("time", isGreaterThan: fromDate)
             .order(by: "time")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
@@ -54,7 +60,7 @@ class MatchService {
                     return
                 }
                 
-                var final: [Match] = []
+                var final: [Match] = existingMatches
 
                 documentSnapshot?.documentChanges.forEach({ change in
                     if change.type == .added {

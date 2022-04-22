@@ -66,8 +66,24 @@ class ChatsDataStore: ObservableObject {
 //MARK: - Observe Matches ----------------------------------------------------------------------------------------->
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
+    
     private func observeMatches() {
-        MatchService.shared.observeMatches() { [weak self] matches in
+        
+        var timestamp: Timestamp
+        var existingMatches: [Match] = []
+        
+        if let mostRecentMatchDate = MatchService_CoreData.shared.getMostRecentMatchDate() {
+            timestamp = Timestamp(date: mostRecentMatchDate)
+            if let matches = getMatchesFromCD() {
+                existingMatches = matches
+            }
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
+        }
+        
+        MatchService_Firebase.shared.observeMatches(fromDate: timestamp, existingMatches: existingMatches) { [weak self] matches in
             for match in matches {
                 Publishers.Zip(
                     UserCoreService.shared.getUserCore(uid: match.matchedUID),
@@ -91,44 +107,94 @@ extension ChatsDataStore {
                                     if let j = self?.matchMessages[uc.userBasic.uid] {
                                         if n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp > j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time {
                                             
-                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
+                                            let newUCimg = MatchedUserCore(
+                                                uc: uc,
+                                                profileImg: img,
+                                                timeMatched: match.timeMatched,
+                                                lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp
+                                            )
+                                            
                                             self?.matches.append(newUCimg)
                                             self?.sortMatches()
+                                            
+                                            self?.addMatchUserCoreAndProfileImg(uc, img)
                                         } else {
                                             
-                                            let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time)
+                                            let newUCimg = MatchedUserCore(
+                                                uc: uc,
+                                                profileImg: img,
+                                                timeMatched: match.timeMatched,
+                                                lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time
+                                            )
+                                            
                                             self?.matches.append(newUCimg)
                                             self?.sortMatches()
+                                            
+                                            self?.addMatchUserCoreAndProfileImg(uc, img)
                                         }
                                     } else {
-                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
+                                        let newUCimg = MatchedUserCore(
+                                            uc: uc,
+                                            profileImg: img,
+                                            timeMatched: match.timeMatched,
+                                            lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp
+                                        )
                                         
                                         self?.matches.append(newUCimg)
                                         self?.sortMatches()
+                                        
+                                        self?.addMatchUserCoreAndProfileImg(uc, img)
                                     }
                                 } else {
                                     if let j = self?.matchMessages[uc.userBasic.uid] {
-                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched, lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time)
+                                        let newUCimg = MatchedUserCore(
+                                            uc: uc,
+                                            profileImg: img,
+                                            timeMatched: match.timeMatched,
+                                            lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time
+                                        )
+                                        
                                         self?.matches.append(newUCimg)
                                         self?.sortMatches()
+                                        
+                                        self?.addMatchUserCoreAndProfileImg(uc, img)
                                     } else {
-                                        let newUCimg = MatchedUserCore(uc: uc, profileImg: img, timeMatched: match.timeMatched)
+                                        let newUCimg = MatchedUserCore(
+                                            uc: uc,
+                                            profileImg: img,
+                                            timeMatched: match.timeMatched
+                                        )
+                                        
                                         self?.matches.append(newUCimg)
                                         self?.sortMatches()
+                                        
+                                        self?.addMatchUserCoreAndProfileImg(uc, img)
                                     }
                                 }
                                 
                             } else {
                                 
                                 if let n = self?.snaps[uc.userBasic.uid] {
-                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched, lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
+                                    let newUCimg = MatchedUserCore(
+                                        uc: uc,
+                                        profileImg: UIImage(),
+                                        timeMatched: match.timeMatched,
+                                        lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
                                     
                                     self?.matches.append(newUCimg)
                                     self?.sortMatches()
+                                    
+                                    self?.addMatchUserCoreAndProfileImg(uc, nil)
                                 } else {
-                                    let newUCimg = MatchedUserCore(uc: uc, profileImg: UIImage(), timeMatched: match.timeMatched)
+                                    let newUCimg = MatchedUserCore(
+                                        uc: uc,
+                                        profileImg: UIImage(),
+                                        timeMatched: match.timeMatched
+                                    )
                                     self?.matches.append(newUCimg)
                                     self?.sortMatches()
+                                    
+                                    self?.addMatchUserCoreAndProfileImg(uc, nil)
                                 }
                             }
                         }
@@ -136,6 +202,30 @@ extension ChatsDataStore {
             }
         }
     }
+    
+    private func getMatchesFromCD() -> [Match]? {
+        if let matches = MatchService_CoreData.shared.getMatches(for: AuthService.shared.currentUser!.uid) {
+            return matches
+        } else {
+            return nil
+        }
+    }
+    
+    private func addMatchUserCoreAndProfileImg(_ uc: UserCore, _ img: UIImage?) {
+        //we need to add the uc and img to coreData
+        UserCoreService_CoreData.shared.addNewUser(core: uc)
+        
+        if let img = img {
+            ProfileImageService_CoreData.shared.uploadProfileImage(
+                uid: uc.userBasic.uid,
+                img: ImageModel(
+                    image: img,
+                    index: 0
+                )
+            )
+        }
+    }
+    
 }
 
 //MARK: ----------------------------------------------------------------------------------------------------------->

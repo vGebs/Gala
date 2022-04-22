@@ -46,7 +46,7 @@ class StoriesDataStore: ObservableObject {
     }
     
     func fetchStories() {
-        MatchService.shared.getMatches()
+        MatchService_Firebase.shared.getMatches()
             .flatMap { [weak self] matches in
                 self!.fetchStories(matches)
             }
@@ -100,7 +100,7 @@ class StoriesDataStore: ObservableObject {
 }
 
 extension StoriesDataStore {
-    private func fetchStories(_ matches: [String]) -> AnyPublisher<Void, Error> {
+    private func fetchStories(_ matches: [Match]) -> AnyPublisher<Void, Error> {
 
         return Future<Void, Error> { promise in
             StoryMetaService.shared.getStories()
@@ -124,7 +124,7 @@ extension StoriesDataStore {
                     print("Match Count: \(matches.count)")
                     for match in matches {
                         for i in 0..<userPostCopy.count {
-                            if userPostCopy[i].uid == match {
+                            if userPostCopy[i].uid == match.matchedUID {
                                 print("Found match in stories")
                                 self?.matchedStories.append(userPostCopy[i])
                                 indexes.append(i)
