@@ -16,7 +16,7 @@ class AppState: ObservableObject {
     
     static let shared = AppState()
     
-    var location = LocationService.shared
+    @Published var location = LocationService.shared
     
     //ViewState variables
     @Published var allowAccess: Bool = false

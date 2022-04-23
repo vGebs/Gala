@@ -76,8 +76,8 @@ extension ChatsDataStore {
             if let matches = getMatchesFromCD() {
                 for match in matches {
                     getMatchProfile(match)
-                    //for each match, we want to observe their UserCore
                     observeMatchUserCore(for: match)
+                    observeProfileImage(for: match)
                 }
             }
         } else {
@@ -95,6 +95,7 @@ extension ChatsDataStore {
                     self!.getMatchProfile(match)
                     //for each match, we want to observe their UserCore
                     self!.observeMatchUserCore(for: match)
+                    self!.observeProfileImage(for: match)
                 }
                 
             case .removed:
@@ -102,6 +103,30 @@ extension ChatsDataStore {
             case .modified:
                 print("")
             }
+        }
+    }
+    
+    private func observeProfileImage(for match: Match) {
+        ProfileImageService_Firebase.shared.observeProfileImage(for: match.matchedUID) { [weak self] img, empty in
+            if let img = img {
+                //we got the img, so let's place it in the right spot
+                for i in 0..<self!.matches.count {
+                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
+                        self!.matches[i].profileImg = img
+                        ProfileImageService_CoreData.shared.uploadProfileImage(uid: match.matchedUID, img: ImageModel(image: img, index: 0))
+                    }
+                }
+            }
+            
+            if empty {
+                //if the image is nil, the user has deleted their profile image, so lets remove it
+                for i in 0..<self!.matches.count {
+                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
+                        self!.matches[i].profileImg = nil
+                        ProfileImageService_CoreData.shared.deleteProfileImage(uid: match.matchedUID, index: "0")
+                    }
+                }
+            }            
         }
     }
     

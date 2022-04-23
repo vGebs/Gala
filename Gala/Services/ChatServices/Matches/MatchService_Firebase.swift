@@ -53,7 +53,6 @@ class MatchService_Firebase {
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
             .whereField("time", isGreaterThan: fromDate)
-            .order(by: "time")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
                     print("MatchService: Error fetching document: \(error!)")
