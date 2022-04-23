@@ -37,28 +37,3 @@ struct InComingUserCore {
     var userCore: UserCore
     var liked: Bool
 }
-
-
-struct Person: Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    var name: String
-    var location: location
-    var birthdate: Date
-    
-    enum CodingKeys: String, CodingKey {
-        case name
-        case location
-        case birthdate
-    }
-}
-
-struct location: Codable {
-    var id = UUID().uuidString
-    var lat: Double
-    var lng: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case lat = "latitude"
-        case lng = "longitude"
-    }
-}

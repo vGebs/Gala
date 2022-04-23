@@ -70,18 +70,23 @@ extension ChatsDataStore {
     private func observeMatches() {
         
         var timestamp: Timestamp
-        var existingMatches: [Match] = []
         
         if let mostRecentMatchDate = MatchService_CoreData.shared.getMostRecentMatchDate() {
             timestamp = Timestamp(date: mostRecentMatchDate)
             if let matches = getMatchesFromCD() {
-                existingMatches = matches
+                for match in matches {
+                    getMatchProfile(match)
+                    //for each match, we want to observe their UserCore
+                    observeMatchUserCore(for: match)
+                }
             }
         } else {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy/MM/dd HH:mm"
             timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
         }
+        
+        print("Firestore timestamp: \(timestamp)")
         
         MatchService_Firebase.shared.observeMatches(fromDate: timestamp) { [weak self] matches, change in
             switch change {
@@ -103,7 +108,9 @@ extension ChatsDataStore {
     private func observeMatchUserCore(for match: Match) {
         UserCoreService_Firebase.shared.observeUserCore(with: match.matchedUID) { [weak self] uc in
             if let uc = uc {
-                //we got the userCore, now we need to update the matching uc in self.matches
+                //we've got uc, now update the user in core data
+                UserCoreService_CoreData.shared.updateUser(userCore: uc)
+                //update the matching uc in self.matches
                 for i in 0..<self!.matches.count {
                     if uc.userBasic.uid == self?.matches[i].uc.userBasic.uid {
                         self?.matches[i].uc = uc
