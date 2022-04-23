@@ -170,6 +170,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                     }
                 } receiveValue: { [weak self] _ in
                     self?.messageText = ""
+                    self?.getTempMessages(uid: toUID)
                 }
                 .store(in: &cancellables)
         }
