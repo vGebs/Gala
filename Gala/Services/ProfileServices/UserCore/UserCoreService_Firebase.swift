@@ -95,8 +95,6 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
                                 willingToTravel: willingToTravel
                             )
                         )
-                        print("UserCoreService: setting CurrentUserCore: \(String(describing: userCore))")
-                        print("UserCoreService: setting CurrentUserCore: \(String(describing: AuthService.shared.currentUser?.uid))")
                         
                         promise(.success(userCore))
                         
@@ -112,5 +110,49 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
     
     func updateUser(userCore: UserCore) -> AnyPublisher<Void, Error> {
         return addNewUser(core: userCore)
+    }
+    
+    func observeUserCore(with uid: String, completion: @escaping (UserCore?) -> Void) {
+        db.collection("UserCore").document(uid)
+            .addSnapshotListener { snapShot, error in
+                guard let data = snapShot?.data() else {
+                    completion(nil)
+                    return
+                }
+                
+                let date = data["age"] as? String ?? ""
+                let format = DateFormatter()
+                format.dateFormat = "yyyy/MM/dd"
+                
+                let age = format.date(from: date)!
+                
+                let uid = data["id"] as? String ?? ""
+                let name = data["name"] as? String ?? ""
+                let ageFinal = age
+                let gender = data["gender"] as? String ?? ""
+                let sexuality = data["sexuality"] as? String ?? ""
+                let ageMinPref = data["ageMinPref"] as? Int ?? 18
+                let ageMaxPref = data["ageMaxPref"] as? Int ?? 99
+                let willingToTravel = data["willingToTravel"] as? Int ?? 25
+                let longitude = data["longitude"] as? Double ?? 0
+                let latitude = data["latitude"] as? Double ?? 0
+                
+                let userCore = UserCore(
+                    userBasic: UserBasic(
+                        uid: uid,
+                        name: name,
+                        birthdate: ageFinal,
+                        gender: gender,
+                        sexuality: sexuality
+                    ),
+                    ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
+                    searchRadiusComponents: SearchRadiusComponents(
+                        coordinate: Coordinate(lat: latitude, lng: longitude),
+                        willingToTravel: willingToTravel
+                    )
+                )
+                
+                completion(userCore)
+            }
     }
 }

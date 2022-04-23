@@ -49,7 +49,7 @@ class MatchService_Firebase {
         }.eraseToAnyPublisher()
     }
     
-    func observeMatches(fromDate: Timestamp, existingMatches: [Match], completion: @escaping ([Match]) -> Void) {
+    func observeMatches(fromDate: Timestamp, completion: @escaping ([Match], DocumentChangeType) -> Void) {
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
             .whereField("time", isGreaterThan: fromDate)
@@ -60,27 +60,34 @@ class MatchService_Firebase {
                     return
                 }
                 
-                var final: [Match] = existingMatches
-
+                var finalMatches: [Match] = []
+                var documentChangeType: DocumentChangeType = .added
+                
                 documentSnapshot?.documentChanges.forEach({ change in
-                    if change.type == .added {
-                        let data = change.document.data()
-                        let timestamp = data["time"] as? Timestamp
-                        
-                        if let matchDate = timestamp?.dateValue(){
-                            if let uids = data["matched"] as? [String] {
-                                for uid in uids {
-                                    if uid != AuthService.shared.currentUser!.uid {
-                                        let match = Match(matchedUID: uid, timeMatched: matchDate)
-                                        final.append(match)
-                                        print("MatchService: Added new match: \(uid)")
-                                    }
+                    let data = change.document.data()
+                    let timestamp = data["time"] as? Timestamp
+                    
+                    if let matchDate = timestamp?.dateValue(){
+                        if let uids = data["matched"] as? [String] {
+                            for uid in uids {
+                                if uid != AuthService.shared.currentUser!.uid {
+                                    let match = Match(matchedUID: uid, timeMatched: matchDate)
+                                    finalMatches.append(match)
+                                    print("MatchService: Added new match: \(uid)")
                                 }
                             }
                         }
                     }
+                    
+                    if change.type == .removed {
+                        documentChangeType = .removed
+                    }
+                    
+                    if change.type == .modified {
+                        documentChangeType = .modified
+                    }
                 })
-                completion(final)
+                completion(finalMatches, documentChangeType)
             }
     }
 }

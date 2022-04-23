@@ -16,7 +16,7 @@ struct Match: Identifiable {
 
 struct MatchedUserCore: Identifiable {
     let id = UUID()
-    let uc: UserCore
+    var uc: UserCore
     var profileImg: UIImage?
     var timeMatched: Date
     var lastMessage: Date?
