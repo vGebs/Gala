@@ -63,6 +63,8 @@ class MessageService_CoreData: MessageService_CoreDataProtocol {
     }
     
     func getAllMessages(fromUserWith uid: String) -> [Message]? {
+        //we want to get allMessages where 
+        
         if let msgs = getAllMessagesCD(for: uid) {
             var final: [Message] = []
             for msg in msgs {
@@ -158,9 +160,14 @@ extension MessageService_CoreData {
     
     func getAllMessages() -> [Message]? {
         let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
+        let fromIDPredicate = NSPredicate(format: "toID == %@", AuthService.shared.currentUser!.uid)
+        let toIDPredicate = NSPredicate(format: "fromID == %@", AuthService.shared.currentUser!.uid)
+        let logicalOrPredicate = NSCompoundPredicate(type: .or, subpredicates: [fromIDPredicate, toIDPredicate])
+        
         let sectionSortDescriptor = NSSortDescriptor(key: "sentDate", ascending: false)
         let sortDescriptors = [sectionSortDescriptor]
         
+        fetchRequest.predicate = logicalOrPredicate
         fetchRequest.sortDescriptors = sortDescriptors
         
         do {

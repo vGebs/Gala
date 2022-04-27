@@ -147,20 +147,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                 case .finished:
                     print("ChatsViewModel: Successfully opened message")
                 }
-            } receiveValue: { _ in
-                //when we open a message and get the successfull callback, we want to update the message.
-                //we need to update the message here because the observers only observe the chats that are older than the last sent date. so we are not receiving a callback when the object is changed.
-                MessageService_CoreData.shared.updateMessage(message: message)
-                
-                if let _ = DataStore.shared.chatsData.matchMessages[message.fromID] {
-                    for i in 0..<(DataStore.shared.chatsData.matchMessages[message.fromID]!.count) {
-                        if DataStore.shared.chatsData.matchMessages[message.fromID]![i].docID == message.docID {
-                            print("ChatsViewModel: Modified message")
-                            //DataStore.shared.chatsData.matchMessages[message.fromID]![i]
-                        }
-                    }
-                }
-            }
+            } receiveValue: { _ in }
             .store(in: &cancellables)
     }
     

@@ -75,7 +75,6 @@ struct ConvoPreview: View {
                             
                             //if there is a snap that is not opened, open the snap but not the ChatView
                             //
-                            print("Hey whats up big g")
                             if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
                                 
                                 //Show SnapView
@@ -124,9 +123,38 @@ struct ConvoPreview: View {
                                 timeMatchedBinding = timeMatched
                                 showChat = true
                                 
+                            } else if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate != nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
+                                //we opened someones snap
+                                if let img = ucMatch.profileImg {
+                                    userChat = UserChat(
+                                        name: ucMatch.uc.userBasic.name,
+                                        uid: uid,
+                                        location: Coordinate(
+                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                        ),
+                                        bday: ucMatch.uc.userBasic.birthdate,
+                                        profileImg: img
+                                    )
+                                } else {
+                                    userChat = UserChat(
+                                        name: ucMatch.uc.userBasic.name,
+                                        uid: uid,
+                                        location: Coordinate(
+                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
+                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
+                                        ),
+                                        bday: ucMatch.uc.userBasic.birthdate,
+                                        profileImg: nil
+                                    )
+                                }
+                                
+                                chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
+                                
+                                timeMatchedBinding = timeMatched
+                                showChat = true
                             } else {
                                 if let _ = messages[ucMatch.uc.userBasic.uid]{
-                                    print("Hello world")
                                     //we just need to check ucMatch when its a chat, not a snap
                                     if let img = ucMatch.profileImg {
                                         userChat = UserChat(
