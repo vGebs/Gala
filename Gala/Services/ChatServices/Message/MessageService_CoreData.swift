@@ -293,23 +293,71 @@ extension MessageService_CoreData {
         }
     }
     
-    private func getAllMessagesCD(for uid: String) -> [MessageCD]? {
+    private func getAllMessagesFromMe(forUID: String) -> [MessageCD]? {
         let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
-        let fromIDPredicate = NSPredicate(format: "toID == %@", uid)
-        let toIDPredicate = NSPredicate(format: "fromID == %@", uid)
-        let logicalOrPredicate = NSCompoundPredicate(type: .or, subpredicates: [fromIDPredicate, toIDPredicate])
+        let fromIDPredicate = NSPredicate(format: "fromID == %@", AuthService.shared.currentUser!.uid)
+        let toIDPredicate = NSPredicate(format: "toID == %@", forUID)
+        let logicalANDPredicate = NSCompoundPredicate(type: .and, subpredicates: [fromIDPredicate, toIDPredicate])
 
         let sectionSortDescriptor = NSSortDescriptor(key: "sentDate", ascending: true)
         let sortDescriptors = [sectionSortDescriptor]
         
-        fetchRequest.predicate = logicalOrPredicate
+        fetchRequest.predicate = logicalANDPredicate
         fetchRequest.sortDescriptors = sortDescriptors
         
         do {
             let messages = try persistentContainer.viewContext.fetch(fetchRequest)
             return messages
         } catch {
-            print("MessageService_CoreData: Could not find messages w uid: \(uid)")
+            print("MessageService_CoreData: Could not find messages to uid: \(forUID)")
+            return nil
+        }
+    }
+    
+    private func getAllMessagesToMe(forUID: String) -> [MessageCD]? {
+        let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
+        let fromIDPredicate = NSPredicate(format: "fromID == %@", forUID)
+        let toIDPredicate = NSPredicate(format: "toID == %@", AuthService.shared.currentUser!.uid)
+        let logicalANDPredicate = NSCompoundPredicate(type: .and, subpredicates: [fromIDPredicate, toIDPredicate])
+
+        let sectionSortDescriptor = NSSortDescriptor(key: "sentDate", ascending: true)
+        let sortDescriptors = [sectionSortDescriptor]
+        
+        fetchRequest.predicate = logicalANDPredicate
+        fetchRequest.sortDescriptors = sortDescriptors
+        
+        do {
+            let messages = try persistentContainer.viewContext.fetch(fetchRequest)
+            return messages
+        } catch {
+            print("MessageService_CoreData: Could not find messages from uid: \(forUID)")
+            return nil
+        }
+    }
+    
+    private func getAllMessagesCD(for uid: String) -> [MessageCD]? {
+        //we need to get all messages where:
+        //  (fromID == uid && toID == me) && (fromID == me && toID == uid)
+        
+        var final: [MessageCD] = []
+        
+        if let toMe = getAllMessagesToMe(forUID: uid) {
+            final += toMe
+        }
+        
+        if let fromMe = getAllMessagesFromMe(forUID: uid) {
+            final += fromMe
+        }
+        
+        if final.count > 0 {
+            final.sort { (i1, i2) -> Bool in
+                let t1 = i1.sentDate!
+                let t2 = i2.sentDate!
+                return t1 < t2
+            }
+            
+            return final
+        } else {
             return nil
         }
     }
