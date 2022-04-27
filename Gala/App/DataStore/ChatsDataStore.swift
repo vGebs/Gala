@@ -69,26 +69,29 @@ extension ChatsDataStore {
     
     private func observeMatches() {
         
-        var timestamp: Timestamp
+        //var timestamp: Timestamp
         
-        if let mostRecentMatchDate = MatchService_CoreData.shared.getMostRecentMatchDate() {
-            timestamp = Timestamp(date: mostRecentMatchDate)
-            if let matches = getMatchesFromCD() {
-                for match in matches {
-                    getMatchProfile(match)
-                    observeMatchUserCore(for: match)
-                    observeProfileImage(for: match)
-                }
+        //        if let mostRecentMatchDate = MatchService_CoreData.shared.getMostRecentMatchDate() {
+        //            timestamp = Timestamp(date: mostRecentMatchDate)
+        
+        if let matches = getMatchesFromCD() {
+            for match in matches {
+                getMatchProfile(match)
+                observeMatchUserCore(for: match)
+                observeProfileImage(for: match)
             }
-        } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy/MM/dd HH:mm"
-            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
         }
         
-        print("Firestore timestamp: \(timestamp)")
+        //        }
+//        else {
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+//            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
+//        }
         
-        MatchService_Firebase.shared.observeMatches(fromDate: timestamp) { [weak self] matches, change in
+        //print("Firestore timestamp: \(timestamp)")
+        
+        MatchService_Firebase.shared.observeMatches() { [weak self] matches, change in
             switch change {
             case .added:
                 for match in matches {
@@ -425,23 +428,24 @@ extension ChatsDataStore {
 extension ChatsDataStore {
     private func observeChats() {
         
-        var timestamp: Timestamp
+        //var timestamp: Timestamp
         
         if let date = MessageService_CoreData.shared.getMostRecentMessageDate() {
-            timestamp = Timestamp(date: date)
+            //timestamp = Timestamp(date: date)
             getMostRecentMessagesCD()
-        } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy/MM/dd HH:mm"
-            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
         }
+//        else {
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+//            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
+//        }
         
-        observeChatsFromMe(fromDate: timestamp)
-        observeChatsToMe(fromDate: timestamp)
+        observeChatsFromMe()
+        observeChatsToMe()
     }
     
-    private func observeChatsFromMe(fromDate: Timestamp) {
-        MessageService_Firebase.shared.observeChatsFromMe(from: fromDate) { [weak self] messages, change in
+    private func observeChatsFromMe() {
+        MessageService_Firebase.shared.observeChatsFromMe() { [weak self] messages, change in
             switch change {
             case .added:
                 //we want to only store the most recent message for the receipt
@@ -472,12 +476,13 @@ extension ChatsDataStore {
                 }
             case .modified:
                 for message in messages {
-                    
+                    print("We did a thing")
                     MessageService_CoreData.shared.updateMessage(message: message)
                     
                     if let _ = self?.matchMessages[message.toID] {
                         for i in 0..<(self?.matchMessages[message.toID]!.count)! {
                             if self?.matchMessages[message.toID]![i].docID == message.docID {
+                                print("ChatsDataStore: Modified message")
                                 self?.matchMessages[message.toID]![i] = message
                             }
                         }
@@ -489,8 +494,8 @@ extension ChatsDataStore {
         }
     }
     
-    private func observeChatsToMe(fromDate: Timestamp) {
-        MessageService_Firebase.shared.observeChatsToMe(from: fromDate) { [weak self] messages, change in
+    private func observeChatsToMe() {
+        MessageService_Firebase.shared.observeChatsToMe() { [weak self] messages, change in
             switch change {
             case .added:
                 for message in messages {
@@ -516,6 +521,7 @@ extension ChatsDataStore {
                 }
             case .modified:
                 for message in messages {
+                    print("Modified message to me")
                     if let _ = self?.matchMessages[message.fromID] {
                         
                         MessageService_CoreData.shared.updateMessage(message: message)

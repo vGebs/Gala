@@ -307,3 +307,30 @@ extension MessageService_CoreData {
         }
     }
 }
+
+extension MessageService_CoreData {
+    func deleteAllMessages() {
+        //we need to get all messages and then delete them
+        if let messages = getAlllMessages() {
+            for message in messages {
+                deleteMessage(with: message.firestoreDocID!)
+            }
+        }
+    }
+    
+    func getAlllMessages() -> [MessageCD]? {
+        let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
+        
+        do {
+            let messages = try persistentContainer.viewContext.fetch(fetchRequest)
+            if messages.count > 0 {
+                return messages
+            } else {
+                return nil
+            }
+        } catch {
+            print("smh bruh")
+            return nil
+        }
+    }
+}
