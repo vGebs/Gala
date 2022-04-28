@@ -58,7 +58,7 @@ class AppState: ObservableObject {
     }
     
     private init() {
-
+        
         $currentUser
             .flatMap { UserCoreService.shared.getUserCore(uid: $0?.uid) }
             .sink { completion in
@@ -71,18 +71,22 @@ class AppState: ObservableObject {
                 }
             } receiveValue: { [weak self] uc in
                 if let uc = uc {
-                    if self!.userCoreIsEmpty(uc) {
-                        
-                        self?.profileInfo.name = uc.userBasic.name
-                        self?.profileInfo.age = uc.userBasic.birthdate
-                        
-                        withAnimation {
-                            self?.signUpPageActive = false
-                            self?.loginPageActive = false
-                            self?.createAccountPressed = true
+                    let _ = LocationService.shared.city
+                    
+                    let _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
+                        if self!.userCoreIsEmpty(uc) {
+                            
+                            self?.profileInfo.name = uc.userBasic.name
+                            self?.profileInfo.age = uc.userBasic.birthdate
+                            
+                            withAnimation {
+                                self?.signUpPageActive = false
+                                self?.loginPageActive = false
+                                self?.createAccountPressed = true
+                            }
+                        } else {
+                            self?.allowAccess = true
                         }
-                    } else {
-                        self?.allowAccess = true
                     }
                 }
             }

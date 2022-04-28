@@ -20,6 +20,7 @@ final class ProfileViewModel: ObservableObject {
     
     @Published private(set) var countryText: String = ""
     
+    private(set) var uid: String?
     private(set) var ageText: String
     private var age: Date
     private var email: String
@@ -159,6 +160,7 @@ final class ProfileViewModel: ObservableObject {
             self.email = email
             
             if let uid = uid {
+                self.uid = uid
                 self.readProfile(uid: uid)
             }
         case .otherAccount:
@@ -168,6 +170,7 @@ final class ProfileViewModel: ObservableObject {
             self.email = email
             
             if let uid = uid {
+                self.uid = uid
                 self.readProfile(uid: uid)
             }
         }

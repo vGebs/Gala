@@ -11,10 +11,28 @@ import CoreLocation
 import SwiftUI
 import MapKit
 
+class DistanceCalculator: ObservableObject {
+    
+    @Published var distanceAwayKM: Int
+    
+    init(lng: Double, lat: Double) {
+        let coordinate1 = CLLocation(latitude: lat, longitude: lng)
+        let coordinate2 = CLLocation(latitude: LocationService.shared.coordinates.latitude, longitude: LocationService.shared.coordinates.longitude)
+        
+        let distanceAwayMeters = Int(coordinate2.distance(from: coordinate1))
+        
+        if distanceAwayMeters > 1000 {
+            distanceAwayKM = Int(distanceAwayMeters / 1000)
+        } else {
+            distanceAwayKM = 1
+        }
+    }
+}
+
 class LocationService: NSObject, ObservableObject {
     struct Coordinates{
-        var longitude: Double = 0
-        var latitude: Double = 0
+        var longitude: Double = 181
+        var latitude: Double = 91
     }
     
     static let shared = LocationService()
@@ -35,10 +53,10 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        //DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.locationManager.stopUpdatingLocation()
             print("Stopped updating location")
-        }
+        //}
     }
 
     func requestLocationAuthorization() {

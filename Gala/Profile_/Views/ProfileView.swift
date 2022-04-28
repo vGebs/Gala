@@ -292,24 +292,31 @@ struct ProfileView: View {
     var nameAgeLocation: some View {
         VStack {
             HStack{
-                Text("\(viewModel.nameText), \(viewModel.ageText)")
-                    .font(.system(size: 23, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
+                if viewModel.nameText != "" {
+                    Text("\(viewModel.nameText), \(viewModel.ageText)")
+                        .font(.system(size: 23, weight: .semibold, design: .rounded))
+                        .foregroundColor(.primary)
+                }
             }
             .padding(.bottom, 3)
             
             HStack {
-                Image(systemName: "mappin.and.ellipse")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundColor(.primary)
-                
-                if viewModel.cityText == "" || viewModel.countryText == "" {
+                if (viewModel.cityText == "" || viewModel.countryText == "") && viewModel.uid == AuthService.shared.currentUser!.uid{
+                    
+                    Image(systemName: "mappin.and.ellipse")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.primary)
                     
                     Menu("Add Location"){
                         Text("iOS Settings > Privacy > Location Services > Gala")
                     }
                     
-                } else {
+                } else if viewModel.cityText != "" && viewModel.countryText != ""{
+                    
+                    Image(systemName: "mappin.and.ellipse")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.primary)
+                    
                     Text("\(viewModel.cityText), \(viewModel.countryText)")
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                 }

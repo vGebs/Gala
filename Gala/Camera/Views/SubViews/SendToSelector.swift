@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct SendToSelector: View {
     var user: MatchedUserCore
     @Binding var selected: String
-    @ObservedObject var location: LocationViewModel
+    //@ObservedObject var location: LocationViewModel
+    
+    @StateObject var distanceCalculator: DistanceCalculator
     
     var body: some View {
         HStack{
@@ -52,7 +55,7 @@ struct SendToSelector: View {
                             Image(systemName: "mappin.and.ellipse")
                                 .font(.system(size: 12, weight: .regular, design: .rounded))
                                 .foregroundColor(.buttonPrimary)
-                            Text("\(location.city), \(location.country)")
+                            Text("\(distanceCalculator.distanceAwayKM)km away")
                                 .font(.system(size: 13, weight: .regular, design: .rounded))
                                 .foregroundColor(.white)
                             Spacer()
