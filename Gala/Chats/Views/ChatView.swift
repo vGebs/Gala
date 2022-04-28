@@ -11,10 +11,10 @@ import OrderedCollections
 struct ChatView: View, KeyboardReadable {
     @Binding var showChat: Bool
     @Binding var userChat: UserChat?
-    
-    @ObservedObject var locationViewModel: LocationViewModel
-    
+        
     @ObservedObject var viewModel: ChatsViewModel
+    @StateObject var distanceCalculator: DistanceCalculator
+    
     
     @Binding var messages: [Message]
     @Binding var snaps: OrderedDictionary<String, [Snap]>
@@ -76,7 +76,7 @@ struct ChatView: View, KeyboardReadable {
                             .font(.system(size: 11, weight: .bold, design: .rounded))
                             .foregroundColor(.buttonPrimary)
                         
-                        Text("\(locationViewModel.city), \(locationViewModel.country)")
+                        Text("\(distanceCalculator.distanceAwayKM)km away")
                             .font(.system(size: 13, weight: .regular, design: .rounded))
                             .foregroundColor(.white)
                         Spacer()

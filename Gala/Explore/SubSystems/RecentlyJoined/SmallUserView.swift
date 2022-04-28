@@ -17,6 +17,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
     
     @ObservedObject var viewModel: Model
     @ObservedObject var user: SmallUserViewModel
+    @StateObject var distanceCalculator: DistanceCalculator
     
     @State var likePressed = false
     @State var showProfile = false
@@ -72,7 +73,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                                     .foregroundColor(.buttonPrimary)
                                     .font(.system(size: 8, weight: .semibold, design: .rounded))
                                 
-                                Text("\(user.city), \(user.country)")
+                                Text("\(distanceCalculator.distanceAwayKM)km away")
                                     .font(.system(size: 13, weight: .regular, design: .rounded))
                                     .foregroundColor(.primary)
                                 Spacer()

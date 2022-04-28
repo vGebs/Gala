@@ -423,9 +423,13 @@ extension StoryMetaService {
     
     private func getStories(forRadiusKM: Double, forGender: String, forSexuality: String, ageMin: Int, ageMax: Int) -> AnyPublisher<[UserPostSimple], Error> {
         return Future<[UserPostSimple], Error> { promise in
-            let lat: Double = LocationService.shared.coordinates.latitude
-            let long: Double = LocationService.shared.coordinates.longitude
+//            guard let lat = UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lat,
+//                    let long = UserCoreService.shared.currentUserCore?.searchRadiusComponents.coordinate.lng
+//            else { fatalError() }
             
+            let lat: Double = UserCoreService.shared.currentUserCore!.searchRadiusComponents.coordinate.lat
+            let long: Double = UserCoreService.shared.currentUserCore!.searchRadiusComponents.coordinate.lng
+
             let center = CLLocationCoordinate2D(latitude: lat, longitude: long)
             let radiusInM: Double = forRadiusKM * 1000
             

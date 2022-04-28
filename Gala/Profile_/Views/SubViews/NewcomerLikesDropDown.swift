@@ -43,7 +43,18 @@ struct NewcomerLikesDropDown: View {
                             .frame(width: screenWidth * 0.9)
                         
                         ForEach(viewModel.theyLikeMe) { like in
-                            SmallUserView(viewModel: LikesViewModel(), user: SmallUserViewModel(profile: like.userCore, img: like.profileImg), width: screenWidth * 0.9)
+                            SmallUserView(
+                                viewModel: LikesViewModel(),
+                                user: SmallUserViewModel(
+                                    profile: like.userCore,
+                                    img: like.profileImg
+                                ),
+                                distanceCalculator: DistanceCalculator(
+                                    lng: like.userCore.searchRadiusComponents.coordinate.lng,
+                                    lat: like.userCore.searchRadiusComponents.coordinate.lat
+                                ),
+                                width: screenWidth * 0.9
+                            )
                         }
 
                         Spacer()

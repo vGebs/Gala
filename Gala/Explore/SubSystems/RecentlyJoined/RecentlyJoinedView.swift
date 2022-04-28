@@ -45,13 +45,29 @@ struct RecentlyJoinedView: View {
                                 VStack {
                                     if i * 2 < viewModel.users.count {
                                         //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2]), matched: false)
-                                        SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2], width: screenWidth * 0.95)
+                                        SmallUserView(
+                                            viewModel: viewModel,
+                                            user: viewModel.users[i * 2],
+                                            distanceCalculator: DistanceCalculator(
+                                                lng: viewModel.users[i * 2].profile!.searchRadiusComponents.coordinate.lng,
+                                                lat: viewModel.users[i * 2].profile!.searchRadiusComponents.coordinate.lat
+                                            ),
+                                            width: screenWidth * 0.95
+                                        )
                                             .padding(.bottom, 3)
                                     }
                                     
                                     if i * 2 + 1 < viewModel.users.count {
                                         //SmallUserView(viewModel: SmallUserViewModel(profile: newUsers[i * 2 + 1]), matched: false)
-                                        SmallUserView(viewModel: viewModel, user: viewModel.users[i * 2 + 1], width: screenWidth * 0.95)
+                                        SmallUserView(
+                                            viewModel: viewModel,
+                                            user: viewModel.users[i * 2 + 1],
+                                            distanceCalculator: DistanceCalculator(
+                                                lng: viewModel.users[i * 2 + 1].profile!.searchRadiusComponents.coordinate.lng,
+                                                lat: viewModel.users[i * 2 + 1].profile!.searchRadiusComponents.coordinate.lat
+                                            ),
+                                            width: screenWidth * 0.95
+                                        )
                                         
                                     }
                                     
