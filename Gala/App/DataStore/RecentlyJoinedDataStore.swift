@@ -19,7 +19,9 @@ class RecentlyJoinedDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        initialier()
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+            self?.initialier()
+        }
     }
     
     public func initialier() {

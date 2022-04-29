@@ -24,7 +24,9 @@ class StoriesDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
         
     private init() {
-        initializer()
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+            self?.initializer()
+        }
     }
     
     public func initializer() {

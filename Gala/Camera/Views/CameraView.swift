@@ -34,12 +34,6 @@ struct CameraView: View {
                     .padding(.top, 5)
                 Spacer()
                 
-                Button(action: {
-                    MessageService_CoreData.shared.deleteAllMessages()
-                }) {
-                    Text("Remove all coreData messages")
-                }.padding()
-                
                 CameraBtn(camera: camera)
                     .padding(.bottom, screenHeight * 0.08)
             }

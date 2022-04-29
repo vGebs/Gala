@@ -71,22 +71,21 @@ class AppState: ObservableObject {
                 }
             } receiveValue: { [weak self] uc in
                 if let uc = uc {
+                    // We need to make sure that the LocationService class is initialized so we can fetch the stories with our current location. We need this b/c it is a singleton
                     let _ = LocationService.shared.city
                     
-                    let _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
-                        if self!.userCoreIsEmpty(uc) {
-                            
-                            self?.profileInfo.name = uc.userBasic.name
-                            self?.profileInfo.age = uc.userBasic.birthdate
-                            
-                            withAnimation {
-                                self?.signUpPageActive = false
-                                self?.loginPageActive = false
-                                self?.createAccountPressed = true
-                            }
-                        } else {
-                            self?.allowAccess = true
+                    if self!.userCoreIsEmpty(uc) {
+                        
+                        self?.profileInfo.name = uc.userBasic.name
+                        self?.profileInfo.age = uc.userBasic.birthdate
+                        
+                        withAnimation {
+                            self?.signUpPageActive = false
+                            self?.loginPageActive = false
+                            self?.createAccountPressed = true
                         }
+                    } else {
+                        self?.allowAccess = true
                     }
                 }
             }
