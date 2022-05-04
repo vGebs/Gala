@@ -14,6 +14,7 @@ struct PicTakenView: View {
     
     var body: some View {
         ZStack{
+            Color.black.edgesIgnoringSafeArea(.all)
             if camera.image != nil {
                 VStack{
                     Image(uiImage: camera.image!)

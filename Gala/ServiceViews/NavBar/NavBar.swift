@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NavBar: View {
+struct NavBarNN: View {
     
     @Binding var offset: CGFloat
     @Environment(\.colorScheme) var colorScheme

@@ -15,7 +15,7 @@ struct CameraView: View {
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var profile: ProfileViewModel
     
-    let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight * 0.91))
+    let view = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
     
     @State var isRecording = false
     @State var showProfile = false

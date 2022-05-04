@@ -56,7 +56,7 @@ struct ChatsView: View {
                                     .padding(.horizontal)
                             }
                         }
-                        .frame(width: screenWidth, height: screenHeight * 0.81)
+                        .frame(width: screenWidth, height: screenHeight * 0.9)
                         .cornerRadius(20)
                     }
                     
@@ -90,7 +90,7 @@ struct ChatsView: View {
                     }
                     .padding(.top, screenHeight * 0.0385)
                 }
-                .frame(width: screenWidth, height: screenHeight * 0.91)
+                .frame(width: screenWidth, height: screenHeight) //* 0.91
                 .edgesIgnoringSafeArea(.all)
                 Spacer()
             }
