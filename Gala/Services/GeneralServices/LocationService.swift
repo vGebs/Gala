@@ -53,10 +53,11 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         
-        //DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.locationManager.stopUpdatingLocation()
             print("Stopped updating location")
-        //}
+            print("My city: \(self.city)")
+        }
     }
 
     func requestLocationAuthorization() {
@@ -72,12 +73,15 @@ extension LocationService: CLLocationManagerDelegate {
         self.coordinates.latitude = location.coordinate.latitude
         self.coordinates.longitude = location.coordinate.longitude
         
+        print("My location is -> LAT: \(self.coordinates.latitude)")
+        print("My location is -> LNG: \(self.coordinates.longitude)")
+
         let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         
         loc.fetchCityAndCountry { [weak self] city, country, error in
             guard let city = city, let country = country, error == nil else { return }
             self!.city = city
-            print(self!.city)
+            print("my city is: \(self!.city)")
             self!.country = country
         }
     }

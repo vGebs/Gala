@@ -5,6 +5,8 @@
 //  Created by Vaughn on 2022-03-31.
 //
 
+//Link for Reducing app launch time: https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time
+
 import Foundation
 import Combine
 
@@ -12,24 +14,24 @@ class DataStore: ObservableObject {
     
     static let shared = DataStore()
     
-    @Published var chatsData: ChatsDataStore
+    @Published var chats: ChatsDataStore
     @Published var recents: RecentlyJoinedDataStore
     @Published var stories: StoriesDataStore
     
     private init() {
-        chatsData = ChatsDataStore.shared
+        chats = ChatsDataStore.shared
         recents = RecentlyJoinedDataStore.shared
         stories = StoriesDataStore.shared
     }
     
     public func initialize() {
-        chatsData.initializer()
+        chats.initializer()
         recents.initialier()
         stories.initializer()
     }
     
     func clear() {
-        chatsData.clear()
+        chats.clear()
         recents.clear()
         stories.clear()
     }

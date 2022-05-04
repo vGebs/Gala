@@ -102,8 +102,8 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var fileOutput: AVCaptureFileOutput?
     private var photoQualityPrioritizationMode: AVCapturePhotoOutput.QualityPrioritization = .balanced
-    private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
-    private var inProgressVideoCaptureDelegates = [String: VideoCaptureProcessor]()
+    private var inProgressPhotoCaptureDelegates: [Int64: PhotoCaptureProcessor] = [:]
+    private var inProgressVideoCaptureDelegates: [String: VideoCaptureProcessor] = [:]
     fileprivate var preview: AVCaptureVideoPreviewLayer!
     private var backgroundRecordingID: UIBackgroundTaskIdentifier?
     

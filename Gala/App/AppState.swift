@@ -45,7 +45,7 @@ class AppState: ObservableObject {
     @Published var cameraVM: CameraViewModel? //DONE //deinit when camera.tearDownCamera() is called (see logout() func)
     @Published var exploreVM: ExploreViewModel? //DONE
     
-    private var cancellables: [AnyCancellable] = []
+    private var subs: [AnyCancellable] = []
     
     @Published var currentUser = AuthService.shared.currentUser
     
@@ -89,7 +89,7 @@ class AppState: ObservableObject {
                     }
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &subs)
         
         $loginPageActive
             .flatMap{ [weak self] on -> AnyPublisher<SigninSignupViewModel?, Never> in
@@ -178,7 +178,7 @@ class AppState: ObservableObject {
         
         UserCoreService.shared.currentUserCore = nil
         
-        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] _ in
             AuthService.shared.logout()
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)
@@ -191,7 +191,7 @@ class AppState: ObservableObject {
                         print("AppState: Finished logging out")
                     }
                 } receiveValue: { _ in }
-                .store(in: &self!.cancellables)
+                .store(in: &self!.subs)
         }        
     }
     

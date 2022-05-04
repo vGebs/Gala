@@ -13,7 +13,7 @@ import UIKit
 
 class ChatsViewModel: ObservableObject, SnapProtocol {
     
-    private var cancellables: [AnyCancellable] = []
+    private var subs: [AnyCancellable] = []
     
     private let db = Firestore.firestore()
     
@@ -36,20 +36,20 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     }
     
     init() {
-        DataStore.shared.chatsData.$matches
+        DataStore.shared.chats.$matches
             .sink(receiveValue: { [weak self] matches in
                 self?.matches = matches
-            }).store(in: &cancellables)
+            }).store(in: &subs)
 
-        DataStore.shared.chatsData.$snaps
+        DataStore.shared.chats.$snaps
             .sink(receiveValue: { [weak self] snaps in
                 self?.snaps = snaps
-            }).store(in: &cancellables)
+            }).store(in: &subs)
             
-        DataStore.shared.chatsData.$matchMessages
+        DataStore.shared.chats.$messages
             .sink(receiveValue: { [weak self] messages in
                 self?.matchMessages = messages
-            }).store(in: &cancellables)
+            }).store(in: &subs)
     }
     
     func getUnopenedSnapsFrom(uid: String) -> [Snap] {
@@ -116,7 +116,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                     print("ChatsViewModel: Successfully opened snap with docID: \(snap.docID)")
                 }
             } receiveValue: { _ in }
-            .store(in: &cancellables)
+            .store(in: &subs)
     }
     
     private func deleteSnap_(_ snap: Snap){
@@ -132,7 +132,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                     print("ChatsViewModel: Successfully deleted snap")
                 }
             } receiveValue: { _ in }
-            .store(in: &cancellables)
+            .store(in: &subs)
     }
     
     func openMessage(message: Message) {
@@ -148,7 +148,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                     print("ChatsViewModel: Successfully opened message")
                 }
             } receiveValue: { _ in }
-            .store(in: &cancellables)
+            .store(in: &subs)
     }
     
     func sendMessage(toUID: String) {
@@ -171,7 +171,7 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
                 } receiveValue: { [weak self] _ in
                     self?.getTempMessages(uid: toUID)
                 }
-                .store(in: &cancellables)
+                .store(in: &subs)
             
             messageText = ""
         }

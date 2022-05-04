@@ -18,7 +18,7 @@ class ChatsDataStore: ObservableObject {
     
     @Published private(set) var matches: [MatchedUserCore] = []
     @Published private(set) var snaps: OrderedDictionary<String, [Snap]> = [:]
-    @Published private(set) var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
+    @Published private(set) var messages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     private var cancellables: [AnyCancellable] = []
     
@@ -58,7 +58,7 @@ class ChatsDataStore: ObservableObject {
     func clear() {
         matches.removeAll()
         snaps.removeAll()
-        matchMessages.removeAll()
+        messages.removeAll()
         empty = true
     }
 }
@@ -71,11 +71,6 @@ extension ChatsDataStore {
     
     private func observeMatches() {
         
-        //var timestamp: Timestamp
-        
-        //        if let mostRecentMatchDate = MatchService_CoreData.shared.getMostRecentMatchDate() {
-        //            timestamp = Timestamp(date: mostRecentMatchDate)
-        
         if let matches = getMatchesFromCD() {
             for match in matches {
                 getMatchProfile(match)
@@ -83,15 +78,6 @@ extension ChatsDataStore {
                 observeProfileImage(for: match)
             }
         }
-        
-        //        }
-//        else {
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy/MM/dd HH:mm"
-//            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
-//        }
-        
-        //print("Firestore timestamp: \(timestamp)")
         
         MatchService_Firebase.shared.observeMatches() { [weak self] matches, change in
             switch change {
@@ -170,8 +156,8 @@ extension ChatsDataStore {
                     if let img = img {
                         
                         if let n = self?.snaps[uc.userBasic.uid] {
-                            if let j = self?.matchMessages[uc.userBasic.uid] {
-                                if n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp > j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time {
+                            if let j = self?.messages[uc.userBasic.uid] {
+                                if n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp > j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time {
                                     
                                     let newUCimg = MatchedUserCore(
                                         uc: uc,
@@ -190,7 +176,7 @@ extension ChatsDataStore {
                                         uc: uc,
                                         profileImg: img,
                                         timeMatched: match.timeMatched,
-                                        lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time
+                                        lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time
                                     )
                                     
                                     self?.matches.append(newUCimg)
@@ -212,12 +198,12 @@ extension ChatsDataStore {
                                 self?.addMatchUserCoreAndProfileImg(uc, img)
                             }
                         } else {
-                            if let j = self?.matchMessages[uc.userBasic.uid] {
+                            if let j = self?.messages[uc.userBasic.uid] {
                                 let newUCimg = MatchedUserCore(
                                     uc: uc,
                                     profileImg: img,
                                     timeMatched: match.timeMatched,
-                                    lastMessage: j[(self?.matchMessages[uc.userBasic.uid]?.count)! - 1].time
+                                    lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time
                                 )
                                 
                                 self?.matches.append(newUCimg)
@@ -430,17 +416,7 @@ extension ChatsDataStore {
 extension ChatsDataStore {
     private func observeChats() {
         
-        //var timestamp: Timestamp
-        
-        if let date = MessageService_CoreData.shared.getMostRecentMessageDate() {
-            //timestamp = Timestamp(date: date)
-            getMostRecentMessagesCD()
-        }
-//        else {
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy/MM/dd HH:mm"
-//            timestamp = Timestamp(date: formatter.date(from: "1997/06/12 07:30")!)
-//        }
+        getMostRecentMessagesCD()
         
         observeChatsFromMe()
         observeChatsToMe()
@@ -460,19 +436,19 @@ extension ChatsDataStore {
                     self?.setNewLastMessage(uid: message.toID, date: message.time)
                     self?.checkForAnyOpenedSnapsAndDelete(message.toID)
                     
-                    if let _ = self?.matchMessages[message.toID] {
-                        let insertIndex = self?.matchMessages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                        self?.matchMessages[message.toID]?.insert(message, at: insertIndex!)
+                    if let _ = self?.messages[message.toID] {
+                        let insertIndex = self?.messages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                        self?.messages[message.toID]?.insert(message, at: insertIndex!)
                         
                         //After each insertion we will then delete all other values in the array, only leaving the most recent
-                        if let last = self?.matchMessages[message.fromID]?.last {
-                            self?.matchMessages[message.fromID] = [last]
+                        if let last = self?.messages[message.fromID]?.last {
+                            self?.messages[message.fromID] = [last]
                         }
                         
                         print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
                         
                     } else {
-                        self?.matchMessages[message.toID] = [message]
+                        self?.messages[message.toID] = [message]
                         print("ChatsDataStore: Fetched message from me (created): \(message.message)")
                     }
                 }
@@ -481,11 +457,11 @@ extension ChatsDataStore {
                     print("We did a thing")
                     MessageService_CoreData.shared.updateMessage(message: message)
                     
-                    if let _ = self?.matchMessages[message.toID] {
-                        for i in 0..<(self?.matchMessages[message.toID]!.count)! {
-                            if self?.matchMessages[message.toID]![i].docID == message.docID {
+                    if let _ = self?.messages[message.toID] {
+                        for i in 0..<(self?.messages[message.toID]!.count)! {
+                            if self?.messages[message.toID]![i].docID == message.docID {
                                 print("ChatsDataStore: Modified message")
-                                self?.matchMessages[message.toID]![i] = message
+                                self?.messages[message.toID]![i] = message
                             }
                         }
                     }
@@ -505,32 +481,32 @@ extension ChatsDataStore {
                     
                     MessageService_CoreData.shared.addMessage(msg: message)
                     
-                    if let _ = self?.matchMessages[message.fromID] {
-                        let insertIndex = self?.matchMessages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                    if let _ = self?.messages[message.fromID] {
+                        let insertIndex = self?.messages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
                         
-                        self?.matchMessages[message.fromID]?.insert(message, at: insertIndex!)
+                        self?.messages[message.fromID]?.insert(message, at: insertIndex!)
                         
                         //After each insertion we will then delete all other values in the array, only leaving the most recent
-                        if let last = self?.matchMessages[message.fromID]?.last {
-                            self?.matchMessages[message.fromID] = [last]
+                        if let last = self?.messages[message.fromID]?.last {
+                            self?.messages[message.fromID] = [last]
                         }
                         
                         print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
                     } else {
-                        self?.matchMessages[message.fromID] = [message]
+                        self?.messages[message.fromID] = [message]
                         print("ChatsDataStore: Fetched message to me (created): \(message.message)")
                     }
                 }
             case .modified:
                 for message in messages {
                     print("Modified message to me")
-                    if let _ = self?.matchMessages[message.fromID] {
+                    if let _ = self?.messages[message.fromID] {
                         
                         MessageService_CoreData.shared.updateMessage(message: message)
                         
-                        for i in 0..<(self?.matchMessages[message.fromID]!.count)! {
-                            if self?.matchMessages[message.fromID]![i].docID == message.docID {
-                                self?.matchMessages[message.fromID]![i] = message
+                        for i in 0..<(self?.messages[message.fromID]!.count)! {
+                            if self?.messages[message.fromID]![i].docID == message.docID {
+                                self?.messages[message.fromID]![i] = message
                                 print("ChatsDataStore: Modified message")
                             }
                         }
@@ -547,22 +523,22 @@ extension ChatsDataStore {
         if let messages = MessageService_CoreData.shared.getAllMessages() {
             for message in messages {
                 if message.fromID == AuthService.shared.currentUser!.uid {
-                    if let _ = self.matchMessages[message.toID] {
-                        if self.matchMessages[message.toID]![self.matchMessages[message.toID]!.count - 1].time < message.time {
-                            self.matchMessages[message.toID]?.removeAll()
-                            self.matchMessages[message.toID]?.append(message)
+                    if let _ = self.messages[message.toID] {
+                        if self.messages[message.toID]![self.messages[message.toID]!.count - 1].time < message.time {
+                            self.messages[message.toID]?.removeAll()
+                            self.messages[message.toID]?.append(message)
                         }
                     } else {
-                        self.matchMessages[message.toID] = [message]
+                        self.messages[message.toID] = [message]
                     }
                 } else if message.toID == AuthService.shared.currentUser!.uid {
-                    if let _ = self.matchMessages[message.fromID] {
-                        if self.matchMessages[message.fromID]![self.matchMessages[message.fromID]!.count - 1].time < message.time {
-                            self.matchMessages[message.fromID]?.removeAll()
-                            self.matchMessages[message.fromID]?.append(message)
+                    if let _ = self.messages[message.fromID] {
+                        if self.messages[message.fromID]![self.messages[message.fromID]!.count - 1].time < message.time {
+                            self.messages[message.fromID]?.removeAll()
+                            self.messages[message.fromID]?.append(message)
                         }
                     } else {
-                        self.matchMessages[message.fromID] = [message]
+                        self.messages[message.fromID] = [message]
                     }
                 }
             }
