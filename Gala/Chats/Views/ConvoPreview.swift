@@ -148,11 +148,19 @@ struct ConvoPreview: View {
                                         profileImg: nil
                                     )
                                 }
-                                
+                                                                
                                 chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
                                 
                                 timeMatchedBinding = timeMatched
                                 showChat = true
+                                if let _ = messages[uid] {
+                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
+
+                                        timeMatchedBinding = timeMatched
+                                        showChat = true
+                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
+                                    }
+                                }
                             } else {
                                 if let _ = messages[ucMatch.uc.userBasic.uid]{
                                     //we just need to check ucMatch when its a chat, not a snap
@@ -186,10 +194,9 @@ struct ConvoPreview: View {
                                     showChat = true
                                     //open message
                                     // if the last message is not already opened and was not sent by me
-                                    
+                                                                        
                                     if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
                                         //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
-                                        
                                         chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
                                     }
                                 }
