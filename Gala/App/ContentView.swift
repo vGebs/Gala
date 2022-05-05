@@ -52,7 +52,7 @@ struct ContentView: View {
         .overlay(
             NavBar(offset: $navBarVM.currentPage)
                 .opacity(camera.image != nil ? 0 : 1)
-                .padding(.bottom, screenHeight * 0.04),
+                .padding(.bottom, screenHeight * 0.03),
             alignment: .bottom
         )
         .preferredColorScheme(isDarkMode ? .dark : .light)

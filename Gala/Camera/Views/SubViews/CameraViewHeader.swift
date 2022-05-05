@@ -24,14 +24,24 @@ struct CameraViewHeader: View {
     
     var leftOptionButton: some View {
         Button(action: { self.showProfile = true }){
-            Image(systemName: "rectangle.stack.person.crop")
-                .font(.system(size: 20, weight: .regular, design: .rounded))
-                .foregroundColor(.buttonPrimary)
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(.black)
+                    .opacity(0.85)
+
+                RoundedRectangle(cornerRadius: 10).stroke()
+                    .foregroundColor(.accent)
+                
+                Image(systemName: "rectangle.stack.person.crop")
+                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                    .foregroundColor(.buttonPrimary)
+            }
+            .frame(width: screenWidth / 11, height: screenWidth / 11)
         }
         .padding(.leading)
     }
     
-    var centerElement: some View {
+    var centerElement: some View {        
         Text("Gala")
             .font(.system(size: 20, weight: .semibold, design: .rounded))
             .foregroundColor(.primary)
@@ -39,6 +49,14 @@ struct CameraViewHeader: View {
     
     var rightOptionButton: some View {
         ZStack{
+            
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.black)
+                .opacity(0.85)
+            
+            RoundedRectangle(cornerRadius: 10).stroke()
+                .foregroundColor(.accent)
+            
             HStack {
                 Button(action: {
                     camera.flashEnabled.toggle()
@@ -58,6 +76,7 @@ struct CameraViewHeader: View {
                 }
             }
         }
+        .frame(width: screenWidth / 5, height: screenWidth / 11)
         .padding(.trailing)
     }
 }

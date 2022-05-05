@@ -34,9 +34,19 @@ struct PicTakenView: View {
             VStack{
                 HStack{
                     Button(action: { camera.deleteAsset() }){
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundColor(.buttonPrimary)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(.black)
+                                .opacity(0.85)
+
+                            RoundedRectangle(cornerRadius: 10).stroke()
+                                .foregroundColor(.accent)
+                            
+                            Image(systemName: "xmark")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(.buttonPrimary)
+                        }
+                        .frame(width: screenWidth / 11, height: screenWidth / 11)
                     }
                     .padding(.leading, screenWidth * 0.045)
                     .padding(.top, screenWidth * 0.13)

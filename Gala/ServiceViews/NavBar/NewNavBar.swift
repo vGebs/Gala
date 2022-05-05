@@ -35,15 +35,29 @@ struct NavBar: View {
                         .padding(.leading)
                         .onTapGesture {
                             withAnimation{
-                                //                            if self.offset != 0 {
-                                //                                simpleSuccess()
-                                //                            }
-                                
                                 self.offset = 0
                             }
                         }
                     
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == 0 ? 1 : 0)
+                    
                     Spacer()
+                    
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth ? 1 : 0)
                     
                     Image(systemName: "camera")
                         .font(.system(
@@ -54,15 +68,29 @@ struct NavBar: View {
                         .foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? .primary : .white)
                         .onTapGesture {
                             withAnimation{
-    //                            if self.offset != screenWidth {
-    //                                simpleSuccess()
-    //                            }
-                                
                                 self.offset = screenWidth
                             }
                         }
                     
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth ? 1 : 0)
+                    
                     Spacer()
+                    
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth * 2 ? 1 : 0)
                     
                     Image(systemName: "person.2")
                         .font(.system(
@@ -74,10 +102,6 @@ struct NavBar: View {
                         .padding(.trailing)
                         .onTapGesture {
                             withAnimation {
-    //                            if self.offset != screenWidth * 2 {
-    //                                simpleSuccess()
-    //                            }
-                                
                                 self.offset = screenWidth * 2
                             }
                         }
@@ -85,68 +109,69 @@ struct NavBar: View {
             }
             .frame(width: screenWidth * 0.6, height: screenWidth / 8)
         }
-        HStack {
-            ZStack {
-                Image(systemName: "message")
-                    .font(.system(
-                        size: 21,
-                        weight: self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? .bold : .light,
-                        design: .rounded
-                    ))
-                    .opacity(0)
-                
-                Image(systemName: "chevron.up")
-                    .font(.system(
-                        size: 16,
-                        weight: .light,
-                        design: .rounded
-                    ))
-                    .opacity(self.offset == 0 ? 1 : 0)
-            }
-            .padding(.leading)
-
-            Spacer()
-            
-            ZStack {
-                Image(systemName: "camera")
-                    .font(.system(
-                            size: 21,
-                            weight: self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? .bold : .light,
-                            design: .rounded
-                    ))
-                    .opacity(0)
-                
-                Image(systemName: "chevron.up")
-                    .font(.system(
-                        size: 16,
-                        weight: .light,
-                        design: .rounded
-                    ))
-                    .opacity(offset == screenWidth ? 1 : 0)
-            }
-            
-            Spacer()
-            
-            ZStack {
-                Image(systemName: "person.2")
-                    .font(.system(
-                        size: 21,
-                        weight: self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? .bold : .light,
-                        design: .rounded
-                    ))
-                    .opacity(0)
-                
-                Image(systemName: "chevron.up")
-                    .font(.system(
-                        size: 16,
-                        weight: .light,
-                        design: .rounded
-                    ))
-                    .opacity(self.offset == screenWidth * 2 ? 1 : 0)
-            }
-            .padding(.trailing)
-        }
-        .offset(y: screenHeight * 0.04)
-        .frame(width: screenWidth * 0.6, height: screenWidth / 8)
+        
+//        HStack {
+//            ZStack {
+//                Image(systemName: "message")
+//                    .font(.system(
+//                        size: 21,
+//                        weight: self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? .bold : .light,
+//                        design: .rounded
+//                    ))
+//                    .opacity(0)
+//
+//                Image(systemName: "chevron.up")
+//                    .font(.system(
+//                        size: 16,
+//                        weight: .light,
+//                        design: .rounded
+//                    ))
+//                    .opacity(self.offset == 0 ? 1 : 0)
+//            }
+//            .padding(.leading)
+//
+//            Spacer()
+//
+//            ZStack {
+//                Image(systemName: "camera")
+//                    .font(.system(
+//                            size: 21,
+//                            weight: self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? .bold : .light,
+//                            design: .rounded
+//                    ))
+//                    .opacity(0)
+//
+//                Image(systemName: "chevron.up")
+//                    .font(.system(
+//                        size: 16,
+//                        weight: .light,
+//                        design: .rounded
+//                    ))
+//                    .opacity(offset == screenWidth ? 1 : 0)
+//            }
+//
+//            Spacer()
+//
+//            ZStack {
+//                Image(systemName: "person.2")
+//                    .font(.system(
+//                        size: 21,
+//                        weight: self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? .bold : .light,
+//                        design: .rounded
+//                    ))
+//                    .opacity(0)
+//
+//                Image(systemName: "chevron.up")
+//                    .font(.system(
+//                        size: 16,
+//                        weight: .light,
+//                        design: .rounded
+//                    ))
+//                    .opacity(self.offset == screenWidth * 2 ? 1 : 0)
+//            }
+//            .padding(.trailing)
+//        }
+//        .offset(y: screenHeight * 0.04)
+//        .frame(width: screenWidth * 0.6, height: screenWidth / 8)
     }
 }
