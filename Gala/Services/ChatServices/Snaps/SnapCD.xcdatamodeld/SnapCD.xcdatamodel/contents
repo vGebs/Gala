@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="SnapCD" representedClassName="SnapCD" syncable="YES" codeGenerationType="class">
+        <attribute name="docID" attributeType="String"/>
+        <attribute name="fromID" attributeType="String"/>
+        <attribute name="img" optional="YES" attributeType="Binary"/>
+        <attribute name="openedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="snapID_timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="toID" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="SnapCD" positionX="-63" positionY="-18" width="128" height="119"/>
+    </elements>
+</model>

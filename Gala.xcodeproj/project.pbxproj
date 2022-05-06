@@ -114,6 +114,8 @@
 		FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */; };
 		FAAAA7BF27FBB12600663816 /* UserAboutService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7BE27FBB12600663816 /* UserAboutService_CoreData.swift */; };
 		FAAAA7C627FBCE5600663816 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7C527FBCE5600663816 /* ProfileService.swift */; };
+		FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */; };
+		FAACA57A2825D19300B828DB /* SnapCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5782825D19300B828DB /* SnapCD.xcdatamodeld */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -263,6 +265,8 @@
 		FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesDataStore.swift; sourceTree = "<group>"; };
 		FAAAA7BE27FBB12600663816 /* UserAboutService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService_CoreData.swift; sourceTree = "<group>"; };
 		FAAAA7C527FBCE5600663816 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService_CoreData.swift; sourceTree = "<group>"; };
+		FAACA5792825D19300B828DB /* SnapCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SnapCD.xcdatamodel; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -711,6 +715,16 @@
 			path = ProfileImageService;
 			sourceTree = "<group>";
 		};
+		FAACA5772825D0F900B828DB /* Snaps */ = {
+			isa = PBXGroup;
+			children = (
+				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
+				FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */,
+				FAACA5782825D19300B828DB /* SnapCD.xcdatamodeld */,
+			);
+			path = Snaps;
+			sourceTree = "<group>";
+		};
 		FABAABE92787F63400154363 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,7 +761,7 @@
 		FABB9761280FEF990014A21E /* ChatServices */ = {
 			isa = PBXGroup;
 			children = (
-				FA2E23CD27BF0D0D000C131A /* SnapService.swift */,
+				FAACA5772825D0F900B828DB /* Snaps */,
 				FABB9777281248DC0014A21E /* Matches */,
 				FABB97652810AA4F0014A21E /* Message */,
 			);
@@ -1018,6 +1032,7 @@
 				FA777D2926CE219F007C53F5 /* SliderView.swift in Sources */,
 				FADC1164269813EC0070465C /* UserCore.swift in Sources */,
 				FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */,
+				FAACA57A2825D19300B828DB /* SnapCD.xcdatamodeld in Sources */,
 				FABB977C28124B380014A21E /* MatchCD.xcdatamodeld in Sources */,
 				FA87740426409C5900D5D5CB /* SigninSignupViewModel.swift in Sources */,
 				FADF908A2807748400C19A07 /* UserCoreService_Firebase.swift in Sources */,
@@ -1103,6 +1118,7 @@
 				FA7E3B3826EAD18D00A6653C /* SendViewModelTest.swift in Sources */,
 				FA50FAB327C8859200502410 /* SnapView.swift in Sources */,
 				FA87740026409C0600D5D5CB /* LandingPageViewModel.swift in Sources */,
+				FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
@@ -1401,6 +1417,16 @@
 			);
 			currentVersion = FA914A072807639F0015106E /* ProfileImageCD.xcdatamodel */;
 			path = ProfileImageCD.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		FAACA5782825D19300B828DB /* SnapCD.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FAACA5792825D19300B828DB /* SnapCD.xcdatamodel */,
+			);
+			currentVersion = FAACA5792825D19300B828DB /* SnapCD.xcdatamodel */;
+			path = SnapCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

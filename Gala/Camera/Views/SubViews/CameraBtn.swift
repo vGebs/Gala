@@ -14,45 +14,38 @@ struct CameraBtn: View {
     
     var body: some View {
         ZStack {
-            Circle()
-                .foregroundColor(.white)
-                .opacity(0.2)
-                .frame(width: screenWidth * 0.16, height: screenWidth * 0.16)
-                .scaleEffect(tap ? 1.3 : 1)
-                .scaleEffect(isLongPress ? 1.5 : 1)
-                .animation(.spring(response: 0.4, dampingFraction: 0.6))
-                .onTapGesture {
+            ZStack {
+                Circle()
+                    .foregroundColor(.white)
+                    .opacity(progress > 0 ? 0.3 : 0.0001)
+                    .frame(width: screenWidth * 0.16, height: screenWidth * 0.16)
+                    
+                Circle().stroke(lineWidth: tap ? 10 : 4)
+                    .foregroundColor(.white)
+                    .frame(width: isLongPress || tap ? 0 : screenWidth * 0.16, height: isLongPress || tap ? 0 : screenWidth * 0.16)
+            }
+            .scaleEffect(tap ? 1.3 : 1)
+            .scaleEffect(isLongPress ? 1.5 : 1)
+            .onTapGesture {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
                     tap = true
                     camera.capturePhoto()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         tap = false
-                        print("Tapped")
                     }
                 }
-                .gesture(longPress)
-            
-            Circle().stroke(lineWidth: tap ? 10 : 5)
-                .foregroundColor(.white)
-                .frame(width: isLongPress || tap ? 0 : screenWidth * 0.16, height: isLongPress || tap ? 0 : screenWidth * 0.16)
-                .scaleEffect(tap ? 1.3 : 1)
-                .scaleEffect(isLongPress ? 1.5 : 1)
-                .animation(.spring(response: 0.4, dampingFraction: 0.6))
-                .onTapGesture {
-                    tap = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        tap = false
-                        print("Tapped")
-                    }
-                }
-                .gesture(longPress)
+            }
+            .gesture(longPress)
             
             if isLongPress {
                 ringView
                     .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
                     .onReceive(timer) { _ in
-                        if timeRemaining > 0 {
-                            timeRemaining -= 1
-                            progress = 1 - (timeRemaining / 100)
+                        withAnimation(.linear) {
+                            if timeRemaining > 0 {
+                                timeRemaining -= 1
+                                progress = 1 - (timeRemaining / 100)
+                            }
                         }
                     }
             }
@@ -63,29 +56,27 @@ struct CameraBtn: View {
     @GestureState var isLongPress = false // will be true till tap hold
     
     var longPress: some Gesture {
-        LongPressGesture(minimumDuration: 0.1)
+        LongPressGesture(minimumDuration: 0.025)
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
             .updating($isLongPress) { value, state, transaction in
                 switch value {
                 case .second(true, nil):
-                    state = true
-                    print("Start long press")
-                    //show.toggle()
-                    // side effect here if needed
+                    withAnimation(.linear) {
+                        state = true
+                    }
                 default:
                     break
                 }
             }
             .onEnded { value in
                 //show.toggle()
-                print("Done long press")
-                self.progress = 0
-                self.timeRemaining = 100
+                withAnimation(.linear) {
+                    self.progress = 0
+                    self.timeRemaining = 100
+                }
             }
     }
-    
-    //@Binding var progress: Float
-    
+        
     @State var timeRemaining: Float = 100
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State var progress: Float = 0
@@ -97,7 +88,7 @@ struct CameraBtn: View {
                 .stroke(style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
                 .foregroundColor(.white)
                 .rotationEffect(Angle(degrees: 270.0))
-                .animation(.linear)
+                //.animation(.linear)
         }
     }
 }
