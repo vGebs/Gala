@@ -144,13 +144,14 @@ extension MatchService_CoreData {
     }
     
     private func bundleMatch(cd: MatchCD) -> Match {
-        return Match(matchedUID: cd.matchedUID!, timeMatched: cd.matchedDate!)
+        return Match(matchedUID: cd.matchedUID!, timeMatched: cd.matchedDate!, docID: cd.docID!)
     }
     
     private func bundleMatchCD(match: Match, cd: MatchCD) {
         cd.matchedUID = match.matchedUID
         cd.matchedDate = match.timeMatched
         cd.myUID = AuthService.shared.currentUser!.uid
+        cd.docID = match.docID
     }
     
     private func getAllMatchesCD(for currentUID: String) -> [MatchCD]? {

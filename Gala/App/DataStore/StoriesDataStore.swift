@@ -75,6 +75,7 @@ class StoriesDataStore: ObservableObject {
                 
             case .added:
                 for like in storyLikes {
+                    print("StoriesDataStore: added like")
                     self?.postsILiked.append(like)
                 }
                 

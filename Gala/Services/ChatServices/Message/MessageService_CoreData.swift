@@ -125,6 +125,26 @@ class MessageService_CoreData: MessageService_CoreDataProtocol {
             }
         }
     }
+    
+    func deleteMessages(from uid: String) {
+        if let msgs = getAllMessagesCD(for: uid) {
+            
+            for msg in msgs {
+                persistentContainer.viewContext.delete(msg)
+            }
+            
+            do {
+                try persistentContainer.viewContext.save()
+                print("MessageService_CoreData: Deleted messages with uid -> \(uid)")
+                return
+            } catch {
+                print("MessageService_CoreData: Could not delete message with uid -> \(uid)")
+                return
+            }
+        } else {
+            print("MessageService_CoreData: No messages with uid -> \(uid)")
+        }
+    }
 }
 
 extension MessageService_CoreData {

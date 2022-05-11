@@ -15,7 +15,7 @@ class UserAboutService_CoreData: UserAboutServiceProtocol {
     typealias void = Void
     typealias userAbout = UserAbout?
     
-    let persistentContainer: NSPersistentContainer
+    private let persistentContainer: NSPersistentContainer
     
     static let shared = UserAboutService_CoreData()
     

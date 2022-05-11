@@ -198,7 +198,6 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     
     deinit {
         print("CameraViewModel: Deinitializing")
-        print("CameraViewModel: Camera is now off")
     }
     
     // Call this on the session queue.
@@ -213,7 +212,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         
         self.addVideoInput()
         
-        self.addAudioInput()
+        //self.addAudioInput()
         
         self.addPhotoOutput()
         

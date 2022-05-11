@@ -47,6 +47,15 @@ class ProfileService: ProfileServiceProtocol {
     func updateCurrentUserProfile(uc: UserCore?, abt: UserAbout?, profImage: [ImageModel]?, imgs: [ImageModel]?, uid: String) -> AnyPublisher<Void, Error> {
         return updateCurrentUserProfile_(uc, abt, profImage, imgs, uid)
     }
+    
+    //This func will remove a profile from core data only
+    func deleteProfile(for uid: String) {
+        UserCoreService_CoreData.shared.removeUser(uid: uid)
+        UserAboutService_CoreData.shared.removeUser(uid: uid)
+        for i in 0..<7 {
+            ProfileImageService_CoreData.shared.deleteProfileImage(uid: uid, index: String(i))
+        }
+    }
 }
 
 //MARK: - createProfile()

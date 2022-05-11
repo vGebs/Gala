@@ -47,6 +47,7 @@ class StoriesViewModel: ObservableObject {
         
         DataStore.shared.stories.$postsILiked
             .sink { [weak self] likes in
+                print("yuh")
                 self?.postsILiked = likes
             }.store(in: &cancellables)
     }
@@ -83,25 +84,27 @@ class StoriesViewModel: ObservableObject {
     func unLikePost(uid: String, pid: Date) {
         var docID = ""
         for story in postsILiked {
-            if story.pid == pid && story.likedUID == uid {
+            if story.likedUID == uid {
                 docID = story.docID
                 print("DocID: \(docID)")
                 break
             }
         }
-        print("DocID: \(docID)")
-        LikesService.shared.unLikePost(docID: docID)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("StoriesViewModel: Failed to unlike post")
-                    print("StoriesViewModel-err: \(e)")
-                case .finished:
-                    print("StoriesViewModel: Successfully unliked user")
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
+                
+        if docID != "" {
+            LikesService.shared.unLikePost(docID: docID)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("StoriesViewModel: Failed to unlike post")
+                        print("StoriesViewModel-err: \(e)")
+                    case .finished:
+                        print("StoriesViewModel: Successfully unliked user")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
+        }
     }
 }

@@ -24,7 +24,7 @@ class UserCoreService_CoreData: UserCoreServiceProtocol {
     
     static let shared = UserCoreService_CoreData()
     
-    let persistentContainer: NSPersistentContainer
+    private let persistentContainer: NSPersistentContainer
     
     private init() {
         persistentContainer = NSPersistentContainer(name: "UserCoreCD")

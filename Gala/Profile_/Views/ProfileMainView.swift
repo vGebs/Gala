@@ -81,16 +81,37 @@ struct ProfileMainView: View {
                                     .font(.system(size: 20, weight: .regular, design: .rounded))
                             }
                             .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        } else {
+                        } else if DataStore.shared.chats.isMatch(uid: viewModel.uid!) {
                             Menu {
-                                Button(action: {  }){
+                                Button(action: {
+                                    //unMatchUser
+                                    viewModel.unMatchUser()
+                                }){
                                     HStack{
                                         Image(systemName: "figure.wave")
                                         Text("Unmatch user")
                                     }
                                 }
                                 
-                                Button(action: {  }){
+                                Button(action: {
+                                    //report User
+                                }){
+                                    HStack{
+                                        Image(systemName: "person.crop.circle.badge.exclamationmark")
+                                        Text("Report user")
+                                    }
+                                }
+                            } label: {
+                                Label("", systemImage: optionButtonRight)
+                                    .foregroundColor(.buttonPrimary)
+                                    .font(.system(size: 20, weight: .regular, design: .rounded))
+                            }
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        } else {
+                            Menu {
+                                Button(action: {
+                                    //report user
+                                }){
                                     HStack{
                                         Image(systemName: "person.crop.circle.badge.exclamationmark")
                                         Text("Report user")

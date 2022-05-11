@@ -70,6 +70,7 @@ class LikesService: LikesServiceProtocol {
         return Future<Void, Error> { promise in
             for like in inComingLikes {
                 if like.like.likedUID == uid {
+                    print("Like docID: \(like.docID)")
                     self.db.collection("Likes").document(like.docID)
                         .delete() { err in
                             if let err = err {
@@ -84,8 +85,6 @@ class LikesService: LikesServiceProtocol {
             }
         }.eraseToAnyPublisher()
     }
-    
-    
     
     //This function returns all users that have liked the current user
     func getPeopleThatLikeMe() -> AnyPublisher<[Like], Error> {
@@ -298,7 +297,6 @@ extension LikesService {
     }
     
     func unLikePost(docID: String) -> AnyPublisher<Void, Error> {
-        print("DocID: \(docID)")
         return Future<Void, Error> { promise in
             self.db.collection("Likes").document(docID).delete() { err in
                 if let e = err {

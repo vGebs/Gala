@@ -15,7 +15,7 @@ class ProfileImageService_CoreData: ProfileImageServiceProtocol {
     typealias void = Void
     typealias image = UIImage?
     
-    let persistentContainer: NSPersistentContainer
+    private let persistentContainer: NSPersistentContainer
     
     static let shared = ProfileImageService_CoreData()
     

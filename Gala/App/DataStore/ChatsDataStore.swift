@@ -61,6 +61,40 @@ class ChatsDataStore: ObservableObject {
         messages.removeAll()
         empty = true
     }
+    
+    func unMatchUser(with uid: String) {
+        var docID: String = ""
+        
+        for match in matches {
+            if match.uc.userBasic.uid == uid {
+                docID = match.matchDocID
+            }
+        }
+        
+        MatchService_Firebase.shared.unMatchUser(with: docID)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ProfileViewModel: Failed to unMatch user with uid: \(uid)")
+                    print("ProfileViewModel-err: \(e)")
+                case .finished:
+                    print("ProfileViewModel: Finished unMatching from user w/ uid -> \(uid)")
+                }
+            } receiveValue: { _ in
+                
+                let matchedStories = DataStore.shared.stories.matchedStories
+                
+                for i in 0..<matchedStories.count {
+                    if matchedStories[i].uid == uid {
+                        DataStore.shared.stories.matchedStories.remove(at: i)
+                        return
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
 }
 
 
@@ -68,6 +102,15 @@ class ChatsDataStore: ObservableObject {
 //MARK: - Observe Matches ----------------------------------------------------------------------------------------->
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
+    
+    public func isMatch(uid: String) -> Bool {
+        for match in matches {
+            if match.uc.userBasic.uid == uid {
+                return true
+            }
+        }
+        return false
+    }
     
     private func observeMatches() {
         
@@ -90,48 +133,24 @@ extension ChatsDataStore {
                 }
                 
             case .removed:
-                print("")
+                for i in 0..<self!.matches.count {
+                    for m in matches {
+                        if self!.matches[i].uc.userBasic.uid == m.matchedUID {
+                            print("Matched shit yo uid: \(m.matchedUID)")
+                            
+                            MatchService_CoreData.shared.deleteMatch(for: m.matchedUID)      //DONE
+                            MessageService_CoreData.shared.deleteMessages(from: m.matchedUID)//DONE
+                            ProfileService.shared.deleteProfile(for: m.matchedUID)           //DONE
+                            SnapService_CoreData.shared.deleteSnaps(from: m.matchedUID)      //
+                            
+                            print("ChatsDataStore: removing user with uid -> \(m.matchedUID)")
+                            self!.matches.remove(at: i)
+                            return
+                        }
+                    }
+                }
             case .modified:
                 print("")
-            }
-        }
-    }
-    
-    private func observeProfileImage(for match: Match) {
-        ProfileImageService_Firebase.shared.observeProfileImage(for: match.matchedUID) { [weak self] img, empty in
-            if let img = img {
-                //we got the img, so let's place it in the right spot
-                for i in 0..<self!.matches.count {
-                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
-                        self!.matches[i].profileImg = img
-                        ProfileImageService_CoreData.shared.uploadProfileImage(uid: match.matchedUID, img: ImageModel(image: img, index: 0))
-                    }
-                }
-            }
-            
-            if empty {
-                //if the image is nil, the user has deleted their profile image, so lets remove it
-                for i in 0..<self!.matches.count {
-                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
-                        self!.matches[i].profileImg = nil
-                        ProfileImageService_CoreData.shared.deleteProfileImage(uid: match.matchedUID, index: "0")
-                    }
-                }
-            }            
-        }
-    }
-    
-    private func observeMatchUserCore(for match: Match) {
-        UserCoreService_Firebase.shared.observeUserCore(with: match.matchedUID) { [weak self] uc in
-            if let uc = uc {
-                //we've got uc, now update the user in core data
-                UserCoreService_CoreData.shared.updateUser(userCore: uc)
-                //update the matching uc in self.matches
-                for i in 0..<self!.matches.count {
-                    if uc.userBasic.uid == self?.matches[i].uc.userBasic.uid {
-                        self?.matches[i].uc = uc
-                    }
-                }
             }
         }
     }
@@ -163,7 +182,8 @@ extension ChatsDataStore {
                                         uc: uc,
                                         profileImg: img,
                                         timeMatched: match.timeMatched,
-                                        lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp
+                                        lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp,
+                                        matchDocID: match.docID
                                     )
                                     
                                     self?.matches.append(newUCimg)
@@ -176,7 +196,8 @@ extension ChatsDataStore {
                                         uc: uc,
                                         profileImg: img,
                                         timeMatched: match.timeMatched,
-                                        lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time
+                                        lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time,
+                                        matchDocID: match.docID
                                     )
                                     
                                     self?.matches.append(newUCimg)
@@ -189,7 +210,8 @@ extension ChatsDataStore {
                                     uc: uc,
                                     profileImg: img,
                                     timeMatched: match.timeMatched,
-                                    lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp
+                                    lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp,
+                                    matchDocID: match.docID
                                 )
                                 
                                 self?.matches.append(newUCimg)
@@ -203,7 +225,8 @@ extension ChatsDataStore {
                                     uc: uc,
                                     profileImg: img,
                                     timeMatched: match.timeMatched,
-                                    lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time
+                                    lastMessage: j[(self?.messages[uc.userBasic.uid]?.count)! - 1].time,
+                                    matchDocID: match.docID
                                 )
                                 
                                 self?.matches.append(newUCimg)
@@ -214,7 +237,8 @@ extension ChatsDataStore {
                                 let newUCimg = MatchedUserCore(
                                     uc: uc,
                                     profileImg: img,
-                                    timeMatched: match.timeMatched
+                                    timeMatched: match.timeMatched,
+                                    matchDocID: match.docID
                                 )
                                 
                                 self?.matches.append(newUCimg)
@@ -230,7 +254,9 @@ extension ChatsDataStore {
                                 uc: uc,
                                 profileImg: UIImage(),
                                 timeMatched: match.timeMatched,
-                                lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp)
+                                lastMessage: n[(self?.snaps[uc.userBasic.uid]?.count)! - 1].snapID_timestamp,
+                                matchDocID: match.docID
+                            )
                             
                             self?.matches.append(newUCimg)
                             self?.sortMatches()
@@ -240,7 +266,8 @@ extension ChatsDataStore {
                             let newUCimg = MatchedUserCore(
                                 uc: uc,
                                 profileImg: UIImage(),
-                                timeMatched: match.timeMatched
+                                timeMatched: match.timeMatched,
+                                matchDocID: match.docID
                             )
                             self?.matches.append(newUCimg)
                             self?.sortMatches()
@@ -250,6 +277,45 @@ extension ChatsDataStore {
                     }
                 }
             }.store(in: &cancellables)
+    }
+    
+    private func observeMatchUserCore(for match: Match) {
+        UserCoreService_Firebase.shared.observeUserCore(with: match.matchedUID) { [weak self] uc in
+            if let uc = uc {
+                //we've got uc, now update the user in core data
+                UserCoreService_CoreData.shared.updateUser(userCore: uc)
+                //update the matching uc in self.matches
+                for i in 0..<self!.matches.count {
+                    if uc.userBasic.uid == self?.matches[i].uc.userBasic.uid {
+                        self?.matches[i].uc = uc
+                    }
+                }
+            }
+        }
+    }
+    
+    private func observeProfileImage(for match: Match) {
+        ProfileImageService_Firebase.shared.observeProfileImage(for: match.matchedUID) { [weak self] img, empty in
+            if let img = img {
+                //we got the img, so let's place it in the right spot
+                for i in 0..<self!.matches.count {
+                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
+                        self!.matches[i].profileImg = img
+                        ProfileImageService_CoreData.shared.uploadProfileImage(uid: match.matchedUID, img: ImageModel(image: img, index: 0))
+                    }
+                }
+            }
+            
+            if empty {
+                //if the image is nil, the user has deleted their profile image, so lets remove it
+                for i in 0..<self!.matches.count {
+                    if self!.matches[i].uc.userBasic.uid == match.matchedUID {
+                        self!.matches[i].profileImg = nil
+                        ProfileImageService_CoreData.shared.deleteProfileImage(uid: match.matchedUID, index: "0")
+                    }
+                }
+            }            
+        }
     }
     
     private func getMatchesFromCD() -> [Match]? {
@@ -282,13 +348,18 @@ extension ChatsDataStore {
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
     private func observeSnaps() {
+        
+        //before we observe all snaps, we need to fetch all the snaps we can from core data
+        
         observeSnapsToMe()
         observeSnapsFromMe()
     }
     
     private func observeSnapsToMe() {
         SnapService.shared.observeSnapsToMe() { [weak self] snaps, docChange in
-            if docChange == .added {
+            
+            switch docChange {
+            case .added:
                 //if the snap is newly added
                 // we want to fetch the content and then add it to the array in the correct position
                 for snap in snaps {
@@ -332,7 +403,7 @@ extension ChatsDataStore {
                         }
                         .store(in: &self!.cancellables)
                 }
-            } else if docChange == .modified {
+            case .modified:
                 //cycle through the snaps received and the snaps we have,
                 // if there is a match, replace the snap with the new one
                 for snap in snaps {
@@ -345,7 +416,7 @@ extension ChatsDataStore {
                         }
                     }
                 }
-            } else if docChange == .removed {
+            case .removed:
                 //cycle through the snaps received and the snaps we have,
                 // if there is a match, remove that snap
                 for snap in snaps {
@@ -364,7 +435,9 @@ extension ChatsDataStore {
     
     private func observeSnapsFromMe() {
         SnapService.shared.observerSnapsfromMe { [weak self] snaps, docChange in
-            if docChange == .added {
+            
+            switch docChange {
+            case .added:
                 // if the snap is newly added,
                 // add it in the correct position (we do not need to pull the image because it is from us.
                 for snap in snaps {
@@ -378,7 +451,7 @@ extension ChatsDataStore {
                         self?.snaps[snap.toID] = [snap]
                     }
                 }
-            } else if docChange == .modified {
+            case .modified:
                 //cycle through the snaps received and the snaps we have,
                 // if there is a match, replace the snap with the new one
                 for snap in snaps {
@@ -391,7 +464,7 @@ extension ChatsDataStore {
                         }
                     }
                 }
-            } else if docChange == .removed {
+            case .removed:
                 //cycle through the snaps received and the snaps we have,
                 // if there is a match, remove that snap
                 for snap in snaps {
@@ -454,7 +527,6 @@ extension ChatsDataStore {
                 }
             case .modified:
                 for message in messages {
-                    print("We did a thing")
                     MessageService_CoreData.shared.updateMessage(message: message)
                     
                     if let _ = self?.messages[message.toID] {

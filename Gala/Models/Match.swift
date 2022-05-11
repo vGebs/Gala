@@ -12,6 +12,7 @@ struct Match: Identifiable {
     let id = UUID()
     let matchedUID: String
     let timeMatched: Date
+    let docID: String
 }
 
 struct MatchedUserCore: Identifiable {
@@ -20,4 +21,5 @@ struct MatchedUserCore: Identifiable {
     var profileImg: UIImage?
     var timeMatched: Date
     var lastMessage: Date?
+    var matchDocID: String
 }

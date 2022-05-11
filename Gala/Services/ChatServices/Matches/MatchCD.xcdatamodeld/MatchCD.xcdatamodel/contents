@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="MatchCD" representedClassName="MatchCD" syncable="YES" codeGenerationType="class">
+        <attribute name="docID" attributeType="String"/>
         <attribute name="matchedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="matchedUID" attributeType="String"/>
         <attribute name="myUID" attributeType="String"/>
     </entity>
     <elements>
-        <element name="MatchCD" positionX="-45" positionY="0" width="128" height="74"/>
+        <element name="MatchCD" positionX="-45" positionY="0" width="128" height="89"/>
     </elements>
 </model>

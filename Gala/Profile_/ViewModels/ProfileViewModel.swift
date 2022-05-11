@@ -379,6 +379,14 @@ final class ProfileViewModel: ObservableObject {
             editPressed = true
         }
     }
+    
+    func unMatchUser() {
+        if let uid = uid {
+            print("ProfileViewModel unmatch user with id: \(uid)")
+
+            DataStore.shared.chats.unMatchUser(with: uid)
+        }
+    }
 }
 
 //MARK: - Image options ------------------------------------------------------------------------------------->

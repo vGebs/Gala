@@ -88,6 +88,23 @@ class SnapService_CoreData {
             }
         }
     }
+    
+    func deleteSnaps(from uid: String) {
+        if let snaps = getAllSnapsCD(for: uid) {
+            for snap in snaps {
+                persistentContainer.viewContext.delete(snap)
+            }
+            
+            do {
+                try persistentContainer.viewContext.save()
+                print("SnapService_CoreData: Deleted all snaps from user with id -> \(uid)")
+                return
+            } catch {
+                print("SnapService_CoreData: Could not delete snaps from user with uid -> \(uid)")
+                return
+            }
+        }
+    }
 }
 
 extension SnapService_CoreData {
