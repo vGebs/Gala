@@ -376,30 +376,39 @@ extension ChatsDataStore {
                             }
                         } receiveValue: { [weak self] img in
                             if let i = img {
-                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: i, docID: snap.docID)
+                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: i, docID: snap.docID)
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
 
+                                SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                
+                                newSnap.img = nil
+                                
                                 if let _ = self?.snaps[snap.fromID] {
                                     let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                                     
                                     self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                } else {
-                                    self?.snaps[snap.fromID] = [newSnap]
-                                }
-                            } else {
-                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
-
-                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-
-                                if let _ = self?.snaps[snap.fromID] {
-                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                                     
-                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+//                                    //when we get a snap, we want to remove all openedSnaps from the convo
+//                                    self!.removeAllOpenedSnaps(for: snap.fromID)
+                                    
                                 } else {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
                             }
+//                            else {
+//                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
+//
+//                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+//
+//                                if let _ = self?.snaps[snap.fromID] {
+//                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+//
+//                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+//                                } else {
+//                                    self?.snaps[snap.fromID] = [newSnap]
+//                                }
+//                            }
                         }
                         .store(in: &self!.cancellables)
                 }
@@ -421,9 +430,11 @@ extension ChatsDataStore {
                 // if there is a match, remove that snap
                 for snap in snaps {
                     if let _ = self?.snaps[snap.fromID] {
-                        for i in 0..<(self?.snaps[snap.fromID]!.count)! {
-                            if self?.snaps[snap.fromID]![i].snapID_timestamp == snap.snapID_timestamp {
-                                self?.snaps[snap.fromID]!.remove(at: i)
+                        for i in 0..<self!.snaps[snap.fromID]!.count {
+                            if self!.snaps[snap.fromID]![i].docID == snap.docID {
+                                SnapService_CoreData.shared.deleteSnap(docID: self!.snaps[snap.fromID]![i].docID)
+                                self!.snaps[snap.fromID]!.remove(at: i)
+                                SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
                                 return
                             }
                         }
@@ -431,6 +442,46 @@ extension ChatsDataStore {
                 }
             }
         }
+    }
+    
+//    private func removeAllOpenedSnaps(for uid: String) {
+//        if let _ = snaps[uid] {
+//
+//            let lastSnap = snaps[uid]!.last
+//
+//            snaps[uid]!.removeAll { snap in
+//                if snap.openedDate != nil {
+//                    deleteSnap(snap)
+//                    return true
+//                } else {
+//                    return false
+//                }
+//            }
+//
+////            if let lastSnap = lastSnap {
+////                if snaps[uid]!.count > 0 {
+////                    snaps[uid]!.append(lastSnap)
+////                } else {
+////                    snaps[uid] = [lastSnap]
+////                }
+////            }
+//        }
+//    }
+    
+    private func deleteSnap(_ snap: Snap) {
+        SnapService.shared.deleteSnap(snap: snap)
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsDataStore: Failed to delete snap with docID -> \(snap.docID)")
+                    print("ChatsDataStore-err: \(e)")
+                case .finished:
+                    print("ChatsDataStore: Finished deleting snap with docID -> \(snap.docID)")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     private func observeSnapsFromMe() {
@@ -447,6 +498,10 @@ extension ChatsDataStore {
                         let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                         
                         self?.snaps[snap.toID]?.insert(snap, at: insertIndex!)
+                        
+                        //when we send a snap, we want to remove all openedSnaps from the convo
+                        //self!.removeAllOpenedSnaps(for: snap.toID)
+                        
                     } else {
                         self?.snaps[snap.toID] = [snap]
                     }
@@ -472,6 +527,7 @@ extension ChatsDataStore {
                         for i in 0..<(self?.snaps[snap.toID]!.count)! {
                             if self?.snaps[snap.toID]![i].snapID_timestamp == snap.snapID_timestamp {
                                 self?.snaps[snap.toID]!.remove(at: i)
+                                SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
                                 print("ChatsDataStore: removed snap with id -> \(snap.docID)")
                                 return
                             }

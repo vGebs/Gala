@@ -43,6 +43,15 @@ class SnapService_CoreData {
         }
     }
     
+    func getSnap(with docID: String) -> Snap? {
+        if let snap = getSnapCD(with: docID) {
+            return bundleSnap(cd: snap)
+        } else {
+            print("SnapService_CoreData: No snap with docID -> \(docID)")
+            return nil
+        }
+    }
+    
     func updateSnap(snap: Snap) {
         if let snapCD = getSnapCD(with: snap.docID) {
             bundleSnapCD(snap: snap, cd: snapCD)

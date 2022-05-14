@@ -36,6 +36,9 @@ struct ExploreMainView: View {
                     Spacer()
                     ScrollView(showsIndicators: false) {
                         ExploreView(viewModel: viewModel) //, showVibe: $showVibe
+                        RoundedRectangle(cornerRadius: 2)
+                            .opacity(0)
+                            .frame(height: screenHeight * 0.1)
                     }
                     .frame(width: screenWidth, height: screenHeight * 0.9)
                     .cornerRadius(20)

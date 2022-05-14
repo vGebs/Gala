@@ -13,31 +13,71 @@ protocol SnapProtocol {
 }
 
 struct SnapView: View {
-    @State var counter: Int = 0
+    //@State var counter: Int = 0
     @Binding var show: Bool
-    var snaps: [Snap]
-    var snapViewModel: SnapProtocol
+    //var snaps: [Snap]
+    var snapViewModel: ChatsViewModel
+    var uid: String
+    @Binding var snap: Snap?
     
     var body: some View {
         ZStack {
-            Image(uiImage: snaps[0].img!)
-                .resizable()
-                .scaledToFill()
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    if snaps.count == 1 {
-                        snapViewModel.openSnap(snap: snaps[counter])
-                        show = false
-                    } else {
-                        snapViewModel.openSnap(snap: snaps[counter])
-                    }
+            if snap != nil {
+                if snap!.img != nil {
+                    Image(uiImage: snap!.img!)
+                        .resizable()
+                        .scaledToFill()
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            print("TempCounter: \(snapViewModel.tempCounter)")
+                            print("unopenedSnaps: \(snapViewModel.getUnopenedSnaps(from: uid).count)")
+                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count { //snapViewModel.getUnopenedSnaps(from: uid).count == 1 ||
+                                show = false
+                            } else {
+                                snapViewModel.getSnap(for: uid)
+                            }
+                        }
+                        .onDisappear {
+                            snapViewModel.clearSnaps(for: uid)
+                        }
+                } else {
+                    ProgressView()
                 }
-                .onDisappear {
-                    snapViewModel.openSnap(snap: snaps[counter])
-                }
+            } else {
+                ProgressView()
+            }
         }
     }
 }
+
+
+
+//struct SnapView: View {
+//    @State var counter: Int = 0
+//    @Binding var show: Bool
+//    var snaps: [Snap]
+//    var snapViewModel: SnapProtocol
+//
+//    var body: some View {
+//        ZStack {
+//            Image(uiImage: snaps[0].img!)
+//                .resizable()
+//                .scaledToFill()
+//                .edgesIgnoringSafeArea(.all)
+//                .onTapGesture {
+//                    if snaps.count == 1 {
+//                        snapViewModel.openSnap(snap: snaps[counter])
+//                        show = false
+//                    } else {
+//                        snapViewModel.openSnap(snap: snaps[counter])
+//                    }
+//                }
+//                .onDisappear {
+//                    snapViewModel.openSnap(snap: snaps[counter])
+//                }
+//        }
+//    }
+//}
 
 struct IndividualSnapView: View {
     var snap: Snap

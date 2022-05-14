@@ -11,7 +11,7 @@ import FirebaseFirestore
 import OrderedCollections
 import UIKit
 
-class ChatsViewModel: ObservableObject, SnapProtocol {
+class ChatsViewModel: ObservableObject {
     
     private var subs: [AnyCancellable] = []
     
@@ -27,6 +27,11 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
     @Published var userChat: UserChat? = nil
     @Published var timeMatched: Date? = nil
     
+    @Published var tempSnap: Snap?
+    @Published var tempCounter = 0
+    @Published private var toBeDeleted: [Snap] = []
+    @Published private var toBeOpened: [Snap] = []
+
     @Published var messageText = ""
     
     @Published var lastMatchUpdate: Date?
@@ -52,23 +57,22 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
             }).store(in: &subs)
     }
     
-    func getUnopenedSnapsFrom(uid: String) -> [Snap] {
-        var final: [Snap] = []
-        if let snaps = snaps[uid] {
-            for snap in snaps {
-                if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid {
-                    final.append(snap)
-                }
-            }
-        }
-        return final
-    }
+//    func getUnopenedSnapsFrom(uid: String) -> [Snap] {
+//        var final: [Snap] = []
+//        if let snaps = snaps[uid] {
+//            for snap in snaps {
+//                if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid {
+//                    final.append(snap)
+//                }
+//            }
+//        }
+//        return final
+//    }
     
     func handleConvoPress() {
         //for this function, we need to determine which button was pressed.
         //If there is an unopened snap, we open the snap(s)
         //if there is no snaps, we open the chat
-        
     }
     
     func getTempMessages(uid: String) {
@@ -79,60 +83,131 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
         }
     }
     
-    func openSnap(snap: Snap) {
-        // the first snap will always be opened first (arr[0])
-        // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
-        //
+//    func openSnap(snap: Snap) {
+//        // the first snap will always be opened first (arr[0])
+//        // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
+//        //
+//
+//        if let snaps = snaps[snap.fromID] {
+//
+//            //check to see how many openedSnaps there are
+//            var unopenedCounter = 0
+//
+//            for snap in snaps {
+//                if snap.openedDate == nil {
+//                    unopenedCounter += 1
+//                }
+//            }
+//
+//            if unopenedCounter > 1 {
+//                deleteSnap_(snap)
+//            } else {
+//                openSnap_(snap)
+//            }
+//        }
+//    }
+    
+    func getSnap(for uid: String) {
+        //we need to get the first snap in the array for
+        let snaps = getUnopenedSnaps(from: uid)
         
-        if let snaps = snaps[snap.fromID] {
-            
-            //check to see how many openedSnaps there are
-            var unopenedCounter = 0
-            
-            for snap in snaps {
-                if snap.openedDate == nil {
-                    unopenedCounter += 1
+        if tempCounter < snaps.count {
+            if let snap = SnapService_CoreData.shared.getSnap(with: snaps[tempCounter].docID) {
+                self.tempSnap = snap
+                
+                let mostRecent: Snap? = getMostRecentSnap(for: uid)
+                
+                if let mostRecent = mostRecent {
+                    if snap.docID == mostRecent.docID {
+                        self.toBeOpened.append(snap)
+                    } else if snap.snapID_timestamp < mostRecent.snapID_timestamp {
+                        self.toBeDeleted.append(snap)
+                    }
+                } else {
+                    self.toBeOpened.append(snap)
                 }
-            }
-            
-            if unopenedCounter > 1 {
-                deleteSnap_(snap)
-            } else {
-                openSnap_(snap)
+                
+//                if tempCounter + 1 < snaps.count {
+//                    self.toBeDeleted.append(snap)
+//                } else {
+//                    self.toBeOpened.append(snap)
+//                    //self.openSnap_(snaps[tempCounter])
+//                }
+                self.tempCounter += 1
             }
         }
     }
-    
-    private func openSnap_(_ snap: Snap) {
-        SnapService.shared.openSnap(snap: snap)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("ChatsViewModel: Failed to open snap with docID: \(snap.docID)")
-                    print("ChatsViewModel-err: \(e)")
-                case .finished:
-                    print("ChatsViewModel: Successfully opened snap with docID: \(snap.docID)")
-                }
-            } receiveValue: { _ in }
-            .store(in: &subs)
-    }
-    
-    private func deleteSnap_(_ snap: Snap){
+        
+    private func deleteSnap(snap: Snap) {
         SnapService.shared.deleteSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .failure(let e):
-                    print("ChatsViewModel: Failed to delete snap")
+                    print("ChatsViewModel: Failed to delete snap with docID -> \(snap.docID)")
                     print("ChatsViewModel-err: \(e)")
                 case .finished:
-                    print("ChatsViewModel: Successfully deleted snap")
+                    print("ChatsViewModel: Successfully deleted snap with docID -> \(snap.docID)")
                 }
             } receiveValue: { _ in }
             .store(in: &subs)
+    }
+    
+    func clearSnaps(for uid: String) {
+        if let _ = self.snaps[uid] {
+                    
+            //we need to get the most recent snap from that user
+            
+            let mostRecentSnap: Snap? = getMostRecentSnap(for: uid)
+            
+            for snap in toBeDeleted {
+                if let mostRecentSnap = mostRecentSnap {
+                    if snap.snapID_timestamp != mostRecentSnap.snapID_timestamp {
+                        deleteSnap(snap: snap)
+                    }
+                }
+            }
+            
+            for snap in toBeOpened {
+                openSnap_(snap)
+            }
+            
+            tempCounter = 0
+            tempSnap = nil
+        }
+    }
+    
+    private func getMostRecentSnap(for uid: String) -> Snap? {
+        var mostRecentSnap: Snap?
+        
+        for snap in self.snaps[uid]! {
+            
+            if mostRecentSnap == nil {
+                mostRecentSnap = snap
+            } else {
+                if snap.snapID_timestamp > mostRecentSnap!.snapID_timestamp {
+                    mostRecentSnap = snap
+                }
+            }
+        }
+        
+        return mostRecentSnap
+    }
+    
+    func getUnopenedSnaps(from uid: String) -> [Snap] {
+        var final: [Snap] = []
+        if let snaps = snaps[uid] {
+            for snap in snaps {
+                if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid {
+                    final.append(snap)
+                }
+            }
+        }
+        
+        return final.sorted { snap1, snap2 in
+            snap1.snapID_timestamp < snap2.snapID_timestamp
+        }        
     }
     
     func openMessage(message: Message) {
@@ -175,5 +250,39 @@ class ChatsViewModel: ObservableObject, SnapProtocol {
             
             messageText = ""
         }
+    }
+}
+
+extension ChatsViewModel {
+    private func openSnap_(_ snap: Snap) {
+        SnapService.shared.openSnap(snap: snap)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to open snap with docID: \(snap.docID)")
+                    print("ChatsViewModel-err: \(e)")
+                case .finished:
+                    print("ChatsViewModel: Successfully opened snap with docID: \(snap.docID)")
+                }
+            } receiveValue: { _ in }
+            .store(in: &subs)
+    }
+    
+    private func deleteSnap_(_ snap: Snap){
+        SnapService.shared.deleteSnap(snap: snap)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to delete snap")
+                    print("ChatsViewModel-err: \(e)")
+                case .finished:
+                    print("ChatsViewModel: Successfully deleted snap")
+                }
+            } receiveValue: { _ in }
+            .store(in: &subs)
     }
 }

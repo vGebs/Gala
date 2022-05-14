@@ -90,6 +90,8 @@ struct ConvoPreview: View {
                                     profileImg: nil
                                 )
                                 
+                                chatsViewModel.getSnap(for: userChat!.uid)
+                                
                                 showSnapView = true
                                 
                             } else if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
@@ -362,10 +364,10 @@ struct ConvoPreview: View {
                                 //there is snaps but no messages
                                 if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate == nil {
                                     // show unopened snap
-                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
-                                        unopenedSnapFromMe
-                                    } else {
+                                    if chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
                                         unopenedSnapToMe
+                                    } else {
+                                        unopenedSnapFromMe
                                     }
                                 } else {
                                         //show opened snap
@@ -491,7 +493,7 @@ struct ConvoPreview: View {
             Spacer()
         }
         .sheet(isPresented: $showSnapView, content: {
-            SnapView(show: $showSnapView, snaps: chatsViewModel.getUnopenedSnapsFrom(uid: userChat!.uid), snapViewModel: chatsViewModel)
+            SnapView(show: $showSnapView, snapViewModel: chatsViewModel, uid: userChat!.uid, snap: $chatsViewModel.tempSnap)
         })
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.userBasic.uid), showProfile: $showProfile)
