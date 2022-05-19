@@ -57,24 +57,6 @@ class ChatsViewModel: ObservableObject {
             }).store(in: &subs)
     }
     
-//    func getUnopenedSnapsFrom(uid: String) -> [Snap] {
-//        var final: [Snap] = []
-//        if let snaps = snaps[uid] {
-//            for snap in snaps {
-//                if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid {
-//                    final.append(snap)
-//                }
-//            }
-//        }
-//        return final
-//    }
-    
-    func handleConvoPress() {
-        //for this function, we need to determine which button was pressed.
-        //If there is an unopened snap, we open the snap(s)
-        //if there is no snaps, we open the chat
-    }
-    
     func getTempMessages(uid: String) {
         if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
             self.tempMessages = msgs
@@ -82,30 +64,6 @@ class ChatsViewModel: ObservableObject {
             self.tempMessages = []
         }
     }
-    
-//    func openSnap(snap: Snap) {
-//        // the first snap will always be opened first (arr[0])
-//        // we will then delete the meta and the asset only if it is not the most recent message because we need the receipt
-//        //
-//
-//        if let snaps = snaps[snap.fromID] {
-//
-//            //check to see how many openedSnaps there are
-//            var unopenedCounter = 0
-//
-//            for snap in snaps {
-//                if snap.openedDate == nil {
-//                    unopenedCounter += 1
-//                }
-//            }
-//
-//            if unopenedCounter > 1 {
-//                deleteSnap_(snap)
-//            } else {
-//                openSnap_(snap)
-//            }
-//        }
-//    }
     
     func getSnap(for uid: String) {
         //we need to get the first snap in the array for
@@ -127,31 +85,9 @@ class ChatsViewModel: ObservableObject {
                     self.toBeOpened.append(snap)
                 }
                 
-//                if tempCounter + 1 < snaps.count {
-//                    self.toBeDeleted.append(snap)
-//                } else {
-//                    self.toBeOpened.append(snap)
-//                    //self.openSnap_(snaps[tempCounter])
-//                }
                 self.tempCounter += 1
             }
         }
-    }
-        
-    private func deleteSnap(snap: Snap) {
-        SnapService.shared.deleteSnap(snap: snap)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("ChatsViewModel: Failed to delete snap with docID -> \(snap.docID)")
-                    print("ChatsViewModel-err: \(e)")
-                case .finished:
-                    print("ChatsViewModel: Successfully deleted snap with docID -> \(snap.docID)")
-                }
-            } receiveValue: { _ in }
-            .store(in: &subs)
     }
     
     func clearSnaps(for uid: String) {
@@ -170,29 +106,12 @@ class ChatsViewModel: ObservableObject {
             }
             
             for snap in toBeOpened {
-                openSnap_(snap)
+                openSnap(snap)
             }
             
             tempCounter = 0
             tempSnap = nil
         }
-    }
-    
-    private func getMostRecentSnap(for uid: String) -> Snap? {
-        var mostRecentSnap: Snap?
-        
-        for snap in self.snaps[uid]! {
-            
-            if mostRecentSnap == nil {
-                mostRecentSnap = snap
-            } else {
-                if snap.snapID_timestamp > mostRecentSnap!.snapID_timestamp {
-                    mostRecentSnap = snap
-                }
-            }
-        }
-        
-        return mostRecentSnap
     }
     
     func getUnopenedSnaps(from uid: String) -> [Snap] {
@@ -254,7 +173,7 @@ class ChatsViewModel: ObservableObject {
 }
 
 extension ChatsViewModel {
-    private func openSnap_(_ snap: Snap) {
+    private func openSnap(_ snap: Snap) {
         SnapService.shared.openSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
@@ -270,19 +189,229 @@ extension ChatsViewModel {
             .store(in: &subs)
     }
     
-    private func deleteSnap_(_ snap: Snap){
+    private func deleteSnap(snap: Snap) {
         SnapService.shared.deleteSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .failure(let e):
-                    print("ChatsViewModel: Failed to delete snap")
+                    print("ChatsViewModel: Failed to delete snap with docID -> \(snap.docID)")
                     print("ChatsViewModel-err: \(e)")
                 case .finished:
-                    print("ChatsViewModel: Successfully deleted snap")
+                    print("ChatsViewModel: Successfully deleted snap with docID -> \(snap.docID)")
                 }
             } receiveValue: { _ in }
             .store(in: &subs)
+    }
+}
+
+enum ConvoPreviewType {
+    case unOpenedSnapToMe //1
+    case unOpenedMessageToMe//2
+    case unOpenedSnapFromMe//3
+    case openedSnapFromMe//4
+    case openedSnapToMe//5
+    case unOpenedMessageFromMe//6
+    case openedMessageFromMe//7
+    case openedMessageToMe//8
+    
+    case newMatch
+}
+
+extension ChatsViewModel {
+    func convoPressed(for uid: String) -> ConvoPreviewType {
+        if isThereUnOpenedSnapsToMe(from: uid) {
+            //show unopened snap to me view (1)
+            return ConvoPreviewType.unOpenedSnapToMe
+        }
+        
+        if !theLastMessageToMeWasOpened(from: uid) && !isThereUnOpenedSnapsToMe(from: uid) {
+            //show unopened message to me view (2)
+            return ConvoPreviewType.unOpenedMessageToMe
+        }
+        
+        if !isThereUnOpenedSnapsToMe(from: uid) && theLastMessageToMeWasOpened(from: uid) {
+            //compare the most recent chat or snap
+            let mostRecentSnap: Snap? = getMostRecentSnap(for: uid)
+            let mostRecentMessage: Message? = getMostRecentMessage(for: uid)
+            
+            //case 1: there is both a snap and message
+            if let mostRecentSnap = mostRecentSnap, let mostRecentMessage = mostRecentMessage {
+                //if there is both a snap and message, we compare the sent dates
+                
+                if let mostRecentOpenedSnapDate = mostRecentSnap.openedDate,
+                    let mostRecentOpenedMessageDate = mostRecentMessage.openedDate {
+                    if mostRecentOpenedSnapDate > mostRecentOpenedMessageDate {
+                        if let receipt = openClose_toFrom(
+                            openedDate: mostRecentSnap.openedDate,
+                            toID: mostRecentSnap.toID,
+                            fromID: mostRecentSnap.fromID
+                        ) {
+                            switch receipt {
+                            case .unOpenedFromMe:
+                                return ConvoPreviewType.unOpenedSnapFromMe
+                            case .openedFromMe:
+                                return ConvoPreviewType.openedSnapFromMe
+                            case .openedToMe:
+                                return ConvoPreviewType.openedSnapToMe
+                            }
+                        }
+                    } else if mostRecentOpenedSnapDate < mostRecentOpenedMessageDate {
+                        if let receipt = openClose_toFrom(
+                            openedDate: mostRecentMessage.openedDate,
+                            toID: mostRecentMessage.toID,
+                            fromID: mostRecentMessage.fromID
+                        ) {
+                            switch receipt {
+                            case .unOpenedFromMe:
+                                return ConvoPreviewType.unOpenedMessageFromMe
+                            case .openedFromMe:
+                                return ConvoPreviewType.openedMessageFromMe
+                            case .openedToMe:
+                                return ConvoPreviewType.openedMessageToMe
+                            }
+                        }
+                    }
+                } else if mostRecentSnap.snapID_timestamp > mostRecentMessage.time {
+                    //Most recent is a snap
+                    
+                    if let receipt = openClose_toFrom(
+                        openedDate: mostRecentSnap.openedDate,
+                        toID: mostRecentSnap.toID,
+                        fromID: mostRecentSnap.fromID
+                    ) {
+                        switch receipt {
+                        case .unOpenedFromMe:
+                            return ConvoPreviewType.unOpenedSnapFromMe
+                        case .openedFromMe:
+                            return ConvoPreviewType.openedSnapFromMe
+                        case .openedToMe:
+                            return ConvoPreviewType.openedSnapToMe
+                        }
+                    }
+                    
+                } else if mostRecentSnap.snapID_timestamp < mostRecentMessage.time {
+                    //Most recent is a message
+                    
+                    if let receipt = openClose_toFrom(
+                        openedDate: mostRecentMessage.openedDate,
+                        toID: mostRecentMessage.toID,
+                        fromID: mostRecentMessage.fromID
+                    ) {
+                        switch receipt {
+                        case .unOpenedFromMe:
+                            return ConvoPreviewType.unOpenedMessageFromMe
+                        case .openedFromMe:
+                            return ConvoPreviewType.openedMessageFromMe
+                        case .openedToMe:
+                            return ConvoPreviewType.openedMessageToMe
+                        }
+                    }
+                }
+            } else if let mostRecentSnap = mostRecentSnap { //case 2: there is just a snap
+                //Most recent is a snap
+                
+                if let receipt = openClose_toFrom(
+                    openedDate: mostRecentSnap.openedDate,
+                    toID: mostRecentSnap.toID,
+                    fromID: mostRecentSnap.fromID
+                ) {
+                    switch receipt {
+                    case .unOpenedFromMe:
+                        return ConvoPreviewType.unOpenedSnapFromMe
+                    case .openedFromMe:
+                        return ConvoPreviewType.openedSnapFromMe
+                    case .openedToMe:
+                        return ConvoPreviewType.openedSnapToMe
+                    }
+                }
+                
+            } else if let mostRecentMessage = mostRecentMessage { //case 3: there is just a message
+                //most recent is a message
+                
+                if let receipt = openClose_toFrom(
+                    openedDate: mostRecentMessage.openedDate,
+                    toID: mostRecentMessage.toID,
+                    fromID: mostRecentMessage.fromID
+                ) {
+                    switch receipt {
+                    case .unOpenedFromMe:
+                        return ConvoPreviewType.unOpenedMessageFromMe
+                    case .openedFromMe:
+                        return ConvoPreviewType.openedMessageFromMe
+                    case .openedToMe:
+                        return ConvoPreviewType.openedMessageToMe
+                    }
+                }
+            }
+        }
+        
+        return ConvoPreviewType.newMatch
+    }
+    
+    private enum OpenClose_ToFrom {
+        case unOpenedFromMe
+        case openedFromMe
+        case openedToMe
+    }
+    
+    private func openClose_toFrom(openedDate: Date?, toID: String, fromID: String) -> OpenClose_ToFrom? {
+        if openedDate == nil {
+            if fromID == AuthService.shared.currentUser!.uid {
+                return OpenClose_ToFrom.unOpenedFromMe
+            }
+        } else {
+            if fromID == AuthService.shared.currentUser!.uid {
+                return OpenClose_ToFrom.openedFromMe
+            } else if toID == AuthService.shared.currentUser!.uid {
+                return OpenClose_ToFrom.openedToMe
+            }
+        }
+        return nil
+    }
+    
+    private func isThereUnOpenedSnapsToMe(from uid: String) -> Bool {
+        
+        if let snaps = self.snaps[uid] {
+            return snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid
+        }
+        
+        return false
+    }
+    
+    private func theLastMessageToMeWasOpened(from uid: String) -> Bool {
+        
+        if let msgs = self.matchMessages[uid] {
+            for msg in msgs.reversed() {
+                if msg.toID == AuthService.shared.currentUser!.uid {
+                    if msg.openedDate != nil {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            }
+        }
+        
+        return true
+    }
+    
+    private func getMostRecentSnap(for uid: String) -> Snap? {
+        
+        if let snaps = self.snaps[uid] {
+            return snaps[snaps.count - 1]
+        }
+        
+        return nil
+    }
+    
+    private func getMostRecentMessage(for uid: String) -> Message? {
+        
+        if let msgs = self.matchMessages[uid] {
+            return msgs[msgs.count - 1]
+        }
+        
+        return nil
     }
 }
