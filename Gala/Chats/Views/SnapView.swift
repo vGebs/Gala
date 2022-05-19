@@ -29,9 +29,7 @@ struct SnapView: View {
                         .scaledToFill()
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
-                            print("TempCounter: \(snapViewModel.tempCounter)")
-                            print("unopenedSnaps: \(snapViewModel.getUnopenedSnaps(from: uid).count)")
-                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count { //snapViewModel.getUnopenedSnaps(from: uid).count == 1 ||
+                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
                                 show = false
                             } else {
                                 snapViewModel.getSnap(for: uid)
@@ -50,40 +48,11 @@ struct SnapView: View {
     }
 }
 
-
-
-//struct SnapView: View {
-//    @State var counter: Int = 0
-//    @Binding var show: Bool
-//    var snaps: [Snap]
-//    var snapViewModel: SnapProtocol
-//
-//    var body: some View {
-//        ZStack {
-//            Image(uiImage: snaps[0].img!)
-//                .resizable()
-//                .scaledToFill()
-//                .edgesIgnoringSafeArea(.all)
-//                .onTapGesture {
-//                    if snaps.count == 1 {
-//                        snapViewModel.openSnap(snap: snaps[counter])
-//                        show = false
-//                    } else {
-//                        snapViewModel.openSnap(snap: snaps[counter])
-//                    }
-//                }
-//                .onDisappear {
-//                    snapViewModel.openSnap(snap: snaps[counter])
-//                }
-//        }
-//    }
-//}
-
 struct IndividualSnapView: View {
     var snap: Snap
     @Binding var showSnap: Bool
     @State var tapped = false
-    @ObservedObject var vm = IndividualSnapViewModel()
+    @ObservedObject var snapViewModel: ChatsViewModel
     
     var body: some View {
         ZStack {
@@ -92,14 +61,12 @@ struct IndividualSnapView: View {
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
-                    vm.openSnap(snap: snap)
-                    tapped = true
+//                    vm.openSnap(snap: snap)
+//                    tapped = true
                     showSnap = false
                 }
                 .onDisappear {
-                    if !tapped {
-                        vm.openSnap(snap: snap)
-                    }
+                    snapViewModel.clearSnaps(for: snap.fromID)
                 }
         }
     }

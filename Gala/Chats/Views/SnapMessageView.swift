@@ -10,9 +10,10 @@ import SwiftUI
 struct SnapMessageView: View {
     var snap: Snap
     @State var showSnap: Bool = false
-    
+    @ObservedObject var chatsViewModel: ChatsViewModel
     var body: some View {
         Button(action: {
+            chatsViewModel.getSnap(for: snap.fromID)
             showSnap = true
         }){
             ZStack {
@@ -44,7 +45,7 @@ struct SnapMessageView: View {
             .padding(.trailing, screenWidth * 0.5)
         }
         .sheet(isPresented: $showSnap, content: {
-            IndividualSnapView(snap: snap, showSnap: $showSnap)
+            IndividualSnapView(snap: chatsViewModel.tempSnap!, showSnap: $showSnap, snapViewModel: chatsViewModel)
         })
     }
     

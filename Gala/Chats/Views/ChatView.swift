@@ -131,7 +131,7 @@ struct ChatView: View, KeyboardReadable {
                 if snaps[userChat.uid] != nil {
                     ForEach(snaps[userChat.uid]!){ snap in
                         if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid{
-                            SnapMessageView(snap: snap)
+                            SnapMessageView(snap: snap, chatsViewModel: viewModel)
                                 .padding(.leading, 3)
                         }
                     }
