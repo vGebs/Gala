@@ -60,7 +60,7 @@ struct ContentView: View {
     }
     
     var chatView: some View {
-        ChatView(showChat: $chat.showChat, userChat: $chat.userChat, viewModel: chat, distanceCalculator: DistanceCalculator(lng: chat.userChat!.location.lng, lat: chat.userChat!.location.lat), messages: $chat.tempMessages, snaps: $chat.snaps, timeMatched: $chat.timeMatched)
+        ChatView(showChat: $chat.showChat, userChat: $chat.userChat, viewModel: chat, distanceCalculator: DistanceCalculator(lng: chat.userChat.location.lng, lat: chat.userChat.location.lat), messages: $chat.tempMessages, snaps: $chat.snaps, timeMatched: $chat.timeMatched)
             .offset(x: draggedOffset)
             .gesture(
                 DragGesture()

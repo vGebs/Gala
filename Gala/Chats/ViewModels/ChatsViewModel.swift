@@ -24,7 +24,7 @@ class ChatsViewModel: ObservableObject {
     @Published var tempMessages: [Message] = []
     
     @Published var showChat = false
-    @Published var userChat: UserChat? = nil
+    @Published var userChat: UserChat = UserChat(name: "", uid: "", location: Coordinate(lat: 91, lng: 181), bday: Date(), profileImg: nil)
     @Published var timeMatched: Date? = nil
     
     @Published var tempSnap: Snap?
@@ -219,8 +219,100 @@ enum ConvoPreviewType {
     case newMatch
 }
 
+enum ConvoPressType {
+    case openSnap
+    case viewChat
+}
+
 extension ChatsViewModel {
-    func convoPressed(for uid: String) -> ConvoPreviewType {
+    
+    private func bundleUserChat(ucMatch: MatchedUserCore) {
+        self.userChat = UserChat(
+            name: ucMatch.uc.userBasic.name,
+            uid: ucMatch.uc.userBasic.uid,
+            location: ucMatch.uc.searchRadiusComponents.coordinate,
+            bday: ucMatch.uc.userBasic.birthdate,
+            profileImg: ucMatch.profileImg
+        )
+    }
+    
+    func convoPressed(for ucMatch: MatchedUserCore) -> ConvoPressType {
+        
+        let uid = ucMatch.uc.userBasic.uid
+        
+        //We've got both snaps and messages
+        if let snaps = snaps[uid], let _ = matchMessages[uid] {
+            //if there is unopenedSnaps, open them
+            print("we have both snaps and messages")
+            if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid{
+                
+                bundleUserChat(ucMatch: ucMatch)
+                getSnap(for: uid)
+                return ConvoPressType.openSnap
+                
+            } else {
+                let mostRecentMessage = getMostRecentMessage(for: uid)
+                
+                if let mostRecentMessage = mostRecentMessage {
+                    if mostRecentMessage.openedDate == nil && mostRecentMessage.toID == AuthService.shared.currentUser!.uid{
+                        //we have an unopened message to us, we need to open it
+                        bundleUserChat(ucMatch: ucMatch)
+                        openMessage(message: mostRecentMessage)
+                        getTempMessages(uid: uid)
+                        return ConvoPressType.viewChat
+                    } else {
+                        bundleUserChat(ucMatch: ucMatch)
+                        getTempMessages(uid: uid)
+                        return ConvoPressType.viewChat
+                    }
+                } else {
+                    //All snaps are opened and there are no messages, so we just set
+                    bundleUserChat(ucMatch: ucMatch)
+                    getTempMessages(uid: uid)
+                    return ConvoPressType.viewChat
+                }
+            }
+        } else if let snaps = snaps[uid] {
+            if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid{
+                bundleUserChat(ucMatch: ucMatch)
+                getSnap(for: uid)
+                return ConvoPressType.openSnap
+                
+            } else {
+                //All snaps are opened and there are no messages, so we just set
+                bundleUserChat(ucMatch: ucMatch)
+                getTempMessages(uid: uid)
+                return ConvoPressType.viewChat
+            }
+        } else if let _ = matchMessages[uid] {
+            //if the snaps are opened, check to see if the messages are opened
+            let mostRecentMessage = getMostRecentMessage(for: uid)
+            
+            if let mostRecentMessage = mostRecentMessage {
+                if mostRecentMessage.openedDate == nil && mostRecentMessage.toID == AuthService.shared.currentUser!.uid{
+                    //we have an unopened message to us, we need to open it
+                    bundleUserChat(ucMatch: ucMatch)
+                    openMessage(message: mostRecentMessage)
+                    getTempMessages(uid: uid)
+                    return ConvoPressType.viewChat
+                } else {
+                    bundleUserChat(ucMatch: ucMatch)
+                    getTempMessages(uid: uid)
+                    return ConvoPressType.viewChat
+                }
+            } else {
+                //All snaps are opened and there are no messages, so we just set
+                bundleUserChat(ucMatch: ucMatch)
+                getTempMessages(uid: uid)
+                return ConvoPressType.viewChat
+            }
+        }
+        
+        print("Fall through")
+        return ConvoPressType.viewChat
+    }
+        
+    func convoReceipt(for uid: String) -> ConvoPreviewType {
         if isThereUnOpenedSnapsToMe(from: uid) {
             //show unopened snap to me view (1)
             return ConvoPreviewType.unOpenedSnapToMe

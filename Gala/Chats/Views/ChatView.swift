@@ -10,7 +10,7 @@ import OrderedCollections
 
 struct ChatView: View, KeyboardReadable {
     @Binding var showChat: Bool
-    @Binding var userChat: UserChat?
+    @Binding var userChat: UserChat
         
     @ObservedObject var viewModel: ChatsViewModel
     @StateObject var distanceCalculator: DistanceCalculator
@@ -39,7 +39,7 @@ struct ChatView: View, KeyboardReadable {
             }
         }
         .sheet(isPresented: $showProfile, content: {
-            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: userChat!.uid), showProfile: $showProfile)
+            ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: userChat.uid), showProfile: $showProfile)
         })
         .onTapGesture {
             self.endEditing()
@@ -52,8 +52,8 @@ struct ChatView: View, KeyboardReadable {
                 self.showProfile = true
             }) {
                 ZStack{
-                    if userChat?.profileImg != nil {
-                        Image(uiImage: userChat!.profileImg!)
+                    if userChat.profileImg != nil {
+                        Image(uiImage: userChat.profileImg!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: screenWidth / 9.2, height: screenWidth / 9.2)
@@ -68,7 +68,7 @@ struct ChatView: View, KeyboardReadable {
                 .padding(.horizontal)
                 
                 VStack(alignment: .leading) {
-                    Text("\(userChat!.name), \(userChat!.bday.ageString())")
+                    Text("\(userChat.name), \(userChat.bday.ageString())")
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundColor(.primary)
                     HStack{
@@ -128,8 +128,8 @@ struct ChatView: View, KeyboardReadable {
                     })
                 //}
                                 
-                if snaps[userChat!.uid] != nil {
-                    ForEach(snaps[userChat!.uid]!){ snap in
+                if snaps[userChat.uid] != nil {
+                    ForEach(snaps[userChat.uid]!){ snap in
                         if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid{
                             SnapMessageView(snap: snap)
                                 .padding(.leading, 3)
@@ -178,7 +178,7 @@ struct ChatView: View, KeyboardReadable {
                     .foregroundColor(.white)
                 
                 TextField("", text: $viewModel.messageText, onCommit: {
-                    viewModel.sendMessage(toUID: userChat!.uid)
+                    viewModel.sendMessage(toUID: userChat.uid)
                 })
                     .foregroundColor(.black)
                     .padding(.horizontal)
@@ -186,7 +186,7 @@ struct ChatView: View, KeyboardReadable {
             .frame(height: screenWidth * 0.09)
             
             Button(action: {
-                viewModel.sendMessage(toUID: userChat!.uid)
+                viewModel.sendMessage(toUID: userChat.uid)
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)

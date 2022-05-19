@@ -64,7 +64,7 @@ struct ConvoPreview: View {
         
     @Binding var showChat: Bool
     
-    @Binding var userChat: UserChat?
+    @Binding var userChat: UserChat
     @Binding var messages: OrderedDictionary<String, [Message]>
     var timeMatched: Date
     @Binding var timeMatchedBinding: Date?
@@ -75,7 +75,7 @@ struct ConvoPreview: View {
     
     @State var showSnapView = false
     
-    init(ucMatch: MatchedUserCore, showChat: Binding<Bool>, user: Binding<UserChat?>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatchedBinding: Binding<Date?>, chatsViewModel: ChatsViewModel){
+    init(ucMatch: MatchedUserCore, showChat: Binding<Bool>, user: Binding<UserChat>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatchedBinding: Binding<Date?>, chatsViewModel: ChatsViewModel){
         self.ucMatch = ucMatch
         self._showChat = showChat
         self._userChat = user
@@ -117,213 +117,17 @@ struct ConvoPreview: View {
                 Spacer()
                 HStack {
                     Button(action: {
-                        
-                        let uid = ucMatch.uc.userBasic.uid
-                        
-                        if let _ = chatsViewModel.snaps[uid] {
-                            //open snap
-                            // if the last snap is not already opened and was not sent by me
+                                                
+                        switch chatsViewModel.convoPressed(for: ucMatch) {
                             
-                            //if there is a snap that is not opened, open the snap but not the ChatView
-                            //
-                            if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
-                                
-                                //Show SnapView
-                                userChat = UserChat(
-                                    name: ucMatch.uc.userBasic.name,
-                                    uid: uid,
-                                    location:
-                                        Coordinate(
-                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                        ),
-                                    bday: ucMatch.uc.userBasic.birthdate,
-                                    profileImg: nil
-                                )
-                                
-                                chatsViewModel.getSnap(for: userChat!.uid)
-                                
-                                showSnapView = true
-                                
-                            } else if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID == AuthService.shared.currentUser!.uid {
-                                //we sent a snap
-                                if let img = ucMatch.profileImg {
-                                    userChat = UserChat(
-                                        name: ucMatch.uc.userBasic.name,
-                                        uid: uid,
-                                        location: Coordinate(
-                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                        ),
-                                        bday: ucMatch.uc.userBasic.birthdate,
-                                        profileImg: img
-                                    )
-                                } else {
-                                    userChat = UserChat(
-                                        name: ucMatch.uc.userBasic.name,
-                                        uid: uid,
-                                        location: Coordinate(
-                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                        ),
-                                        bday: ucMatch.uc.userBasic.birthdate,
-                                        profileImg: nil
-                                    )
-                                }
-                                
-                                chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                                
-                                timeMatchedBinding = timeMatched
-                                showChat = true
-                                
-                            } else if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate != nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid {
-                                //we opened someones snap
-                                if let img = ucMatch.profileImg {
-                                    userChat = UserChat(
-                                        name: ucMatch.uc.userBasic.name,
-                                        uid: uid,
-                                        location: Coordinate(
-                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                        ),
-                                        bday: ucMatch.uc.userBasic.birthdate,
-                                        profileImg: img
-                                    )
-                                } else {
-                                    userChat = UserChat(
-                                        name: ucMatch.uc.userBasic.name,
-                                        uid: uid,
-                                        location: Coordinate(
-                                            lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                            lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                        ),
-                                        bday: ucMatch.uc.userBasic.birthdate,
-                                        profileImg: nil
-                                    )
-                                }
-                                                                
-                                chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                                
-                                timeMatchedBinding = timeMatched
-                                showChat = true
-                                if let _ = messages[uid] {
-                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
-
-                                        timeMatchedBinding = timeMatched
-                                        showChat = true
-                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
-                                    }
-                                }
-                            } else {
-                                if let _ = messages[ucMatch.uc.userBasic.uid]{
-                                    //we just need to check ucMatch when its a chat, not a snap
-                                    if let img = ucMatch.profileImg {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: img
-                                        )
-                                    } else {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: nil
-                                        )
-                                    }
-                                    
-                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                                    
-                                    timeMatchedBinding = timeMatched
-                                    showChat = true
-                                    //open message
-                                    // if the last message is not already opened and was not sent by me
-                                                                        
-                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
-                                        //messages[user.profile!.uid]![messages[user.profile!.uid]!.count - 1].opened = true
-                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
-                                    }
-                                }
-                            } 
-                        } else if let _ = messages[uid]{
-                            //we just need to check ucMatch when its a chat, not a snap
-                            if let img = ucMatch.profileImg {
-                                userChat = UserChat(
-                                    name: ucMatch.uc.userBasic.name,
-                                    uid: uid,
-                                    location: Coordinate(
-                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                    ),
-                                    bday: ucMatch.uc.userBasic.birthdate,
-                                    profileImg: img
-                                )
-                            } else {
-                                userChat = UserChat(
-                                    name: ucMatch.uc.userBasic.name,
-                                    uid: uid,
-                                    location: Coordinate(
-                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                    ),
-                                    bday: ucMatch.uc.userBasic.birthdate,
-                                    profileImg: nil
-                                )
-                            }
-                            
-                            chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                            
-                            timeMatchedBinding = timeMatched
-                            showChat = true
-                            //open message
-                            // if the last message is not already opened and was not sent by me
-                            
-                            if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
-
-                                timeMatchedBinding = timeMatched
-                                showChat = true
-                                
-                                chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
-                            }
-                        } else {
-                            if let img = ucMatch.profileImg {
-                                userChat = UserChat(
-                                    name: ucMatch.uc.userBasic.name,
-                                    uid: uid,
-                                    location: Coordinate(
-                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                    ),
-                                    bday: ucMatch.uc.userBasic.birthdate,
-                                    profileImg: img
-                                )
-                            } else {
-                                userChat = UserChat(
-                                    name: ucMatch.uc.userBasic.name,
-                                    uid: uid,
-                                    location: Coordinate(
-                                        lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                        lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                    ),
-                                    bday: ucMatch.uc.userBasic.birthdate,
-                                    profileImg: nil
-                                )
-                            }
-                            
-                            chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                            
-                            timeMatchedBinding = timeMatched
-                            showChat = true
+                        case .openSnap:
+                            self.timeMatchedBinding = ucMatch.timeMatched
+                            self.showSnapView = true
+                        case .viewChat:
+                            self.timeMatchedBinding = ucMatch.timeMatched
+                            self.showChat = true
                         }
+                        
                     }){
                         VStack {
                             HStack {
@@ -334,15 +138,7 @@ struct ConvoPreview: View {
                                 Spacer()
                             }
                             
-                            //we want to see whether or not a snap or message was sent
-                            // a snap trumps a message
-                            // priority level:
-                            //  1. Unopened snap (does not depend on date)
-                            //  2. Unopened message (does not depend  on date)
-                            //  3. most recently opened/ sent (either snap or message [does depend on date])
-                            //
-                            
-                            switch chatsViewModel.convoPressed(for: ucMatch.uc.userBasic.uid) {
+                            switch chatsViewModel.convoReceipt(for: ucMatch.uc.userBasic.uid) {
                             case .unOpenedSnapToMe:
                                 unopenedSnapToMeView
                                 
@@ -461,7 +257,7 @@ struct ConvoPreview: View {
             Spacer()
         }
         .sheet(isPresented: $showSnapView, content: {
-            SnapView(show: $showSnapView, snapViewModel: chatsViewModel, uid: userChat!.uid, snap: $chatsViewModel.tempSnap)
+            SnapView(show: $showSnapView, snapViewModel: chatsViewModel, uid: userChat.uid, snap: $chatsViewModel.tempSnap)
         })
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.userBasic.uid), showProfile: $showProfile)
