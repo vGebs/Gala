@@ -206,25 +206,26 @@ extension ChatsViewModel {
     }
 }
 
-enum ConvoPreviewType {
-    case unOpenedSnapToMe //1
-    case unOpenedMessageToMe//2
-    case unOpenedSnapFromMe//3
-    case openedSnapFromMe//4
-    case openedSnapToMe//5
-    case unOpenedMessageFromMe//6
-    case openedMessageFromMe//7
-    case openedMessageToMe//8
-    
-    case newMatch
-}
 
-enum ConvoPressType {
-    case openSnap
-    case viewChat
-}
 
 extension ChatsViewModel {
+    enum ConvoPreviewType {
+        case unOpenedSnapToMe //1
+        case unOpenedMessageToMe//2
+        case unOpenedSnapFromMe//3
+        case openedSnapFromMe//4
+        case openedSnapToMe//5
+        case unOpenedMessageFromMe//6
+        case openedMessageFromMe//7
+        case openedMessageToMe//8
+        
+        case newMatch
+    }
+
+    enum ConvoPressType {
+        case openSnap
+        case viewChat
+    }
     
     private func bundleUserChat(ucMatch: MatchedUserCore) {
         self.userChat = UserChat(
@@ -308,7 +309,6 @@ extension ChatsViewModel {
             }
         }
         
-        print("Fall through")
         return ConvoPressType.viewChat
     }
         
@@ -440,6 +440,55 @@ extension ChatsViewModel {
         }
         
         return ConvoPreviewType.newMatch
+    }
+    
+    enum ShouldShowChatPreview {
+        case doNotShow
+        case showNewMessage
+        case showOldMessage
+    }
+    
+    func shouldShowChatPreview(ucMatch: MatchedUserCore) -> ShouldShowChatPreview {
+        let uid = ucMatch.uc.userBasic.uid
+        let currentUID = AuthService.shared.currentUser!.uid
+        
+        if let snaps = snaps[uid] {
+            if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == currentUID {
+                //we have a new snap to us
+                if let msgs = matchMessages[uid] {
+                    if msgs[msgs.count - 1].openedDate == nil && msgs[msgs.count - 1].toID == currentUID {
+                        //we have a new message as well
+                        return ShouldShowChatPreview.showNewMessage
+                    } else {
+                        return ShouldShowChatPreview.showOldMessage
+                    }
+                } else {
+                    return ShouldShowChatPreview.showOldMessage
+                }
+            }
+        }
+        
+        return ShouldShowChatPreview.doNotShow
+    }
+    
+    func secondaryConvoPreviewButtonPressed(ucMatch: MatchedUserCore) {
+        let uid = ucMatch.uc.userBasic.uid
+        let currentUID = AuthService.shared.currentUser!.uid
+        
+        if let _ = matchMessages[uid] {
+            let mostRecentMessage = getMostRecentMessage(for: uid)!
+            
+            if mostRecentMessage.openedDate == nil && mostRecentMessage.toID == currentUID {
+                bundleUserChat(ucMatch: ucMatch)
+                openMessage(message: mostRecentMessage)
+                getTempMessages(uid: uid)
+            } else {
+                bundleUserChat(ucMatch: ucMatch)
+                getTempMessages(uid: uid)
+            }
+        } else {
+            bundleUserChat(ucMatch: ucMatch)
+        }
     }
     
     private enum OpenClose_ToFrom {

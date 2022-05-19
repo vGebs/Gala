@@ -169,88 +169,29 @@ struct ConvoPreview: View {
                         }
                     }
                     
-                    let uid = ucMatch.uc.userBasic.uid
-                    //if we have an unopenedsnap from
-                    if chatsViewModel.snaps[uid] != nil {
-                        if chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].openedDate == nil && chatsViewModel.snaps[uid]![chatsViewModel.snaps[uid]!.count - 1].fromID != AuthService.shared.currentUser!.uid{
-                            Button(action: {
-                                if let _ = messages[uid]{
-                                    //we just need to check ucMatch when its a chat, not a snap
-                                    if let img = ucMatch.profileImg {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: ucMatch.uc.userBasic.uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: img
-                                        )
-                                    } else {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: ucMatch.uc.userBasic.uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: nil
-                                        )
-                                    }
-                                    
-                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                                    
-                                    timeMatchedBinding = timeMatched
-                                    showChat = true
-                                    //open message
-                                    // if the last message is not already opened and was not sent by me
-                                    
-                                    if messages[uid]![messages[uid]!.count - 1].openedDate == nil && (messages[uid]![messages[uid]!.count - 1].fromID != AuthService.shared.currentUser?.uid) {
-
-                                        timeMatchedBinding = timeMatched
-                                        showChat = true
-                                        
-                                        chatsViewModel.openMessage(message: messages[uid]![messages[uid]!.count - 1])
-                                    }
-                                } else {
-                                    if let img = ucMatch.profileImg {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: img
-                                        )
-                                    } else {
-                                        userChat = UserChat(
-                                            name: ucMatch.uc.userBasic.name,
-                                            uid: uid,
-                                            location: Coordinate(
-                                                lat: ucMatch.uc.searchRadiusComponents.coordinate.lat,
-                                                lng: ucMatch.uc.searchRadiusComponents.coordinate.lng
-                                            ),
-                                            bday: ucMatch.uc.userBasic.birthdate,
-                                            profileImg: nil
-                                        )
-                                    }
-                                    
-                                    chatsViewModel.getTempMessages(uid: ucMatch.uc.userBasic.uid)
-                                    
-                                    timeMatchedBinding = timeMatched
-                                    showChat = true
-                                }
-                            }){
-                                Image(systemName: "message.fill")
-                                    .font(.system(size: 17, weight: .medium, design: .rounded))
-                                    .foregroundColor(.buttonPrimary)
-                            }
+                    
+                    switch chatsViewModel.shouldShowChatPreview(ucMatch: ucMatch) {
+                    case .doNotShow:
+                        Text("")
+                    case .showNewMessage:
+                        Button(action: {
+                            chatsViewModel.secondaryConvoPreviewButtonPressed(ucMatch: ucMatch)
+                            self.timeMatchedBinding = ucMatch.timeMatched
+                            showChat = true
+                        }) {
+                            newMessageButton
+                        }
+                        
+                    case .showOldMessage:
+                        Button(action: {
+                            chatsViewModel.secondaryConvoPreviewButtonPressed(ucMatch: ucMatch)
+                            self.timeMatchedBinding = ucMatch.timeMatched
+                            showChat = true
+                        }){
+                            oldMessageButton
                         }
                     }
+                    
                 }
                 Spacer()
             }
@@ -263,6 +204,18 @@ struct ConvoPreview: View {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.userBasic.uid), showProfile: $showProfile)
         })
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
+    }
+    
+    var newMessageButton: some View {
+        Image(systemName: "message.fill")
+            .font(.system(size: 17, weight: .medium, design: .rounded))
+            .foregroundColor(.buttonPrimary)
+    }
+    
+    var oldMessageButton: some View {
+        Image(systemName: "message")
+            .font(.system(size: 17, weight: .medium, design: .rounded))
+            .foregroundColor(.buttonPrimary)
     }
     
     var unopenedSnapFromMeView: some View {
