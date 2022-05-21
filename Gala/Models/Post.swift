@@ -30,6 +30,13 @@ class Post: Identifiable, ObservableObject {
         print("Post Model: Deinitializing")
     }
     
+    init(pid: Date, uid: String, title: String, storyImage: UIImage) {
+        self.pid = pid
+        self.uid = uid
+        self.title = title
+        self.storyImage = storyImage
+    }
+    
     init(pid: Date, uid: String, title: String) {
         self.pid = pid
         self.title = title

@@ -146,6 +146,8 @@
 		FADC11622698129D0070465C /* UserCoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC11612698129D0070465C /* UserCoreService.swift */; };
 		FADC1164269813EC0070465C /* UserCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADC1163269813EC0070465C /* UserCore.swift */; };
 		FADF908A2807748400C19A07 /* UserCoreService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */; };
+		FAE5E18A28387E9E00BBD115 /* StoryService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E18928387E9E00BBD115 /* StoryService_CoreData.swift */; };
+		FAE5E18D28387ED800BBD115 /* StoryCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E18B28387ED700BBD115 /* StoryCD.xcdatamodeld */; };
 		FAE5E6F2264092D000CC1670 /* GalaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F1264092D000CC1670 /* GalaApp.swift */; };
 		FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE5E6F3264092D000CC1670 /* ContentView.swift */; };
 		FAE5E6F6264092D100CC1670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAE5E6F5264092D100CC1670 /* Assets.xcassets */; };
@@ -296,6 +298,8 @@
 		FADC11612698129D0070465C /* UserCoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCoreService.swift; sourceTree = "<group>"; };
 		FADC1163269813EC0070465C /* UserCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCore.swift; sourceTree = "<group>"; };
 		FADF90892807748400C19A07 /* UserCoreService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCoreService_Firebase.swift; sourceTree = "<group>"; };
+		FAE5E18928387E9E00BBD115 /* StoryService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryService_CoreData.swift; sourceTree = "<group>"; };
+		FAE5E18C28387ED800BBD115 /* StoryCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StoryCD.xcdatamodel; sourceTree = "<group>"; };
 		FAE5E6EE264092D000CC1670 /* Gala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE5E6F1264092D000CC1670 /* GalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalaApp.swift; sourceTree = "<group>"; };
 		FAE5E6F3264092D000CC1670 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -413,6 +417,8 @@
 				FA7E3B2B26E8003E00A6653C /* StoryService.swift */,
 				FA7E3B2D26E8072200A6653C /* StoryMetaService.swift */,
 				FA7E3B2F26E8073300A6653C /* StoryContentService.swift */,
+				FAE5E18928387E9E00BBD115 /* StoryService_CoreData.swift */,
+				FAE5E18B28387ED700BBD115 /* StoryCD.xcdatamodeld */,
 			);
 			path = Story;
 			sourceTree = "<group>";
@@ -1025,6 +1031,7 @@
 				FAA7455A28230DF700A54BD5 /* NewNavBar.swift in Sources */,
 				FAAAA76727E40B2300663816 /* Coordinate.swift in Sources */,
 				FAEDCFE626A1420500A2C4A1 /* UserAbout.swift in Sources */,
+				FAE5E18A28387E9E00BBD115 /* StoryService_CoreData.swift in Sources */,
 				FA6BE5FB27B5FA040058B78C /* UserChat.swift in Sources */,
 				FA87745D2640A3E300D5D5CB /* DropViewDelegate.swift in Sources */,
 				FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */,
@@ -1121,6 +1128,7 @@
 				FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
+				FAE5E18D28387ED800BBD115 /* StoryCD.xcdatamodeld in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,
 				FA76E30726AE6D1A009A650D /* RecentlyJoinedUserService.swift in Sources */,
@@ -1447,6 +1455,16 @@
 			);
 			currentVersion = FABB977B28124B380014A21E /* MatchCD.xcdatamodel */;
 			path = MatchCD.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		FAE5E18B28387ED700BBD115 /* StoryCD.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FAE5E18C28387ED800BBD115 /* StoryCD.xcdatamodel */,
+			);
+			currentVersion = FAE5E18C28387ED800BBD115 /* StoryCD.xcdatamodel */;
+			path = StoryCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
