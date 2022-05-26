@@ -105,6 +105,25 @@ class StoryService_CoreData {
             return []
         }
     }
+    
+    func deleteOldStories(for uid: String) {
+        let posts = getAllStories(for: uid)
+        var toBeDeleted: [Post] = []
+        
+        for post in posts {
+            let diffComponents = Calendar.current.dateComponents([.hour], from: post.pid, to: Date())
+            let hours = diffComponents.hour
+            if let hours = hours {
+                if hours >= 24 {
+                    toBeDeleted.append(post)
+                }
+            }
+        }
+        
+        for post in toBeDeleted {
+            self.deleteStory(post: post)
+        }
+    }
 }
 
 extension StoryService_CoreData {

@@ -18,6 +18,8 @@ protocol StoryServiceProtocol {
 
 class StoryService: ObservableObject, StoryServiceProtocol {
     
+    private let db = Firestore.firestore()
+    
     private let storyMetaService = StoryMetaService.shared
     private let storyContentService = StoryContentService.shared
     
@@ -67,5 +69,62 @@ class StoryService: ObservableObject, StoryServiceProtocol {
             .store(in: &self.cancellables)
         }
         .eraseToAnyPublisher()
+    }
+    
+    func observeStories(for uid: String, completion: @escaping (UserPostSimple?, DocumentChangeType) -> Void) {
+        db.collection("Stories")
+            .document(uid)
+            .addSnapshotListener { snapshot, error in
+                                
+                guard let snap = snapshot else {
+                    print("Error fetching stories from uid -> \(uid): \(error!)")
+                    return
+                }
+                
+                
+                guard let data = snap.data() else {
+                    completion(nil, .removed)
+                    return
+                }
+                
+                let userCore = data["userCore"] as? [String: Any]
+                
+                //get birthday and calculate age
+                let birthdateString = userCore!["birthday"] as? String ?? ""
+                let format = DateFormatter()
+                format.dateFormat = "yyyy/MM/dd"
+                let birthdate = format.date(from: birthdateString)!
+                
+                //let agePref = userCore!["agePref"] as? [String: Any]
+//                let ageMinPref = agePref!["min"] as? Int ?? 18
+//                let ageMaxPref = agePref!["max"] as? Int ?? 99
+//
+//                let willingToTravel = userCore!["willingToTravel"] as? Int ?? 25
+                let location = userCore!["location"] as? [String: Any]
+                let lat = location!["latitude"] as? Double ?? 0
+                let lng = location!["longitude"] as? Double ?? 0
+                
+                let id = userCore!["uid"] as? String ?? ""
+                let name = userCore!["name"] as? String ?? ""
+
+                var posts: [Post] = []
+                if let inComingPosts = data["posts"] as? [[String: Any]] {
+                    for post in inComingPosts {
+                        let title = post["title"] as? String ?? ""
+                        let pid = post["id"] as? Timestamp
+                        
+                        let pidFinal = pid?.dateValue()
+                                                            
+                        if let pidF = pidFinal {
+                            let newPost = Post(pid: pidF, uid: id, title: title)
+                            posts.append(newPost)
+                        }
+                    }
+                }
+                
+                let uSimp = UserPostSimple(posts: posts, name: name, uid: id, birthdate: birthdate, coordinates: Coordinate(lat: lat, lng: lng))
+                
+                completion(uSimp, .added)
+            }
     }
 }

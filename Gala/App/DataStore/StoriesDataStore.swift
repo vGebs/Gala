@@ -22,10 +22,122 @@ class StoriesDataStore: ObservableObject {
     @Published var postsILiked: [SimpleStoryLike] = []
     
     private var cancellables: [AnyCancellable] = []
+    
+    @Published private var matches: [String: MatchedUserCore] = [:]
         
     private init() {
-        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+        
+        let _ = Timer.scheduledTimer(withTimeInterval: 1.3, repeats: false) { [weak self] timer in
+            DataStore.shared.chats.$matches
+                .sink { [weak self] returnedMatches in
+                    for newMatch in returnedMatches {
+                        if self?.matches[newMatch.matchDocID] == nil {
+                            self!.getStoriesFromCache(for: newMatch.uc.userBasic.uid)
+                            self!.observeStories(for: newMatch.uc.userBasic.uid)
+                            self?.matches[newMatch.matchDocID] = newMatch
+                        }
+                    }
+                }.store(in: &self!.cancellables)
+            
             self?.initializer()
+        }
+    }
+    
+    private func observeStoriesAdditionHelper(for uid: String, and post: UserPostSimple?) {
+        
+        if let post = post {
+            //#1
+            var isAlreadyAdded = false
+            for i in 0..<self.matchedStories.count {
+                if self.matchedStories[i].uid == uid {
+                    
+                    //#1a
+                    self.matchedStories[i] = post
+                    isAlreadyAdded = true
+                }
+            }
+            
+            //#1b
+            if !isAlreadyAdded {
+                self.matchedStories.append(post)
+            }
+            
+            //#2
+            for story in post.posts {
+                StoryService_CoreData.shared.addStory(post: story)
+            }
+            
+            //StoryService_CoreData.shared.deleteOldStories(for: uid)
+        } else {
+            //StoryService_CoreData.shared.deleteOldStories(for: uid)
+        }
+    }
+    
+    private func observeStories(for uid: String) {
+        StoryService.shared.observeStories(for: uid) { [weak self] post, change in
+            switch change {
+            case .added:
+                print("added")
+                //when we add a new post, we need to:
+                //  1. Check and see if we already have posts for that user
+                //      a. if there is already a user, we just replace it with the new one
+                //      b. if there is not already a user, we add it to the dict
+                //  2. we then push all stories to core data
+                //  3. Delete any old stories
+                self!.observeStoriesAdditionHelper(for: uid, and: post)
+                
+            case .modified:
+                print("modified")
+                //when we update a Story, we need to:
+                //  1. replace the existing UserPostSimple
+                //  2. Push any new stories CoreData
+                ///NOTE: This operation is the same as the .added operation
+                
+                self!.observeStoriesAdditionHelper(for: uid, and: post)
+                
+            case .removed:
+                print("removed")
+                //When we remove a story, that means they no longer have any posts
+                // So, we need to:
+                //  1. Remove the UserPostSimple from the dictionary
+                //  2. Delete old posts from core data
+                
+                //#1
+                var toBeDeleted: UserPostSimple?
+                for i in 0..<self!.matchedStories.count {
+                    if self!.matchedStories[i].uid == uid {
+                        toBeDeleted = self!.matchedStories[i]
+                        self!.matchedStories.remove(at: i)
+                        break
+                    }
+                }
+                
+                //#2
+                if let toBeDeleted = toBeDeleted {
+                    for post in toBeDeleted.posts {
+                        StoryService_CoreData.shared.deleteStory(post: post)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getStoriesFromCache(for uid: String) {
+        //Need to make stories cache
+        let stories = StoryService_CoreData.shared.getAllStories(for: uid)
+        
+        if stories.count > 0 {
+            if let userCore = self.matches[uid] {
+                let userPostSimple = UserPostSimple(
+                    posts: stories,
+                    name: userCore.uc.userBasic.name,
+                    uid: uid,
+                    birthdate: userCore.uc.userBasic.birthdate,
+                    coordinates: userCore.uc.searchRadiusComponents.coordinate
+                )
+                
+                self.matchedStories.append(userPostSimple)
+            }
         }
     }
     
@@ -50,6 +162,7 @@ class StoriesDataStore: ObservableObject {
     func fetchStories() {
         MatchService_Firebase.shared.getMatches()
             .flatMap { [weak self] matches in
+//                Publishers.Zip(self!.fetchStories(matches), self!.observeMatchStories(matches))
                 self!.fetchStories(matches)
             }
             .flatMap { [weak self] _ in
@@ -129,7 +242,7 @@ extension StoriesDataStore {
                         for i in 0..<userPostCopy.count {
                             if userPostCopy[i].uid == match.matchedUID {
                                 print("Found match in stories")
-                                self?.matchedStories.append(userPostCopy[i])
+                                //self?.matchedStories.append(userPostCopy[i])
                                 indexes.append(i)
                                 print("added index: \(i)")
                             }
@@ -280,7 +393,7 @@ extension StoriesDataStore {
                         case .finished:
                             print("StoriesViewModel: Successfully fetched image with name: \(key)")
                         }
-                    } receiveValue: {[weak self] vibeCoverImage in
+                    } receiveValue: { [weak self] vibeCoverImage in
                         if let vibeCoverImage = vibeCoverImage {
                             self?.vibeImages.append(vibeCoverImage)
                             counter += 1
@@ -295,3 +408,15 @@ extension StoriesDataStore {
         }.eraseToAnyPublisher()
     }
 }
+
+//What do we need to do?
+//We want to put the stories in core data and fetch the asset as needed
+//  When we get the stories, we cycle through and add them to core data
+//  When we launch the app, stories from core data will be fetched.
+
+//  we will need to store the vibe ID for each story (including match stories)
+
+//  Match stories will be stored in the same format as vibe stories
+//      All of the stories will have a boolean identifier: var matched: Bool where true == yes and false == no
+
+//  we need to make a proper fetchMatchStories function instead of just seeing if they come in from the main fetch function

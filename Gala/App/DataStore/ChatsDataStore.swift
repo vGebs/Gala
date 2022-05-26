@@ -104,12 +104,14 @@ class ChatsDataStore: ObservableObject {
 extension ChatsDataStore {
     
     public func isMatch(uid: String) -> Bool {
-        for match in matches {
-            if match.uc.userBasic.uid == uid {
-                return true
-            }
-        }
-        return false
+        return matches.contains { $0.uc.userBasic.uid == uid }
+        
+//        for match in matches {
+//            if match.uc.userBasic.uid == uid {
+//                return true
+//            }
+//        }
+//        return false
     }
     
     private func observeMatches() {
@@ -136,12 +138,23 @@ extension ChatsDataStore {
                 for i in 0..<self!.matches.count {
                     for m in matches {
                         if self!.matches[i].uc.userBasic.uid == m.matchedUID {
-                            print("Matched shit yo uid: \(m.matchedUID)")
                             
-                            MatchService_CoreData.shared.deleteMatch(for: m.matchedUID)      //DONE
-                            MessageService_CoreData.shared.deleteMessages(from: m.matchedUID)//DONE
-                            ProfileService.shared.deleteProfile(for: m.matchedUID)           //DONE
-                            SnapService_CoreData.shared.deleteSnaps(from: m.matchedUID)      //
+                            //Call these functions async
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                MatchService_CoreData.shared.deleteMatch(for: m.matchedUID)      //DONE
+                            }
+                            
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                MessageService_CoreData.shared.deleteMessages(from: m.matchedUID)//DONE
+                            }
+                            
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                ProfileService.shared.deleteProfile(for: m.matchedUID)           //DONE
+                            }
+                            
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                SnapService_CoreData.shared.deleteSnaps(from: m.matchedUID)      //
+                            }
                             
                             print("ChatsDataStore: removing user with uid -> \(m.matchedUID)")
                             self!.matches.remove(at: i)
@@ -389,26 +402,10 @@ extension ChatsDataStore {
                                     
                                     self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
                                     
-//                                    //when we get a snap, we want to remove all openedSnaps from the convo
-//                                    self!.removeAllOpenedSnaps(for: snap.fromID)
-                                    
                                 } else {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
                             }
-//                            else {
-//                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
-//
-//                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-//
-//                                if let _ = self?.snaps[snap.fromID] {
-//                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-//
-//                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-//                                } else {
-//                                    self?.snaps[snap.fromID] = [newSnap]
-//                                }
-//                            }
                         }
                         .store(in: &self!.cancellables)
                 }
@@ -444,30 +441,6 @@ extension ChatsDataStore {
         }
     }
     
-//    private func removeAllOpenedSnaps(for uid: String) {
-//        if let _ = snaps[uid] {
-//
-//            let lastSnap = snaps[uid]!.last
-//
-//            snaps[uid]!.removeAll { snap in
-//                if snap.openedDate != nil {
-//                    deleteSnap(snap)
-//                    return true
-//                } else {
-//                    return false
-//                }
-//            }
-//
-////            if let lastSnap = lastSnap {
-////                if snaps[uid]!.count > 0 {
-////                    snaps[uid]!.append(lastSnap)
-////                } else {
-////                    snaps[uid] = [lastSnap]
-////                }
-////            }
-//        }
-//    }
-    
     private func deleteSnap(_ snap: Snap) {
         SnapService.shared.deleteSnap(snap: snap)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
@@ -498,9 +471,6 @@ extension ChatsDataStore {
                         let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                         
                         self?.snaps[snap.toID]?.insert(snap, at: insertIndex!)
-                        
-                        //when we send a snap, we want to remove all openedSnaps from the convo
-                        //self!.removeAllOpenedSnaps(for: snap.toID)
                         
                     } else {
                         self?.snaps[snap.toID] = [snap]
