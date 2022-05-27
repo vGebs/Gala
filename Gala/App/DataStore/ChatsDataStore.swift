@@ -127,11 +127,26 @@ extension ChatsDataStore {
         MatchService_Firebase.shared.observeMatches() { [weak self] matches, change in
             switch change {
             case .added:
+                
+                var alreadyAdded: [String: Match] = [:]
+                
                 for match in matches {
-                    self!.getMatchProfile(match)
-                    //for each match, we want to observe their UserCore
-                    self!.observeMatchUserCore(for: match)
-                    self!.observeProfileImage(for: match)
+                    for alreadyAddedMatch in self!.matches {
+                        if match.docID == alreadyAddedMatch.matchDocID {
+                            // it is already added, so flag it
+                            alreadyAdded[match.docID] = match
+                        }
+                    }
+                }
+                
+                for match in matches {
+                    if alreadyAdded[match.docID] == nil {
+                        MatchService_CoreData.shared.addMatch(match: match)
+                        self!.getMatchProfile(match)
+                        //for each match, we want to observe their UserCore
+                        self!.observeMatchUserCore(for: match)
+                        self!.observeProfileImage(for: match)
+                    }
                 }
                 
             case .removed:
