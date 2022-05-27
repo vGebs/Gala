@@ -112,9 +112,40 @@ class MatchService_CoreData: MatchService_CoreDataProtocol {
             }
         }
     }
+    
+    func clear() {
+        let matches = getAllMatches()
+        
+        for match in matches {
+            self.deleteMatch(for: match.matchedUID)
+        }
+    }
 }
 
 extension MatchService_CoreData {
+    
+    private func getAllMatches() -> [Match] {
+        let fetchRequest: NSFetchRequest<MatchCD> = MatchCD.fetchRequest()
+        
+        do {
+            let matchesCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            var matches: [Match] = []
+            
+            for match in matchesCD {
+                matches.append(bundleMatch(cd: match))
+            }
+            
+            return matches
+        } catch {
+            
+            print("MatchService_CoreData: Failed to fetch all stories")
+            print("MatchService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
+    
     func getMatch(with uid: String) -> Match? {
         if let match = getMatchCD(with: uid) {
             return bundleMatch(cd: match)
@@ -190,7 +221,7 @@ extension MatchService_CoreData {
                 return nil
             }
         } catch {
-            print("MessageService_CoreData: Could not find message w docID: \(uid)")
+            print("MatchService_CoreData: Could not find match w matchedUID: \(uid)")
             return nil
         }
     }

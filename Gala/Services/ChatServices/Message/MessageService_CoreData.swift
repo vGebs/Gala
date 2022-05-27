@@ -145,9 +145,40 @@ class MessageService_CoreData: MessageService_CoreDataProtocol {
             print("MessageService_CoreData: No messages with uid -> \(uid)")
         }
     }
+    
+    func clear() {
+        let messages = getAllMessages_()
+        
+        for msg in messages {
+            self.deleteMessage(with: msg.docID)
+        }
+    }
 }
 
 extension MessageService_CoreData {
+    
+    private func getAllMessages_() -> [Message] {
+        let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()
+        
+        do {
+            let messagesCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            var messages: [Message] = []
+            
+            for msg in messagesCD {
+                messages.append(bundleMessage(cd: msg))
+            }
+            
+            return messages
+        } catch {
+            
+            print("MessageService_CoreData: Failed to fetch all messages")
+            print("MessageService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
+    
     func getMostRecentMessageDate() -> Date? {
         //we need to fetch all messages and compare sent dates
         let fetchRequest: NSFetchRequest<MessageCD> = MessageCD.fetchRequest()

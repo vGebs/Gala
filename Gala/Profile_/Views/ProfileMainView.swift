@@ -56,10 +56,10 @@ struct ProfileMainView: View {
                         Spacer()
                         if viewModel.mode == .profileStandard {
                             Menu {
-                                Button(action: { AppState.shared.toggleDarkMode() }){
+                                Button(action: { DataStore.shared.clearCache() }){
                                     HStack{
-                                        Image(systemName: "person.fill.xmark")
-                                        Text(AppState.shared.isDarkMode ? "Toggle light mode" : "Toggle dark mode")
+                                        Image(systemName: "xmark.bin")
+                                        Text("Clear cache")
                                     }
                                 }
                                 

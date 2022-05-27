@@ -114,9 +114,47 @@ class SnapService_CoreData {
             }
         }
     }
+    
+    func clear() {
+        print("Clearing")
+        let snaps = getAllSnaps()
+        print("Snaps count: \(snaps.count)")
+        for snap in snaps {
+            self.deleteSnap(snapCD: snap)
+        }
+    }
+    
+    private func deleteSnap(snapCD: SnapCD) {
+        persistentContainer.viewContext.delete(snapCD)
+        
+        do {
+            try persistentContainer.viewContext.save()
+            print("SnapService_CoreData: Deleted snap")
+            return
+        } catch {
+            print("SnapService_CoreData: Could not delete snap")
+            return
+        }
+    }
 }
 
 extension SnapService_CoreData {
+    private func getAllSnaps() -> [SnapCD] {
+        let fetchRequest: NSFetchRequest<SnapCD> = SnapCD.fetchRequest()
+        
+        do {
+            let snapsCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return snapsCD
+        } catch {
+            
+            print("SnapService_CoreData: Failed to fetch all snaps")
+            print("SnapService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
+    
     private func getAllSnapsCD(for uid: String) -> [SnapCD]? {
         //we need to get all messages where:
         //  (fromID == uid && toID == me) && (fromID == me && toID == uid)

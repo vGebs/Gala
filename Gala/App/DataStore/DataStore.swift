@@ -35,4 +35,35 @@ class DataStore: ObservableObject {
         recents.clear()
         stories.clear()
     }
+    
+    func clearCache() {
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            StoryService_CoreData.shared.clear() //
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            SnapService_CoreData.shared.clear()
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            MatchService_CoreData.shared.clear() //
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            MessageService_CoreData.shared.clear() //
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            UserCoreService_CoreData.shared.clear() //
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            UserAboutService_CoreData.shared.clear() //
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            ProfileImageService_CoreData.shared.clear() //
+        }
+    }
 }

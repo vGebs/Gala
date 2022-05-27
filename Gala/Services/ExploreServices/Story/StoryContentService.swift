@@ -61,7 +61,7 @@ class StoryContentService: ObservableObject {
         }.eraseToAnyPublisher()
     }
     
-    func getStory(uid: String, storyID: Date) -> AnyPublisher<UIImage?, Error> {
+    func getStory(uid: String, storyID: Date, title: String) -> AnyPublisher<UIImage?, Error> {
         let storageRef = storage.reference()
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
@@ -69,16 +69,26 @@ class StoryContentService: ObservableObject {
         let imgFileRef = myStoryRef.child("\(storyID).png")
         
         return Future<UIImage?, Error> { promise in
-            imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
-                if let error = error {
-                    print("Non lethal fetching error (ImageService): \(error.localizedDescription)")
-                }
-                
-                if let data = data {
-                    let img = UIImage(data: data)
-                    promise(.success(img))
-                } else {
-                    promise(.success(nil))
+            
+            if let story = StoryService_CoreData.shared.getStory(with: uid, and: storyID) {
+                promise(.success(story.storyImage))
+            } else {
+                imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
+                    if let error = error {
+                        print("Non lethal fetching error (ImageService): \(error.localizedDescription)")
+                    }
+                    
+                    if let data = data {
+                        if let img = UIImage(data: data) {
+                            StoryService_CoreData.shared.addStory(post: Post(pid: storyID, uid: uid, title: title, storyImage: img))
+                            
+                            promise(.success(img))
+                        } else {
+                            promise(.success(nil))
+                        }
+                    } else {
+                        promise(.success(nil))
+                    }
                 }
             }
         }.eraseToAnyPublisher()

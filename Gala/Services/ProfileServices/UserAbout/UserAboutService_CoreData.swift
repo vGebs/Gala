@@ -90,9 +90,7 @@ class UserAboutService_CoreData: UserAboutServiceProtocol {
             return
         }
     }
-}
-
-extension UserAboutService_CoreData {
+    
     func removeUser(uid: String) {
         //we need to make sure the user exists first before deleting it
         if let user = getUserAboutCD(uid: uid) {
@@ -111,6 +109,32 @@ extension UserAboutService_CoreData {
             //user does not exist
             print("UserAboutService_CoreData: There is no user to delete")
             return
+        }
+    }
+    
+    func clear() {
+        let abouts = getAllUserAboutCD()
+        
+        for about in abouts {
+            self.removeUser(uid: about.uid!)
+        }
+    }
+}
+
+extension UserAboutService_CoreData {
+    private func getAllUserAboutCD() -> [UserAboutCD] {
+        let fetchRequest: NSFetchRequest<UserAboutCD> = UserAboutCD.fetchRequest()
+        
+        do {
+            let userAboutsCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return userAboutsCD
+        } catch {
+            
+            print("UserAboutService_CoreData: Failed to fetch all user abouts")
+            print("UserAboutService_CoreData: Failed to save context")
+            
+            return []
         }
     }
 }

@@ -94,9 +94,34 @@ class ProfileImageService_CoreData: ProfileImageServiceProtocol {
             return
         }
     }
+    
+    func clear() {
+        let imgs = getAllImages()
+        
+        for img in imgs {
+            self.deleteImage(img: img)
+        }
+    }
 }
 
 extension ProfileImageService_CoreData {
+    
+    func getAllImages() -> [ProfileImageCD]{
+        let fetchRequest: NSFetchRequest<ProfileImageCD> = ProfileImageCD.fetchRequest()
+        
+        do {
+            let profileImageCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return profileImageCD
+        } catch {
+            
+            print("ProfileImageService_CoreData: Failed to fetch all imgs")
+            print("ProfileImageService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
+    
     func getAllProfileImages(uid: String) -> [ImageModel]? {
         if let imgs = getAllProfileImagesCD(uid: uid) {
             var final: [ImageModel] = []

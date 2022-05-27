@@ -93,7 +93,9 @@ class StoryService_CoreData {
             var stories: [Post] = []
             
             for story in storiesCD {
-                stories.append(bundleStory(cd: story))
+                if let p = bundleStory(cd: story) {
+                    stories.append(p)
+                }
             }
             
             return stories
@@ -124,6 +126,29 @@ class StoryService_CoreData {
             self.deleteStory(post: post)
         }
     }
+    
+    func clear() {
+        let stories = getAllStories()
+        
+        for story in stories {
+            self.deleteStory(storyCD: story)
+        }
+    }
+    
+    private func deleteStory(storyCD: StoryCD) {
+        persistentContainer.viewContext.delete(storyCD)
+
+        do {
+            try persistentContainer.viewContext.save()
+            print("StoryService_CoreData: Successfully deleted story")
+            return
+        } catch {
+            print("StoryService_CoreData: Failed to delete story")
+            print("StoryService_CoreData: Failed to save context")
+            print("StoryService_CoreData: \(error)")
+            return
+        }
+    }
 }
 
 extension StoryService_CoreData {
@@ -148,19 +173,38 @@ extension StoryService_CoreData {
             return nil
         }
     }
+    
+    private func getAllStories() -> [StoryCD] {
+        let fetchRequest: NSFetchRequest<StoryCD> = StoryCD.fetchRequest()
+        
+        do {
+            let storiesCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            return storiesCD
+        } catch {
+            
+            print("StoryService_CoreData: Failed to fetch all stories")
+            print("StoryService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
 }
 
 extension StoryService_CoreData {
     
-    private func bundleStory(cd: StoryCD) -> Post {
-        return Post(
-            pid: cd.pid!,
-            uid: cd.uid!,
-            title: cd.title!,
-            storyImage: UIImage(data: cd.asset!)!
-        )
-        
-        
+    private func bundleStory(cd: StoryCD) -> Post? {
+        if let pid = cd.pid, let uid = cd.uid, let title = cd.title, let asset = cd.asset {
+            if let img = UIImage(data: asset) {
+                return Post(
+                    pid: pid,
+                    uid: uid,
+                    title: title,
+                    storyImage: img
+                )
+            }
+        }
+        return nil
     }
     
     private func bundleStoryCD(post: Post, cd: StoryCD) -> Bool {

@@ -57,7 +57,7 @@ class StoryViewable: ObservableObject, Identifiable {
         self.likes = []
         self.pid = pid
         
-        StoryContentService.shared.getStory(uid: AuthService.shared.currentUser!.uid, storyID: pid)
+        StoryContentService.shared.getStory(uid: AuthService.shared.currentUser!.uid, storyID: pid, title: title)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in

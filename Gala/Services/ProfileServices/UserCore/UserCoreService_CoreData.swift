@@ -98,9 +98,40 @@ class UserCoreService_CoreData: UserCoreServiceProtocol {
             return nil
         }
     }
+    
+    func clear() {
+        let users = getAllUsers()
+        
+        for user in users {
+            self.removeUser(uid: user.userBasic.uid)
+        }
+    }
 }
 
 extension UserCoreService_CoreData {
+    
+    private func getAllUsers() -> [UserCore] {
+        let fetchRequest: NSFetchRequest<UserCoreCD> = UserCoreCD.fetchRequest()
+        
+        do {
+            let userCoreCD = try persistentContainer.viewContext.fetch(fetchRequest)
+            
+            var users: [UserCore] = []
+            
+            for user in userCoreCD {
+                users.append(bundleUserCore(uc: user))
+            }
+            
+            return users
+        } catch {
+            
+            print("UserCoreService_CoreData: Failed to fetch all users")
+            print("UserCoreService_CoreData: Failed to save context")
+            
+            return []
+        }
+    }
+    
     func removeUser(uid: String) {
         //we need to make sure the user exists first before deleting it
         if let user = getUserCoreCD(uid: uid) {

@@ -42,7 +42,7 @@ class Post: Identifiable, ObservableObject {
         self.title = title
         self.uid = uid
         
-        StoryContentService.shared.getStory(uid: uid, storyID: pid)
+        StoryContentService.shared.getStory(uid: uid, storyID: pid, title: title)
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))
             .receive(on: DispatchQueue.main)
             .sink { completion in
