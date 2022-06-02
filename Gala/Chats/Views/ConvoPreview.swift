@@ -117,7 +117,7 @@ struct ConvoPreview: View {
                 Spacer()
                 HStack {
                     Button(action: {
-                                                
+                        
                         switch chatsViewModel.convoPressed(for: ucMatch) {
                             
                         case .openSnap:
@@ -125,9 +125,15 @@ struct ConvoPreview: View {
                             self.showSnapView = true
                         case .viewChat:
                             self.timeMatchedBinding = ucMatch.timeMatched
+                            self.userChat = UserChat(
+                                name: ucMatch.uc.userBasic.name,
+                                uid: ucMatch.uc.userBasic.uid,
+                                location: ucMatch.uc.searchRadiusComponents.coordinate,
+                                bday: ucMatch.uc.userBasic.birthdate,
+                                profileImg: ucMatch.profileImg
+                            )
                             self.showChat = true
                         }
-                        
                     }){
                         VStack {
                             HStack {

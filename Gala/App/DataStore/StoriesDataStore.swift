@@ -34,6 +34,7 @@ class StoriesDataStore: ObservableObject {
                         if self?.matches[newMatch.matchDocID] == nil {
                             self!.getStoriesFromCache(for: newMatch.uc.userBasic.uid)
                             self!.observeStories(for: newMatch.uc.userBasic.uid)
+                            
                             self?.matches[newMatch.matchDocID] = newMatch
                         }
                     }
@@ -43,36 +44,82 @@ class StoriesDataStore: ObservableObject {
         }
     }
     
-    private func observeStoriesAdditionHelper(for uid: String, and post: UserPostSimple?) {
-        
-        if let post = post {
-            //#1
-            var isAlreadyAdded = false
-            for i in 0..<self.matchedStories.count {
-                if self.matchedStories[i].uid == uid {
-                    
-                    //#1a
-                    self.matchedStories[i] = post
-                    isAlreadyAdded = true
-                }
-            }
-            
-            //#1b
-            if !isAlreadyAdded {
-                self.matchedStories.append(post)
-            }
-            
-            //#2
-            for story in post.posts {
-                StoryService_CoreData.shared.addStory(post: story)
-            }
-            
-            //StoryService_CoreData.shared.deleteOldStories(for: uid)
-        } else {
-            //StoryService_CoreData.shared.deleteOldStories(for: uid)
+    public func initializer() {
+        if empty {
+            fetchStories()
+            observeStoriesILiked()
+            empty = false
         }
     }
     
+    @Published private var empty = true
+    
+    func clear() {
+        vibeImages.removeAll()
+        vibesDict.removeAll()
+        matchedStories.removeAll()
+        postsILiked.removeAll()
+        empty = true
+    }
+}
+
+extension StoriesDataStore {
+    private func fetchStories() {
+        MatchService_Firebase.shared.getMatches()
+            .flatMap { [weak self] matches in
+                self!.fetchStories(matches)
+            }
+            .flatMap { [weak self] _ in
+                self!.fetchVibeImages()
+            }
+            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("StoriesViewModel: Failed to fetched stories and matchStories")
+                    print("StoriesViewModel-err: \(e)")
+                case .finished:
+                    print("StoriesViewModel: Successfully fetched stories and matchStories")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+    
+    private func observeStoriesILiked() {
+        LikesService.shared.observeStoriesILiked { [weak self] storyLikes, change in
+            switch change {
+                
+            case .added:
+                for like in storyLikes {
+                    print("StoriesDataStore: added like")
+                    self?.postsILiked.append(like)
+                }
+                
+            case .modified:
+                for like in storyLikes {
+                    for i in 0..<(self?.postsILiked.count)! {
+                        if like.docID == (self?.postsILiked[i].docID)! {
+                            self?.postsILiked[i] = like
+                        }
+                    }
+                }
+                
+            case .removed:
+                for story in storyLikes {
+                    for i in 0..<(self?.postsILiked.count)! {
+                        if story.docID == self?.postsILiked[i].docID {
+                            self?.postsILiked.remove(at: i)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension StoriesDataStore {
     private func observeStories(for uid: String) {
         StoryService.shared.observeStories(for: uid) { [weak self] post, change in
             switch change {
@@ -122,6 +169,36 @@ class StoriesDataStore: ObservableObject {
         }
     }
     
+    private func observeStoriesAdditionHelper(for uid: String, and post: UserPostSimple?) {
+        
+        if let post = post {
+            //#1
+            var isAlreadyAdded = false
+            for i in 0..<self.matchedStories.count {
+                if self.matchedStories[i].uid == uid {
+                    
+                    //#1a
+                    self.matchedStories[i] = post
+                    isAlreadyAdded = true
+                }
+            }
+            
+            //#1b
+            if !isAlreadyAdded {
+                self.matchedStories.append(post)
+            }
+            
+            //#2
+            for story in post.posts {
+                StoryService_CoreData.shared.addStory(post: story)
+            }
+            
+            //StoryService_CoreData.shared.deleteOldStories(for: uid)
+        } else {
+            //StoryService_CoreData.shared.deleteOldStories(for: uid)
+        }
+    }
+    
     private func getStoriesFromCache(for uid: String) {
         //Need to make stories cache
         let stories = StoryService_CoreData.shared.getAllStories(for: uid)
@@ -137,79 +214,6 @@ class StoriesDataStore: ObservableObject {
                 )
                 
                 self.matchedStories.append(userPostSimple)
-            }
-        }
-    }
-    
-    public func initializer() {
-        if empty {
-            fetchStories()
-            observeStoriesILiked()
-            empty = false
-        }
-    }
-    
-    @Published private var empty = true
-    
-    func clear() {
-        vibeImages.removeAll()
-        vibesDict.removeAll()
-        matchedStories.removeAll()
-        postsILiked.removeAll()
-        empty = true
-    }
-    
-    func fetchStories() {
-        MatchService_Firebase.shared.getMatches()
-            .flatMap { [weak self] matches in
-//                Publishers.Zip(self!.fetchStories(matches), self!.observeMatchStories(matches))
-                self!.fetchStories(matches)
-            }
-            .flatMap { [weak self] _ in
-                self!.fetchVibeImages()
-            }
-            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("StoriesViewModel: Failed to fetched stories and matchStories")
-                    print("StoriesViewModel-err: \(e)")
-                case .finished:
-                    print("StoriesViewModel: Successfully fetched stories and matchStories")
-                }
-            } receiveValue: { _ in }
-            .store(in: &cancellables)
-    }
-    
-    private func observeStoriesILiked() {
-        LikesService.shared.observeStoriesILiked { [weak self] storyLikes, change in
-            switch change {
-                
-            case .added:
-                for like in storyLikes {
-                    print("StoriesDataStore: added like")
-                    self?.postsILiked.append(like)
-                }
-                
-            case .modified:
-                for like in storyLikes {
-                    for i in 0..<(self?.postsILiked.count)! {
-                        if like.docID == (self?.postsILiked[i].docID)! {
-                            self?.postsILiked[i] = like
-                        }
-                    }
-                }
-                
-            case .removed:
-                for story in storyLikes {
-                    for i in 0..<(self?.postsILiked.count)! {
-                        if story.docID == self?.postsILiked[i].docID {
-                            self?.postsILiked.remove(at: i)
-                            break
-                        }
-                    }
-                }
             }
         }
     }

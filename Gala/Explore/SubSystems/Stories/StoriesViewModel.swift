@@ -47,13 +47,8 @@ class StoriesViewModel: ObservableObject {
         
         DataStore.shared.stories.$postsILiked
             .sink { [weak self] likes in
-                print("yuh")
                 self?.postsILiked = likes
             }.store(in: &cancellables)
-    }
-    
-    func fetch() {
-        DataStore.shared.stories.fetchStories()
     }
     
     func postIsLiked(uid: String, pid: Date) -> Bool {

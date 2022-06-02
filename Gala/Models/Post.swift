@@ -35,6 +35,8 @@ class Post: Identifiable, ObservableObject {
         self.uid = uid
         self.title = title
         self.storyImage = storyImage
+        
+        self.timeSincePost = secondsToHoursMinutesSeconds(Int(pid.timeIntervalSinceNow))
     }
     
     init(pid: Date, uid: String, title: String) {
