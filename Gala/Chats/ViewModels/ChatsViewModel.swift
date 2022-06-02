@@ -14,9 +14,7 @@ import UIKit
 class ChatsViewModel: ObservableObject {
     
     private var subs: [AnyCancellable] = []
-    
-    private let db = Firestore.firestore()
-    
+        
     @Published private(set) var matches: [MatchedUserCore] = []
     @Published var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]

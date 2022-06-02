@@ -25,7 +25,7 @@ class RecentlyJoinedUserService: RecentlyJoinedUserServiceProtocol {
     private var cancellables: [AnyCancellable] = []
     
     static let shared = RecentlyJoinedUserService()
-    private init() {}
+    private init() { }
     
     func addNewUser(core: UserCore) -> AnyPublisher<Void, Error> { return addNewUser_(core) }
     func getRecents() -> AnyPublisher<[UserCore]?, Error> { return getRecents_() }
@@ -79,16 +79,8 @@ extension RecentlyJoinedUserService {
         let ageMinPref = UserCoreService.shared.currentUserCore?.ageRangePreference.minAge
         let ageMaxPref = UserCoreService.shared.currentUserCore?.ageRangePreference.maxAge
         let travelDistance = UserCoreService.shared.currentUserCore?.searchRadiusComponents.willingToTravel
-        
-        print("Travel Distance: \(travelDistance)")
-        print("Sexuality & Gender: \(sexaulityAndGender)")
-        print("age min pref: \(ageMinPref)")
-        print("age max pref: \(ageMaxPref)")
-
 
         return Future<[UserCore]?, Error> { promise in
-
-            //print("RecentlyJoinedUserService: Entered getRecents_()")
             
             switch sexaulityAndGender {
 
@@ -108,14 +100,11 @@ extension RecentlyJoinedUserService {
                 } receiveValue: { straightFemales, biFemales in
                     var final: [UserCore] = []
                     if let sF = straightFemales {
-                        print("RecentlyJoinedUserService:sf\(String(describing: sF))")
                         final += sF
                     }
                     if let bF = biFemales {
-                        print("RecentlyJoinedUserService:bf\(String(describing: bF))")
                         final += bF
                     }
-                    print(final)
                     promise(.success(final))
                 }
                 .store(in: &self.cancellables)
@@ -304,17 +293,14 @@ extension RecentlyJoinedUserService {
                         case .failure(let error):
                             print("RJUS: \(error.localizedDescription)")
                         case .finished:
-                            print("RJUS: Finished getting docs for query: \(String(i))")
                             finished += 1
                         }
                     } receiveValue: { users in
                         if let users = users {
                             results += users
-                            print("RJUS: users: \(results)")
                         }
                         
                         if finished == queries.count - 1 {
-                            print("RJUS: results: \(results)")
                             promise(.success(results))
                         }
                     }
