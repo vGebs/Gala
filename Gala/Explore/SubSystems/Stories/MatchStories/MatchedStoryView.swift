@@ -13,6 +13,9 @@ struct MatchedStoryView: View {
     var body: some View {
         VStack{
             Button(action: {
+                //when we click on the story, we need to fetch the first img from core data
+                storyVM.getStoryImage(uid: story.uid, pid: story.posts[0].pid)
+                
                 storyVM.currentStory = story.id
                 storyVM.showMatchStory = true
             }){

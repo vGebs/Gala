@@ -32,32 +32,45 @@ class StoriesViewModel: ObservableObject {
     init() {
         DataStore.shared.stories.$vibeImages
             .sink { [weak self] vibeImgs in
-                self?.vibeImages = vibeImgs
+                withAnimation {
+                    self?.vibeImages = vibeImgs
+                }
             }.store(in: &cancellables)
         
         DataStore.shared.stories.$vibesDict
             .sink { [weak self] vibes in
-                self?.vibesDict = vibes
+                withAnimation {
+                    self?.vibesDict = vibes
+                }
             }.store(in: &cancellables)
         
         DataStore.shared.stories.$matchedStories
             .sink { [weak self] matchStories in
-                self?.matchedStories = matchStories
+                withAnimation {
+                    self?.matchedStories = matchStories
+                }
             }.store(in: &cancellables)
         
         DataStore.shared.stories.$postsILiked
             .sink { [weak self] likes in
-                self?.postsILiked = likes
+                withAnimation {
+                    self?.postsILiked = likes
+                }
             }.store(in: &cancellables)
     }
     
-    func postIsLiked(uid: String, pid: Date) -> Bool {
-        for story in postsILiked {
-            if story.likedUID == uid && story.pid == pid {
-                return true
+    func getStoryImage(uid: String, pid: Date) {
+        if let story = StoryService_CoreData.shared.getStory(with: uid, and: pid) {
+            for i in 0..<matchedStories.count {
+                if matchedStories[i].uid == uid {
+                    for j in 0..<matchedStories[i].posts.count {
+                        if matchedStories[i].posts[j].pid == pid {
+                            matchedStories[i].posts[j] = story
+                        }
+                    }
+                }
             }
         }
-        return false
     }
     
     func likePost(uid: String, pid: Date) {

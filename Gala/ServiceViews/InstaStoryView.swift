@@ -20,7 +20,7 @@ struct InstaStoryView: View {
         if storyData.showVibeStory || storyData.showMatchStory {
             TabView(selection: $storyData.currentStory) {
                 ForEach(mode == .vibe ? $storyData.currentVibe : $storyData.matchedStories) { $bundle in
-                    StoryCardView(bundle: $bundle, storyData: storyData, mode: mode)
+                    StoryCardView(userPostSimple: $bundle, storyVM: storyData, mode: mode)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -31,8 +31,8 @@ struct InstaStoryView: View {
 }
 
 struct StoryCardView: View {
-    @Binding var bundle: UserPostSimple
-    @ObservedObject var storyData: StoriesViewModel
+    @Binding var userPostSimple: UserPostSimple
+    @ObservedObject var storyVM: StoriesViewModel
     
     @State var timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     @State var timerProgress: CGFloat = 0
@@ -44,11 +44,11 @@ struct StoryCardView: View {
         GeometryReader { proxy in
             ZStack {
                 //Getting current index
-                let index = min(Int(timerProgress), bundle.posts.count - 1)
+                let index = min(Int(timerProgress), userPostSimple.posts.count - 1)
                 
                 VStack {
                     ZStack {
-                        if let story = bundle.posts[index] {
+                        if let story = userPostSimple.posts[index] {
                             if story.storyImage != nil {
                                 Image(uiImage: story.storyImage!)
                                     .resizable()
@@ -66,13 +66,13 @@ struct StoryCardView: View {
                     } else {
                         Button(action: {
                             //like user
-                            if bundle.liked {
-                                storyData.unLikePost(uid: bundle.uid, pid: bundle.posts[index].pid)
+                            if userPostSimple.liked {
+                                storyVM.unLikePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
                             } else {
-                                storyData.likePost(uid: bundle.uid, pid: bundle.posts[index].pid)
+                                storyVM.likePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
                             }
                         }){
-                            if bundle.liked {
+                            if userPostSimple.liked {
                                 unlikeButton
                             } else {
                                 likeButton
@@ -86,9 +86,9 @@ struct StoryCardView: View {
                     
                     //profileHeader
                     HStack(spacing: 13) {
-                        if bundle.profileImg != nil {
+                        if userPostSimple.profileImg != nil {
                             ZStack{
-                                Image(uiImage: bundle.profileImg!)
+                                Image(uiImage: userPostSimple.profileImg!)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: screenWidth / 10, height: screenWidth / 10)
@@ -113,14 +113,14 @@ struct StoryCardView: View {
                         VStack {
                             if mode == .vibe {
                                 HStack {
-                                    Text("\(bundle.name), \(bundle.birthdate.ageString())")
+                                    Text("\(userPostSimple.name), \(userPostSimple.birthdate.ageString())")
                                         .font(.system(size: 17, weight: .regular, design: .rounded))
                                         .foregroundColor(.white)
                                     Spacer()
                                 }
                             } else {
                                 HStack {
-                                    Text(bundle.name)
+                                    Text(userPostSimple.name)
                                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                                         .foregroundColor(.white)
                                     Spacer()
@@ -128,7 +128,7 @@ struct StoryCardView: View {
                             }
                             
                             HStack{
-                                if let story = bundle.posts[index] {
+                                if let story = userPostSimple.posts[index] {
                                     Text(secondsToHoursMinutesSeconds_(Int(story.pid.timeIntervalSinceNow)))
                                         .font(.system(size: 13, weight: .light, design: .rounded))
                                         .foregroundColor(.white)
@@ -142,8 +142,8 @@ struct StoryCardView: View {
                         
                         Button(action: {
                             withAnimation {
-                                storyData.showMatchStory = false
-                                storyData.showVibeStory = false
+                                storyVM.showMatchStory = false
+                                storyVM.showVibeStory = false
 //                                storyData.currentVibe = []
 //                                storyData.currentStory = ""
                             }
@@ -168,9 +168,9 @@ struct StoryCardView: View {
                 timerProgress = 0
             }
             .onReceive(timer) { _ in
-                if storyData.currentStory == bundle.id {
+                if storyVM.currentStory == userPostSimple.id {
                     
-                    if timerProgress < CGFloat(bundle.posts.count) {
+                    if timerProgress < CGFloat(userPostSimple.posts.count) {
                         timerProgress += 0.003
                     }else {
                         updatingStory()
@@ -246,7 +246,7 @@ struct StoryCardView: View {
     
     var progressView: some View {
         HStack(spacing: 5){
-            ForEach(bundle.posts.indices) { i in
+            ForEach(userPostSimple.posts.indices) { i in
                 GeometryReader { proxy in
                     
                     let width = proxy.size.width
@@ -277,25 +277,55 @@ struct StoryCardView: View {
     
     var next_prevView: some View {
         HStack {
+            //go to previous image
             Rectangle()
                 .fill(.black.opacity(0.01))
                 .onTapGesture {
+                    //if we are at the first image
                     if (timerProgress - 1) < 0 {
                         updatingStory(forward: false)
-                    } else {
+                    } else { //if we are not at first image, go back
+                        //we are going back,
+                        //so we need to check to make sure we are not on the last story for that user,
+                        
+                        
+                        
+                        let currentIndex = Int(timerProgress)
+                        
+                        //if we are on the last story for that user
+                        //  we just grab the previous image from core data
+                        if currentIndex == userPostSimple.posts.count - 1 {
+                            storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex - 1].pid)
+                        } else {
+                            //if we are not on the last story for that user
+                            //  we set the current img to nil and grab the previous story
+                            storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex - 1].pid)
+                            userPostSimple.posts[currentIndex].storyImage = nil
+                        }
+                        
                         timerProgress = CGFloat(Int(timerProgress - 1))
                     }
                 }
             
+            //go to next image
             Rectangle()
                 .fill(.black.opacity(0.01))
                 .onTapGesture {
                     
                     //Checking and updating to next
-                    if (timerProgress + 1) > CGFloat(bundle.posts.count) {
+                    if (timerProgress + 1) > CGFloat(userPostSimple.posts.count) {
                         //update to next bundle
                         updatingStory()
                     } else {
+                        
+                        let currentIndex = Int(timerProgress)
+                        
+                        //we need to get the next image and make the current story nil
+                        
+                        storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex + 1].pid)
+                        
+                        userPostSimple.posts[currentIndex].storyImage = nil
+                        
                         timerProgress = CGFloat(Int(timerProgress + 1))
                     }
                 }
@@ -313,21 +343,21 @@ struct StoryCardView: View {
     }
     
     private func updateVibeStory(_ forward: Bool) {
-        let index = min(Int(timerProgress), bundle.posts.count - 1)
+        let index = min(Int(timerProgress), userPostSimple.posts.count - 1)
         
-        let story = bundle.posts[index]
+        let story = userPostSimple.posts[index]
         
         if !forward {
             //moving index backward
             //else set timer to 0
             
-            if let first = storyData.currentVibe.first, first.id != bundle.id {
-                let bundleIndex = storyData.currentVibe.firstIndex { currentBundle in
-                    return bundle.id == currentBundle.id
+            if let first = storyVM.currentVibe.first, first.id != userPostSimple.id {
+                let bundleIndex = storyVM.currentVibe.firstIndex { currentBundle in
+                    return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyData.currentStory = storyData.currentVibe[bundleIndex - 1].id
+                    storyVM.currentStory = storyVM.currentVibe[bundleIndex - 1].id
                 }
                 
             } else {
@@ -338,42 +368,42 @@ struct StoryCardView: View {
         }
         
         //checking if its the last
-        if let last = bundle.posts.last, last.id == story.id {
+        if let last = userPostSimple.posts.last, last.id == story.id {
             //if there is another story, move to it
             // else, closing view
-            if let lastBundle = storyData.currentVibe.last, lastBundle.id == bundle.id {
+            if let lastBundle = storyVM.currentVibe.last, lastBundle.id == userPostSimple.id {
                 withAnimation {
-                    storyData.showVibeStory = false
+                    storyVM.showVibeStory = false
                 }
             } else {
                 //updating to next bundle
-                let bundleIndex = storyData.currentVibe.firstIndex { currentBundle in
-                    return bundle.id == currentBundle.id
+                let bundleIndex = storyVM.currentVibe.firstIndex { currentBundle in
+                    return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyData.currentStory = storyData.currentVibe[bundleIndex + 1].id
+                    storyVM.currentStory = storyVM.currentVibe[bundleIndex + 1].id
                 }
             }
         }
     }
     
     private func updateMatchStory(_ forward: Bool) {
-        let index = min(Int(timerProgress), bundle.posts.count - 1)
+        let index = min(Int(timerProgress), userPostSimple.posts.count - 1)
         
-        let story = bundle.posts[index]
+        let story = userPostSimple.posts[index]
         
         if !forward {
             //moving index backward
             //else set timer to 0
             
-            if let first = storyData.matchedStories.first, first.id != bundle.id {
-                let bundleIndex = storyData.matchedStories.firstIndex { currentBundle in
-                    return bundle.id == currentBundle.id
+            if let first = storyVM.matchedStories.first, first.id != userPostSimple.id {
+                let bundleIndex = storyVM.matchedStories.firstIndex { currentBundle in
+                    return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyData.currentStory = storyData.matchedStories[bundleIndex - 1].id
+                    storyVM.currentStory = storyVM.matchedStories[bundleIndex - 1].id
                 }
                 
             } else {
@@ -384,21 +414,21 @@ struct StoryCardView: View {
         }
         
         //checking if its the last
-        if let last = bundle.posts.last, last.id == story.id {
+        if let last = userPostSimple.posts.last, last.id == story.id {
             //if there is another story, move to it
             // else, closing view
-            if let lastBundle = storyData.matchedStories.last, lastBundle.id == bundle.id {
+            if let lastBundle = storyVM.matchedStories.last, lastBundle.id == userPostSimple.id {
                 withAnimation {
-                    storyData.showMatchStory = false
+                    storyVM.showMatchStory = false
                 }
             } else {
                 //updating to next bundle
-                let bundleIndex = storyData.matchedStories.firstIndex { currentBundle in
-                    return bundle.id == currentBundle.id
+                let bundleIndex = storyVM.matchedStories.firstIndex { currentBundle in
+                    return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyData.currentStory = storyData.matchedStories[bundleIndex + 1].id
+                    storyVM.currentStory = storyVM.matchedStories[bundleIndex + 1].id
                 }
             }
         }

@@ -182,7 +182,6 @@ extension StoriesDataStore {
                                 }
                                 
                                 if i == usimp.posts.count - 1 {
-                                    print("we outa errrr")
                                     self!.observeStoriesAdditionHelper(for: uid, and: post)
                                 }
                             }.store(in: &self!.cancellables)
