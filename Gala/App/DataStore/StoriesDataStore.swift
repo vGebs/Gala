@@ -31,11 +31,10 @@ class StoriesDataStore: ObservableObject {
             DataStore.shared.chats.$matches
                 .sink { [weak self] returnedMatches in
                     for newMatch in returnedMatches {
-                        if self?.matches[newMatch.matchDocID] == nil {
+                        if self?.matches[newMatch.uc.userBasic.uid] == nil {
+                            self?.matches[newMatch.uc.userBasic.uid] = newMatch
                             self!.getStoriesFromCache(for: newMatch.uc.userBasic.uid)
                             self!.observeStories(for: newMatch.uc.userBasic.uid)
-                            
-                            self?.matches[newMatch.matchDocID] = newMatch
                         }
                     }
                 }.store(in: &self!.cancellables)
@@ -131,7 +130,31 @@ extension StoriesDataStore {
                 //      b. if there is not already a user, we add it to the dict
                 //  2. we then push all stories to core data
                 //  3. Delete any old stories
-                self!.observeStoriesAdditionHelper(for: uid, and: post)
+                if let usimp = post {
+                    for i in 0..<usimp.posts.count {
+                        StoryContentService.shared.getStory(uid: usimp.uid, storyID: usimp.posts[i].pid, title: usimp.posts[i].title)
+                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                            .receive(on: DispatchQueue.main)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let e):
+                                    print("StoriesDataStore: Failed to get story img")
+                                    print("StoriesDataStore-err: \(e)")
+                                case .finished:
+                                    print("StoriesDataStore: Finished getting story img")
+                                }
+                            } receiveValue: { img in
+                                if let img = img {
+                                    usimp.posts[i].storyImage = img
+                                }
+                                
+                                if i == usimp.posts.count - 1 {
+                                    self!.observeStoriesAdditionHelper(for: uid, and: post)
+                                }
+                            }.store(in: &self!.cancellables)
+                    }
+                }
+                
                 
             case .modified:
                 print("modified")
@@ -140,7 +163,31 @@ extension StoriesDataStore {
                 //  2. Push any new stories CoreData
                 ///NOTE: This operation is the same as the .added operation
                 
-                self!.observeStoriesAdditionHelper(for: uid, and: post)
+                if let usimp = post {
+                    for i in 0..<usimp.posts.count {
+                        StoryContentService.shared.getStory(uid: usimp.uid, storyID: usimp.posts[i].pid, title: usimp.posts[i].title)
+                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                            .receive(on: DispatchQueue.main)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let e):
+                                    print("StoriesDataStore: Failed to get story img")
+                                    print("StoriesDataStore-err: \(e)")
+                                case .finished:
+                                    print("StoriesDataStore: Finished getting story img")
+                                }
+                            } receiveValue: { img in
+                                if let img = img {
+                                    usimp.posts[i].storyImage = img
+                                }
+                                
+                                if i == usimp.posts.count - 1 {
+                                    print("we outa errrr")
+                                    self!.observeStoriesAdditionHelper(for: uid, and: post)
+                                }
+                            }.store(in: &self!.cancellables)
+                    }
+                }
                 
             case .removed:
                 print("removed")
@@ -172,7 +219,15 @@ extension StoriesDataStore {
     private func observeStoriesAdditionHelper(for uid: String, and post: UserPostSimple?) {
         
         if let post = post {
-            //#1
+            
+            for i in 0..<post.posts.count {
+                StoryService_CoreData.shared.addStory(post: post.posts[i])
+                
+                if i != post.posts.count - 1 {
+                    post.posts[i].storyImage = nil
+                }
+            }
+            
             var isAlreadyAdded = false
             for i in 0..<self.matchedStories.count {
                 if self.matchedStories[i].uid == uid {
@@ -183,14 +238,8 @@ extension StoriesDataStore {
                 }
             }
             
-            //#1b
             if !isAlreadyAdded {
                 self.matchedStories.append(post)
-            }
-            
-            //#2
-            for story in post.posts {
-                StoryService_CoreData.shared.addStory(post: story)
             }
             
             //StoryService_CoreData.shared.deleteOldStories(for: uid)
@@ -201,9 +250,18 @@ extension StoriesDataStore {
     
     private func getStoriesFromCache(for uid: String) {
         //Need to make stories cache
-        let stories = StoryService_CoreData.shared.getAllStories(for: uid)
+        var stories = StoryService_CoreData.shared.getAllStories(for: uid)
+        
+        for i in 0..<stories.count {
+            if i == stories.count - 1{
+                break
+            } else {
+                stories[i].storyImage = nil
+            }
+        }
         
         if stories.count > 0 {
+            
             if let userCore = self.matches[uid] {
                 let userPostSimple = UserPostSimple(
                     posts: stories,

@@ -34,11 +34,11 @@ class UserPostSimple: Identifiable, ObservableObject {
         self.birthdate = birthdate
         self.coordinates = coordinates
         
-        for post in posts {
-            post.objectWillChange.sink{ [weak self] _ in
-                self?.objectWillChange.send()
-            }.store(in: &cancellables)
-        }
+//        for post in posts {
+//            post.objectWillChange.sink{ [weak self] _ in
+//                self?.objectWillChange.send()
+//            }.store(in: &cancellables)
+//        }
         
         ProfileImageService.shared.getProfileImage(uid: uid, index: "0")
             .subscribe(on: DispatchQueue.global(qos: .userInteractive))

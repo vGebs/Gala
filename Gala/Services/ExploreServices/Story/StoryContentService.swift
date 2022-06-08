@@ -13,7 +13,6 @@ import FirebaseFirestore
 class StoryContentService: ObservableObject {
     
     private let storage = Storage.storage()
-    private let currentUser = AuthService.shared.currentUser?.uid
 
     private var cancellables: [AnyCancellable] = []
     
@@ -26,7 +25,7 @@ class StoryContentService: ObservableObject {
         let storageRef = storage.reference()
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
-        let myStoryRef = storyRef.child(currentUser!)
+        let myStoryRef = storyRef.child(AuthService.shared.currentUser!.uid)
         let imgFileRef = myStoryRef.child("\(name).png")
         
         return Future<Void, Error> { promise in
@@ -45,7 +44,7 @@ class StoryContentService: ObservableObject {
         let storageRef = storage.reference()
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
-        let myStoryRef = storyRef.child(currentUser!)
+        let myStoryRef = storyRef.child(AuthService.shared.currentUser!.uid)
         let imgFileRef = myStoryRef.child("\(storyID).png")
         
         return Future<Void, Error> { promise in
