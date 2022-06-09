@@ -35,8 +35,28 @@ struct StoryCardView: View {
     @ObservedObject var storyVM: StoriesViewModel
     
     @State var timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
-    @State var timerProgress: CGFloat = 0
-        
+    
+    @State var timerProgress: CGFloat = 0 {
+        didSet {
+            //when we change the value, we need to check if it is the same as before.
+            let index = Int(timerProgress)
+            //print("Index: \(index)")
+            
+            if index < userPostSimple.posts.count {
+                if userPostSimple.posts[index].storyImage == nil {
+                    print("Getting next image")
+                    print("Index: \(index)")
+                    storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                }
+                
+                if index > 0 && (index != userPostSimple.posts.count){ //
+                    print("Setting index -> \(index) to nil")
+                    userPostSimple.posts[index - 1].storyImage = nil
+                }
+            }
+        }
+    }
+    
     var mode: StoryMode
     
     var body: some View {
