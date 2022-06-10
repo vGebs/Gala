@@ -38,20 +38,27 @@ struct StoryCardView: View {
     
     @State var timerProgress: CGFloat = 0 {
         didSet {
-            //when we change the value, we need to check if it is the same as before.
             let index = Int(timerProgress)
-            //print("Index: \(index)")
             
             if index < userPostSimple.posts.count {
                 if userPostSimple.posts[index].storyImage == nil {
-                    print("Getting next image")
-                    print("Index: \(index)")
-                    storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                    switch mode {
+                    case .vibe:
+                        storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid, vibeTitle: userPostSimple.posts[index].title)
+                    case .match:
+                        storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                    }
                 }
                 
-                if index > 0 && (index != userPostSimple.posts.count){ //
-                    print("Setting index -> \(index) to nil")
-                    userPostSimple.posts[index - 1].storyImage = nil
+                switch mode {
+                case .match:
+                    if index > 0 && (index != userPostSimple.posts.count){ //
+                        userPostSimple.posts[index - 1].storyImage = nil
+                    }
+                case .vibe:
+                    if index > 0 {
+                        userPostSimple.posts[index - 1].storyImage = nil
+                    }
                 }
             }
         }
@@ -315,11 +322,24 @@ struct StoryCardView: View {
                         //if we are on the last story for that user
                         //  we just grab the previous image from core data
                         if currentIndex == userPostSimple.posts.count - 1 {
-                            storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex - 1].pid)
+                            
+                            switch mode {
+                            case .vibe:
+                                storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid, vibeTitle: userPostSimple.posts[currentIndex].title)
+                            case .match:
+                                storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
+                            }
+                            
                         } else {
                             //if we are not on the last story for that user
                             //  we set the current img to nil and grab the previous story
-                            storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex - 1].pid)
+                            switch mode {
+                            case .vibe:
+                                storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid, vibeTitle: userPostSimple.posts[currentIndex].title)
+                            case .match:
+                                storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
+                            }
+                            
                             userPostSimple.posts[currentIndex].storyImage = nil
                         }
                         
@@ -342,7 +362,12 @@ struct StoryCardView: View {
                         
                         //we need to get the next image and make the current story nil
                         
-                        storyVM.getStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex + 1].pid)
+                        switch mode {
+                        case .vibe:
+                            storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid, vibeTitle: userPostSimple.posts[currentIndex].title)
+                        case .match:
+                            storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
+                        }
                         
                         userPostSimple.posts[currentIndex].storyImage = nil
                         

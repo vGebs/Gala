@@ -54,9 +54,10 @@ struct VibesPlaceHolder: View {
                                 withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
                                     //self.selectedVibe = vibe
                                     //self.showVibe = true
-                                    if let vibe = viewModel.vibesDict[vibe.title] {
-                                        viewModel.currentVibe = vibe
-                                        viewModel.currentStory = vibe[0].id
+                                    if let users = viewModel.vibesDict[vibe.title] {
+                                        viewModel.getVibeStoryImage(uid: users[0].uid, pid: users[0].posts[0].pid, vibeTitle: vibe.title)
+                                        viewModel.currentVibe = users
+                                        viewModel.currentStory = users[0].id
                                         viewModel.showVibeStory = true
                                     }
                                 }

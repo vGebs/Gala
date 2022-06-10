@@ -59,13 +59,29 @@ class StoriesViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
-    func getStoryImage(uid: String, pid: Date) {
+    func getMatchStoryImage(uid: String, pid: Date) {
         if let story = StoryService_CoreData.shared.getStory(with: uid, and: pid) {
             for i in 0..<matchedStories.count {
                 if matchedStories[i].uid == uid {
                     for j in 0..<matchedStories[i].posts.count {
                         if matchedStories[i].posts[j].pid == pid {
                             matchedStories[i].posts[j] = story
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func getVibeStoryImage(uid: String, pid: Date, vibeTitle: String) {
+        if let story = StoryService_CoreData.shared.getStory(with: uid, and: pid) {
+            if let users = vibesDict[vibeTitle] {
+                for i in 0..<users.count {
+                    if uid == users[i].uid {
+                        for j in 0..<users[i].posts.count {
+                            if pid == users[i].posts[j].pid {
+                                users[i].posts[j] = story
+                            }
                         }
                     }
                 }
@@ -94,7 +110,6 @@ class StoriesViewModel: ObservableObject {
         for story in postsILiked {
             if story.likedUID == uid {
                 docID = story.docID
-                print("DocID: \(docID)")
                 break
             }
         }

@@ -37,19 +37,18 @@ class DataStore: ObservableObject {
     }
     
     func clearCache() {
+        StoryService_CoreData.shared.clear()
         
-            StoryService_CoreData.shared.clear()
-
-            SnapService_CoreData.shared.clear()
-
-            MatchService_CoreData.shared.clear()
-
-            MessageService_CoreData.shared.clear()
-
-            UserCoreService_CoreData.shared.clear()
-
-            UserAboutService_CoreData.shared.clear()
-
-            ProfileImageService_CoreData.shared.clear()
+        SnapService_CoreData.shared.clear()
+        
+        MatchService_CoreData.shared.clear()
+        
+        MessageService_CoreData.shared.clear()
+        
+        UserCoreService_CoreData.shared.clear()
+        
+        UserAboutService_CoreData.shared.clear()
+        
+        ProfileImageService_CoreData.shared.clear()
     }
 }

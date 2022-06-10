@@ -430,7 +430,39 @@ extension StoriesDataStore {
                         }
                     }
                     
+                    //we need to be able to get all images before placing the values in the dict.
+                    
+                    for key in final.keys {
+                        if let _ = final[key] {
+                            for i in 0..<final[key]!.count {
+                                for j in 0..<final[key]![i].posts.count {
+                                    StoryContentService.shared.getStory(uid: final[key]![i].uid, storyID: final[key]![i].posts[j].pid, title: final[key]![i].posts[j].title)
+                                        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                                        .receive(on: DispatchQueue.main)
+                                        .sink { completion in
+                                            switch completion {
+                                            case .failure(let e):
+                                                print("StoriesDataStore: Failed to fetch img")
+                                                print("StoriesDataStore-err: \(e)")
+                                            case .finished:
+                                                print("StoriesDataStore: Finished fetching img")
+                                            }
+                                        } receiveValue: { img in
+                                            if let img = img {
+                                                var tempPost = final[key]![i].posts[j]
+                                                tempPost.storyImage = img
+                                                StoryService_CoreData.shared.addStory(post: tempPost)
+                                            }
+                                        }.store(in: &self!.cancellables)
+                                }
+                            }
+                        }
+                    }
+                    
                     self?.vibesDict = final
+                    
+                    //StoryService_CoreData.shared.deleteOldStories()
+                    
                     promise(.success(()))
                 }
                 .store(in: &self.cancellables)
