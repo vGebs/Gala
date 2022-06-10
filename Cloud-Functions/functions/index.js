@@ -104,7 +104,7 @@ async function deleteOldMessages() {
     return;
 }
 
-async function deleteOldRecentlyJoineNdUsers() {
+async function deleteOldRecentlyJoinedUsers() {
     const tsToMillis = admin.firestore.Timestamp.now().toMillis();
     const compareDate = new Date(tsToMillis - (24 * 60 * 60 * 1000 * 7));
     const oldUsers = await db.collection("RecentlyJoined/").where("dateJoined", "<", compareDate).get();
