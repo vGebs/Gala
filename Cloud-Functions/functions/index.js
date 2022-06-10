@@ -81,6 +81,7 @@ exports.everyMinuteSchedule = functions.pubsub.schedule('* * * * *').onRun((cont
     //  1. Delete any old messages
     //  2. Delete any old stories
     deleteOldMessages()
+    deleteOldRecentlyJoinedUsers()
     //deleteOldStories()
     return;
 })
@@ -91,14 +92,32 @@ async function deleteOldMessages() {
     const oldMessages = await db.collection("Messages/").where("openedDate", "<", compareDate).get();
 
     if (oldMessages.empty) {
-        console.log("No messages older than 24hrs");
         return;
     } else {
 
         oldMessages.forEach((doc) => {
             let docRef = doc.id;
-            console.log(doc.id);
             db.collection("Messages").doc(docRef).delete();
+        })
+    }
+
+    return;
+}
+
+async function deleteOldRecentlyJoineNdUsers() {
+    const tsToMillis = admin.firestore.Timestamp.now().toMillis();
+    const compareDate = new Date(tsToMillis - (24 * 60 * 60 * 1000 * 7));
+    const oldUsers = await db.collection("RecentlyJoined/").where("dateJoined", "<", compareDate).get();
+
+    if (oldUsers.empty) {
+        console.log("No users older than 1 week");
+        return;
+    } else {
+
+        oldUsers.forEach((doc) => {
+            let docRef = doc.id;
+            console.log(doc.id);
+            db.collection("RecentlyJoined").doc(docRef).delete();
         })
     }
 

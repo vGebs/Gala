@@ -46,7 +46,7 @@ extension RecentlyJoinedUserService {
             self.db.collection("RecentlyJoined").document(self.currentUID!).setData([
                 "name" : core.userBasic.name,
                 "age" : core.userBasic.birthdate.formatDate(),
-                "dateJoined" : Date().formatDate(),
+                "dateJoined" : Date(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
