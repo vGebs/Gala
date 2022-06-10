@@ -580,7 +580,9 @@ extension ChatsDataStore {
                     }
                 }
             case .removed:
-                print("")
+                for message in messages {
+                    MessageService_CoreData.shared.deleteMessage(with: message.docID)
+                }
             }
         }
     }
