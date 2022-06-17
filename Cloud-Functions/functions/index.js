@@ -110,13 +110,11 @@ async function deleteOldRecentlyJoinedUsers() {
     const oldUsers = await db.collection("RecentlyJoined/").where("dateJoined", "<", compareDate).get();
 
     if (oldUsers.empty) {
-        console.log("No users older than 1 week");
         return;
     } else {
 
         oldUsers.forEach((doc) => {
             let docRef = doc.id;
-            console.log(doc.id);
             db.collection("RecentlyJoined").doc(docRef).delete();
         })
     }

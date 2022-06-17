@@ -110,6 +110,8 @@ class StoryMetaService: ObservableObject {
     }
     
     func getStories() -> AnyPublisher<[UserPostSimple], Error> { self.getStories_() }
+    
+    
 }
 
 extension StoryMetaService {
@@ -163,6 +165,39 @@ extension StoryMetaService {
                     promise(.failure(err))
                 } else {
                     print("StoryMetaService: Successfully posted story meta")
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func updateStory(userCore: UserCore) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            
+            
+            
+            let location = CLLocationCoordinate2D(
+                latitude: userCore.searchRadiusComponents.coordinate.lat,
+                longitude: userCore.searchRadiusComponents.coordinate.lng
+            )
+            
+            let hash = GFUtils.geoHash(forLocation: location)
+            
+            self!.db.collection("Stories").document(userCore.userBasic.uid).updateData([
+                "userCore.gender": userCore.userBasic.gender,
+                "userCore.sexuality" : userCore.userBasic.sexuality,
+                "userCore.location.geoHash" : hash,
+                "userCore.location.latitude" : userCore.searchRadiusComponents.coordinate.lat,
+                "userCore.location.longitude" : userCore.searchRadiusComponents.coordinate.lng,
+                "userCore.agePref.max" : userCore.ageRangePreference.maxAge,
+                "userCore.agePref.min" : userCore.ageRangePreference.minAge,
+                "userCore.willingToTravel" : userCore.searchRadiusComponents.willingToTravel
+            ]) { err in
+                if let err = err {
+                    print("StoryMetaService: Failed to update story doc w/ uid -> \(userCore.userBasic.uid)")
+                    promise(.failure(err))
+                } else {
+                    print("StoryMetaService: Finished updating story doc w/ uid -> \(userCore.userBasic.uid)")
                     promise(.success(()))
                 }
             }

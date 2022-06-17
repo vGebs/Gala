@@ -467,7 +467,10 @@ extension ProfileViewModel {
     
     private func pushProfile(_ profile: ProfileModel) {
         if mode == .createAccount {
-            ProfileService.shared.updateCurrentUserProfile(uc: profile.userCore, abt: profile.userAbout, profImage: profileImage, imgs: images, uid: AuthService.shared.currentUser!.uid)
+            Publishers.Zip(
+                RecentlyJoinedUserService.shared.addNewUser(core: profile.userCore),
+                ProfileService.shared.updateCurrentUserProfile(uc: profile.userCore, abt: profile.userAbout, profImage: profileImage, imgs: images, uid: AuthService.shared.currentUser!.uid)
+            )
                 .subscribe(on: DispatchQueue.global(qos: .userInitiated))
                 .receive(on: DispatchQueue.main)
                 .sink{ completion in
@@ -646,7 +649,8 @@ extension ProfileViewModel {
             name: nameText,
             birthdate: age,
             gender: selectGenderDropDownText.rawValue,
-            sexuality: selectSexualityDropDownText.rawValue
+            sexuality: selectSexualityDropDownText.rawValue,
+            dateJoined: Date()
         )
         
         let agePref = AgeRangePreference(

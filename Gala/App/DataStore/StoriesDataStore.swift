@@ -18,6 +18,7 @@ class StoriesDataStore: ObservableObject {
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[input->vibe title: [UserPostSimple]]
     
     @Published var matchedStories: [UserPostSimple] = []
+    @Published var myStories: [StoryViewable] = []
     
     @Published var postsILiked: [SimpleStoryLike] = []
     
@@ -45,6 +46,7 @@ class StoriesDataStore: ObservableObject {
     
     public func initializer() {
         if empty {
+            observeMyStories()
             fetchStories()
             observeStoriesILiked()
             empty = false
@@ -63,6 +65,16 @@ class StoriesDataStore: ObservableObject {
 }
 
 extension StoriesDataStore {
+    private func observeMyStories() {
+        StoryMetaService.shared.observeMyStories { [weak self] stories in
+            self?.myStories = []
+            for post in stories {
+                let newStory = StoryViewable(pid: post.pid, title: post.title)
+                self?.myStories.insert(newStory, at: 0)
+            }
+        }
+    }
+    
     private func fetchStories() {
         MatchService_Firebase.shared.getMatches()
             .flatMap { [weak self] matches in

@@ -28,6 +28,9 @@ class RecentlyJoinedUserService: RecentlyJoinedUserServiceProtocol {
     private init() { }
     
     func addNewUser(core: UserCore) -> AnyPublisher<Void, Error> { return addNewUser_(core) }
+    
+    func updateUser(core: UserCore) -> AnyPublisher<Void, Error> { return updateUser_(core) }
+    
     func getRecents() -> AnyPublisher<[UserCore]?, Error> { return getRecents_() }
 }
 
@@ -46,7 +49,7 @@ extension RecentlyJoinedUserService {
             self.db.collection("RecentlyJoined").document(self.currentUID!).setData([
                 "name" : core.userBasic.name,
                 "age" : core.userBasic.birthdate.formatDate(),
-                "dateJoined" : Date(),
+                "dateJoined" : core.userBasic.dateJoined ?? Date(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
@@ -62,6 +65,35 @@ extension RecentlyJoinedUserService {
                     promise(.failure(err))
                 } else {
                     print("UserCoreService: new user successfully written")
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func updateUser_(_ core: UserCore) -> AnyPublisher<Void, Error> {
+        let lat: Double = LocationService.shared.coordinates.latitude
+        let long: Double = LocationService.shared.coordinates.longitude
+        
+        let location = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        
+        let hash = GFUtils.geoHash(forLocation: location)
+        
+        return Future<Void, Error> { [weak self] promise in
+            self?.db.collection("RecentlyJoined").document(core.userBasic.uid).updateData([
+                "ageMaxPref" : core.ageRangePreference.maxAge,
+                "ageMinPref" : core.ageRangePreference.minAge,
+                "gender" : core.userBasic.gender,
+                "sexuality" : core.userBasic.sexuality,
+                "geoHash" : hash,
+                "latitude" : lat,
+                "longitude" : long,
+                "willingToTravel" : core.searchRadiusComponents.willingToTravel
+            ]) { err in
+                if let e = err {
+                    print("RecentlyJoinedService: Failed to update userCore")
+                    promise(.failure(e))
+                } else {
                     promise(.success(()))
                 }
             }

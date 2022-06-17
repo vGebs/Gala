@@ -31,7 +31,7 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
             self.db.collection("UserCore").document(core.userBasic.uid).setData([
                 "name" : core.userBasic.name,
                 "age" : core.userBasic.birthdate.formatDate(),
-                "dateJoined" : Date().formatDate(),
+                "dateJoined" : Date(),
                 "geoHash" : hash,
                 "latitude" : lat,
                 "longitude" : long,
@@ -81,22 +81,45 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
                         let longitude = doc.data()?["longitude"] as? Double ?? 0
                         let latitude = doc.data()?["latitude"] as? Double ?? 0
                         
-                        let userCore = UserCore(
-                            userBasic: UserBasic(
-                                uid: uid,
-                                name: name,
-                                birthdate: ageFinal,
-                                gender: gender,
-                                sexuality: sexuality
-                            ),
-                            ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
-                            searchRadiusComponents: SearchRadiusComponents(
-                                coordinate: Coordinate(lat: latitude, lng: longitude),
-                                willingToTravel: willingToTravel
+                        if uid == AuthService.shared.currentUser!.uid {
+                            let dateJoinedTimestamp = doc.data()?["dateJoined"] as? Timestamp
+                            let dateJoined = dateJoinedTimestamp?.dateValue()
+                            
+                            if let joined = dateJoined {
+                                let userCore = UserCore(
+                                    userBasic: UserBasic(
+                                        uid: uid,
+                                        name: name,
+                                        birthdate: ageFinal,
+                                        gender: gender,
+                                        sexuality: sexuality,
+                                        dateJoined: joined
+                                    ),
+                                    ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
+                                    searchRadiusComponents: SearchRadiusComponents(
+                                        coordinate: Coordinate(lat: latitude, lng: longitude),
+                                        willingToTravel: willingToTravel
+                                    )
+                                )
+                                promise(.success(userCore))
+                            }
+                        } else {
+                            let userCore = UserCore(
+                                userBasic: UserBasic(
+                                    uid: uid,
+                                    name: name,
+                                    birthdate: ageFinal,
+                                    gender: gender,
+                                    sexuality: sexuality
+                                ),
+                                ageRangePreference: AgeRangePreference(minAge: ageMinPref, maxAge: ageMaxPref),
+                                searchRadiusComponents: SearchRadiusComponents(
+                                    coordinate: Coordinate(lat: latitude, lng: longitude),
+                                    willingToTravel: willingToTravel
+                                )
                             )
-                        )
-                        
-                        promise(.success(userCore))
+                            promise(.success(userCore))
+                        }
                         
                     } else {
                         promise(.failure(UserCoreError.noDocumentFound))
@@ -109,7 +132,40 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
     }
     
     func updateUser(userCore: UserCore) -> AnyPublisher<Void, Error> {
-        return addNewUser(core: userCore)
+        //when we update userCore we also need to check if the current user isnt recently joined
+        //  if they are recently joined we need to updat the recentlyJoinedProfile
+        checkDateJoined(userCore)
+        
+        //we also need to check if they have any stories
+        //  if they do, we update that document as well
+        checkStories(userCore)
+        
+        let lat: Double = LocationService.shared.coordinates.latitude
+        let long: Double = LocationService.shared.coordinates.longitude
+        
+        let location = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        
+        let hash = GFUtils.geoHash(forLocation: location)
+        
+        return Future<Void, Error> { [weak self] promise in
+            self?.db.collection("UserCore").document(userCore.userBasic.uid).updateData([
+                "ageMaxPref" : userCore.ageRangePreference.maxAge,
+                "ageMinPref" : userCore.ageRangePreference.minAge,
+                "gender" : userCore.userBasic.gender,
+                "sexuality" : userCore.userBasic.sexuality,
+                "geoHash" : hash,
+                "latitude" : lat,
+                "longitude" : long,
+                "willingToTravel" : userCore.searchRadiusComponents.willingToTravel
+            ]) { err in
+                if let e = err {
+                    print("UserCoreService_Firebase: Failed to update userCore")
+                    promise(.failure(e))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
     }
     
     func observeUserCore(with uid: String, completion: @escaping (UserCore?) -> Void) {
@@ -154,5 +210,50 @@ class UserCoreService_Firebase: UserCoreServiceProtocol {
                 
                 completion(userCore)
             }
+    }
+}
+
+extension UserCoreService_Firebase {
+    private func checkDateJoined(_ userCore: UserCore) {
+        if let currentUserCore = UserCoreService.shared.currentUserCore {
+            if let dateJoined = currentUserCore.userBasic.dateJoined {
+                if let diff = Calendar.current.dateComponents([.hour], from: dateJoined, to: Date()).hour, diff < 168 {
+                    //updateRecentlyJoined
+                    print("we're in mother fucker")
+                    RecentlyJoinedUserService.shared.updateUser(core: userCore)
+                        .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                        .receive(on: DispatchQueue.main)
+                        .sink { completion in
+                            switch completion {
+                            case .failure(let e):
+                                print("UserCoreService_Firebase: Failed to update recentlyJoined profile")
+                                print("UserCoreService_Firebase-err: \(e)")
+                            case .finished:
+                                print("UserCoreService_Firebase: Finished updating recentlyJoined profile")
+                            }
+                        } receiveValue: { _ in }
+                        .store(in: &cancellables)
+                }
+            }
+        }
+    }
+    
+    private func checkStories(_ userCore: UserCore) {
+        if DataStore.shared.stories.myStories.count > 0 {
+            //update story document
+            StoryMetaService.shared.updateStory(userCore: userCore)
+                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                .receive(on: DispatchQueue.main)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let e):
+                        print("UserCoreService_Firebase: Failed to update story document")
+                        print("UserCoreService_Firebase-err: \(e)")
+                    case .finished:
+                        print("UserCoreService_Firebase: Finished updating story document")
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
+        }
     }
 }

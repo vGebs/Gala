@@ -197,7 +197,8 @@ extension UserCoreService_CoreData {
             name: uc.name!,
             birthdate: uc.birthdate!,
             gender: uc.gender!,
-            sexuality: uc.sexuality!
+            sexuality: uc.sexuality!,
+            dateJoined: uc.dateJoined
         )
         
         let agePref = AgeRangePreference(minAge: Int(uc.ageMinPref), maxAge: Int(uc.ageMaxPref))
@@ -231,5 +232,6 @@ extension UserCoreService_CoreData {
         ucCD.willingToTravel = Int16(uc.searchRadiusComponents.willingToTravel)
         ucCD.latitude = uc.searchRadiusComponents.coordinate.lat
         ucCD.longitude = uc.searchRadiusComponents.coordinate.lng
+        ucCD.dateJoined = uc.userBasic.dateJoined
     }
 }

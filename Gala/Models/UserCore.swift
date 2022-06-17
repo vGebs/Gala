@@ -25,6 +25,7 @@ struct UserBasic {
     var birthdate: Date
     var gender: String
     var sexuality: String
+    var dateJoined: Date?
 }
 
 struct UserCore {
