@@ -80,9 +80,9 @@ exports.everyMinuteSchedule = functions.pubsub.schedule('* * * * *').onRun((cont
     //ok so, every minute we want to:
     //  1. Delete any old messages
     //  2. Delete any old stories
-    deleteOldMessages()
-    deleteOldRecentlyJoinedUsers()
-    //deleteOldStories()
+    //deleteOldMessages()
+    //deleteOldRecentlyJoinedUsers()
+    deleteOldStories()
     return;
 })
 
@@ -130,21 +130,47 @@ async function deleteOldStories() {
     // then we can update the document if there is still stories that are within 24hrs
     // if there are no stories left in the array, we delete the stories document
 
-    // const tsToMillis = admin.firestore.Timestamp.now().toMillis();
-    // const compareDate = new Date(tsToMillis - (24 * 60 * 60 * 1000));
-    // const oldStories = await db.collection("Stories/").where("openedDate", "<", compareDate).get();
+    const tsToMillis = admin.firestore.Timestamp.now().toMillis();
+    const compareDate = new Date(tsToMillis - (24 * 60 * 60 * 1000));
+    const oldStories = await db.collection("Stories/").where("oldestStoryDate", "<", compareDate).get();
 
-    // if (oldMessages.empty) {
-    //     console.log("No messages older than 24hrs");
-    //     return;
-    // } else {
+    if (oldStories.empty) {
+        //No stories older than 24hrs
+        return;
+    } else {
 
-    //     oldMessages.forEach((doc) => {
-    //         let docRef = doc.id;
+        oldStories.forEach((doc) => {
+            let docRef = doc.id;
+            // for each story document, we need to:
+            //  1. check to see if there is more than 1 story
+            //      a. if there is 1 story, we delete the document
+            //      b. if there is more than 1 story, we remove the outdated story from the document and then we update the 'oldestStoryDate' to the postID_date of the oldest date
 
-    //         db.collection("Messages/" + docRef).delete();
-    //     })
-    // }
+            let data = doc.data();
 
-    // return;
+            let posts = data.posts;
+
+            if (posts.length > 1) {
+                //we need to find the oldest date
+                let oldestDate = compareDate
+                let index = -1;
+                for (let i = 0; i < posts.length; i++) {
+                    if (posts[i].id.toDate() < oldestDate) {
+                        oldestDate = posts[i].id.toDate();
+                        index = i;
+                    }
+                }
+
+                data.posts.splice(index, 1);
+                data.oldestStoryDate = data.posts[0].id
+                
+                db.collection("Stories/").doc(docRef).set(data);
+
+            } else if (posts.length == 1) {
+                db.collection("Stories/").doc(docRef).delete();
+            }
+        })
+    }
+
+    return;
 }

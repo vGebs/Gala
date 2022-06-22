@@ -158,7 +158,8 @@ extension StoryMetaService {
                         "id": postID_date,
                         "title": vibe
                     ]
-                ]
+                ],
+                "oldestStoryDate" : postID_date
             ]) { err in
                 if let err = err {
                     print("StoryMetaService: Failed to post story meta")
