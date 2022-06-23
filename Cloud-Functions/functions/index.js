@@ -78,10 +78,13 @@ async function getPeopleThatLikeMe(likerUID) {
 
 exports.everyMinuteSchedule = functions.pubsub.schedule('* * * * *').onRun((context) => {
     //ok so, every minute we want to:
-    //  1. Delete any old messages
-    //  2. Delete any old stories
-    //deleteOldMessages()
-    //deleteOldRecentlyJoinedUsers()
+    //  1. Delete any old messages (24 hrs after opened)
+    //  2. Delete any outdated recentlyJoined Users (7 days)
+    //  3. Delete old snaps (24 hrs after opened)    
+    //  4. Delete any old stories (24 hrs)
+
+    deleteOldMessages()
+    deleteOldRecentlyJoinedUsers()
     deleteOldStories()
     return;
 })
@@ -162,12 +165,15 @@ async function deleteOldStories() {
                 }
 
                 data.posts.splice(index, 1);
-                data.oldestStoryDate = data.posts[0].id
+                data.oldestStoryDate = data.posts[0].id;
                 
                 db.collection("Stories/").doc(docRef).set(data);
 
             } else if (posts.length == 1) {
-                db.collection("Stories/").doc(docRef).delete();
+
+                db.collection("Stories/").doc(docRef).delete().then(() => {
+                    admin.storage().bucket("gala-e23aa.appspot.com").deleteFiles({ prefix: `Stories/${docRef}`});
+                });
             }
         })
     }
