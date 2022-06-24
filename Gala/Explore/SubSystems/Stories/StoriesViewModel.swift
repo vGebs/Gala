@@ -15,6 +15,7 @@ class StoriesViewModel: ObservableObject {
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[input->vibe title: [UserPostSimple]]
     
     @Published var matchedStories: [UserPostSimple] = []
+    @Published var demoStories: [UserPostSimple] = []
     
     @Published var postsILiked: [SimpleStoryLike] = []
     
@@ -22,6 +23,7 @@ class StoriesViewModel: ObservableObject {
     @Published var currentStory = "" //Will contain the current vibeID
     @Published var showVibeStory = false
     @Published var showMatchStory = false
+    @Published var showDemoStory = false
     
     private var cancellables: [AnyCancellable] = []
 
@@ -59,6 +61,25 @@ class StoriesViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
+    func showDemo() {
+        for i in 0..<10 {
+            let newDemo = UserPostSimple(
+                posts: [
+                    Post(pid: Date(), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala")),
+                    Post(pid: Date().adding(minutes: -5), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala")),
+                    Post(pid: Date().adding(minutes: -10), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala"))
+                ],
+                name: "Demo",
+                uid: "\(i)",
+                birthdate: Date("1997-06-12"),
+                coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+                profileImg: UIImage(systemName: "person.crop.circle")!
+            )
+            
+            self.demoStories.append(newDemo)
+        }
+    }
+    
     func getMatchStoryImage(uid: String, pid: Date) {
         if let story = StoryService_CoreData.shared.getStory(with: uid, and: pid) {
             for i in 0..<matchedStories.count {
@@ -71,6 +92,10 @@ class StoriesViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func getDemoImage() {
+        
     }
     
     func getVibeStoryImage(uid: String, pid: Date, vibeTitle: String) {
@@ -131,3 +156,126 @@ class StoriesViewModel: ObservableObject {
         }
     }
 }
+
+//var demoStoriesArr: [UserPostSimple] = [
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "0", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "0", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "0", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "0",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "1", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "1", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "1", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "1",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "2", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "2", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "2", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "2",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "3", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "3", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "3", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "3",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "4", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "4", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "4", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "4",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "5", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "5", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "5", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "5",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "6", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "6", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "6", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "6",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "7", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "7", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "7", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "7",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "8", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "8", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "8", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "8",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    ),
+//    UserPostSimple(
+//        posts: [
+//            Post(pid: Date(), uid: "9", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -5), uid: "9", title: "Demo", storyImage: UIImage(named: "Gala")),
+//            Post(pid: Date().adding(minutes: -10), uid: "9", title: "Demo", storyImage: UIImage(named: "Gala"))
+//        ],
+//        name: "Demo",
+//        uid: "9",
+//        birthdate: Date("1997-06-12"),
+//        coordinates: Coordinate(lat: 50.445210, lng: -104.618896),
+//        profileImg: UIImage(systemName: "person.crop.circle")!
+//    )
+//]

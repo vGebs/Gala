@@ -14,19 +14,19 @@ struct RecentlyJoinedView: View {
     @ObservedObject var viewModel: RecentlyJoinedViewModel
     
     var body: some View {
-        if viewModel.users.count > 0 {
-            ZStack {
-                VStack {
-                    HStack {
-                        Image(systemName: "figure.wave")
-                            .foregroundColor(.primary)
-                            .font(.system(size: 19, weight: .bold, design: .rounded))
-                        
-                        Text("Newcomers")
-                            .font(.system(size: 25, weight: .bold, design: .rounded))
-                        
-                        Spacer()
-                        
+        ZStack {
+            VStack {
+                HStack {
+                    Image(systemName: "figure.wave")
+                        .foregroundColor(.primary)
+                        .font(.system(size: 19, weight: .bold, design: .rounded))
+                    
+                    Text("Newcomers")
+                        .font(.system(size: 25, weight: .bold, design: .rounded))
+                    
+                    Spacer()
+                    
+                    if viewModel.users.count > 0 {
                         Button(action: {
                             self.showAll = true
                         }) {
@@ -35,10 +35,13 @@ struct RecentlyJoinedView: View {
                         }
                         .frame(height: screenWidth * 0.1)
                     }
-                    .frame(width: screenWidth * 0.95)
-                    .padding(.leading)
-                    .padding(.trailing)
                     
+                }
+                .frame(width: screenWidth * 0.95)
+                .padding(.leading)
+                .padding(.trailing)
+                
+                if viewModel.users.count > 0 {
                     HStack {
                         TabView {
                             ForEach(0..<((viewModel.users.count + 1) / 2), id: \.self) { i in
@@ -54,7 +57,7 @@ struct RecentlyJoinedView: View {
                                             ),
                                             width: screenWidth * 0.95
                                         )
-                                            .padding(.bottom, 3)
+                                        .padding(.bottom, 3)
                                     }
                                     
                                     if i * 2 + 1 < viewModel.users.count {
@@ -83,15 +86,28 @@ struct RecentlyJoinedView: View {
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
                     .frame(width: screenWidth, height: screenHeight / 7.5)
-                    
-                    Spacer()
+                } else {
+                    VStack {
+                        
+                        Text("No newcomers")
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .foregroundColor(.accent)
+                        
+                        Button(action: {
+                            
+                        }) {
+                            DemoButtonView()
+                        }.padding(.bottom, 10)
+                    }
                 }
+                
+                Spacer()
             }
-            .sheet(isPresented: $showAll, content: {
-                AllRecentsView(viewModel: viewModel)
-            })
-            .preferredColorScheme(.dark)
         }
+        .sheet(isPresented: $showAll, content: {
+            AllRecentsView(viewModel: viewModel)
+        })
+        .preferredColorScheme(.dark)
     }
 }
 

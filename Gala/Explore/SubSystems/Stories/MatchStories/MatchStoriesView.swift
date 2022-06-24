@@ -10,29 +10,57 @@ import SwiftUI
 struct MatchStoriesView: View {
     //@Binding var stories: [StoryModel]
     @ObservedObject var viewModel: StoriesViewModel
+    @State var showDemo: Bool = false
+    
     var body: some View {
-        if viewModel.matchedStories.count > 0 {
-            VStack {
-                HStack {
-                    Image(systemName: "person.3.sequence.fill")
-                        .foregroundColor(.primary)
-                        .font(.system(size: 19, weight: .bold, design: .rounded))
-                    
-                    Text("Match Stories")
-                        .font(.system(size: 25, weight: .bold, design: .rounded))
-                    Spacer()
-                }
-                .frame(width: screenWidth * 0.95, height: screenHeight * 0.02)
+        VStack {
+            HStack {
+                Image(systemName: "person.3.sequence.fill")
+                    .foregroundColor(.primary)
+                    .font(.system(size: 19, weight: .bold, design: .rounded))
                 
-                ScrollView(.horizontal){
+                Text("Match Stories")
+                    .font(.system(size: 25, weight: .bold, design: .rounded))
+                Spacer()
+            }
+            .frame(width: screenWidth * 0.95, height: screenHeight * 0.02)
+            
+            if viewModel.matchedStories.count > 0 {
+                
+                ScrollView(.horizontal, showsIndicators: false){
                     HStack{
                         ForEach(viewModel.matchedStories){ story in //stories, id: \.id
-                            MatchedStoryView(storyVM: viewModel, story: story)
+                            MatchedStoryView(storyVM: viewModel, story: story, demo: false)
                                 .padding(.top, 2)
                         }
                     }
                 }
-                .frame(width: screenWidth * 0.95, height: screenHeight * 0.13)                
+                .frame(width: screenWidth * 0.95, height: screenHeight * 0.13)
+            } else if showDemo {
+                ScrollView(.horizontal, showsIndicators: false){
+                    HStack{
+                        ForEach(viewModel.demoStories){ story in //stories, id: \.id
+                            MatchedStoryView(storyVM: viewModel, story: story, demo: true)
+                                .padding(.top, 2)
+                        }
+                    }
+                }
+                .frame(width: screenWidth * 0.95, height: screenHeight * 0.13)
+            } else {
+                VStack {
+                    
+                    Text("No match stories")
+                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                        .foregroundColor(.accent)
+                    
+                    Button(action: {
+                        viewModel.showDemo()
+                        self.showDemo = true
+                    }){
+                        DemoButtonView()
+                    }
+                    .padding(.bottom, 10)
+                }
             }
         }
     }

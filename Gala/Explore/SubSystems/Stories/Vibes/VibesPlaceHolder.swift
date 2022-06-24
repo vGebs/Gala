@@ -36,10 +36,23 @@ struct VibesPlaceHolder: View {
                 }
                 
                 if viewModel.vibeImages.count == 0 {
+                    
                     VStack {
-                        Spacer()
-                        LoadingView()
-                    }.frame(height: screenHeight * 0.25)
+                        Text("No vibe stories")
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .foregroundColor(.accent)
+                        
+                        Button(action: {
+                            
+                        }) {
+                            DemoButtonView()
+                        }.padding(.bottom, 10)
+                    }
+                    
+//                    VStack {
+//                        Spacer()
+//                        LoadingView()
+//                    }.frame(height: screenHeight * 0.25)
                 }
                 
                 LazyVGrid(columns: columns, content: {

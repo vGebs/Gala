@@ -27,6 +27,15 @@ class UserPostSimple: Identifiable, ObservableObject {
         print("UserPostSimple: Deinitializing")
     }
     
+    init(posts: [Post], name: String, uid: String, birthdate: Date, coordinates: Coordinate, profileImg: UIImage){
+        self.posts = posts
+        self.name = name
+        self.uid = uid
+        self.birthdate = birthdate
+        self.coordinates = coordinates
+        self.profileImg = profileImg
+    }
+    
     init(posts: [Post], name: String, uid: String, birthdate: Date, coordinates: Coordinate){
         self.posts = posts
         self.name = name

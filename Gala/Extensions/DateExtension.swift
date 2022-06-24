@@ -57,3 +57,9 @@ extension Date {
         self.init(timeInterval:0, since:date)
     }
 }
+
+extension Date {
+    func adding(minutes: Int) -> Date {
+        return Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
+    }
+}

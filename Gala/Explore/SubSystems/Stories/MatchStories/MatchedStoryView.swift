@@ -10,14 +10,21 @@ import SwiftUI
 struct MatchedStoryView: View {
     @ObservedObject var storyVM: StoriesViewModel
     @ObservedObject var story: UserPostSimple
+    var demo: Bool
     var body: some View {
         VStack{
             Button(action: {
                 //when we click on the story, we need to fetch the first img from core data
-                storyVM.getMatchStoryImage(uid: story.uid, pid: story.posts[0].pid)
-                
-                storyVM.currentStory = story.id
-                storyVM.showMatchStory = true
+                if demo {
+                    storyVM.currentStory = story.id
+                    
+                    storyVM.showDemoStory = true
+                } else {
+                    storyVM.getMatchStoryImage(uid: story.uid, pid: story.posts[0].pid)
+                    
+                    storyVM.currentStory = story.id
+                    storyVM.showMatchStory = true
+                }
             }){
                 if story.posts[story.posts.count - 1].storyImage == nil { //viewModel.img
                     ZStack{
@@ -52,6 +59,9 @@ struct MatchedStoryView: View {
         .frame(width: screenWidth / 6)
         .sheet(isPresented: $storyVM.showMatchStory, content: {
             InstaStoryView(storyData: storyVM, mode: .match)
+        })
+        .sheet(isPresented: $storyVM.showDemoStory, content: {
+            InstaStoryView(storyData: storyVM, mode: .demo)
         })
     }
 }

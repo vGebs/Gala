@@ -114,6 +114,7 @@
 		FAAAA7B727F7C9AE00663816 /* StoriesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */; };
 		FAAAA7BF27FBB12600663816 /* UserAboutService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7BE27FBB12600663816 /* UserAboutService_CoreData.swift */; };
 		FAAAA7C627FBCE5600663816 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAAA7C527FBCE5600663816 /* ProfileService.swift */; };
+		FAAACE7C2865146F0081664B /* DemoButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAACE7B2865146E0081664B /* DemoButtonView.swift */; };
 		FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */; };
 		FAACA57A2825D19300B828DB /* SnapCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5782825D19300B828DB /* SnapCD.xcdatamodeld */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
@@ -267,6 +268,7 @@
 		FAAAA7B627F7C9AE00663816 /* StoriesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesDataStore.swift; sourceTree = "<group>"; };
 		FAAAA7BE27FBB12600663816 /* UserAboutService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService_CoreData.swift; sourceTree = "<group>"; };
 		FAAAA7C527FBCE5600663816 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		FAAACE7B2865146E0081664B /* DemoButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoButtonView.swift; sourceTree = "<group>"; };
 		FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService_CoreData.swift; sourceTree = "<group>"; };
 		FAACA5792825D19300B828DB /* SnapCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SnapCD.xcdatamodel; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
@@ -642,6 +644,7 @@
 				FAD33A0D27D0489000FC9553 /* LoadingView.swift */,
 				FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
+				FAAACE7B2865146E0081664B /* DemoButtonView.swift */,
 			);
 			path = ServiceViews;
 			sourceTree = "<group>";
@@ -1076,6 +1079,7 @@
 				FA6BE60627BDB0F10058B78C /* ArrayExtensions.swift in Sources */,
 				FAD73C6D27993BA7007221B0 /* VibeView.swift in Sources */,
 				FA9E53F627D15CCB002DDF99 /* MultipleStoryView.swift in Sources */,
+				FAAACE7C2865146F0081664B /* DemoButtonView.swift in Sources */,
 				FAD9DB2526743A7900BC6FDA /* SmallUserView.swift in Sources */,
 				FA7E3B2826E43F4600A6653C /* RecentlyJoinedViewModel.swift in Sources */,
 				FA6BE5EF27B4A5140058B78C /* MatchService_Firebase.swift in Sources */,
