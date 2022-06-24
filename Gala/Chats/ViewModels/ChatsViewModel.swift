@@ -86,6 +86,10 @@ class ChatsViewModel: ObservableObject {
         }
     }
     
+    func clearDemo() {
+        demoMatches = []
+    }
+    
     func getTempMessages(uid: String) {
         if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
             self.tempMessages = msgs

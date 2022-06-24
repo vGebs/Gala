@@ -80,6 +80,10 @@ class StoriesViewModel: ObservableObject {
         }
     }
     
+    func clearDemo() {
+        self.demoStories = []
+    }
+    
     func getMatchStoryImage(uid: String, pid: Date) {
         if let story = StoryService_CoreData.shared.getStory(with: uid, and: pid) {
             for i in 0..<matchedStories.count {

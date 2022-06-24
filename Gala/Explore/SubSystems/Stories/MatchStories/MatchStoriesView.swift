@@ -22,6 +22,23 @@ struct MatchStoriesView: View {
                 Text("Match Stories")
                     .font(.system(size: 25, weight: .bold, design: .rounded))
                 Spacer()
+                
+                if showDemo {
+                    Button(action: {
+                        viewModel.clearDemo()
+                        self.showDemo = false
+                    }){
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10).stroke()
+                                .frame(width: screenWidth * 0.25, height: screenHeight * 0.03)
+                                .foregroundColor(.buttonPrimary)
+                            
+                            Text("Clear demo")
+                                .font(.system(size: 12, weight: .regular, design: .rounded))
+                                .foregroundColor(.primary)
+                        }
+                    }
+                }
             }
             .frame(width: screenWidth * 0.95, height: screenHeight * 0.02)
             

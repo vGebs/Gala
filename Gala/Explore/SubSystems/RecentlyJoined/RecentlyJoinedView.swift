@@ -29,6 +29,23 @@ struct RecentlyJoinedView: View {
                     
                     Spacer()
                     
+                    if showDemo {
+                        Button(action: {
+                            viewModel.clearDemo()
+                            self.showDemo = false
+                        }){
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10).stroke()
+                                    .frame(width: screenWidth * 0.25, height: screenHeight * 0.03)
+                                    .foregroundColor(.buttonPrimary)
+                                
+                                Text("Clear demo")
+                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
+                    
                     if viewModel.users.count > 0 || viewModel.demoUsers.count > 0{
                         Button(action: {
                             if demoMode {

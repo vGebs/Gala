@@ -18,6 +18,7 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
     @ObservedObject var viewModel: Model
     @ObservedObject var user: SmallUserViewModel
     @StateObject var distanceCalculator: DistanceCalculator
+    
     var demoMode: Bool
     @State var showDemoProfile = false
 
@@ -100,11 +101,13 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                     Spacer()
                     
                     Button(action: {
-                        if self.likePressed == false {
-                            self.viewModel.likeUser(with: user.profile!.userBasic.uid)
-                            self.likePressed.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
+                        if !demoMode {
+                            if self.likePressed == false {
+                                self.viewModel.likeUser(with: user.profile!.userBasic.uid)
                                 self.likePressed.toggle()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.33) {
+                                    self.likePressed.toggle()
+                                }
                             }
                         }
                     }){

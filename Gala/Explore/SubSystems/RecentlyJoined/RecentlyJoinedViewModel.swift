@@ -53,6 +53,10 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
         }
     }
     
+    func clearDemo() {
+        demoUsers = []
+    }
+    
     func likeUser(with uid: String) {
         LikesService.shared.likeRecentlyJoinedUser(uid: uid)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))

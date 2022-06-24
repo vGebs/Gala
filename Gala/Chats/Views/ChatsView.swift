@@ -70,6 +70,21 @@ struct ChatsView: View {
                                 }
                                 
                                 if showDemo {
+                                    Button(action: {
+                                        viewModel.clearDemo()
+                                        self.showDemo = false
+                                    }){
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 10).stroke()
+                                                .frame(width: screenWidth * 0.25, height: screenHeight * 0.03)
+                                                .foregroundColor(.buttonPrimary)
+                                            
+                                            Text("Clear demo")
+                                                .font(.system(size: 12, weight: .regular, design: .rounded))
+                                                .foregroundColor(.primary)
+                                        }
+                                    }.padding(.bottom, 10)
+                                    
                                     ForEach(viewModel.demoMatches){ match in
                                         ConvoPreview(ucMatch: match, showChat: $viewModel.showChat, user: $viewModel.userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $viewModel.timeMatched, chatsViewModel: viewModel, demo: true)
                                             .padding(.horizontal)
