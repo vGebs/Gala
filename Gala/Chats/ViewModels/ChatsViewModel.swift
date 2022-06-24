@@ -275,6 +275,7 @@ extension ChatsViewModel {
             if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid{
                 bundleUserChat(ucMatch: ucMatch)
                 getSnap(for: uid)
+                
                 return ConvoPressType.openSnap
                 
             } else {
@@ -305,6 +306,9 @@ extension ChatsViewModel {
                 getTempMessages(uid: uid)
                 return ConvoPressType.viewChat
             }
+        } else {
+            //we got nothing, so set the temp messages to nil
+            tempMessages = []
         }
         
         return ConvoPressType.viewChat
