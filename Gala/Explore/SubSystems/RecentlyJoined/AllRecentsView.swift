@@ -10,6 +10,7 @@ import SwiftUI
 struct AllRecentsView: View {
     
     @ObservedObject var viewModel: RecentlyJoinedViewModel
+    var demo: Bool
     
     var body: some View {
         VStack {
@@ -27,32 +28,37 @@ struct AllRecentsView: View {
                 }
                 .padding(.top, 3)
                 .frame(width: screenWidth * 0.9)
-                
-                ForEach(0..<viewModel.users.count, id: \.self){ i in
-                    SmallUserView(
-                        viewModel: viewModel,
-                        user: viewModel.users[i],
-                        distanceCalculator: DistanceCalculator(
-                            lng: viewModel.users[i].profile!.searchRadiusComponents.coordinate.lng,
-                            lat: viewModel.users[i].profile!.searchRadiusComponents.coordinate.lat),
-                        width: screenWidth * 0.95
-                    )
-                        .padding(.bottom, 3)
-                        .frame(width: screenWidth)
+                if demo {
+                    ForEach(0..<viewModel.demoUsers.count, id: \.self){ i in
+                        SmallUserView(
+                            viewModel: viewModel,
+                            user: viewModel.demoUsers[i],
+                            distanceCalculator: DistanceCalculator(
+                                lng: viewModel.demoUsers[i].profile!.searchRadiusComponents.coordinate.lng,
+                                lat: viewModel.demoUsers[i].profile!.searchRadiusComponents.coordinate.lat),
+                            demoMode: true,
+                            width: screenWidth * 0.95
+                        )
+                            .padding(.bottom, 3)
+                            .frame(width: screenWidth)
+                    }
+                } else {
+                    ForEach(0..<viewModel.users.count, id: \.self){ i in
+                        SmallUserView(
+                            viewModel: viewModel,
+                            user: viewModel.users[i],
+                            distanceCalculator: DistanceCalculator(
+                                lng: viewModel.users[i].profile!.searchRadiusComponents.coordinate.lng,
+                                lat: viewModel.users[i].profile!.searchRadiusComponents.coordinate.lat),
+                            demoMode: false,
+                            width: screenWidth * 0.95
+                        )
+                            .padding(.bottom, 3)
+                            .frame(width: screenWidth)
+                    }
                 }
             }
             .preferredColorScheme(.dark)
         }
     }
 }
-
-//struct AllRecentsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AllRecentsView(allNewUsers: .constant([
-//            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
-//            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
-//            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
-//            UserCore(uid: "123", name: "Vaughn", age: Date(), gender: "Male", sexuality: "Straight", ageMinPref: 18, ageMaxPref: 99, willingToTravel: 12, longitude: 44, latitude: 44),
-//        ]))
-//    }
-//}

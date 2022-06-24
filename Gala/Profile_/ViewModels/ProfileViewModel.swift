@@ -107,6 +107,7 @@ final class ProfileViewModel: ObservableObject {
         case createAccount
         case profileStandard
         case otherAccount
+        case demo
     }
     
     enum Gender: String {
@@ -172,6 +173,23 @@ final class ProfileViewModel: ObservableObject {
             if let uid = uid {
                 self.uid = uid
                 self.readProfile(uid: uid)
+            }
+        case .demo:
+            self.nameText = name
+            self.age = age
+            self.ageText = age.ageString()
+            self.email = email
+            
+            for i in 1..<4 {
+                self.images.append(ImageModel(image: UIImage(named: "Gala")!, index: i))
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: 50000)) {
+                self.profileImage.append(ImageModel(image: UIImage(systemName: "person.fill")!, index: 0))
+                
+                self.bioText = "Demo bio"
+                self.jobText = "Demo job"
+                self.schoolText = "Demo school"
             }
         }
         

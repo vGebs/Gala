@@ -81,7 +81,7 @@ struct ProfileMainView: View {
                                     .font(.system(size: 20, weight: .regular, design: .rounded))
                             }
                             .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        } else if DataStore.shared.chats.isMatch(uid: viewModel.uid!) {
+                        } else if DataStore.shared.chats.isMatch(uid: viewModel.uid) {
                             Menu {
                                 Button(action: {
                                     //unMatchUser

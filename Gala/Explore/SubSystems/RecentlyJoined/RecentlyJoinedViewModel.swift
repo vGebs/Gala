@@ -15,6 +15,7 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
     private var likeService = LikesService.shared
     
     @Published private(set) var users: [SmallUserViewModel] = []
+    @Published private(set) var demoUsers: [SmallUserViewModel] = []
     
     private var cancellables: [AnyCancellable] = []
     
@@ -27,6 +28,29 @@ class RecentlyJoinedViewModel: ObservableObject, SmallUserViewModelProtocol {
             .sink { [weak self] users in
                 self?.users = users
             }.store(in: &cancellables)
+    }
+    
+    func getDemoUser() {
+        for i in 0..<10 {
+            let newUser = SmallUserViewModel(
+                profile: UserCore(
+                    userBasic: UserBasic(
+                        uid: "\(i)",
+                        name: "Demo",
+                        birthdate: Date("1997-06-12"),
+                        gender: "",
+                        sexuality: ""
+                    ),
+                    ageRangePreference: AgeRangePreference(minAge: 18, maxAge: 99),
+                    searchRadiusComponents: SearchRadiusComponents(
+                        coordinate: Coordinate(lat: 50.445210, lng: -104.618896),
+                        willingToTravel: 150
+                    )
+                ),
+                img: UIImage(systemName: "person.fill")
+            )
+            self.demoUsers.append(newUser)
+        }
     }
     
     func likeUser(with uid: String) {

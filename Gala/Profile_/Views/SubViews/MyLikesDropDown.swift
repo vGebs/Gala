@@ -49,6 +49,7 @@ struct MyLikesDropDown: View {
                                 lng: like.userCore.searchRadiusComponents.coordinate.lng,
                                 lat: like.userCore.searchRadiusComponents.coordinate.lat
                             ),
+                            demoMode: false,
                             width: screenWidth * 0.85)
                     }
                     Spacer()

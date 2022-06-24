@@ -32,17 +32,17 @@ struct ProfileView: View {
                         nameAgeLocation
                     }
                     
-                    if viewModel.mode == .profileStandard || viewModel.mode == .otherAccount{
+                    if viewModel.mode == .profileStandard || viewModel.mode == .otherAccount || viewModel.mode == .demo{
                         Spacer().frame(height: screenHeight * 0.02)
                         ProfilePicturePlaceholder
                         nameAgeLocation
                         
-                        if viewModel.mode != .otherAccount {
+                        if viewModel.mode != .otherAccount && viewModel.mode != .demo{
                             editButton
                         }
                         
                         if viewModel.editPressed == false {
-                            if viewModel.mode != .otherAccount {
+                            if viewModel.mode != .otherAccount && viewModel.mode != .demo{
                                 HStack{
                                     Image(systemName: "newspaper")
                                         .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -67,14 +67,14 @@ struct ProfileView: View {
                         }
                     }
                     
-                    if (viewModel.showBio && viewModel.bioText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {
+                    if (viewModel.showBio && viewModel.bioText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount || viewModel.mode == .demo{
                         bioHeader
                         
                         if viewModel.editPressed || viewModel.mode == .createAccount{
                             bioTextField
                         }
                         
-                        if (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount) && !viewModel.editPressed {
+                        if (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount || viewModel.mode == .demo) && !viewModel.editPressed {
                             bioText
                         }
                     }
@@ -129,14 +129,14 @@ struct ProfileView: View {
                         SliderView(slider: viewModel.singleKnobSlider)
                     }
                     
-                    if (viewModel.showJob && viewModel.jobText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount {
+                    if (viewModel.showJob && viewModel.jobText.count > 0) || viewModel.editPressed || viewModel.mode == .createAccount || viewModel.mode == .demo{
                         jobHeader
                         
                         if viewModel.editPressed || viewModel.mode == .createAccount{
                             jobTextField
                         }
                         
-                        if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount){
+                        if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount || viewModel.mode == .demo){
                             jobText
                         }
                     }
@@ -148,7 +148,7 @@ struct ProfileView: View {
                             schoolTextField
                         }
                         
-                            if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount){
+                        if !viewModel.editPressed && (viewModel.mode == .profileStandard || viewModel.mode == .otherAccount || viewModel.mode == .demo){
                             schoolText
                         }
                     }
@@ -217,7 +217,16 @@ struct ProfileView: View {
                 addProfilePicButton
             }
             
-            if let profilePic = viewModel.getProfilePic() {
+            if viewModel.mode == .demo {
+                Image(systemName: "person.fill")
+                    .resizable()
+                    .foregroundColor(.primary)
+                    .frame(width: screenWidth / 4, height: screenWidth / 4)
+                
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(Color.accent)
+                
+            } else if let profilePic = viewModel.getProfilePic() {
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(Color.accent, lineWidth: 3)
                 

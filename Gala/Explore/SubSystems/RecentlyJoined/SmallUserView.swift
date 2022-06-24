@@ -18,7 +18,9 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
     @ObservedObject var viewModel: Model
     @ObservedObject var user: SmallUserViewModel
     @StateObject var distanceCalculator: DistanceCalculator
-    
+    var demoMode: Bool
+    @State var showDemoProfile = false
+
     @State var likePressed = false
     @State var showProfile = false
     var width: CGFloat
@@ -26,7 +28,11 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
     var body: some View {
         HStack{
             Button(action: {
-                showProfile = true
+                if demoMode {
+                    showDemoProfile = true
+                } else {
+                    showProfile = true
+                }
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
@@ -35,7 +41,13 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                         .foregroundColor(.blue)
                         .padding(.trailing)
                     
-                    if user.img == nil {
+                    if demoMode {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Color(.systemTeal))
+                            .frame(width: screenWidth / 10, height: screenWidth / 10)
+                            .padding(.trailing)
+                        
+                    } else if user.img == nil {
                         Image(systemName: "person.fill.questionmark")
                             .foregroundColor(Color(.systemTeal))
                             .frame(width: screenWidth / 20, height: screenWidth / 20)
@@ -57,7 +69,11 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
                 Spacer()
                 HStack {
                     Button(action: {
-                        showProfile = true
+                        if demoMode {
+                            showDemoProfile = true
+                        } else {
+                            showProfile = true
+                        }
                     }){
                         VStack {
                             HStack {
@@ -105,6 +121,9 @@ struct SmallUserView<Model>: View where Model: SmallUserViewModelProtocol {
         .frame(width: width, height: screenWidth / 9)
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.userBasic.name, age: user.profile!.userBasic.birthdate, mode: .otherAccount, uid: user.profile!.userBasic.uid), showProfile: $showProfile)
+        })
+        .sheet(isPresented: $showDemoProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(name: self.user.profile!.userBasic.name, age: user.profile!.userBasic.birthdate, mode: .demo, uid: user.profile!.userBasic.uid), showProfile: $showDemoProfile)
         })
     }
 }

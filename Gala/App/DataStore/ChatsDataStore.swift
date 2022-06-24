@@ -103,8 +103,12 @@ class ChatsDataStore: ObservableObject {
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
     
-    public func isMatch(uid: String) -> Bool {
-        return matches.contains { $0.uc.userBasic.uid == uid }
+    public func isMatch(uid: String?) -> Bool {
+        if let uid = uid {
+            return matches.contains { $0.uc.userBasic.uid == uid }
+        } else {
+            return false
+        }
         
 //        for match in matches {
 //            if match.uc.userBasic.uid == uid {
