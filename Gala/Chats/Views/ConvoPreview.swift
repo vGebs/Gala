@@ -73,9 +73,12 @@ struct ConvoPreview: View {
     @ObservedObject var chatsViewModel: ChatsViewModel
     var ucMatch: MatchedUserCore
     
+    @State var showDemoProfile = false
     @State var showSnapView = false
     
-    init(ucMatch: MatchedUserCore, showChat: Binding<Bool>, user: Binding<UserChat>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatchedBinding: Binding<Date?>, chatsViewModel: ChatsViewModel){
+    var demo: Bool
+    
+    init(ucMatch: MatchedUserCore, showChat: Binding<Bool>, user: Binding<UserChat>, messages: Binding<OrderedDictionary<String, [Message]>>, timeMatchedBinding: Binding<Date?>, chatsViewModel: ChatsViewModel, demo: Bool){
         self.ucMatch = ucMatch
         self._showChat = showChat
         self._userChat = user
@@ -83,19 +86,30 @@ struct ConvoPreview: View {
         self.timeMatched = ucMatch.timeMatched
         self._timeMatchedBinding = timeMatchedBinding
         self.chatsViewModel = chatsViewModel
+        self.demo = demo
     }
     
     var body: some View {
         HStack{
-            Button(action: { self.showProfile = true }){
+            Button(action: {
+                if demo {
+                    self.showDemoProfile = true
+                } else {
+                    self.showProfile = true
+                }
+            }){
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke()
                         .frame(width: screenWidth / 9, height: screenWidth / 9)
                         .foregroundColor(.blue)
                         .padding(.trailing)
-                    
-                    if ucMatch.profileImg == nil {
+                    if demo {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Color(.systemTeal))
+                            .frame(width: screenWidth / 20, height: screenWidth / 20)
+                            .padding(.trailing)
+                    } else if ucMatch.profileImg == nil {
                         Image(systemName: "person.fill.questionmark")
                             .foregroundColor(Color(.systemTeal))
                             .frame(width: screenWidth / 20, height: screenWidth / 20)
@@ -209,9 +223,12 @@ struct ConvoPreview: View {
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: ucMatch.uc.userBasic.uid), showProfile: $showProfile)
         })
+        .sheet(isPresented: $showDemoProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(mode: .demo, uid: ucMatch.uc.userBasic.uid), showProfile: $showDemoProfile)
+        })
         .frame(width: screenWidth * 0.95, height: screenWidth / 9)
     }
-    
+
     var newMessageButton: some View {
         Image(systemName: "message.fill")
             .font(.system(size: 17, weight: .medium, design: .rounded))

@@ -107,10 +107,12 @@ struct StoryCardView: View {
                     } else {
                         Button(action: {
                             //like user
-                            if userPostSimple.liked {
-                                storyVM.unLikePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
-                            } else {
-                                storyVM.likePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                            if mode != .demo {
+                                if userPostSimple.liked {
+                                    storyVM.unLikePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                                } else {
+                                    storyVM.likePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
+                                }
                             }
                         }){
                             if userPostSimple.liked {

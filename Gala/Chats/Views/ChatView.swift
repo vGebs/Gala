@@ -26,6 +26,8 @@ struct ChatView: View, KeyboardReadable {
     @Namespace var topID
     @Namespace var bottomID
     
+    var demo: Bool
+    @State var showDemoProfile = false
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
@@ -41,6 +43,9 @@ struct ChatView: View, KeyboardReadable {
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: ProfileViewModel(mode: .otherAccount, uid: userChat.uid), showProfile: $showProfile)
         })
+        .sheet(isPresented: $showDemoProfile, content: {
+            ProfileMainView(viewModel: ProfileViewModel(mode: .demo, uid: userChat.uid), showProfile: $showDemoProfile)
+        })
         .onTapGesture {
             self.endEditing()
         }
@@ -49,10 +54,19 @@ struct ChatView: View, KeyboardReadable {
     var header: some View {
         HStack {
             Button(action: {
-                self.showProfile = true
+                if viewModel.demo {
+                    self.showDemoProfile = true
+                } else {
+                    self.showProfile = true
+                }
             }) {
                 ZStack{
-                    if userChat.profileImg != nil {
+                    if demo {
+                        Image(systemName: "person.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 15, height: screenWidth / 15)
+                    } else if userChat.profileImg != nil {
                         Image(uiImage: userChat.profileImg!)
                             .resizable()
                             .scaledToFill()
@@ -105,29 +119,27 @@ struct ChatView: View, KeyboardReadable {
             ScrollView(showsIndicators: false){
                 macthedDateView
                 
-                //if messages[userChat!.uid] != nil {
-                    ForEach(messages){ message in
-                        if message.toID == AuthService.shared.currentUser!.uid {
-                            MessageView(message: message.message, fromMe: false)
-                                .padding(.leading, 3)
-                        } else {
-                            MessageView(message: message.message, fromMe: true)
-                                .padding(.trailing, 3)
-                        }
+                ForEach(messages){ message in
+                    if message.toID == AuthService.shared.currentUser!.uid {
+                        MessageView(message: message.message, fromMe: false)
+                            .padding(.leading, 3)
+                    } else {
+                        MessageView(message: message.message, fromMe: true)
+                            .padding(.trailing, 3)
                     }
-                    .onChange(of: messages.count) { _ in
-                        withAnimation {
-                            proxy.scrollTo(bottomID)
-                        }
+                }
+                .onChange(of: messages.count) { _ in
+                    withAnimation {
+                        proxy.scrollTo(bottomID)
                     }
-                    .onReceive(keyboardPublisher, perform: { isVisible in
-                        //Change height of scrollview
-                        withAnimation {
-                            proxy.scrollTo(bottomID)
-                        }
-                    })
-                //}
-                                
+                }
+                .onReceive(keyboardPublisher, perform: { isVisible in
+                    //Change height of scrollview
+                    withAnimation {
+                        proxy.scrollTo(bottomID)
+                    }
+                })
+                
                 if snaps[userChat.uid] != nil {
                     ForEach(snaps[userChat.uid]!){ snap in
                         if snap.openedDate == nil && snap.fromID != AuthService.shared.currentUser!.uid{
@@ -138,13 +150,11 @@ struct ChatView: View, KeyboardReadable {
                 }
                 
                 HStack { Spacer() }
-                .frame(width: screenWidth, height: screenHeight * 0.001)
-                .id(bottomID)
+                    .frame(width: screenWidth, height: screenHeight * 0.001)
+                    .id(bottomID)
             }
             .onAppear{
-                //if messages[userChat!.uid] != nil {
-                    proxy.scrollTo(bottomID)
-                //}
+                proxy.scrollTo(bottomID)
             }
             .cornerRadius(20)
         }
@@ -178,7 +188,9 @@ struct ChatView: View, KeyboardReadable {
                     .foregroundColor(.white)
                 
                 TextField("", text: $viewModel.messageText, onCommit: {
-                    viewModel.sendMessage(toUID: userChat.uid)
+                    if viewModel.demo {
+                        viewModel.sendMessage(toUID: userChat.uid)
+                    }
                 })
                     .foregroundColor(.black)
                     .padding(.horizontal)
@@ -186,7 +198,9 @@ struct ChatView: View, KeyboardReadable {
             .frame(height: screenWidth * 0.09)
             
             Button(action: {
-                viewModel.sendMessage(toUID: userChat.uid)
+                if !viewModel.demo {
+                    viewModel.sendMessage(toUID: userChat.uid)
+                }
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)

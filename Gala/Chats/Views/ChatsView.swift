@@ -22,6 +22,8 @@ struct ChatsView: View {
     
     @State var draggedOffset: CGFloat = -screenWidth * 2
 
+    @State var showDemo = false
+    
     @AppStorage("isDarkMode") private var isDarkMode = true
     
     init(viewModel: ChatsViewModel, profile: ProfileViewModel){
@@ -51,9 +53,39 @@ struct ChatsView: View {
                                 .foregroundColor(.black)
                                 .frame(height: screenHeight * 0.015)
                             
-                            ForEach(viewModel.matches){ match in
-                                ConvoPreview(ucMatch: match, showChat: $viewModel.showChat, user: $viewModel.userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $viewModel.timeMatched, chatsViewModel: viewModel)
-                                    .padding(.horizontal)
+                            if viewModel.matches.count == 0 {
+                                if !showDemo {
+                                    Text("No matches")
+                                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                                        .foregroundColor(.accent)
+                                    
+                                    Button(action: {
+                                        viewModel.demo = true
+                                        viewModel.getDemoMatches()
+                                        self.showDemo = true
+                                    }){
+                                        DemoButtonView()
+                                    }
+                                    .padding(.bottom, 10)
+                                }
+                                
+                                if showDemo {
+                                    ForEach(viewModel.demoMatches){ match in
+                                        ConvoPreview(ucMatch: match, showChat: $viewModel.showChat, user: $viewModel.userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $viewModel.timeMatched, chatsViewModel: viewModel, demo: true)
+                                            .padding(.horizontal)
+                                    }
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .foregroundColor(.black)
+                                        .frame(width: screenWidth / 2, height: screenHeight * 0.1)
+                                }
+                            } else {
+                                ForEach(viewModel.matches){ match in
+                                    ConvoPreview(ucMatch: match, showChat: $viewModel.showChat, user: $viewModel.userChat, messages: $viewModel.matchMessages, timeMatchedBinding: $viewModel.timeMatched, chatsViewModel: viewModel, demo: false)
+                                        .padding(.horizontal)
+                                }
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundColor(.black)
+                                    .frame(width: screenWidth / 2, height: screenHeight * 0.1)
                             }
                         }
                         .frame(width: screenWidth, height: screenHeight * 0.9)

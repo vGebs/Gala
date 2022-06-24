@@ -16,10 +16,14 @@ class ChatsViewModel: ObservableObject {
     private var subs: [AnyCancellable] = []
         
     @Published private(set) var matches: [MatchedUserCore] = []
+    @Published private(set) var demoMatches: [MatchedUserCore] = []
+    
     @Published var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published var matchMessages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
     
     @Published var tempMessages: [Message] = []
+    
+    @Published var demo = false
     
     @Published var showChat = false
     @Published var userChat: UserChat = UserChat(name: "", uid: "", location: Coordinate(lat: 91, lng: 181), bday: Date(), profileImg: nil)
@@ -53,6 +57,33 @@ class ChatsViewModel: ObservableObject {
             .sink(receiveValue: { [weak self] messages in
                 self?.matchMessages = messages
             }).store(in: &subs)
+    }
+    
+    func getDemoMatches() {
+        for i in 0..<20 {
+            let newMatch = MatchedUserCore(
+                uc: UserCore(
+                    userBasic: UserBasic(
+                        uid: "\(i)",
+                        name: "Demo",
+                        birthdate: Date("1997-06-12"),
+                        gender: "",
+                        sexuality: ""
+                    ),
+                    ageRangePreference: AgeRangePreference(minAge: 18, maxAge: 99),
+                    searchRadiusComponents: SearchRadiusComponents(
+                        coordinate: Coordinate(lat: 50.445210, lng: -104.618896),
+                        willingToTravel: 150
+                    )
+                ),
+                profileImg: nil,
+                timeMatched: Date().adding(minutes: Int(Double(i) * 1.15)),
+                lastMessage: nil,
+                matchDocID: ""
+            )
+            
+            demoMatches.append(newMatch)
+        }
     }
     
     func getTempMessages(uid: String) {

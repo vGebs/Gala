@@ -184,13 +184,12 @@ final class ProfileViewModel: ObservableObject {
                 self.images.append(ImageModel(image: UIImage(named: "Gala")!, index: i))
             }
             
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: 50000)) {
-                self.profileImage.append(ImageModel(image: UIImage(systemName: "person.fill")!, index: 0))
-                
-                self.bioText = "Demo bio"
-                self.jobText = "Demo job"
-                self.schoolText = "Demo school"
-            }
+            self.profileImage.append(ImageModel(image: UIImage(systemName: "person.fill")!, index: 0))
+            
+            self.bioText = "Demo bio"
+            self.jobText = "Demo job"
+            self.schoolText = "Demo school"
+            
         }
         
         $bioCharCount
