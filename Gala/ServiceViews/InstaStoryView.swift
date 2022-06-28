@@ -10,7 +10,8 @@ import SwiftUI
 enum StoryMode {
     case match
     case vibe
-    case demo
+    case demoMatchStories
+    case demoVibeStories
 }
 
 struct InstaStoryView: View {
@@ -29,7 +30,16 @@ struct InstaStoryView: View {
             .background(.black)
         } else if storyData.showDemoStory {
             TabView(selection: $storyData.currentStory) {
-                ForEach($storyData.demoStories) { $bundle in
+                ForEach($storyData.demoMatchedStories) { $bundle in
+                    StoryCardView(userPostSimple: $bundle, storyVM: storyData, mode: mode)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
+        } else if storyData.showDemoVibeStory {
+            TabView(selection: $storyData.currentStory) {
+                ForEach($storyData.currentVibe) { $bundle in
                     StoryCardView(userPostSimple: $bundle, storyVM: storyData, mode: mode)
                 }
             }
@@ -57,7 +67,9 @@ struct StoryCardView: View {
                         storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid, vibeTitle: userPostSimple.posts[index].title)
                     case .match:
                         storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
-                    case .demo:
+                    case .demoMatchStories:
+                        storyVM.getDemoImage()
+                    case .demoVibeStories:
                         storyVM.getDemoImage()
                     }
                 }
@@ -71,7 +83,9 @@ struct StoryCardView: View {
                     if index > 0 {
                         userPostSimple.posts[index - 1].storyImage = nil
                     }
-                case .demo:
+                case .demoMatchStories:
+                    print("")
+                case .demoVibeStories:
                     print("")
                 }
             }
@@ -107,7 +121,7 @@ struct StoryCardView: View {
                     } else {
                         Button(action: {
                             //like user
-                            if mode != .demo {
+                            if mode != .demoMatchStories {
                                 if userPostSimple.liked {
                                     storyVM.unLikePost(uid: userPostSimple.uid, pid: userPostSimple.posts[index].pid)
                                 } else {
@@ -131,7 +145,7 @@ struct StoryCardView: View {
                     HStack(spacing: 13) {
                         if userPostSimple.profileImg != nil {
                             ZStack{
-                                if mode == .demo {
+                                if mode == .demoMatchStories {
                                     Image(systemName: "person.fill")
                                         .resizable()
                                         .foregroundColor(.primary)
@@ -352,7 +366,9 @@ struct StoryCardView: View {
                                 storyVM.getVibeStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid, vibeTitle: userPostSimple.posts[currentIndex].title)
                             case .match:
                                 storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
-                            case .demo:
+                            case .demoMatchStories:
+                                print("")
+                            case .demoVibeStories:
                                 print("")
                             }
                             
@@ -368,10 +384,11 @@ struct StoryCardView: View {
                                 storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
                                 userPostSimple.posts[currentIndex].storyImage = nil
 
-                            case .demo:
+                            case .demoMatchStories:
+                                print("")
+                            case .demoVibeStories:
                                 print("")
                             }
-                            
                         }
                         
                         timerProgress = CGFloat(Int(timerProgress - 1))
@@ -402,7 +419,9 @@ struct StoryCardView: View {
                             storyVM.getMatchStoryImage(uid: userPostSimple.uid, pid: userPostSimple.posts[currentIndex].pid)
                             userPostSimple.posts[currentIndex].storyImage = nil
 
-                        case .demo:
+                        case .demoMatchStories:
+                            print("")
+                        case .demoVibeStories:
                             print("")
                         }
                         
@@ -420,8 +439,10 @@ struct StoryCardView: View {
             updateVibeStory(forward)
         case .match:
             updateMatchStory(forward)
-        case .demo:
+        case .demoMatchStories:
             updateDemoStory(forward)
+        case .demoVibeStories:
+            updateVibeStory(forward)
         }
     }
     
@@ -435,12 +456,12 @@ struct StoryCardView: View {
             //else set timer to 0
             
             if let first = storyVM.matchedStories.first, first.id != userPostSimple.id {
-                let bundleIndex = storyVM.demoStories.firstIndex { currentBundle in
+                let bundleIndex = storyVM.demoMatchedStories.firstIndex { currentBundle in
                     return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyVM.currentStory = storyVM.demoStories[bundleIndex - 1].id
+                    storyVM.currentStory = storyVM.demoMatchedStories[bundleIndex - 1].id
                 }
                 
             } else {
@@ -454,18 +475,18 @@ struct StoryCardView: View {
         if let last = userPostSimple.posts.last, last.id == story.id {
             //if there is another story, move to it
             // else, closing view
-            if let lastBundle = storyVM.demoStories.last, lastBundle.id == userPostSimple.id {
+            if let lastBundle = storyVM.demoMatchedStories.last, lastBundle.id == userPostSimple.id {
                 withAnimation {
                     storyVM.showDemoStory = false
                 }
             } else {
                 //updating to next bundle
-                let bundleIndex = storyVM.demoStories.firstIndex { currentBundle in
+                let bundleIndex = storyVM.demoMatchedStories.firstIndex { currentBundle in
                     return userPostSimple.id == currentBundle.id
                 } ?? 0
                 
                 withAnimation {
-                    storyVM.currentStory = storyVM.demoStories[bundleIndex + 1].id
+                    storyVM.currentStory = storyVM.demoMatchedStories[bundleIndex + 1].id
                 }
             }
         }
@@ -502,7 +523,11 @@ struct StoryCardView: View {
             // else, closing view
             if let lastBundle = storyVM.currentVibe.last, lastBundle.id == userPostSimple.id {
                 withAnimation {
-                    storyVM.showVibeStory = false
+                    if mode == .demoVibeStories {
+                        storyVM.showDemoVibeStory = false
+                    } else {
+                        storyVM.showVibeStory = false
+                    }
                 }
             } else {
                 //updating to next bundle

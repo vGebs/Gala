@@ -21,6 +21,8 @@ struct VibesPlaceHolder: View {
     var dampingFactor: CGFloat = 0.9
     var blendDuration: CGFloat = 0.01
     
+    @State var showDemoVibeStories = false
+    
     var body: some View {
         ZStack {
             VStack {
@@ -33,9 +35,26 @@ struct VibesPlaceHolder: View {
                     Text("Vibes")
                         .font(.system(size: 25, weight: .bold, design: .rounded))
                     Spacer()
+                    
+                    if showDemoVibeStories {
+                        Button(action: {
+                            viewModel.clearVibeStoriesDemo()
+                            self.showDemoVibeStories = false
+                        }){
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10).stroke()
+                                    .frame(width: screenWidth * 0.25, height: screenHeight * 0.03)
+                                    .foregroundColor(.buttonPrimary)
+                                
+                                Text("Clear demo")
+                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
                 }
                 
-                if viewModel.vibeImages.count == 0 {
+                if viewModel.vibeImages.count == 0 && !showDemoVibeStories{
                     
                     VStack {
                         Text("No vibe stories")
@@ -43,7 +62,8 @@ struct VibesPlaceHolder: View {
                             .foregroundColor(.accent)
                         
                         Button(action: {
-                            
+                            viewModel.showVibeStoriesDemo()
+                            showDemoVibeStories = true
                         }) {
                             DemoButtonView()
                         }.padding(.bottom, 10)
@@ -80,12 +100,41 @@ struct VibesPlaceHolder: View {
                             .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
                         }
                     }
+                    
+                    if showDemoVibeStories {
+                        ForEach(viewModel.demoVibeImages) { vibe in
+                            if selectedVibe.id == vibe.id {
+                                VibeView(vibe: vibe)
+                                    .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
+                            } else {
+                                Button(action: {
+                                    //self.vibesDict = viewModel.vibesDict
+                                    withAnimation(.spring(response: response, dampingFraction: dampingFactor, blendDuration: blendDuration)) {
+                                        //self.selectedVibe = vibe
+                                        //self.showVibe = true
+                                        if let users = viewModel.demoVibesDict[vibe.title] {
+                                            //viewModel.getVibeStoryImage(uid: users[0].uid, pid: users[0].posts[0].pid, vibeTitle: vibe.title)
+                                            viewModel.currentVibe = users
+                                            viewModel.currentStory = users[0].id
+                                            viewModel.showDemoVibeStory = true
+                                        }
+                                    }
+                                }){
+                                    VibeView(vibe: vibe)
+                                }
+                                .frame(width: (screenWidth * 0.95) * 0.48, height: (screenWidth * 0.95) * 0.48)
+                            }
+                        }
+                    }
                 })
             }
             .frame(width: screenWidth * 0.95)
         }
         .sheet(isPresented: $viewModel.showVibeStory, content: {
             InstaStoryView(storyData: viewModel)
+        })
+        .sheet(isPresented: $viewModel.showDemoVibeStory, content: {
+            InstaStoryView(storyData: viewModel, mode: .demoVibeStories)
         })
 //        .fullScreenCover(isPresented: $showAllForVibe, content: {
 //            StoryListView(show: $showAllForVibe, vibe: $selectedVibe, stories: viewModel.vibesDict)

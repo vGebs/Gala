@@ -61,7 +61,7 @@ struct MatchedStoryView: View {
             InstaStoryView(storyData: storyVM, mode: .match)
         })
         .sheet(isPresented: $storyVM.showDemoStory, content: {
-            InstaStoryView(storyData: storyVM, mode: .demo)
+            InstaStoryView(storyData: storyVM, mode: .demoMatchStories)
         })
     }
 }

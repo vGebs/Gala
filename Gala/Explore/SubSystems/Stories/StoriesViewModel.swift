@@ -11,17 +11,24 @@ import OrderedCollections
 
 class StoriesViewModel: ObservableObject {
         
+    
     @Published var vibeImages: [VibeCoverImage] = []
+    @Published var demoVibeImages: [VibeCoverImage] = []
+    
     @Published var vibesDict: OrderedDictionary<String, [UserPostSimple]> = [:] //[input->vibe title: [UserPostSimple]]
+    @Published var demoVibesDict: OrderedDictionary<String, [UserPostSimple]> = [:]
     
     @Published var matchedStories: [UserPostSimple] = []
-    @Published var demoStories: [UserPostSimple] = []
+    @Published var demoMatchedStories: [UserPostSimple] = []
     
     @Published var postsILiked: [SimpleStoryLike] = []
     
     @Published var currentVibe: [UserPostSimple] = [] //Will contain all stories from a particular vibe
     @Published var currentStory = "" //Will contain the current vibeID
+    
     @Published var showVibeStory = false
+    @Published var showDemoVibeStory = false
+    
     @Published var showMatchStory = false
     @Published var showDemoStory = false
     
@@ -61,7 +68,7 @@ class StoriesViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
-    func showDemo() {
+    func showMatchStoriesDemo() {
         for i in 0..<10 {
             let newDemo = UserPostSimple(
                 posts: [
@@ -76,12 +83,67 @@ class StoriesViewModel: ObservableObject {
                 profileImg: UIImage(systemName: "person.crop.circle")!
             )
             
-            self.demoStories.append(newDemo)
+            self.demoMatchedStories.append(newDemo)
         }
     }
     
-    func clearDemo() {
-        self.demoStories = []
+    func showVibeStoriesDemo() {
+        // 1. Fill demoVibeImages with 6 images/titles
+        // 2. Create 3 users per vibe
+        //      - create 3 posts per user
+        
+        let namedImages = ["Demo0", "Demo1", "Demo2", "Demo3", "Demo4", "Demo5"]
+        
+        for i in 0..<6 {
+            let newVibeImage = VibeCoverImage(image: UIImage(named: namedImages[i])!, title: "Demo\(i+1)")
+            demoVibeImages.append(newVibeImage)
+        }
+        
+        for vibe in demoVibeImages {
+            for _ in 0..<3 {
+                let newUser = UserPostSimple(
+                    posts: [
+                        Post(
+                            pid: Date().adding(minutes: 10),
+                            uid: "",
+                            title: vibe.title,
+                            storyImage: UIImage(named: "Gala")
+                        ),
+                        Post(
+                            pid: Date().adding(minutes: 5),
+                            uid: "",
+                            title: vibe.title,
+                            storyImage: UIImage(named: "Gala")
+                        ),
+                        Post(
+                            pid: Date(),
+                            uid: "",
+                            title: vibe.title,
+                            storyImage: UIImage(named: "Gala")
+                        )
+                    ],
+                    name: "Demo",
+                    uid: "",
+                    birthdate: Date("1997-06-12"),
+                    coordinates: Coordinate(lat: 50.445210, lng: -104.618896)
+                )
+                
+                if let _ = demoVibesDict[vibe.title] {
+                    demoVibesDict[vibe.title]?.append(newUser)
+                } else {
+                    demoVibesDict[vibe.title] = [newUser]
+                }
+            }
+        }
+    }
+    
+    func clearMatchStoriesDemo() {
+        self.demoMatchedStories = []
+    }
+    
+    func clearVibeStoriesDemo() {
+        self.demoVibeImages.removeAll()
+        self.demoVibesDict.removeAll()
     }
     
     func getMatchStoryImage(uid: String, pid: Date) {

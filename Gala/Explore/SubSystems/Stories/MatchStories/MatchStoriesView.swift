@@ -25,7 +25,7 @@ struct MatchStoriesView: View {
                 
                 if showDemo {
                     Button(action: {
-                        viewModel.clearDemo()
+                        viewModel.clearMatchStoriesDemo()
                         self.showDemo = false
                     }){
                         ZStack {
@@ -56,7 +56,7 @@ struct MatchStoriesView: View {
             } else if showDemo {
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack{
-                        ForEach(viewModel.demoStories){ story in //stories, id: \.id
+                        ForEach(viewModel.demoMatchedStories){ story in //stories, id: \.id
                             MatchedStoryView(storyVM: viewModel, story: story, demo: true)
                                 .padding(.top, 2)
                         }
@@ -71,7 +71,7 @@ struct MatchStoriesView: View {
                         .foregroundColor(.accent)
                     
                     Button(action: {
-                        viewModel.showDemo()
+                        viewModel.showMatchStoriesDemo()
                         self.showDemo = true
                     }){
                         DemoButtonView()

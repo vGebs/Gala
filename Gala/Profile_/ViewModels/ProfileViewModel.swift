@@ -175,9 +175,9 @@ final class ProfileViewModel: ObservableObject {
                 self.readProfile(uid: uid)
             }
         case .demo:
-            self.nameText = name
-            self.age = age
-            self.ageText = age.ageString()
+            self.nameText = "Demo"
+            self.age = Date("1997-06-12")
+            self.ageText = Date("1997-06-12").ageString()
             self.email = email
             
             for i in 1..<4 {
@@ -189,7 +189,6 @@ final class ProfileViewModel: ObservableObject {
             self.bioText = "Demo bio"
             self.jobText = "Demo job"
             self.schoolText = "Demo school"
-            
         }
         
         $bioCharCount
