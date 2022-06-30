@@ -234,6 +234,9 @@ PODS:
   - Firebase/Functions (6.34.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 2.9.0)
+  - Firebase/Messaging (6.34.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 4.7.1)
   - Firebase/Storage (6.34.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.9.1)
@@ -282,6 +285,19 @@ PODS:
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
     - PromisesObjC (~> 1.2)
+  - FirebaseInstanceID (4.8.0):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstallations (~> 1.6)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/UserDefaults (~> 6.7)
+  - FirebaseMessaging (4.7.1):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstanceID (~> 4.7)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/Reachability (~> 6.7)
+    - GoogleUtilities/UserDefaults (~> 6.7)
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - FirebaseStorage (3.9.1):
     - FirebaseCore (~> 6.10)
     - GTMSessionFetcher/Core (~> 1.1)
@@ -346,12 +362,14 @@ PODS:
   - nanopb/decode (1.30906.0)
   - nanopb/encode (1.30906.0)
   - PromisesObjC (1.2.12)
+  - Protobuf (3.21.2)
 
 DEPENDENCIES:
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Firestore
   - Firebase/Functions
+  - Firebase/Messaging
   - Firebase/Storage
   - FirebaseFirestoreSwift
   - GeoFire/Utils
@@ -370,6 +388,8 @@ SPEC REPOS:
     - FirebaseFirestoreSwift
     - FirebaseFunctions
     - FirebaseInstallations
+    - FirebaseInstanceID
+    - FirebaseMessaging
     - FirebaseStorage
     - GeoFire
     - GoogleAppMeasurement
@@ -382,6 +402,7 @@ SPEC REPOS:
     - Mantis
     - nanopb
     - PromisesObjC
+    - Protobuf
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -395,6 +416,8 @@ SPEC CHECKSUMS:
   FirebaseFirestoreSwift: 2c46dbc1156db97dc4f6dd798d4f5b57b9c7fab6
   FirebaseFunctions: 27518fdd14d8b3a849e2443f921cd1b471ab7acd
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
+  FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
+  FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
   FirebaseStorage: 15e0f15ef3c7fec3d1899d68623e47d4447066b4
   GeoFire: c34927b5c81ab614f611c79aa8d074cfa9780f07
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
@@ -407,7 +430,8 @@ SPEC CHECKSUMS:
   Mantis: 5f5ad3ca41fdfc9a4374fe7fd39cc0154b148a10
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  Protobuf: 818c6a87e44193a77f56b87c6a1c106efda7e062
 
-PODFILE CHECKSUM: 6c6b5ee29e64b8de3010e50b7b7557b16952fa75
+PODFILE CHECKSUM: 15191cf348c107c697d9860742a767d9fe4765a0
 
 COCOAPODS: 1.9.1

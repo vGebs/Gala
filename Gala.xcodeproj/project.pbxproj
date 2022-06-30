@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */; };
+		FA0F74E9286E568E00964718 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74E8286E568E00964718 /* NotificationController.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
@@ -164,6 +165,8 @@
 		1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gala.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EF601D28ED8276F3782F6F2 /* Pods-Gala.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.release.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.release.xcconfig"; sourceTree = "<group>"; };
 		831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.debug.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.debug.xcconfig"; sourceTree = "<group>"; };
+		FA0F74E7286E4B0100964718 /* Gala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gala.entitlements; sourceTree = "<group>"; };
+		FA0F74E8286E568E00964718 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
@@ -371,6 +374,7 @@
 				FA87744E2640A20F00D5D5CB /* AuthService.swift */,
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
+				FA0F74E8286E568E00964718 /* NotificationController.swift */,
 			);
 			path = GeneralServices;
 			sourceTree = "<group>";
@@ -856,6 +860,7 @@
 		FAE5E6F0264092D000CC1670 /* Gala */ = {
 			isa = PBXGroup;
 			children = (
+				FA0F74E7286E4B0100964718 /* Gala.entitlements */,
 				FA98385E2684572500A76AD5 /* App */,
 				FA8773FA26409BAD00D5D5CB /* SigninSignup */,
 				FAAAA77227EBC33C00663816 /* Profile_ */,
@@ -907,7 +912,7 @@
 				FAE5E6EA264092D000CC1670 /* Sources */,
 				FAE5E6EB264092D000CC1670 /* Frameworks */,
 				FAE5E6EC264092D000CC1670 /* Resources */,
-				F101E3A00A68F64EB8F83EF9 /* [CP] Embed Pods Frameworks */,
+				AF4D394A5BA2AEB31FD882D7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -996,7 +1001,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F101E3A00A68F64EB8F83EF9 /* [CP] Embed Pods Frameworks */ = {
+		AF4D394A5BA2AEB31FD882D7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1120,6 +1125,7 @@
 				FAE5E6F4264092D000CC1670 /* ContentView.swift in Sources */,
 				FA87745B2640A3B200D5D5CB /* ImageCropper.swift in Sources */,
 				FA579DC12654ED1D00EFA166 /* UIImage.swift in Sources */,
+				FA0F74E9286E568E00964718 /* NotificationController.swift in Sources */,
 				FA84874B268E5EAD009CA4C0 /* SignInSignUpValidation.swift in Sources */,
 				FABB976C2810AC0D0014A21E /* MessageService_CoreData.swift in Sources */,
 				FA72A17A2669C5B9004DEF77 /* CoreLocationExtension.swift in Sources */,
@@ -1293,6 +1299,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gala/Gala.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Gala/Preview Content\"";
 				DEVELOPMENT_TEAM = TBMU9UG97G;
@@ -1316,6 +1323,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gala/Gala.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Gala/Preview Content\"";
 				DEVELOPMENT_TEAM = TBMU9UG97G;

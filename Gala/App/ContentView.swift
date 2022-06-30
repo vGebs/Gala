@@ -14,6 +14,8 @@ struct ContentView: View {
     @ObservedObject var profile: ProfileViewModel
     @ObservedObject var explore: ExploreViewModel
     
+    var notifications = NotificationController()
+    
     //@Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") private var isDarkMode = true
     

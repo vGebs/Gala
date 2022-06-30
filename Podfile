@@ -14,4 +14,5 @@ target 'Gala' do
 	pod 'Firebase/Storage'
 	pod 'Firebase/Functions'
 	pod 'GeoFire/Utils'
+	pod 'Firebase/Messaging'
 end
