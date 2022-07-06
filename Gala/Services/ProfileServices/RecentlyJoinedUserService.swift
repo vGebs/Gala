@@ -19,7 +19,6 @@ protocol RecentlyJoinedUserServiceProtocol {
 class RecentlyJoinedUserService: RecentlyJoinedUserServiceProtocol {
     
     private let db = Firestore.firestore()
-    private let currentUID = AuthService.shared.currentUser?.uid
     private let userCore = UserCoreService.shared.currentUserCore
         
     private var cancellables: [AnyCancellable] = []
@@ -46,7 +45,7 @@ extension RecentlyJoinedUserService {
         let hash = GFUtils.geoHash(forLocation: location)
         
         return Future<Void, Error> { promise in
-            self.db.collection("RecentlyJoined").document(self.currentUID!).setData([
+            self.db.collection("RecentlyJoined").document(AuthService.shared.currentUser!.uid).setData([
                 "name" : core.userBasic.name,
                 "age" : core.userBasic.birthdate.formatDate(),
                 "dateJoined" : core.userBasic.dateJoined ?? Date(),
@@ -395,7 +394,7 @@ extension RecentlyJoinedUserService {
                                 )
                             )
                             
-                            if id != self.currentUID {
+                            if id != AuthService.shared.currentUser!.uid {
                                 results.append(uc)
                             }
                             

@@ -13,18 +13,71 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
 
         const matchCollection = db.collection("Matches");
         const likesCollection = db.collection("Likes");
+        const fcmTokenCollection = db.collection("FCM Tokens");
         const peopleThatLikeMe = await getPeopleThatLikeMe(likerUID);
 
         if (peopleThatLikeMe != null) {
             for (let i = 0; i < peopleThatLikeMe.length; i++) {
                 if (peopleThatLikeMe[i].id == likedUID) {
-                    matchCollection.add({
-                        matched: [likedUID, likerUID],
-                        time: admin.firestore.FieldValue.serverTimestamp()
-                    });
 
+                    //Add the new match to the matches collection
+                    try {
+                        await matchCollection.add({
+                            matched: [likedUID, likerUID],
+                            time: admin.firestore.FieldValue.serverTimestamp()
+                        })
+
+                        const likerFCM = await fcmTokenCollection.doc(likerUID).get();
+                        const likerFCMDoc = likerFCM.data();
+
+                        const likedFCM = await fcmTokenCollection.doc(likedUID).get();
+                        const likedFCMDoc = likedFCM.data();
+
+                        const payloadToLiker = {
+                            token: likerFCMDoc.token,
+                            notification: {
+                                title: "New Match",
+                                body: "Send " + likedFCMDoc.name + " a message"
+                            },
+                            badge: 1
+                        };
+
+                        const payloadToLiked = {
+                            token: likedFCMDoc.token,
+                            notification: {
+                                title: "New Match",
+                                body: "Send " + likerFCMDoc.name + " a message"
+                            },
+                            badge: 1
+                        };
+
+                        console.log("Liker is logged in " + likerFCMDoc.loggedIn)
+
+                        if (likerFCMDoc.loggedIn == 1) {
+                            admin.messaging().send(payloadToLiker).then((value) => {
+                                console.log("sent notification")
+                            });
+                        } else {
+                            console.log("Did not send notification")
+                        }
+
+                        console.log("Liked is logged in " + likedFCMDoc.loggedIn)
+
+                        if (likedFCMDoc.loggedIn === 1) {
+                            admin.messaging().send(payloadToLiked).then((value) => {
+                                console.log("sent notification")
+                            });
+                        } else {
+                            console.log("Did not send notification")
+                        }
+                    } catch (err) {
+                        console.log("listenForMatches-err: " + err);
+                    }
+
+                    //Delete both of the likes
                     likesCollection.doc(docRef).delete();
                     likesCollection.doc(peopleThatLikeMe[i].ref).delete();
+
                 }
             }
         }
@@ -166,13 +219,15 @@ async function deleteOldStories() {
 
                 data.posts.splice(index, 1);
                 data.oldestStoryDate = data.posts[0].id;
-                
+
                 db.collection("Stories/").doc(docRef).set(data);
 
             } else if (posts.length == 1) {
 
                 db.collection("Stories/").doc(docRef).delete().then(() => {
-                    admin.storage().bucket("gala-e23aa.appspot.com").deleteFiles({ prefix: `Stories/${docRef}`});
+                    admin.storage().bucket("gala-e23aa.appspot.com").deleteFiles({
+                        prefix: `Stories/${docRef}`
+                    });
                 });
             }
         })

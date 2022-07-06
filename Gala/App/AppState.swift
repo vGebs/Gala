@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 import FirebaseAuth
 import Firebase
+import FirebaseFirestore
 
 class AppState: ObservableObject {
     
@@ -48,6 +49,8 @@ class AppState: ObservableObject {
     private var subs: [AnyCancellable] = []
     
     @Published var currentUser = AuthService.shared.currentUser
+    
+    private var db = Firestore.firestore()
     
     private func userCoreIsEmpty(_ uc: UserCore) -> Bool {
         if uc.userBasic.gender == "" {
@@ -171,6 +174,17 @@ class AppState: ObservableObject {
 
     public func logout() {
         
+        db.collection("FCM Tokens").document(AuthService.shared.currentUser!.uid).updateData([
+            "loggedIn": 0
+        ]) { err in
+            if let err = err {
+                print("AppState: Failed to update loggedIn Status")
+                print("AppState-err: \(err)")
+            } else {
+                print("AppState: Finished setting loggedIn status to false")
+            }
+        }
+        
         DataStore.shared.clear()
         cameraVM?.tearDownCamera()
         AppState.shared.allowAccess = false
@@ -192,7 +206,7 @@ class AppState: ObservableObject {
                     }
                 } receiveValue: { _ in }
                 .store(in: &self!.subs)
-        }        
+        }
     }
     
     public func toggleDarkMode() {
