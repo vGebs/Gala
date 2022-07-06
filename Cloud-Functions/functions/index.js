@@ -4,6 +4,68 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
+exports.snapNotification = functions.firestore.document("Snaps/{docID}")
+    .onCreate(async (snap, context) => {
+        //on new snap we need to send a notification to the toID
+
+        const snapDoc = snap.data();
+
+        const fcmTokenCollection = db.collection("FCM Tokens");
+
+        try {
+            const toIDToken = await fcmTokenCollection.doc(snapDoc.toID).get();
+            const toIDTokenDoc = toIDToken.data();
+
+            if (toIDTokenDoc.loggedIn == 1) {
+                const payload = {
+                    token: toIDTokenDoc.token,
+                    notification: {
+                        title: "New Snap",
+                        body: snapDoc.fromName + " sent you a snap"
+                    }
+                };
+
+                admin.messaging().send(payload).then((value) => {
+                    console.log("sent notification")
+                });
+            }
+
+        } catch (e) {
+            console.log("snapNotification-err" + e)
+        }
+    })
+
+exports.messageNotification = functions.firestore.document("Messages/{docID}")
+    .onCreate(async (snap, context) => {
+        //on new message we need to send a notification to the toID
+
+        const messageDoc = snap.data();
+
+        const fcmTokenCollection = db.collection("FCM Tokens");
+
+        try {
+            const toIDToken = await fcmTokenCollection.doc(messageDoc.toID).get();
+            const toIDTokenDoc = toIDToken.data();
+
+            if (toIDTokenDoc.loggedIn == 1) {
+                const payload = {
+                    token: toIDTokenDoc.token,
+                    notification: {
+                        title: "New Message",
+                        body: messageDoc.fromName + " sent you a message"
+                    }
+                };
+
+                admin.messaging().send(payload).then((value) => {
+                    console.log("sent notification")
+                });
+            }
+
+        } catch (e) {
+            console.log("messageNotification-err" + e)
+        }
+    })
+
 exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
     .onCreate(async (snap, context) => {
         const docRef = snap.id;
@@ -38,8 +100,7 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
                             notification: {
                                 title: "New Match",
                                 body: "Send " + likedFCMDoc.name + " a message"
-                            },
-                            badge: 1
+                            }
                         };
 
                         const payloadToLiked = {
@@ -47,11 +108,8 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
                             notification: {
                                 title: "New Match",
                                 body: "Send " + likerFCMDoc.name + " a message"
-                            },
-                            badge: 1
+                            }
                         };
-
-                        console.log("Liker is logged in " + likerFCMDoc.loggedIn)
 
                         if (likerFCMDoc.loggedIn == 1) {
                             admin.messaging().send(payloadToLiker).then((value) => {
@@ -60,8 +118,6 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
                         } else {
                             console.log("Did not send notification")
                         }
-
-                        console.log("Liked is logged in " + likedFCMDoc.loggedIn)
 
                         if (likedFCMDoc.loggedIn === 1) {
                             admin.messaging().send(payloadToLiked).then((value) => {

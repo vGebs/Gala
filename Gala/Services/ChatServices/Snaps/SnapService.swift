@@ -136,6 +136,7 @@ class SnapService: SnapServiceProtocol {
                 .addDocument(data: [
                     "toID": to,
                     "fromID": AuthService.shared.currentUser!.uid,
+                    "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
                     "snapID_timestamp": date
                 ]){ err in
                     if let err = err {

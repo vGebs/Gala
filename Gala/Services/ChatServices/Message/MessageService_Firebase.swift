@@ -36,6 +36,7 @@ class MessageService_Firebase: MessageServiceProtocol {
                     "message": message,
                     "toID": toID,
                     "fromID": AuthService.shared.currentUser!.uid,
+                    "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
                     "timestamp": Date()
                 ]){ err in
                     if let err = err {
