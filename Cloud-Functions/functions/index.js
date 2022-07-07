@@ -11,6 +11,43 @@ exports.snapNotification = functions.firestore.document("Snaps/{docID}")
         const snapDoc = snap.data();
 
         const fcmTokenCollection = db.collection("FCM Tokens");
+        const notificationsCollection_toID = db.collection("Notifications").doc(snapDoc.toID)
+        let badgeCount = 1;
+
+        try {
+            const notificationsDoc = await notificationsCollection_toID.get();
+
+            if (notificationsDoc.exists) {
+                const notifications = notificationsDoc.data();
+                badgeCount = notifications.notifications.length;
+
+                let flag = false;
+                for (let i = 0; i < badgeCount; i++) {
+                    if (snapDoc.fromID == notifications.notifications[i]) {
+                        flag = true
+                        break;
+                    }
+                }
+
+                if (!flag) {
+                    notificationsCollection_toID.update({
+                        notifications: admin.firestore.FieldValue.arrayUnion(snapDoc.fromID)
+                    })
+                    badgeCount++;
+                }
+
+            } else {
+                //there is no such document, so push a new one
+                const data = {
+                    notifications: [snapDoc.fromID]
+                };
+
+                notificationsCollection_toID.set(data);
+            }
+
+        } catch (e) {
+            console.log("snapNotification-err: " + e)
+        }
 
         try {
             const toIDToken = await fcmTokenCollection.doc(snapDoc.toID).get();
@@ -18,10 +55,17 @@ exports.snapNotification = functions.firestore.document("Snaps/{docID}")
 
             if (toIDTokenDoc.loggedIn == 1) {
                 const payload = {
-                    token: toIDTokenDoc.token,
-                    notification: {
-                        title: "New Snap",
-                        body: snapDoc.fromName + " sent you a snap"
+                    "token": toIDTokenDoc.token,
+                    "notification": {
+                        "title": snapDoc.fromName,
+                        "body": "Sent you a snap"
+                    },
+                    "apns": {
+                        "payload": {
+                            "aps": {
+                                "badge": badgeCount
+                            }
+                        }
                     }
                 };
 
@@ -42,6 +86,43 @@ exports.messageNotification = functions.firestore.document("Messages/{docID}")
         const messageDoc = snap.data();
 
         const fcmTokenCollection = db.collection("FCM Tokens");
+        const notificationsCollection_toID = db.collection("Notifications").doc(messageDoc.toID)
+        let badgeCount = 1;
+
+        try {
+            const notificationsDoc = await notificationsCollection_toID.get();
+
+            if (notificationsDoc.exists) {
+                const notifications = notificationsDoc.data();
+                badgeCount = notifications.notifications.length;
+
+                let flag = false;
+                for (let i = 0; i < badgeCount; i++) {
+                    if (messageDoc.fromID == notifications.notifications[i]) {
+                        flag = true
+                        break;
+                    }
+                }
+
+                if (!flag) {
+                    notificationsCollection_toID.update({
+                        notifications: admin.firestore.FieldValue.arrayUnion(messageDoc.fromID)
+                    })
+                    badgeCount++;
+                }
+
+            } else {
+                //there is no such document, so push a new one
+                const data = {
+                    notifications: [messageDoc.fromID]
+                };
+
+                notificationsCollection_toID.set(data);
+            }
+
+        } catch (e) {
+            console.log("messageNotification-err: " + e)
+        }
 
         try {
             const toIDToken = await fcmTokenCollection.doc(messageDoc.toID).get();
@@ -49,10 +130,17 @@ exports.messageNotification = functions.firestore.document("Messages/{docID}")
 
             if (toIDTokenDoc.loggedIn == 1) {
                 const payload = {
-                    token: toIDTokenDoc.token,
-                    notification: {
-                        title: "New Message",
-                        body: messageDoc.fromName + " sent you a message"
+                    "token": toIDTokenDoc.token,
+                    "notification": {
+                        "title": messageDoc.fromName,
+                        "body": "Sent you a message"
+                    },
+                    "apns": {
+                        "payload": {
+                            "aps": {
+                                "badge": badgeCount
+                            }
+                        }
                     }
                 };
 
