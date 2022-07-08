@@ -88,6 +88,7 @@ class AppState: ObservableObject {
                             self?.createAccountPressed = true
                         }
                     } else {
+                        NotificationService.shared.observeNotifications()
                         self?.allowAccess = true
                     }
                 }

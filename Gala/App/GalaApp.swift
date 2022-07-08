@@ -26,10 +26,6 @@ import UserNotifications
     //4. Add text to images like snap
         //Add some filters (check github for any filter packages)
 
-    //5. Delete all chats after 24 hours.
-        //Ability to save singular message for longer than 24 hours
-        //Ability to save whole chat for ____ days...?
-
     //6. Secure database rules & make sure our firebase key is not in Github
         ///Link: https://firebase.google.com/docs/firestore/solutions/role-based-access
 

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import UserNotifications
 import FirebaseMessaging
 import FirebaseFirestore
@@ -75,3 +76,72 @@ class NotificationController {
             }
     }
 }
+
+class NotificationService {
+    
+    let db = Firestore.firestore()
+
+    static let shared = NotificationService()
+    
+    @Published var notifications: [String] = []
+    
+    private init() {
+        
+    }
+    
+    func observeNotifications() {
+        db.collection("Notifications").document(AuthService.shared.currentUser!.uid)
+            .addSnapshotListener { snapShot, e in
+                guard let document = snapShot else { return }
+                
+                if let doc = document.data() {
+                    if let notifications = doc["notifications"] as? [String] {
+                        self.notifications = notifications
+                        UIApplication.shared.applicationIconBadgeNumber = notifications.count
+                    }
+                }
+            }
+    }
+    
+    func removeNotification(_ uid: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            
+            var notifInArray = false
+            
+            for notif in self!.notifications {
+                if notif == uid {
+                    notifInArray = true
+                }
+            }
+            
+            if notifInArray {
+                self?.db.collection("Notifications").document(AuthService.shared.currentUser!.uid)
+                    .updateData([
+                        "notifications": FieldValue.arrayRemove([uid])
+                    ]) { err in
+                        if let e = err {
+                            promise(.failure(e))
+                        } else {
+                            promise(.success(()))
+                        }
+                    }
+            } else {
+                print("No Notification to delete")
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
+
+//i need to test the new system
+
+//1. log out of sav
+//2. make sav 'loggedin' in firestore
+//3. send sav a message from demi and vaughn
+//4. send sav a snap from demi and vaughn
+
+//1. Test open all messages first
+//2. test opening all snaps first **WORKS**
+//3. test just opening snaps
+//4. test just opening messages **WORKS**

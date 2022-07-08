@@ -23,9 +23,11 @@ class ChatsDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
-            self?.initializer()
-        }
+        self.initializer()
+        
+//        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+//            self?.initializer()
+//        }
     }
     
     public func initializer() {
@@ -109,13 +111,6 @@ extension ChatsDataStore {
         } else {
             return false
         }
-        
-//        for match in matches {
-//            if match.uc.userBasic.uid == uid {
-//                return true
-//            }
-//        }
-//        return false
     }
     
     private func observeMatches() {

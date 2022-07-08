@@ -4,6 +4,8 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
+//FCM Payload info: https://customer.io/docs/push-custom-payloads/#fcm-custom-push-payload
+
 exports.snapNotification = functions.firestore.document("Snaps/{docID}")
     .onCreate(async (snap, context) => {
         //on new snap we need to send a notification to the toID

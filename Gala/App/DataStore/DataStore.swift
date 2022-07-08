@@ -50,5 +50,7 @@ class DataStore: ObservableObject {
         UserAboutService_CoreData.shared.clear()
         
         ProfileImageService_CoreData.shared.clear()
+        
+        NotificationService.shared.notifications = []
     }
 }

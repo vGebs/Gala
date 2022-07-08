@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */; };
 		FA0F74E9286E568E00964718 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74E8286E568E00964718 /* NotificationController.swift */; };
+		FA0F74FC28778E1900964718 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FB28778E1900964718 /* Timer.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
@@ -167,6 +168,7 @@
 		831B9135753054BD30C3A341 /* Pods-Gala.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gala.debug.xcconfig"; path = "Target Support Files/Pods-Gala/Pods-Gala.debug.xcconfig"; sourceTree = "<group>"; };
 		FA0F74E7286E4B0100964718 /* Gala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gala.entitlements; sourceTree = "<group>"; };
 		FA0F74E8286E568E00964718 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		FA0F74FB28778E1900964718 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				FA72A1772669ACFC004DEF77 /* LocationService.swift */,
 				FAAAA77E27F51B0A00663816 /* LocationViewModel.swift */,
 				FA0F74E8286E568E00964718 /* NotificationController.swift */,
+				FA0F74FB28778E1900964718 /* Timer.swift */,
 			);
 			path = GeneralServices;
 			sourceTree = "<group>";
@@ -1060,6 +1063,7 @@
 				FA6A33FF278FF8F00087127B /* StoryPublisher.swift in Sources */,
 				FA67C6D426F7B46A00B77D30 /* CameraOptionsView.swift in Sources */,
 				FA777D2B26CE21F3007C53F5 /* SliderHandle.swift in Sources */,
+				FA0F74FC28778E1900964718 /* Timer.swift in Sources */,
 				FA87740226409C2B00D5D5CB /* SigninSignupView.swift in Sources */,
 				FAD33A0E27D0489000FC9553 /* LoadingView.swift in Sources */,
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,

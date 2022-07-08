@@ -146,6 +146,26 @@ struct ConvoPreview: View {
                                 bday: ucMatch.uc.userBasic.birthdate,
                                 profileImg: ucMatch.profileImg
                             )
+                            
+                            if let snaps = chatsViewModel.snaps[ucMatch.uc.userBasic.uid] {
+                                var allOpened = true
+                                for snap in snaps {
+                                    if snap.openedDate == nil {
+                                        allOpened = false
+                                    }
+                                }
+                                
+                                if allOpened {
+                                    chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
+                                }
+                            } else if let messages = chatsViewModel.matchMessages[ucMatch.uc.userBasic.uid]{
+                                if !messages.isEmpty {
+                                    if messages[messages.count - 1].openedDate == nil {
+                                        chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
+                                    }
+                                }
+                            }
+                            
                             self.showChat = true
                         }
                     }){

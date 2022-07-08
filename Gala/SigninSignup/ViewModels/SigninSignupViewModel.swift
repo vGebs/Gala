@@ -340,6 +340,7 @@ final class SigninSignupViewModel: ObservableObject{
                     } else {
                         //User is good to enter app
                         DataStore.shared.initialize()
+                        NotificationService.shared.observeNotifications()
                         withAnimation {
                             AppState.shared.signUpPageActive = false
                             AppState.shared.loginPageActive = false

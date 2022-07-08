@@ -203,6 +203,20 @@ class ChatsViewModel: ObservableObject {
             messageText = ""
         }
     }
+    
+    func removeNotification(_ uid: String) {
+        NotificationService.shared.removeNotification(uid)
+            .sink { completion in
+                switch completion {
+                case .failure(let e):
+                    print("ChatsViewModel: Failed to remove notification")
+                    print("ChatsViewModel-err: \(e)")
+                case .finished:
+                    print("ChatsViewModel: Finished removing notification")
+                }
+            } receiveValue: { _ in }
+            .store(in: &subs)
+    }
 }
 
 extension ChatsViewModel {

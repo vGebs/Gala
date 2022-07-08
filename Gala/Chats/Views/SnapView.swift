@@ -36,6 +36,19 @@ struct SnapView: View {
                             }
                         }
                         .onDisappear {
+
+                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                                //we have viewed all the snaps
+                                
+                                if let msgs = snapViewModel.matchMessages[uid] {
+                                    if msgs[msgs.count - 1].openedDate != nil {
+                                        snapViewModel.removeNotification(uid)
+                                    }
+                                } else {
+                                    snapViewModel.removeNotification(uid)
+                                }
+                            }
+                            
                             snapViewModel.clearSnaps(for: uid)
                         }
                 } else {
