@@ -85,9 +85,7 @@ class NotificationService {
     
     @Published var notifications: [String] = []
     
-    private init() {
-        
-    }
+    private init() { }
     
     func observeNotifications() {
         db.collection("Notifications").document(AuthService.shared.currentUser!.uid)

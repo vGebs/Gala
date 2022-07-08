@@ -356,6 +356,16 @@ extension ChatsViewModel {
                 return ConvoPressType.viewChat
             }
         } else {
+            //check to see if they are a new match
+            if !NotificationService.shared.notifications.isEmpty {
+                for notif in NotificationService.shared.notifications {
+                    if notif == uid {
+                        //we need to remove the notification
+                        removeNotification(uid)
+                    }
+                }
+            }
+            
             //we got nothing, so set the temp messages to nil
             tempMessages = []
         }
@@ -497,6 +507,7 @@ extension ChatsViewModel {
         case doNotShow
         case showNewMessage
         case showOldMessage
+        case showNewMatch
     }
     
     func shouldShowChatPreview(ucMatch: MatchedUserCore) -> ShouldShowChatPreview {
@@ -515,6 +526,18 @@ extension ChatsViewModel {
                     }
                 } else {
                     return ShouldShowChatPreview.showOldMessage
+                }
+            }
+        }
+        
+        if let _ = matchMessages[uid] {
+            
+        } else {
+            if !NotificationService.shared.notifications.isEmpty {
+                for notif in NotificationService.shared.notifications {
+                    if notif == uid {
+                        return ShouldShowChatPreview.showNewMatch
+                    }
                 }
             }
         }
@@ -542,6 +565,47 @@ extension ChatsViewModel {
         }
     }
     
+    func isNewMatch(_ uid: String) -> Bool {
+        if NotificationService.shared.notifications.count > 0 {
+            var isNotif = false
+            for notif in NotificationService.shared.notifications {
+                if notif == uid {
+                    isNotif = true
+                }
+            }
+            
+            if isNotif {
+                //we need to see if they have any chats or snaps
+                var hasMessages = false
+                var hasSnaps = false
+                
+                if let snaps = DataStore.shared.chats.snaps[uid] {
+                    if !snaps.isEmpty {
+                        hasSnaps = true
+                    }
+                }
+                
+                if let messages = DataStore.shared.chats.messages[uid] {
+                    if !messages.isEmpty {
+                        hasMessages = true
+                    }
+                }
+                
+                if !hasMessages && !hasSnaps {
+                    return true
+                } else {
+                    return false
+                }
+                
+            } else {
+                return false
+            }
+
+        } else {
+            return false
+        }
+    }
+    
     private enum OpenClose_ToFrom {
         case unOpenedFromMe
         case openedFromMe
@@ -566,7 +630,11 @@ extension ChatsViewModel {
     private func isThereUnOpenedSnapsToMe(from uid: String) -> Bool {
         
         if let snaps = self.snaps[uid] {
-            return snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid
+            if snaps.count > 0 {
+                return snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid
+            } else {
+                return false
+            }
         }
         
         return false

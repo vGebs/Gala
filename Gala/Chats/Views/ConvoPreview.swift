@@ -172,7 +172,9 @@ struct ConvoPreview: View {
                         VStack {
                             HStack {
                                 Text("\(ucMatch.uc.userBasic.name), \(ucMatch.uc.userBasic.birthdate.ageString())")
-                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .font(.system(
+                                        size: 16,
+                                        weight: chatsViewModel.isNewMatch(ucMatch.uc.userBasic.uid) ? .black : .medium, design: .rounded))
                                     .foregroundColor(.white)
                                 
                                 Spacer()
@@ -204,6 +206,11 @@ struct ConvoPreview: View {
                                 openedMessageToMeView
                                 
                             case .newMatch:
+//                                if thereIsANotificationFromThisPerson {
+//
+//                                } else {
+//
+//                                }
                                 newMatchView
                             }
                         }
@@ -230,8 +237,16 @@ struct ConvoPreview: View {
                         }){
                             oldMessageButton
                         }
+                    case .showNewMatch:
+//                        Button(action: {
+//                            chatsViewModel.secondaryConvoPreviewButtonPressed(ucMatch: ucMatch)
+//                            self.timeMatchedBinding = ucMatch.timeMatched
+//                            showChat = true
+//                        }){
+                        newMatchStar
+                        //}
                     }
-                    
+                
                 }
                 Spacer()
             }
@@ -259,6 +274,12 @@ struct ConvoPreview: View {
         Image(systemName: "message")
             .font(.system(size: 17, weight: .medium, design: .rounded))
             .foregroundColor(.buttonPrimary)
+    }
+    
+    var newMatchStar: some View {
+        Image(systemName: "star.fill")
+            .font(.system(size: 17, weight: .medium, design: .rounded))
+            .foregroundColor(.primary)
     }
     
     var unopenedSnapFromMeView: some View {
