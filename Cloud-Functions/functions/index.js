@@ -173,8 +173,80 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
                 if (peopleThatLikeMe[i].id == likedUID) {
 
                     //Add the new match to the matches collection
+
+                    let badgeCount_liked = 1;
+                    let badgeCount_liker = 1;
+                    //we need to add a new notification to the Notification doc
+
+                    const likedNotificationReference = db.collection("Notifications").doc(likedUID);
+                    const likerNotificationReference = db.collection("Notifications").doc(likerUID);
+
                     try {
-                        await matchCollection.add({
+                        const likedNotificationsDoc = await likedNotificationReference.get();
+                        const likerNotificationsDoc = await likerNotificationReference.get();
+
+                        if (likedNotificationsDoc.exists) {
+                            const notifications = likedNotificationsDoc.data();
+                            badgeCount_liked = notifications.notifications.length;
+
+                            let flag = false;
+                            for (let i = 0; i < badgeCount_liked; i++) {
+                                if (likerUID == notifications.notifications[i]) {
+                                    flag = true
+                                    break;
+                                }
+                            }
+
+                            if (!flag) {
+                                likedNotificationReference.update({
+                                    notifications: admin.firestore.FieldValue.arrayUnion(likerUID)
+                                })
+                                badgeCount_liked++;
+                            }
+
+                        } else {
+                            //there is no such document, so push a new one
+                            const data = {
+                                notifications: [likerUID]
+                            };
+
+                            likedNotificationReference.set(data);
+                        }
+
+                        if (likerNotificationsDoc.exists) {
+                            const notifications = likerNotificationsDoc.data();
+                            badgeCount_liker = notifications.notifications.length;
+
+                            let flag = false;
+                            for (let i = 0; i < badgeCount_liker; i++) {
+                                if (likedUID == notifications.notifications[i]) {
+                                    flag = true
+                                    break;
+                                }
+                            }
+
+                            if (!flag) {
+                                likerNotificationReference.update({
+                                    notifications: admin.firestore.FieldValue.arrayUnion(likedUID)
+                                })
+                                badgeCount_liker++;
+                            }
+
+                        } else {
+                            //there is no such document, so push a new one
+                            const data = {
+                                notifications: [likedUID]
+                            };
+
+                            likerNotificationReference.set(data);
+                        }
+
+                    } catch (e) {
+                        console.log("listenForMatches-err: " + e)
+                    }
+
+                    try {
+                        matchCollection.add({
                             matched: [likedUID, likerUID],
                             time: admin.firestore.FieldValue.serverTimestamp()
                         })
@@ -188,16 +260,30 @@ exports.listenForMatches = functions.firestore.document("Likes/{likerUID}")
                         const payloadToLiker = {
                             token: likerFCMDoc.token,
                             notification: {
-                                title: "New Match",
-                                body: "Send " + likedFCMDoc.name + " a message"
+                                title: "You matched with " + likedFCMDoc.name,
+                                body: "Say hello!"
+                            },
+                            "apns": {
+                                "payload": {
+                                    "aps": {
+                                        "badge": badgeCount_liker
+                                    }
+                                }
                             }
                         };
 
                         const payloadToLiked = {
-                            token: likedFCMDoc.token,
-                            notification: {
-                                title: "New Match",
-                                body: "Send " + likerFCMDoc.name + " a message"
+                            "token": likedFCMDoc.token,
+                            "notification": {
+                                "title": "You matched with " + likerFCMDoc.name,
+                                "body": "Say hello!"
+                            },
+                            "apns": {
+                                "payload": {
+                                    "aps": {
+                                        "badge": badgeCount_liked
+                                    }
+                                }
                             }
                         };
 

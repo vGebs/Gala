@@ -90,7 +90,10 @@ class NotificationService {
     func observeNotifications() {
         db.collection("Notifications").document(AuthService.shared.currentUser!.uid)
             .addSnapshotListener { snapShot, e in
-                guard let document = snapShot else { return }
+                guard let document = snapShot else {
+                    UIApplication.shared.applicationIconBadgeNumber = 0
+                    return
+                }
                 
                 if let doc = document.data() {
                     if let notifications = doc["notifications"] as? [String] {
