@@ -419,6 +419,19 @@ extension ChatsDataStore {
                                 } else {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
+                            } else {
+                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
+                                
+                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                
+                                if let _ = self?.snaps[snap.fromID] {
+                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                    
+                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                    
+                                } else {
+                                    self?.snaps[snap.fromID] = [newSnap]
+                                }
                             }
                         }
                         .store(in: &self!.cancellables)
