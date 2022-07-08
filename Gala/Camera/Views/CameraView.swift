@@ -38,7 +38,6 @@ struct CameraView: View {
                     .padding(.bottom, screenHeight * 0.08)
             }
             
-            
             if let url = camera.videoURL {
                 ZStack {
                     
@@ -73,68 +72,6 @@ struct CameraView: View {
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
         })
-    }
-    
-    var tempRecordButton: some View {
-        Button(action: {
-            if self.camera.isRecording {
-                self.camera.stopRecording()
-            } else {
-                self.camera.startRecording()
-            }
-        }){
-            ZStack{
-                RoundedRectangle(cornerRadius: 22)
-                    .foregroundColor(.white)
-                    .opacity(0.05)
-                
-                RoundedRectangle(cornerRadius: 22).stroke(lineWidth: 7)
-                    .foregroundColor(.buttonPrimary)
-            }
-        }
-        .frame(
-            width: isRecording ? screenWidth / 4.5 : screenWidth / 6.5,
-            height: isRecording ? screenWidth / 4.5 : screenWidth / 6.5)
-        .opacity(camera.image == nil && camera.videoURL == nil ? 1 : 0)
-        .padding(.bottom, screenHeight * 0.08)
-    }
-    
-    @State var cameraButtonPressed = false
-    
-    var cameraButton: some View {
-        Button(action: {
-            self.camera.capturePhoto()
-
-        }){
-            ZStack{
-
-                Circle()
-                    .frame(width: screenWidth / 4)
-                    .foregroundColor(.white)
-                    .opacity(0.7)
-                
-                Circle()
-                    .frame(width: screenWidth / 9)
-                    .foregroundColor(.buttonPrimary)
-                
-                VStack{
-                    HStack {
-                        Spacer()
-                        Circle()
-                            .frame(width: screenWidth / 18)
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: screenWidth / 9)
-                    Spacer()
-                }
-                .frame(width: screenWidth / 18, height: screenWidth / 18)
-            }
-        }
-        .frame(
-            width: isRecording ? screenWidth / 4.5 : screenWidth / 6.5,
-            height: isRecording ? screenWidth / 4.5 : screenWidth / 6.5)
-        .opacity(camera.image == nil ? 1 : 0)
-        .padding(.bottom, screenHeight * 0.08)
     }
     
     var header: some View {

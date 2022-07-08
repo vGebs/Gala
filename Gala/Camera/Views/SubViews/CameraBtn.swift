@@ -56,13 +56,14 @@ struct CameraBtn: View {
     @GestureState var isLongPress = false // will be true till tap hold
     
     var longPress: some Gesture {
-        LongPressGesture(minimumDuration: 0.025)
+        LongPressGesture(minimumDuration: 0.015)
             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
             .updating($isLongPress) { value, state, transaction in
                 switch value {
                 case .second(true, nil):
                     withAnimation(.linear) {
                         state = true
+                        camera.startRecording()
                     }
                 default:
                     break
@@ -74,6 +75,7 @@ struct CameraBtn: View {
                     self.progress = 0
                     self.timeRemaining = 100
                 }
+                camera.stopRecording()
             }
     }
         

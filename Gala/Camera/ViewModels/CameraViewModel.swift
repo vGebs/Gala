@@ -212,7 +212,7 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
         
         self.addVideoInput()
         
-        //self.addAudioInput()
+        self.addAudioInput()
         
         self.addPhotoOutput()
         
@@ -516,6 +516,7 @@ extension CameraViewModel {
                     } else {
                         
                         print("CameraViewModel: Video URL -> \(vidURL)")
+                        self.videoURL = vidURL.path
                     }
                 })
                 
@@ -564,23 +565,23 @@ extension CameraViewModel {
                 
                 print("CameraViewModel: Stopped recording")
                 
-                if let movieURL = movieFileOutput.outputFileURL {
-                    print("CameraViewModel: \(movieURL)")
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        
-                        self.videoURL = movieURL.path
-                        
-                        if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(movieURL.path) {
-                            UISaveVideoAtPathToSavedPhotosAlbum(movieURL.path, nil, nil, nil)
-                            print("CameraViewModel: Video asset saved to camera roll")
-                        } else {
-                            print("CameraViewModel-Error: asset could not be stored to camera roll")
-                        }
-                    }
-                } else {
-                    print("CameraViewModel-Error: MovieURL could not be obtained")
-                }
+//                if let movieURL = movieFileOutput.outputFileURL {
+//                    print("CameraViewModel: \(movieURL)")
+//
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//
+//                        self.videoURL = movieURL.path
+//
+//                        if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(movieURL.path) {
+//                            UISaveVideoAtPathToSavedPhotosAlbum(movieURL.path, nil, nil, nil)
+//                            print("CameraViewModel: Video asset saved to camera roll")
+//                        } else {
+//                            print("CameraViewModel-Error: asset could not be stored to camera roll")
+//                        }
+//                    }
+//                } else {
+//                    print("CameraViewModel-Error: MovieURL could not be obtained")
+//                }
                 
             } else {
                 print("Something went wrong")
@@ -590,8 +591,22 @@ extension CameraViewModel {
     
     private func deleteAsset_() {
         self.image = nil
+        cleanup()
         self.videoURL = nil
         self.photoSaved = false
+    }
+    
+    func cleanup() {
+        if let path = videoURL {
+            if FileManager.default.fileExists(atPath: path) {
+                do {
+                    try FileManager.default.removeItem(atPath: path)
+                    print("CameraViewModel: Cleared file at url: \(path)")
+                } catch {
+                    print("Could not remove file at url: \(videoURL)")
+                }
+            }
+        }
     }
     
     private func saveAsset_(){

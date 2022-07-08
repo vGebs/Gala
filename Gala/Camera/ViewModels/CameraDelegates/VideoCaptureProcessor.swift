@@ -33,33 +33,14 @@ extension VideoCaptureProcessor: AVCaptureFileOutputRecordingDelegate {
                     error: Error?) {
         // Note: Because we use a unique file path for each recording, a new recording won't overwrite a recording mid-save.
         
-        func cleanup() {
-            let path = outputFileURL.path
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                } catch {
-                    print("Could not remove file at url: \(outputFileURL)")
-                }
-            }
-    
-//            if let currentBackgroundRecordingID = backgroundRecordingID {
-//                backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
-//
-//                if currentBackgroundRecordingID != UIBackgroundTaskIdentifier.invalid {
-//                    UIApplication.shared.endBackgroundTask(currentBackgroundRecordingID)
-//                }
-//            }
-        }
+        
         
         print("VideoCaptureProcessor: Did finish recording")
         
         if let error = error {
             print("VideoCaptureProcessor-ERROR: Movie file finishing error -> \(String(describing: error))")
-            cleanup()
             return completionHandler(outputFileURL, error)
         } else {
-            cleanup()
             return completionHandler(outputFileURL, error)
         }
     }
