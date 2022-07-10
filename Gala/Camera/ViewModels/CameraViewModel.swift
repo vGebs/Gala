@@ -60,12 +60,13 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
     
     //MARK: - Core Functions
     
-    public func capturePhoto()   { capturePhoto_()   }
-    public func startRecording() { startRecording_() }
-    public func stopRecording()  { stopRecording_()  }
-    public func deleteAsset()    { deleteAsset_()    }
-    public func saveAsset()      { saveAsset_()      }
-    public func toggleCamera()   { toggleCamera_()   }
+    public func capturePhoto()                { capturePhoto_()     }
+    public func startRecording()              { startRecording_()   }
+    public func stopRecording()               { stopRecording_()    }
+    public func deleteAsset()                 { deleteAsset_()      }
+    public func saveAsset()                   { saveAsset_()        }
+    public func toggleCamera()                { toggleCamera_()     }
+    public func zoomCamera(factor: CGFloat)   { zoomCamera_(factor) }
     
     
     //MARK: - State Functions
@@ -433,12 +434,6 @@ extension CameraViewModel {
             if let previewPhotoPixelFormatType = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
                 photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPhotoPixelFormatType]
             }
-            // Live Photo capture is not supported in movie mode.
-//            if self.livePhotoMode == .on && self.photoOutput.isLivePhotoCaptureSupported {
-//                let livePhotoMovieFileName = NSUUID().uuidString
-//                let livePhotoMovieFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((livePhotoMovieFileName as NSString).appendingPathExtension("mov")!)
-//                photoSettings.livePhotoMovieFileURL = URL(fileURLWithPath: livePhotoMovieFilePath)
-//            }
             
             photoSettings.isDepthDataDeliveryEnabled = (self.depthDataDeliveryMode == .on
                                                         && self.photoOutput.isDepthDataDeliveryEnabled)
@@ -545,10 +540,7 @@ extension CameraViewModel {
     }
     
     private func stopRecording_(){
-        guard let movieFileOutput = self.movieFileOutput else {
-            print("waaaaaa")
-            return
-        }
+        guard let movieFileOutput = self.movieFileOutput else { return }
         self.isRecording = false
         sessionQueue.async {
             if movieFileOutput.isRecording {
@@ -564,25 +556,6 @@ extension CameraViewModel {
                 movieFileOutput.stopRecording()
                 
                 print("CameraViewModel: Stopped recording")
-                
-//                if let movieURL = movieFileOutput.outputFileURL {
-//                    print("CameraViewModel: \(movieURL)")
-//
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//
-//                        self.videoURL = movieURL.path
-//
-//                        if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(movieURL.path) {
-//                            UISaveVideoAtPathToSavedPhotosAlbum(movieURL.path, nil, nil, nil)
-//                            print("CameraViewModel: Video asset saved to camera roll")
-//                        } else {
-//                            print("CameraViewModel-Error: asset could not be stored to camera roll")
-//                        }
-//                    }
-//                } else {
-//                    print("CameraViewModel-Error: MovieURL could not be obtained")
-//                }
-                
             } else {
                 print("Something went wrong")
             }
@@ -596,7 +569,7 @@ extension CameraViewModel {
         self.photoSaved = false
     }
     
-    func cleanup() {
+    private func cleanup() {
         if let path = videoURL {
             if FileManager.default.fileExists(atPath: path) {
                 do {
@@ -643,6 +616,29 @@ extension CameraViewModel {
             self.configureSession()
             
             self.session.startRunning()
+        }
+    }
+    
+    private func zoomCamera_(_ factor: CGFloat) {
+        
+        if factor < 1.0 {
+            do {
+                try self.videoDeviceInput.device.lockForConfiguration()
+                defer { self.videoDeviceInput.device.unlockForConfiguration() }
+                self.videoDeviceInput.device.videoZoomFactor = 1.0
+            } catch {
+                debugPrint(error)
+            }
+        }
+        
+        if factor < self.videoDeviceInput.device.activeFormat.videoMaxZoomFactor && factor >= 1.0 {
+            do {
+                try self.videoDeviceInput.device.lockForConfiguration()
+                defer { self.videoDeviceInput.device.unlockForConfiguration() }
+                self.videoDeviceInput.device.videoZoomFactor = factor
+            } catch {
+                debugPrint(error)
+            }
         }
     }
     

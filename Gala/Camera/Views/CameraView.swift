@@ -20,6 +20,8 @@ struct CameraView: View {
     @State var isRecording = false
     @State var showProfile = false
         
+    @State var verticalZoomOffset: CGSize = .zero
+    
     var body: some View{
         ZStack {
             SwiftUICamPreview(camera: camera, view: view)
@@ -28,6 +30,16 @@ struct CameraView: View {
                     camera.toggleCamera()
                 }
                 .shadow(radius: 15)
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            verticalZoomOffset = gesture.translation
+                            camera.zoomCamera(factor: -(verticalZoomOffset.height / 15))
+                        }
+                        .onEnded { _ in
+                            verticalZoomOffset = .zero
+                        }
+                )
             
             VStack {
                 CameraViewHeader(showProfile: $showProfile, camera: camera)
