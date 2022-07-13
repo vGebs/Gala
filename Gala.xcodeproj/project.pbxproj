@@ -10,10 +10,10 @@
 		DC9017FCD80CF9C793488EA6 /* Pods_Gala.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBCE97A2A6B0A799BCF0494 /* Pods_Gala.framework */; };
 		FA0F74E9286E568E00964718 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74E8286E568E00964718 /* NotificationController.swift */; };
 		FA0F74FC28778E1900964718 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FB28778E1900964718 /* Timer.swift */; };
+		FA0F74FE2878FAA900964718 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
-		FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */; };
 		FA2D6EDE2643604000551EE3 /* ProfileImageService_Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D6EDD2643604000551EE3 /* ProfileImageService_Firebase.swift */; };
 		FA2E23CC27BEF23D000C131A /* SendToSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CB27BEF23D000C131A /* SendToSelector.swift */; };
 		FA2E23CE27BF0D0D000C131A /* SnapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E23CD27BF0D0D000C131A /* SnapService.swift */; };
@@ -169,10 +169,10 @@
 		FA0F74E7286E4B0100964718 /* Gala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gala.entitlements; sourceTree = "<group>"; };
 		FA0F74E8286E568E00964718 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		FA0F74FB28778E1900964718 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
-		FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerTest.swift; sourceTree = "<group>"; };
 		FA2D6EDD2643604000551EE3 /* ProfileImageService_Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService_Firebase.swift; sourceTree = "<group>"; };
 		FA2E23CB27BEF23D000C131A /* SendToSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToSelector.swift; sourceTree = "<group>"; };
 		FA2E23CD27BF0D0D000C131A /* SnapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService.swift; sourceTree = "<group>"; };
@@ -392,8 +392,8 @@
 				FA2E23CB27BEF23D000C131A /* SendToSelector.swift */,
 				FA7BAD4726FD0FAD002F25E0 /* PostSelector.swift */,
 				FA67C6D326F7B46A00B77D30 /* CameraOptionsView.swift */,
-				FA12E216272E1067003F93D0 /* VideoPlayerTest.swift */,
 				FAAAA76A27EA621900663816 /* DraggableTextView.swift */,
+				FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -1072,7 +1072,6 @@
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */,
-				FA12E217272E1067003F93D0 /* VideoPlayerTest.swift in Sources */,
 				FA6BE5FE27B5FC1A0058B78C /* Message.swift in Sources */,
 				FA7E3B1E26DEB64700A6653C /* ChatsView.swift in Sources */,
 				FA8CE4362717B45500BE8BB4 /* PhotoCaptureProcessor.swift in Sources */,
@@ -1142,6 +1141,7 @@
 				FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */,
 				FA7E3B3026E8073300A6653C /* StoryContentService.swift in Sources */,
 				FABAABE62787F47700154363 /* MyLikesDropDown.swift in Sources */,
+				FA0F74FE2878FAA900964718 /* VideoPlayerView.swift in Sources */,
 				FAE5E18D28387ED800BBD115 /* StoryCD.xcdatamodeld in Sources */,
 				FA67C6D626FA605700B77D30 /* VibesService.swift in Sources */,
 				FA87741C26409E5700D5D5CB /* CameraView.swift in Sources */,

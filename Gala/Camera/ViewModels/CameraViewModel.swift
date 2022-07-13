@@ -182,6 +182,25 @@ class CameraViewModel: ObservableObject, CameraProtocol  {
             }.sink { _ in }
             .store(in: &cancellables)
         
+        
+        //Video quits playing when camera is turned off!!
+//        $videoURL
+//            .debounce(for: .seconds(2.5), scheduler: DispatchQueue.main)
+//            .map { [weak self] vid in
+//                if vid != nil && self!.cameraIsBuilt{
+//                    self?.tearDownCamera()
+//                }
+//            }.sink { _ in }
+//            .store(in: &cancellables)
+//
+//        $videoURL
+//            .map { [weak self] vid in
+//                if vid == nil && !self!.cameraIsBuilt && self!.classSetupComplete {
+//                    self?.buildCamera()
+//                }
+//            }.sink { _ in }
+//            .store(in: &cancellables)
+        
         /*
          Setup the capture session.
          In general, it's not safe to mutate an AVCaptureSession or any of its

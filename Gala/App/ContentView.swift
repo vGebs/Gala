@@ -31,7 +31,7 @@ struct ContentView: View {
                 chatView
             }
             
-            if camera.image != nil {
+            if camera.image != nil || camera.videoURL != nil {
                 PicTakenView(camera: camera, sendPressed: $camera.sendPressed)
             }
         }

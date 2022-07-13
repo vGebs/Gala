@@ -25,10 +25,20 @@ struct PicTakenView: View {
                         .cornerRadius(20)
                         .edgesIgnoringSafeArea(.all)
                     
-                    
                     Spacer()
                 }
                 .edgesIgnoringSafeArea(.all)
+            }
+            
+            if camera.videoURL != nil {
+                VStack {
+                    PlayerView()
+                        .frame(height: screenHeight * 0.91)
+                        .cornerRadius(20)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    Spacer()
+                }
             }
             
             VStack{

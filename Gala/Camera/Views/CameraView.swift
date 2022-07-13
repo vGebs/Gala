@@ -49,37 +49,6 @@ struct CameraView: View {
                 CameraBtn(camera: camera)
                     .padding(.bottom, screenHeight * 0.08)
             }
-            
-            if let url = camera.videoURL {
-                ZStack {
-                    
-                    //VideoPlayer(player: AVPlayer(url: URL(fileURLWithPath: url.path)))
-                    VStack {
-                        VideoPlayer(player: AVPlayer(url: URL(fileURLWithPath: url)))
-                            .cornerRadius(20)
-                            .frame(width: screenWidth, height: screenHeight * 0.91)
-                        Spacer()
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                    
-                    VStack{
-                        HStack{
-                            Button(action: {
-                                self.camera.deleteAsset()
-                            }){
-                                Image(systemName: "xmark")
-                                    .foregroundColor(.buttonPrimary)
-                                    .font(.system(size: 22, weight: .regular, design: .rounded))
-                                    .padding()
-                            }
-                            .disabled(!self.camera.cameraIsBuilt)
-                            
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                }
-            }
         }
         .sheet(isPresented: $showProfile, content: {
             ProfileMainView(viewModel: profile, showProfile: $showProfile)
@@ -102,10 +71,6 @@ struct CameraView: View {
             Spacer()
             
             ZStack{
-//                Image(systemName: "ticket")
-//                    .font(.system(size: 100, weight: .thin, design: .rounded))
-//                    .foregroundColor(.buttonPrimary)
-                
                 Image(systemName: "map.fill")
                     .font(.system(size: 30, weight: .thin, design: .rounded))
                     .foregroundColor(.primary)
