@@ -16,6 +16,8 @@ struct ProfileView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode = true
         
+    @State var showAllImages = false
+    
 //MARK: - Main Body
     
     var body: some View {
@@ -192,6 +194,9 @@ struct ProfileView: View {
                 LoadingView()
             }
         }
+        .sheet(isPresented: $showAllImages) {
+            AllProfileImageTabView(images: viewModel.getAllImages(), startingAt: 0, show: $showAllImages)
+        }
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
     
@@ -229,15 +234,28 @@ struct ProfileView: View {
             } else if let profilePic = viewModel.getProfilePic() {
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(Color.accent, lineWidth: 3)
-                
-                Image(uiImage: profilePic)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: screenWidth / 3.3, height: screenWidth / 3.3)
-                    //.clipped()
-                    //.clipShape(RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/))
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
 
+                if !viewModel.editPressed {
+                    Button(action: {
+                        self.showAllImages = true
+                    }) {
+                        Image(uiImage: profilePic)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth / 3.3, height: screenWidth / 3.3)
+                            //.clipped()
+                            //.clipShape(RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                } else {
+                    Image(uiImage: profilePic)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: screenWidth / 3.3, height: screenWidth / 3.3)
+                        //.clipped()
+                        //.clipShape(RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/))
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                }
                 VStack{
                     Spacer()
                     HStack{
@@ -783,6 +801,9 @@ struct ShowcaseProfileImageView: View {
     var from: Int //0
     var to: Int //2
     
+    @State var index: Int = 0
+    @State var showImages = false
+    
 //MARK: - Main Body
     
     var body: some View {
@@ -808,12 +829,18 @@ struct ShowcaseProfileImageView: View {
                                 })
                                 .onDrop(of: [.image], delegate: DropViewDelegate(image: viewModel.images[i], viewModel: viewModel))
                         } else {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
-                                .clipped()
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            Button(action: {
+                                //when we click on an image we want to be able to view the image in full screen
+                                index = i
+                                showImages = true
+                            }) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: screenWidth / 3.3, height: screenHeight / 4.95)
+                                    .clipped()
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
                         }
                         
                         VStack{
@@ -857,6 +884,9 @@ struct ShowcaseProfileImageView: View {
                     ImagePlaceHolder
                 }
             }
+        }
+        .sheet(isPresented: $showImages) {
+            AllProfileImageTabView(images: viewModel.getAllImages(), startingAt: 0, show: $showImages)
         }
     }
     

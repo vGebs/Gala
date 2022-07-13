@@ -11,6 +11,7 @@
 		FA0F74E9286E568E00964718 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74E8286E568E00964718 /* NotificationController.swift */; };
 		FA0F74FC28778E1900964718 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FB28778E1900964718 /* Timer.swift */; };
 		FA0F74FE2878FAA900964718 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */; };
+		FA0F7500287F64C700964718 /* AllProfileImageTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FF287F64C700964718 /* AllProfileImageTabView.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
@@ -170,6 +171,7 @@
 		FA0F74E8286E568E00964718 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		FA0F74FB28778E1900964718 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		FA0F74FF287F64C700964718 /* AllProfileImageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProfileImageTabView.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
@@ -748,6 +750,7 @@
 				FABAABE52787F47700154363 /* MyLikesDropDown.swift */,
 				FABAABE72787F49A00154363 /* AddToStoryButton.swift */,
 				FAAAA76C27EBC10D00663816 /* NewcomerLikesDropDown.swift */,
+				FA0F74FF287F64C700964718 /* AllProfileImageTabView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -1069,6 +1072,7 @@
 				FA87740E26409D6000D5D5CB /* ProfileMainView.swift in Sources */,
 				FAAAA7BF27FBB12600663816 /* UserAboutService_CoreData.swift in Sources */,
 				FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */,
+				FA0F7500287F64C700964718 /* AllProfileImageTabView.swift in Sources */,
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */,

@@ -443,6 +443,20 @@ extension ProfileViewModel {
             profileImgChanged = true
         }
     }
+    
+    public func getAllImages() -> [UIImage] {
+        var final: [UIImage] = []
+        
+        for img in profileImage {
+            final.append(img.image)
+        }
+        
+        for img in images {
+            final.append(img.image)
+        }
+        
+        return final
+    }
 }
 
 //MARK: - Data Push & Pull ------------------------------------------------------------------------------------->
