@@ -12,7 +12,7 @@ import FirebaseFirestore
 import FirebaseStorage
 
 protocol SnapServiceProtocol {
-    func sendSnap(to: String, img: UIImage) -> AnyPublisher<Void, Error>
+    func sendSnap(to: String, asset: Data, isImage: Bool) -> AnyPublisher<Void, Error>
 }
 
 class SnapService: SnapServiceProtocol {
@@ -113,10 +113,13 @@ class SnapService: SnapServiceProtocol {
             }
     }
     
-    func sendSnap(to: String, img: UIImage) -> AnyPublisher<Void, Error>{
+    func sendSnap(to: String, asset: Data, isImage: Bool) -> AnyPublisher<Void, Error>{
         let date = Date()
         return Future<Void, Error> { [weak self] promise in
-            Publishers.Zip(self!.pushMeta(to, date), self!.pushImage(to, img, date))
+            Publishers.Zip(
+                self!.pushMeta(to, date, isImage),
+                self!.pushAsset(to, asset, date)
+            )
                 .sink { completion in
                     switch completion{
                     case .failure(let e):
@@ -130,13 +133,14 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func pushMeta(_ to: String, _ date: Date) -> AnyPublisher<Void, Error> {
+    func pushMeta(_ to: String, _ date: Date, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
             self!.db.collection("Snaps")
                 .addDocument(data: [
                     "toID": to,
                     "fromID": AuthService.shared.currentUser!.uid,
                     "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
+                    "isImage": isImage,
                     "snapID_timestamp": date
                 ]){ err in
                     if let err = err {
@@ -151,16 +155,15 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func pushImage(_ to: String, _ img: UIImage, _ date: Date) -> AnyPublisher<Void, Error> {
-        let data = img.jpegData(compressionQuality: compressionQuality)!
+    func pushAsset(_ to: String, _ asset: Data, _ date: Date) -> AnyPublisher<Void, Error> {
         let storageRef = storage.reference()
         let snapsFolderName = "Snaps"
         let snapFolderRef = storageRef.child(snapsFolderName)
         let toImgRef = snapFolderRef.child(to)
-        let imgFileRef = toImgRef.child("\(date).jpeg")
+        let imgFileRef = toImgRef.child("\(date)")
         
         return Future<Void, Error> { promise in
-            let _ = imgFileRef.putData(data, metadata: nil) { (metaData, error) in
+            let _ = imgFileRef.putData(asset, metadata: nil) { (metaData, error) in
                 if let error = error {
                     promise(.failure(error))
                 } else {
@@ -174,7 +177,7 @@ class SnapService: SnapServiceProtocol {
         let storageRef = storage.reference()
         let snapFolderRef = storageRef.child("Snaps")
         let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = toImgRef.child("\(snapID).jpeg")
+        let imgFileRef = toImgRef.child("\(snapID)")
         
         return Future<UIImage?, Error> { promise in
             imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in

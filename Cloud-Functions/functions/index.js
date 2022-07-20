@@ -72,12 +72,12 @@ exports.snapNotification = functions.firestore.document("Snaps/{docID}")
                 };
 
                 admin.messaging().send(payload).then((value) => {
-                    console.log("sent notification")
+                    console.log("sent notification");
                 });
             }
 
         } catch (e) {
-            console.log("snapNotification-err" + e)
+            console.log("snapNotification-err" + e);
         }
     })
 
@@ -88,7 +88,7 @@ exports.messageNotification = functions.firestore.document("Messages/{docID}")
         const messageDoc = snap.data();
 
         const fcmTokenCollection = db.collection("FCM Tokens");
-        const notificationsCollection_toID = db.collection("Notifications").doc(messageDoc.toID)
+        const notificationsCollection_toID = db.collection("Notifications").doc(messageDoc.toID);
         let badgeCount = 1;
 
         try {
@@ -123,7 +123,7 @@ exports.messageNotification = functions.firestore.document("Messages/{docID}")
             }
 
         } catch (e) {
-            console.log("messageNotification-err: " + e)
+            console.log("messageNotification-err: " + e);
         }
 
         try {
@@ -380,6 +380,7 @@ async function deleteOldMessages() {
     const oldMessages = await db.collection("Messages/").where("openedDate", "<", compareDate).get();
 
     if (oldMessages.empty) {
+        console.log("No old messages to delete");
         return;
     } else {
 
@@ -424,6 +425,7 @@ async function deleteOldStories() {
 
     if (oldStories.empty) {
         //No stories older than 24hrs
+        console.log("No stories older than 24hrs");
         return;
     } else {
 

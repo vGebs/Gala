@@ -34,7 +34,13 @@ struct SendView: View {
             VStack{
                 Spacer()
                 Button(action: {
-                    self.viewModel.send(pic: camera.image!)
+                    if let img = camera.image {
+                        self.viewModel.send(pic: img)
+                        
+                    } else if let vidURLPath = camera.videoURL {
+                        self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath))
+                    }
+                    
                     self.camera.deleteAsset()
                     self.viewModel.selectedVibe = ""
                     self.viewModel.selectedMatch = ""

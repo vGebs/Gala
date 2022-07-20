@@ -13,7 +13,6 @@ protocol SendViewModelProtocol {
     
     func send(pic: UIImage)
     func postStory(_ pic: UIImage)
-    func sendPic(to: String, _ pic: UIImage)
 }
 
 class SendViewModel: ObservableObject, SendViewModelProtocol {
@@ -78,12 +77,28 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
             postStory(pic)
         } else if selectedMatch != "" {
             //sendPic to
-            sendPic(to: selectedMatch, pic)
+            let data = pic.jpegData(compressionQuality: compressionQuality)!
+            sendSnap(to: selectedMatch, data, isImage: true)
         }
     }
     
-    internal func sendPic(to: String, _ pic: UIImage) {
-        SnapService.shared.sendSnap(to: to, img: pic)
+    func send(vid: URL) {
+        if selectedVibe != "" {
+            //post story
+            print("Posting video story")
+        } else if selectedMatch != "" {
+            //send video to match
+            do {
+                let data = try Data(contentsOf: vid)
+                sendSnap(to: selectedMatch, data, isImage: false)
+            } catch {
+                print("SendViewModel: Failed to convert video to data")
+            }
+        }
+    }
+    
+    internal func sendSnap(to: String, _ asset: Data, isImage: Bool) {
+        SnapService.shared.sendSnap(to: to, asset: asset, isImage: isImage)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -99,7 +114,6 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     }
 
     internal func postStory(_ pic: UIImage) {
-        print("Selected: \(self.selectedVibe)")
         StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: pic)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
