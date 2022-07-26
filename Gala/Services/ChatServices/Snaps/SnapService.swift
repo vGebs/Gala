@@ -45,15 +45,22 @@ class SnapService: SnapServiceProtocol {
                     let toID = data["toID"] as? String ?? ""
                     let fromID = data["fromID"] as? String ?? ""
                     let opened = data["openedDate"] as? Timestamp
+                    let isImage = data["isImage"] as? Bool
+                    
                     let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
                     
                     if let snapID_timestamp = snapID_timestamp_?.dateValue() {
                         if let o = opened {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), img: nil, docID: docID)
-                            final.append(newSnap)
+                            if let isImage = isImage {
+                                let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, docID: docID)
+                                final.append(newSnap)
+                            }
                         } else {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, img: nil, docID: docID)
-                            final.append(newSnap)
+                            if let isImage = isImage {
+                                let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, docID: docID)
+                                final.append(newSnap)
+
+                            }
                         }
                     }
                     
@@ -89,14 +96,15 @@ class SnapService: SnapServiceProtocol {
                     let toID = data["toID"] as? String ?? ""
                     let fromID = data["fromID"] as? String ?? ""
                     let openedDate = data["openedDate"] as? Timestamp
+                    let isImage = data["isImage"] as? Bool
                     let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
 
                     if let snapID_timestamp = snapID_timestamp_?.dateValue() {
                         if let o = openedDate{
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), img: nil, docID: docID)
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage!, docID: docID)
                             final.append(newSnap)
                         } else {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, img: nil, docID: docID)
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage!, docID: docID)
                             final.append(newSnap)
                         }
                     }
@@ -173,13 +181,13 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func fetchSnap(snapID: Date) -> AnyPublisher<UIImage?, Error> {
+    func fetchSnapAsset(snapID: Date) -> AnyPublisher<Data?, Error> {
         let storageRef = storage.reference()
         let snapFolderRef = storageRef.child("Snaps")
         let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
         let imgFileRef = toImgRef.child("\(snapID)")
         
-        return Future<UIImage?, Error> { promise in
+        return Future<Data?, Error> { promise in
             imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
                 if let error = error {
                     print("SnapService: Non lethal fetching error: \(error.localizedDescription)")
@@ -187,8 +195,7 @@ class SnapService: SnapServiceProtocol {
                 }
                 
                 if let data = data {
-                    let img = UIImage(data: data)
-                    promise(.success(img))
+                    promise(.success(data))
                 } else {
                     promise(.success(nil))
                 }
@@ -276,7 +283,7 @@ class SnapService: SnapServiceProtocol {
         
         //we only want to delete the snaps that are sent to us
         let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = toImgRef.child("\(snap.snapID_timestamp).jpeg")
+        let imgFileRef = toImgRef.child("\(snap.snapID_timestamp)")
         
         return Future<Void, Error> { promise in
             imgFileRef.delete { err in

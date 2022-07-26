@@ -30,9 +30,9 @@ struct PicTakenView: View {
                 .edgesIgnoringSafeArea(.all)
             }
             
-            if camera.videoURL != nil {
+            if let url = camera.videoURL {
                 VStack {
-                    PlayerView()
+                    PlayerView(url: url)
                         .frame(height: screenHeight * 0.91)
                         .cornerRadius(20)
                         .edgesIgnoringSafeArea(.all)

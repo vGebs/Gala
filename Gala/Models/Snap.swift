@@ -14,6 +14,9 @@ struct Snap: Identifiable {
     let toID: String
     let snapID_timestamp: Date
     var openedDate: Date?
-    var img: UIImage?
+//    var img: UIImage?
+//    var vidURL: URL?
+    var assetData: Data?
+    var isImage: Bool
     let docID: String
 }

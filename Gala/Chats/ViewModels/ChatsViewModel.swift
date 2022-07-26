@@ -515,17 +515,19 @@ extension ChatsViewModel {
         let currentUID = AuthService.shared.currentUser!.uid
         
         if let snaps = snaps[uid] {
-            if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == currentUID {
-                //we have a new snap to us
-                if let msgs = matchMessages[uid] {
-                    if msgs[msgs.count - 1].openedDate == nil && msgs[msgs.count - 1].toID == currentUID {
-                        //we have a new message as well
-                        return ShouldShowChatPreview.showNewMessage
+            if !snaps.isEmpty {
+                if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == currentUID {
+                    //we have a new snap to us
+                    if let msgs = matchMessages[uid] {
+                        if msgs[msgs.count - 1].openedDate == nil && msgs[msgs.count - 1].toID == currentUID {
+                            //we have a new message as well
+                            return ShouldShowChatPreview.showNewMessage
+                        } else {
+                            return ShouldShowChatPreview.showOldMessage
+                        }
                     } else {
                         return ShouldShowChatPreview.showOldMessage
                     }
-                } else {
-                    return ShouldShowChatPreview.showOldMessage
                 }
             }
         }
@@ -660,7 +662,9 @@ extension ChatsViewModel {
     private func getMostRecentSnap(for uid: String) -> Snap? {
         
         if let snaps = self.snaps[uid] {
-            return snaps[snaps.count - 1]
+            if !snaps.isEmpty {
+                return snaps[snaps.count - 1]
+            }
         }
         
         return nil

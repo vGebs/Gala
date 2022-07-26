@@ -22,35 +22,13 @@ struct SnapView: View {
     
     var body: some View {
         ZStack {
-            if snap != nil {
-                if snap!.img != nil {
-                    Image(uiImage: snap!.img!)
-                        .resizable()
-                        .scaledToFill()
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
-                                show = false
-                            } else {
-                                snapViewModel.getSnap(for: uid)
-                            }
-                        }
-                        .onDisappear {
-
-                            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
-                                //we have viewed all the snaps
-                                
-                                if let msgs = snapViewModel.matchMessages[uid] {
-                                    if msgs[msgs.count - 1].openedDate != nil {
-                                        snapViewModel.removeNotification(uid)
-                                    }
-                                } else {
-                                    snapViewModel.removeNotification(uid)
-                                }
-                            }
-                            
-                            snapViewModel.clearSnaps(for: uid)
-                        }
+            if let snap = snap {
+                if let _ = snap.assetData {
+                    if snap.isImage {
+                        imagePreview
+                    } else if !snap.isImage {
+                        videoPreview
+                    }
                 } else {
                     ProgressView()
                 }
@@ -59,55 +37,54 @@ struct SnapView: View {
             }
         }
     }
-}
-
-struct IndividualSnapView: View {
-    var snap: Snap
-    @Binding var showSnap: Bool
-    @State var tapped = false
-    @ObservedObject var snapViewModel: ChatsViewModel
     
-    var body: some View {
-        ZStack {
-            Image(uiImage: snap.img!)
-                .resizable()
-                .scaledToFill()
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-//                    vm.openSnap(snap: snap)
-//                    tapped = true
-                    showSnap = false
+    var videoPreview: some View {
+        Text("")
+    }
+    
+    var imagePreview: some View {
+        assetSnapView(snap: snap!) {
+            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                show = false
+            } else {
+                snapViewModel.getSnap(for: uid)
+            }
+        } onDisappear: {
+            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                //we have viewed all the snaps
+                
+                if let msgs = snapViewModel.matchMessages[uid] {
+                    if msgs[msgs.count - 1].openedDate != nil {
+                        snapViewModel.removeNotification(uid)
+                    }
+                } else {
+                    snapViewModel.removeNotification(uid)
                 }
-                .onDisappear {
-                    snapViewModel.clearSnaps(for: snap.fromID)
-                }
+            }
+            
+            snapViewModel.clearSnaps(for: uid)
         }
     }
 }
 
-import Combine
+struct assetSnapView: View {
+    var snap: Snap
+    var onTap: () -> Void
+    var onDisappear: () -> Void
 
-class IndividualSnapViewModel: ObservableObject {
-    
-    init() {}
-    
-    private var cancellables: [AnyCancellable] = []
-    
-    func openSnap(snap: Snap) {
-        SnapService.shared.openSnap(snap: snap)
-            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let e):
-                    print("IndividualSnapViewModel: Failed to open snap")
-                    print("IndividualSnapViewModel-err: \(e)")
-                case .finished:
-                    print("IndividualSnapViewModel: Finished opening snap")
-                    print("IndividualSnapViewModel: Opened snap with id: \(snap.snapID_timestamp)")
-                }
-            } receiveValue: { _ in
-
-            }.store(in: &cancellables)
+    var body: some View {
+        if let data = snap.assetData {
+            if snap.isImage {
+                Image(uiImage: UIImage(data: data)!)
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture(perform: onTap)
+                    .onDisappear(perform: onDisappear)
+            } else if !snap.isImage {
+                //the asset is a video, play the video
+                
+            }
+        }
     }
 }

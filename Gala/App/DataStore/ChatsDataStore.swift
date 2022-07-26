@@ -390,7 +390,7 @@ extension ChatsDataStore {
                 //if the snap is newly added
                 // we want to fetch the content and then add it to the array in the correct position
                 for snap in snaps {
-                    SnapService.shared.fetchSnap(snapID: snap.snapID_timestamp)
+                    SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp)
                         .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                         .receive(on: DispatchQueue.main)
                         .sink { completion in
@@ -401,15 +401,18 @@ extension ChatsDataStore {
                             case .finished:
                                 print("ChatsDataStore: Successfully fetched snap")
                             }
-                        } receiveValue: { [weak self] img in
-                            if let i = img {
-                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: i, docID: snap.docID)
+                        } receiveValue: { [weak self] assetData in
+                            if let assetData = assetData {
+                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, assetData: assetData, isImage: snap.isImage, docID: snap.docID)
+                                
+                                print("Snaps to me -> asset is image: \(snap.isImage)")
+                                print("Snaps to me -> timestamp: \(snap.snapID_timestamp)")
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
 
                                 SnapService_CoreData.shared.addSnap(snap: newSnap)
                                 
-                                newSnap.img = nil
+                                newSnap.assetData = nil
                                 
                                 if let _ = self?.snaps[snap.fromID] {
                                     let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
@@ -420,7 +423,7 @@ extension ChatsDataStore {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
                             } else {
-                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, img: nil, docID: snap.docID)
+                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, assetData: nil, isImage: snap.isImage, docID: snap.docID)
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
                                 
