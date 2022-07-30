@@ -45,7 +45,7 @@ struct SnapMessageView: View {
             .padding(.trailing, screenWidth * 0.5)
         }
         .sheet(isPresented: $showSnap, content: {
-            assetSnapView(snap: chatsViewModel.tempSnap!) {
+            assetSnapView(snap: chatsViewModel.tempSnap!, vm: chatsViewModel) {
                 showSnap = false
             } onDisappear: {
                 chatsViewModel.clearSnaps(for: snap.fromID)

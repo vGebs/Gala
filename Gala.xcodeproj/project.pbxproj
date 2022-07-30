@@ -12,6 +12,7 @@
 		FA0F74FC28778E1900964718 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FB28778E1900964718 /* Timer.swift */; };
 		FA0F74FE2878FAA900964718 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */; };
 		FA0F7500287F64C700964718 /* AllProfileImageTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F74FF287F64C700964718 /* AllProfileImageTabView.swift */; };
+		FA0F752228922A9400964718 /* ExpandingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F752128922A9200964718 /* ExpandingTextField.swift */; };
 		FA0FCA3E2684048000434561 /* MatchStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA3D2684048000434561 /* MatchStoriesView.swift */; };
 		FA0FCA422684050900434561 /* StoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA412684050900434561 /* StoriesViewModel.swift */; };
 		FA0FCA4426840F5500434561 /* UserAboutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0FCA4326840F5500434561 /* UserAboutService.swift */; };
@@ -120,6 +121,7 @@
 		FAAACE7C2865146F0081664B /* DemoButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAACE7B2865146E0081664B /* DemoButtonView.swift */; };
 		FAACA5762825D0F400B828DB /* SnapService_CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */; };
 		FAACA57A2825D19300B828DB /* SnapCD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAACA5782825D19300B828DB /* SnapCD.xcdatamodeld */; };
+		FAB145432893317A00F6B252 /* UrlExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB145422893317A00F6B252 /* UrlExtension.swift */; };
 		FAB6103327C99CC700BD8187 /* SnapMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103227C99CC700BD8187 /* SnapMessageView.swift */; };
 		FAB6103527CC3FF300BD8187 /* StoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB6103427CC3FF300BD8187 /* StoryListView.swift */; };
 		FABAABE42787F44E00154363 /* MyStoriesDropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */; };
@@ -172,6 +174,7 @@
 		FA0F74FB28778E1900964718 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		FA0F74FD2878FAA900964718 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		FA0F74FF287F64C700964718 /* AllProfileImageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProfileImageTabView.swift; sourceTree = "<group>"; };
+		FA0F752128922A9200964718 /* ExpandingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandingTextField.swift; sourceTree = "<group>"; };
 		FA0FCA3D2684048000434561 /* MatchStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStoriesView.swift; sourceTree = "<group>"; };
 		FA0FCA412684050900434561 /* StoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesViewModel.swift; sourceTree = "<group>"; };
 		FA0FCA4326840F5500434561 /* UserAboutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAboutService.swift; sourceTree = "<group>"; };
@@ -278,6 +281,7 @@
 		FAAACE7B2865146E0081664B /* DemoButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoButtonView.swift; sourceTree = "<group>"; };
 		FAACA5752825D0F400B828DB /* SnapService_CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapService_CoreData.swift; sourceTree = "<group>"; };
 		FAACA5792825D19300B828DB /* SnapCD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SnapCD.xcdatamodel; sourceTree = "<group>"; };
+		FAB145422893317A00F6B252 /* UrlExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlExtension.swift; sourceTree = "<group>"; };
 		FAB6103227C99CC700BD8187 /* SnapMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapMessageView.swift; sourceTree = "<group>"; };
 		FAB6103427CC3FF300BD8187 /* StoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryListView.swift; sourceTree = "<group>"; };
 		FABAABE32787F44E00154363 /* MyStoriesDropDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesDropDown.swift; sourceTree = "<group>"; };
@@ -585,6 +589,7 @@
 				FA58F53626C8842E00AE3B7C /* UIViewExtension.swift */,
 				FA8CE4372717B4D000BE8BB4 /* AVCaptureDeviceExtension.swift */,
 				FA6BE60527BDB0F10058B78C /* ArrayExtensions.swift */,
+				FAB145422893317A00F6B252 /* UrlExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -654,6 +659,7 @@
 				FA9E53F727D1767A002DDF99 /* CircularLoadingView.swift */,
 				FAFD431326D57AAE00C535D2 /* Slider */,
 				FAAACE7B2865146E0081664B /* DemoButtonView.swift */,
+				FA0F752128922A9200964718 /* ExpandingTextField.swift */,
 			);
 			path = ServiceViews;
 			sourceTree = "<group>";
@@ -1073,6 +1079,7 @@
 				FAAAA7BF27FBB12600663816 /* UserAboutService_CoreData.swift in Sources */,
 				FA7E3B2C26E8003E00A6653C /* StoryService.swift in Sources */,
 				FA0F7500287F64C700964718 /* AllProfileImageTabView.swift in Sources */,
+				FAB145432893317A00F6B252 /* UrlExtension.swift in Sources */,
 				FA58F53926C884B200AE3B7C /* LandingView.swift in Sources */,
 				FA87741A26409E3A00D5D5CB /* CameraPreview.swift in Sources */,
 				FAAAA77C27F3E61500663816 /* NavBarViewModel.swift in Sources */,
@@ -1101,6 +1108,7 @@
 				FA76E30926B34733009A650D /* IntExtension.swift in Sources */,
 				FAFD431526D7012700C535D2 /* CustomSlider.swift in Sources */,
 				FABB97552809FFA10014A21E /* UserAboutService_Firebase.swift in Sources */,
+				FA0F752228922A9400964718 /* ExpandingTextField.swift in Sources */,
 				FA8774592640A39700D5D5CB /* ImagePicker.swift in Sources */,
 				FABAABEB2788079A00154363 /* CameraViewHeader.swift in Sources */,
 				FA9E53F827D1767A002DDF99 /* CircularLoadingView.swift in Sources */,

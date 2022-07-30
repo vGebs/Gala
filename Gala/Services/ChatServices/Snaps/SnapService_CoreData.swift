@@ -228,15 +228,28 @@ extension SnapService_CoreData {
 extension SnapService_CoreData {
     
     func bundleSnap(cd: SnapCD) -> Snap {
-        return Snap(
-            fromID: cd.fromID!,
-            toID: cd.toID!,
-            snapID_timestamp: cd.snapID_timestamp!,
-            openedDate: cd.openedDate,
-            assetData: cd.asset,
-            isImage: cd.isImage,
-            docID: cd.docID!
-        )
+        if let vidUrl = cd.vidURL {
+            return Snap(
+                fromID: cd.fromID!,
+                toID: cd.toID!,
+                snapID_timestamp: cd.snapID_timestamp!,
+                openedDate: cd.openedDate,
+                imgAssetData: cd.asset,
+                vidURL: URL(string: vidUrl),
+                isImage: cd.isImage,
+                docID: cd.docID!
+            )
+        } else {
+            return Snap(
+                fromID: cd.fromID!,
+                toID: cd.toID!,
+                snapID_timestamp: cd.snapID_timestamp!,
+                openedDate: cd.openedDate,
+                imgAssetData: cd.asset,
+                isImage: cd.isImage,
+                docID: cd.docID!
+            )
+        }
     }
     
     func bundleSnapCD(snap: Snap, cd: SnapCD) {
@@ -246,7 +259,8 @@ extension SnapService_CoreData {
         cd.openedDate = snap.openedDate
         cd.isImage = snap.isImage
         cd.snapID_timestamp = snap.snapID_timestamp
-        cd.asset = snap.assetData
+        cd.asset = snap.imgAssetData
+        cd.vidURL = snap.vidURL?.absoluteString
     }
     
     func getSnapCD(with docID: String) -> SnapCD? {

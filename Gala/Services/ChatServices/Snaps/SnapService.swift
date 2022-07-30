@@ -126,7 +126,7 @@ class SnapService: SnapServiceProtocol {
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip(
                 self!.pushMeta(to, date, isImage),
-                self!.pushAsset(to, asset, date)
+                self!.pushAsset(to, asset, date, isImage: isImage)
             )
                 .sink { completion in
                     switch completion{
@@ -163,12 +163,19 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func pushAsset(_ to: String, _ asset: Data, _ date: Date) -> AnyPublisher<Void, Error> {
+    func pushAsset(_ to: String, _ asset: Data, _ date: Date, isImage: Bool) -> AnyPublisher<Void, Error> {
         let storageRef = storage.reference()
         let snapsFolderName = "Snaps"
         let snapFolderRef = storageRef.child(snapsFolderName)
         let toImgRef = snapFolderRef.child(to)
-        let imgFileRef = toImgRef.child("\(date)")
+        
+        let imgFileRef: StorageReference
+        
+        if isImage {
+            imgFileRef = toImgRef.child("\(date)")
+        } else {
+            imgFileRef = toImgRef.child("\(date).mov")
+        }
         
         return Future<Void, Error> { promise in
             let _ = imgFileRef.putData(asset, metadata: nil) { (metaData, error) in
@@ -181,23 +188,47 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func fetchSnapAsset(snapID: Date) -> AnyPublisher<Data?, Error> {
+    func fetchSnapAsset(snapID: Date, isImage: Bool) -> AnyPublisher<(Data?, URL?), Error> {
         let storageRef = storage.reference()
         let snapFolderRef = storageRef.child("Snaps")
         let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = toImgRef.child("\(snapID)")
+        let imgFileRef: StorageReference
         
-        return Future<Data?, Error> { promise in
-            imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
-                if let error = error {
-                    print("SnapService: Non lethal fetching error: \(error.localizedDescription)")
-                    promise(.success(nil))
+        if isImage {
+            imgFileRef = toImgRef.child("\(snapID)")
+        } else {
+            imgFileRef = toImgRef.child("\(snapID).mov")
+        }
+        
+        return Future<(Data?, URL?), Error> { promise in
+            if isImage {
+                imgFileRef.getData(maxSize: 30 * 1024 * 1024) { data, error in
+                    if let error = error {
+                        print("SnapService: Non lethal fetching error: \(error.localizedDescription)")
+                        promise(.success((nil, nil)))
+                    }
+                    
+                    if let data = data {
+                        promise(.success((data, nil)))
+                    } else {
+                        promise(.success((nil, nil)))
+                    }
                 }
+            } else {
+               
+                let saveToUrl = getDocumentsDirectory().appendingPathComponent("\(UUID().uuidString).mov")
                 
-                if let data = data {
-                    promise(.success(data))
-                } else {
-                    promise(.success(nil))
+                imgFileRef.write(toFile: saveToUrl) { url, error in
+                    if let e = error {
+                        promise(.failure(e))
+                    } else {
+                        if let url = url {
+                            print("SnapService: Successfully wrote video to url: \(url)")
+                            promise(.success((nil, url)))
+                        } else {
+                            promise(.success((nil, nil)))
+                        }
+                    }
                 }
             }
         }.eraseToAnyPublisher()
@@ -283,7 +314,17 @@ class SnapService: SnapServiceProtocol {
         
         //we only want to delete the snaps that are sent to us
         let toImgRef = snapFolderRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = toImgRef.child("\(snap.snapID_timestamp)")
+        let imgFileRef: StorageReference
+        
+        if snap.isImage {
+            imgFileRef = toImgRef.child("\(snap.snapID_timestamp)")
+        } else {
+            imgFileRef = toImgRef.child("\(snap.snapID_timestamp).mov")
+            
+            if let url = snap.vidURL {
+                deleteLocalFile(at: url)
+            }
+        }
         
         return Future<Void, Error> { promise in
             imgFileRef.delete { err in

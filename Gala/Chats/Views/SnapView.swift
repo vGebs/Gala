@@ -23,14 +23,10 @@ struct SnapView: View {
     var body: some View {
         ZStack {
             if let snap = snap {
-                if let _ = snap.assetData {
-                    if snap.isImage {
-                        imagePreview
-                    } else if !snap.isImage {
-                        videoPreview
-                    }
-                } else {
-                    ProgressView()
+                if let _ = snap.imgAssetData {
+                    imagePreview
+                } else if let _ = snap.vidURL {
+                    videoPreview
                 }
             } else {
                 ProgressView()
@@ -39,11 +35,7 @@ struct SnapView: View {
     }
     
     var videoPreview: some View {
-        Text("")
-    }
-    
-    var imagePreview: some View {
-        assetSnapView(snap: snap!) {
+        assetSnapView(snap: snap!, vm: snapViewModel) {
             if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
                 show = false
             } else {
@@ -53,8 +45,32 @@ struct SnapView: View {
             if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
                 //we have viewed all the snaps
                 
-                if let msgs = snapViewModel.matchMessages[uid] {
-                    if msgs[msgs.count - 1].openedDate != nil {
+                if let snaps = snapViewModel.matchMessages[uid] {
+                    if snaps[snaps.count - 1].openedDate != nil {
+                        snapViewModel.removeNotification(uid)
+                    }
+                } else {
+                    snapViewModel.removeNotification(uid)
+                }
+            }
+            
+            snapViewModel.clearSnaps(for: uid)
+        }
+    }
+    
+    var imagePreview: some View {
+        assetSnapView(snap: snap!, vm: snapViewModel) {
+            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                show = false
+            } else {
+                snapViewModel.getSnap(for: uid)
+            }
+        } onDisappear: {
+            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                //we have viewed all the snaps
+                
+                if let snaps = snapViewModel.matchMessages[uid] {
+                    if snaps[snaps.count - 1].openedDate != nil {
                         snapViewModel.removeNotification(uid)
                     }
                 } else {
@@ -69,22 +85,26 @@ struct SnapView: View {
 
 struct assetSnapView: View {
     var snap: Snap
+    var vm: ChatsViewModel
     var onTap: () -> Void
     var onDisappear: () -> Void
 
     var body: some View {
-        if let data = snap.assetData {
-            if snap.isImage {
-                Image(uiImage: UIImage(data: data)!)
-                    .resizable()
-                    .scaledToFill()
-                    .edgesIgnoringSafeArea(.all)
-                    .onTapGesture(perform: onTap)
-                    .onDisappear(perform: onDisappear)
-            } else if !snap.isImage {
-                //the asset is a video, play the video
-                
-            }
+        
+        if let data = snap.imgAssetData {
+            Image(uiImage: UIImage(data: data)!)
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture(perform: onTap)
+                .onDisappear(perform: onDisappear)
+        } else if let vidUrl = snap.vidURL {
+            //the asset is a video, play the video
+            //we are getting the video in data form, so we need to put it in a file
+            PlayerView(url: vidUrl)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture(perform: onTap)
+                .onDisappear(perform: onDisappear)
         }
     }
 }

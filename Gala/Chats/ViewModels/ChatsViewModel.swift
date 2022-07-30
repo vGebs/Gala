@@ -322,6 +322,7 @@ extension ChatsViewModel {
             }
         } else if let snaps = snaps[uid] {
             if snaps[snaps.count - 1].openedDate == nil && snaps[snaps.count - 1].toID == AuthService.shared.currentUser!.uid{
+                
                 bundleUserChat(ucMatch: ucMatch)
                 getSnap(for: uid)
                 

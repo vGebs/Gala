@@ -590,14 +590,7 @@ extension CameraViewModel {
     
     private func cleanup() {
         if let path = videoURL {
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                    print("CameraViewModel: Cleared file at url: \(path)")
-                } catch {
-                    print("Could not remove file at url: \(videoURL)")
-                }
-            }
+            deleteLocalFile(at: URL(fileURLWithPath: path))
         }
     }
     

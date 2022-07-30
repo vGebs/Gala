@@ -33,8 +33,6 @@ extension VideoCaptureProcessor: AVCaptureFileOutputRecordingDelegate {
                     error: Error?) {
         // Note: Because we use a unique file path for each recording, a new recording won't overwrite a recording mid-save.
         
-        
-        
         print("VideoCaptureProcessor: Did finish recording")
         
         if let error = error {

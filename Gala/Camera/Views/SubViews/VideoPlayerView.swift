@@ -11,9 +11,13 @@ import AVFoundation
 import AVKit
 
 struct PlayerView: UIViewRepresentable {
-    var url: String
+    var url: URL
     
     init(url: String) {
+        self.url = URL(string: url)!
+    }
+    
+    init(url: URL) {
         self.url = url
     }
     
@@ -28,14 +32,15 @@ class LoopingPlayerUIView: UIView {
     private let playerLayer = AVPlayerLayer()
     private var playerLooper: AVPlayerLooper?
     
-    private var url: String?
+    private var url: URL?
     
     func setup() {
         // Load the resource -> h
         //let fileUrl = Bundle.main.url(forResource: "NAME OF VIDEO", withExtension: "TYPE OF VIDEO")!
         
-        //Load video
-        let fileUrl = URL(fileURLWithPath: url!) //AppState.shared.cameraVM!.videoURL!
+        //Load video 
+        
+        let fileUrl = URL(fileURLWithPath: url!.path)
         let asset = AVAsset(url: fileUrl)
         let item = AVPlayerItem(asset: asset)
         
@@ -58,7 +63,7 @@ class LoopingPlayerUIView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    required init(url: String) {
+    required init(url: URL) {
         self.url = url
         super.init(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         self.setup()

@@ -8,8 +8,9 @@
         <attribute name="openedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="snapID_timestamp" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="toID" attributeType="String"/>
+        <attribute name="vidURL" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="SnapCD" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="SnapCD" positionX="-63" positionY="-18" width="128" height="149"/>
     </elements>
 </model>
