@@ -205,12 +205,13 @@ struct ConvoPreview: View {
                             case .openedMessageToMe:
                                 openedMessageToMeView
                                 
+                            case .openedSnapVidToMe:
+                                openedSnapVidToMeView
+                                
+                            case .unOpenedSnapVidToMe:
+                                unopenedSnapVidToMeView
+                                
                             case .newMatch:
-//                                if thereIsANotificationFromThisPerson {
-//
-//                                } else {
-//
-//                                }
                                 newMatchView
                             }
                         }
@@ -316,12 +317,29 @@ struct ConvoPreview: View {
         }
     }
     
+    var unopenedSnapVidToMeView: some View {
+        HStack {
+            Image(systemName: "video.fill")
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(.primary)
+            Text("New Snap")
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.accent)
+            Spacer()
+        }
+    }
+    
     var openedSnapFromMeView: some View {
         HStack {
             Image(systemName: "arrowtriangle.right")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
                 .foregroundColor(.primary)
-            Text("Snap Opened")
+            Text("Viewed")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
@@ -338,7 +356,24 @@ struct ConvoPreview: View {
             Image(systemName: "map")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
                 .foregroundColor(.primary)
-            Text("Received")
+            Text("Viewed")
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
+            Image(systemName: "circlebadge.fill")
+                .font(.system(size: 5, weight: .regular, design: .rounded))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.accent)
+            Spacer()
+        }
+    }
+    
+    var openedSnapVidToMeView: some View {
+        HStack {
+            Image(systemName: "video")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+                .foregroundColor(.primary)
+            Text("Viewed")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
@@ -389,7 +424,7 @@ struct ConvoPreview: View {
             Image(systemName: "arrowtriangle.right")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
                 .foregroundColor(.buttonPrimary)
-            Text("Opened")
+            Text("Read")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
@@ -406,7 +441,7 @@ struct ConvoPreview: View {
             Image(systemName: "bubble.left")
                 .font(.system(size: 12, weight: .regular, design: .rounded))
                 .foregroundColor(.buttonPrimary)
-            Text("Received")
+            Text("Read")
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")

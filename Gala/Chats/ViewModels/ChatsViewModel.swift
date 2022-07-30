@@ -257,15 +257,16 @@ extension ChatsViewModel {
 
 extension ChatsViewModel {
     enum ConvoPreviewType {
-        case unOpenedSnapToMe //1
-        case unOpenedMessageToMe//2
-        case unOpenedSnapFromMe//3
-        case openedSnapFromMe//4
-        case openedSnapToMe//5
-        case unOpenedMessageFromMe//6
-        case openedMessageFromMe//7
-        case openedMessageToMe//8
-        
+        case unOpenedSnapToMe
+        case unOpenedMessageToMe
+        case unOpenedSnapFromMe
+        case openedSnapFromMe
+        case openedSnapToMe
+        case unOpenedMessageFromMe
+        case openedMessageFromMe
+        case openedMessageToMe
+        case openedSnapVidToMe
+        case unOpenedSnapVidToMe
         case newMatch
     }
 
@@ -377,7 +378,15 @@ extension ChatsViewModel {
     func convoReceipt(for uid: String) -> ConvoPreviewType {
         if isThereUnOpenedSnapsToMe(from: uid) {
             //show unopened snap to me view (1)
-            return ConvoPreviewType.unOpenedSnapToMe
+            if let snap = getMostRecentSnap(for: uid) {
+                if snap.isImage {
+                    return ConvoPreviewType.unOpenedSnapToMe
+                } else {
+                    return ConvoPreviewType.unOpenedSnapVidToMe
+                }
+            } else {
+                return ConvoPreviewType.unOpenedSnapToMe
+            }
         }
         
         if !theLastMessageToMeWasOpened(from: uid) && !isThereUnOpenedSnapsToMe(from: uid) {
@@ -408,7 +417,11 @@ extension ChatsViewModel {
                             case .openedFromMe:
                                 return ConvoPreviewType.openedSnapFromMe
                             case .openedToMe:
-                                return ConvoPreviewType.openedSnapToMe
+                                if mostRecentSnap.isImage {
+                                    return ConvoPreviewType.openedSnapToMe
+                                } else {
+                                    return ConvoPreviewType.openedSnapVidToMe
+                                }
                             }
                         }
                     } else if mostRecentOpenedSnapDate < mostRecentOpenedMessageDate {
@@ -441,7 +454,11 @@ extension ChatsViewModel {
                         case .openedFromMe:
                             return ConvoPreviewType.openedSnapFromMe
                         case .openedToMe:
-                            return ConvoPreviewType.openedSnapToMe
+                            if mostRecentSnap.isImage {
+                                return ConvoPreviewType.openedSnapToMe
+                            } else {
+                                return ConvoPreviewType.openedSnapVidToMe
+                            }
                         }
                     }
                     
@@ -477,7 +494,11 @@ extension ChatsViewModel {
                     case .openedFromMe:
                         return ConvoPreviewType.openedSnapFromMe
                     case .openedToMe:
-                        return ConvoPreviewType.openedSnapToMe
+                        if mostRecentSnap.isImage {
+                            return ConvoPreviewType.openedSnapToMe
+                        } else {
+                            return ConvoPreviewType.openedSnapVidToMe
+                        }
                     }
                 }
                 
