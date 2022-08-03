@@ -12,7 +12,7 @@ import FirebaseFirestore
 import FirebaseStorage
 
 protocol SnapServiceProtocol {
-    func sendSnap(to: String, asset: Data, isImage: Bool) -> AnyPublisher<Void, Error>
+    func sendSnap(to: String, asset: Data, isImage: Bool, caption: String?, height: CGFloat?) -> AnyPublisher<Void, Error>
 }
 
 class SnapService: SnapServiceProtocol {
@@ -121,11 +121,12 @@ class SnapService: SnapServiceProtocol {
             }
     }
     
-    func sendSnap(to: String, asset: Data, isImage: Bool) -> AnyPublisher<Void, Error>{
+    func sendSnap(to: String, asset: Data, isImage: Bool, caption: String? = nil, height: CGFloat? = nil) -> AnyPublisher<Void, Error>{
+        
         let date = Date()
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip(
-                self!.pushMeta(to, date, isImage),
+                self!.pushMeta(to, date, isImage, caption: caption, height: height),
                 self!.pushAsset(to, asset, date, isImage: isImage)
             )
                 .sink { completion in
@@ -141,26 +142,51 @@ class SnapService: SnapServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
-    func pushMeta(_ to: String, _ date: Date, _ isImage: Bool) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { [weak self] promise in
-            self!.db.collection("Snaps")
-                .addDocument(data: [
-                    "toID": to,
-                    "fromID": AuthService.shared.currentUser!.uid,
-                    "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
-                    "isImage": isImage,
-                    "snapID_timestamp": date
-                ]){ err in
-                    if let err = err {
-                        print("SnapService: Failed to send snap to id: \(to)")
-                        print("SnapService-Error: \(err.localizedDescription)")
-                        promise(.failure(err))
-                    } else {
-                        print("SnapService: Successfully send snap to user with id: \(to)")
-                        promise(.success(()))
+    func pushMeta(_ to: String, _ date: Date, _ isImage: Bool, caption: String? = nil, height: CGFloat? = nil) -> AnyPublisher<Void, Error> {
+        
+        if let caption = caption, let height = height {
+            return Future<Void, Error> { [weak self] promise in
+                self!.db.collection("Snaps")
+                    .addDocument(data: [
+                        "toID": to,
+                        "fromID": AuthService.shared.currentUser!.uid,
+                        "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
+                        "isImage": isImage,
+                        "caption": caption,
+                        "height": height,
+                        "snapID_timestamp": date
+                    ]){ err in
+                        if let err = err {
+                            print("SnapService: Failed to send snap to id: \(to)")
+                            print("SnapService-Error: \(err.localizedDescription)")
+                            promise(.failure(err))
+                        } else {
+                            print("SnapService: Successfully send snap to user with id: \(to)")
+                            promise(.success(()))
+                        }
                     }
-                }
-        }.eraseToAnyPublisher()
+            }.eraseToAnyPublisher()
+        } else {
+            return Future<Void, Error> { [weak self] promise in
+                self!.db.collection("Snaps")
+                    .addDocument(data: [
+                        "toID": to,
+                        "fromID": AuthService.shared.currentUser!.uid,
+                        "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
+                        "isImage": isImage,
+                        "snapID_timestamp": date
+                    ]){ err in
+                        if let err = err {
+                            print("SnapService: Failed to send snap to id: \(to)")
+                            print("SnapService-Error: \(err.localizedDescription)")
+                            promise(.failure(err))
+                        } else {
+                            print("SnapService: Successfully send snap to user with id: \(to)")
+                            promise(.success(()))
+                        }
+                    }
+            }.eraseToAnyPublisher()
+        }
     }
     
     func pushAsset(_ to: String, _ asset: Data, _ date: Date, isImage: Bool) -> AnyPublisher<Void, Error> {

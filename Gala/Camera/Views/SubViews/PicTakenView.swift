@@ -13,7 +13,6 @@ struct PicTakenView: View {
     @Binding var sendPressed: Bool
     
     @State var showTextEditor = false
-    @State var editorText: String = ""
     
     @State var text: String = ""
     @State var height: CGFloat = 30
@@ -193,15 +192,10 @@ struct PicTakenView: View {
             }
             .sheet(isPresented: $sendPressed) {
                 //SendViewTest(sendPressed: $sendPressed)
-                SendView(isPresented: $sendPressed, camera: camera, viewModel: sendVM)
+                SendView(text: $text, height: $height, isPresented: $sendPressed, camera: camera, viewModel: sendVM)
             }
             .edgesIgnoringSafeArea(.bottom)
         }
         .edgesIgnoringSafeArea(.all)
-        .onAppear {
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) { data in
-                
-            }
-        }
     }
 }

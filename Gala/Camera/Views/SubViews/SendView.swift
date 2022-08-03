@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct SendView: View {
+    @Binding var text: String
+    @Binding var height: CGFloat
     @Binding var isPresented: Bool
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var viewModel: SendViewModel
     @ObservedObject var chatsViewModel: ChatsViewModel = AppState.shared.chatsVM!
     
-    //@State var selected: String = ""
     var body: some View {
         ZStack{
             Color.black.edgesIgnoringSafeArea(.all)
@@ -35,7 +36,7 @@ struct SendView: View {
                 Spacer()
                 Button(action: {
                     if let img = camera.image {
-                        self.viewModel.send(pic: img)
+                        self.viewModel.send(pic: img, caption: text, height: height)
                         
                     } else if let vidURLPath = camera.videoURL {
                         self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath))

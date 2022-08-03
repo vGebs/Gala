@@ -11,7 +11,7 @@ import Combine
 protocol SendViewModelProtocol {
     var vibes: [String] { get }
     
-    func send(pic: UIImage)
+    func send(pic: UIImage, caption: String?, height: CGFloat?)
     func postStory(_ pic: UIImage)
 }
 
@@ -23,7 +23,7 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     @Published var currentPeriod: String?
     
     @Published private(set) var vibes: [String] = []
-    
+
     private var cancellables: [AnyCancellable] = []
     
     init() {
@@ -71,18 +71,21 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
         return ""
     }
     
-    func send(pic: UIImage) {
+    func send(pic: UIImage, caption: String? = nil, height: CGFloat? = nil) {
         if selectedVibe != "" {
             //Post Story
             postStory(pic)
         } else if selectedMatch != "" {
             //sendPic to
             let data = pic.jpegData(compressionQuality: compressionQuality)!
-            sendSnap(to: selectedMatch, data, isImage: true)
+            if let caption = caption {
+                print("Caption bitch: \(caption)")
+            }
+            sendSnap(to: selectedMatch, data, isImage: true, caption: caption, height: height)
         }
     }
     
-    func send(vid: URL) {
+    func send(vid: URL, caption: String? = nil, height: CGFloat? = nil) {
         if selectedVibe != "" {
             //post story
             print("Posting video story")
@@ -90,15 +93,15 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
             //send video to match
             do {
                 let data = try Data(contentsOf: vid)
-                sendSnap(to: selectedMatch, data, isImage: false)
+                sendSnap(to: selectedMatch, data, isImage: false, caption: caption, height: height)
             } catch {
                 print("SendViewModel: Failed to convert video to data")
             }
         }
     }
     
-    internal func sendSnap(to: String, _ asset: Data, isImage: Bool) {
-        SnapService.shared.sendSnap(to: to, asset: asset, isImage: isImage)
+    internal func sendSnap(to: String, _ asset: Data, isImage: Bool, caption: String? = nil, height: CGFloat? = nil) {
+        SnapService.shared.sendSnap(to: to, asset: asset, isImage: isImage, caption: caption, height: height)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
