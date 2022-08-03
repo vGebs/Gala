@@ -12,6 +12,34 @@ struct PicTakenView: View {
     @StateObject var sendVM = SendViewModel()
     @Binding var sendPressed: Bool
     
+    @State var showTextEditor = false
+    @State var editorText: String = ""
+    
+    @State var text: String = ""
+    @State var height: CGFloat = 30
+    
+    @State private var location: CGPoint = CGPoint(x: 0, y: screenHeight / 2)
+    @State private var fingerLocation: CGPoint? // 1
+    
+    var simpleDrag: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if value.location.y < screenHeight * 0.88 && value.location.y > screenHeight * 0.07{
+                    self.location = value.location
+                }
+            }
+    }
+    
+    var fingerDrag: some Gesture { // 2
+        DragGesture()
+            .onChanged { value in
+                self.fingerLocation = value.location
+            }
+            .onEnded { value in
+                self.fingerLocation = nil
+            }
+    }
+    
     var body: some View {
         ZStack{
             Color.black.edgesIgnoringSafeArea(.all)
@@ -20,10 +48,12 @@ struct PicTakenView: View {
                     Image(uiImage: camera.image!)
                         .resizable()
                         .scaledToFill()
-                    //.aspectRatio(contentMode: .fit)
                         .frame(width: screenWidth, height: screenHeight * 0.91)
                         .cornerRadius(20)
                         .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            self.showTextEditor.toggle()
+                        }
                     
                     Spacer()
                 }
@@ -36,9 +66,38 @@ struct PicTakenView: View {
                         .frame(height: screenHeight * 0.91)
                         .cornerRadius(20)
                         .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            self.showTextEditor.toggle()
+                        }
                     
                     Spacer()
                 }
+            }
+            
+            if text.trimmingCharacters(in: .newlines) != "" && !showTextEditor {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.black)
+                        .opacity(0.6)
+                    Text(text)
+//                        .frame(alignment: .center)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.white)
+                        .font(.system(size: 18, weight: .regular, design: .rounded))
+                }
+                .frame(width: screenWidth, height: height)
+                .position(x: screenWidth / 2, y: location.y)
+                .onTapGesture(perform: {
+                    showTextEditor.toggle()
+                })
+                .gesture(simpleDrag.simultaneously(with: fingerDrag))
+            }
+            
+            if showTextEditor {
+                //ExpandingTextField(text: $text, height: $height)
+                MultilineTextField("", text: $text, height: $height, onCommit: {
+                    self.showTextEditor = false
+                })
             }
             
             VStack{
@@ -139,31 +198,10 @@ struct PicTakenView: View {
             .edgesIgnoringSafeArea(.bottom)
         }
         .edgesIgnoringSafeArea(.all)
+        .onAppear {
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) { data in
+                
+            }
+        }
     }
 }
-
-//struct PicTakenView_Previews: PreviewProvider {
-//    static var previews: some View {
-//// 12
-//        PicTakenView()
-//            .previewDevice("iPhone 12")
-//        PicTakenView()
-//            .previewDevice("iPhone 12 Pro")
-//        PicTakenView()
-//            .previewDevice("iPhone 12 Pro Max")
-//        PicTakenView()
-//            .previewDevice("iPhone 12 Mini")
-//// 11
-//        PicTakenView()
-//            .previewDevice("iPhone 11")
-//        PicTakenView()
-//            .previewDevice("iPhone 11 Pro")
-//        PicTakenView()
-//            .previewDevice("iPhone 11 Pro Max")
-//// 8
-//        PicTakenView()
-//            .previewDevice("iPhone 8")
-//        PicTakenView()
-//            .previewDevice("iPhone 8 Plus")
-//    }
-//}
