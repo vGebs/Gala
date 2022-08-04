@@ -109,6 +109,20 @@ struct StoryCardView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                                
+                                if let caption = story.caption {
+                                    ZStack {
+                                        Rectangle()
+                                            .foregroundColor(.black)
+                                            .opacity(0.6)
+                                        Text(caption.captionText)
+                                            .multilineTextAlignment(.center)
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .regular, design: .rounded))
+                                    }
+                                    .frame(height: caption.textBoxHeight)
+                                    .position(x: screenWidth / 2, y: caption.yCoordinate)
+                                }
                             } else {
                                 //show placeholder
                             }

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="StoryCD" representedClassName="StoryCD" syncable="YES" codeGenerationType="class">
         <attribute name="asset" attributeType="Binary"/>
+        <attribute name="caption" optional="YES" attributeType="String"/>
+        <attribute name="isImage" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="pid" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="textBoxHeight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="uid" attributeType="String"/>
+        <attribute name="vidURL" optional="YES" attributeType="String"/>
+        <attribute name="yCoordinate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="StoryCD" positionX="-45" positionY="0" width="128" height="89"/>
+        <element name="StoryCD" positionX="-45" positionY="0" width="128" height="164"/>
     </elements>
 </model>

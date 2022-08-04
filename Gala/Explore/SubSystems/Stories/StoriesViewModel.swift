@@ -72,9 +72,9 @@ class StoriesViewModel: ObservableObject {
         for i in 0..<10 {
             let newDemo = UserPostSimple(
                 posts: [
-                    Post(pid: Date().adding(minutes: -10), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala")),
-                    Post(pid: Date().adding(minutes: -5), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala")),
-                    Post(pid: Date(), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala"))
+                    Post(pid: Date().adding(minutes: -10), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala"), isImage: true),
+                    Post(pid: Date().adding(minutes: -5), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala"), isImage: true),
+                    Post(pid: Date(), uid: "\(i)", title: "Demo", storyImage: UIImage(named: "Gala"), isImage: true)
                 ],
                 name: "Demo",
                 uid: "\(i)",
@@ -107,19 +107,19 @@ class StoriesViewModel: ObservableObject {
                             pid: Date().adding(minutes: 10),
                             uid: "",
                             title: vibe.title,
-                            storyImage: UIImage(named: "Gala")
+                            storyImage: UIImage(named: "Gala"), isImage: true
                         ),
                         Post(
                             pid: Date().adding(minutes: 5),
                             uid: "",
                             title: vibe.title,
-                            storyImage: UIImage(named: "Gala")
+                            storyImage: UIImage(named: "Gala"), isImage: true
                         ),
                         Post(
                             pid: Date(),
                             uid: "",
                             title: vibe.title,
-                            storyImage: UIImage(named: "Gala")
+                            storyImage: UIImage(named: "Gala"), isImage: true
                         )
                     ],
                     name: "Demo",

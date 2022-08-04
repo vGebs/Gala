@@ -688,10 +688,22 @@ extension StoryMetaService {
                                     let title = post["title"] as? String ?? ""
                                     let pid = post["id"] as? Timestamp
                                     
+                                    let isImage = post["isImage"] as? Bool
+                                    
+                                    let caption = post["caption"] as? String ?? nil
+                                    let height = post["textBoxHeight"] as? CGFloat ?? nil
+                                    let yCoord = post["yCoordinate"] as? CGFloat ?? nil
+                                    
                                     let pidFinal = pid?.dateValue()
-                                                                        
+                                    
+                                    var newCaption: Caption?
+                                    
+                                    if let caption = caption {
+                                        newCaption = Caption(captionText: caption, textBoxHeight: height!, yCoordinate: yCoord!)
+                                    }
+                                    
                                     if let pidF = pidFinal {
-                                        let newPost = Post(pid: pidF, uid: id, title: title)
+                                        let newPost = Post(pid: pidF, uid: id, title: title, isImage: isImage!, caption: newCaption)
                                         posts.append(newPost)
                                     }
                                 }

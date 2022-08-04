@@ -99,7 +99,7 @@ class StoryContentService: ObservableObject {
                     
                     if let data = data {
                         if let img = UIImage(data: data) {
-                            StoryService_CoreData.shared.addStory(post: Post(pid: storyID, uid: uid, title: title, storyImage: img))
+                            StoryService_CoreData.shared.addStory(post: Post(pid: storyID, uid: uid, title: title, storyImage: img, isImage: true))
                             
                             promise(.success(img))
                         } else {

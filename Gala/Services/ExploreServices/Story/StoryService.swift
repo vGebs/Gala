@@ -135,10 +135,22 @@ class StoryService: ObservableObject, StoryServiceProtocol {
                         let title = post["title"] as? String ?? ""
                         let pid = post["id"] as? Timestamp
                         
+                        let isImage = post["isImage"] as? Bool
+                        
+                        let caption = post["caption"] as? String ?? nil
+                        let height = post["textBoxHeight"] as? CGFloat ?? nil
+                        let y = post["yCoordinate"] as? CGFloat ?? nil
+                        
+                        var newCaption: Caption?
+                        
+                        if let cap = caption {
+                            newCaption = Caption(captionText: cap, textBoxHeight: height!, yCoordinate: y!)
+                        }
+                        
                         let pidFinal = pid?.dateValue()
-                                                            
+                        
                         if let pidF = pidFinal {
-                            let newPost = Post(pid: pidF, uid: id, title: title)
+                            let newPost = Post(pid: pidF, uid: id, title: title, isImage: isImage!, caption: newCaption)
                             posts.append(newPost)
                         }
                     }

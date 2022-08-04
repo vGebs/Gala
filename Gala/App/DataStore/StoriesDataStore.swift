@@ -144,26 +144,31 @@ extension StoriesDataStore {
                 //  3. Delete any old stories
                 if let usimp = post {
                     for i in 0..<usimp.posts.count {
-                        StoryContentService.shared.getStory(uid: usimp.uid, storyID: usimp.posts[i].pid, title: usimp.posts[i].title)
-                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                            .receive(on: DispatchQueue.main)
-                            .sink { completion in
-                                switch completion {
-                                case .failure(let e):
-                                    print("StoriesDataStore: Failed to get story img")
-                                    print("StoriesDataStore-err: \(e)")
-                                case .finished:
-                                    print("StoriesDataStore: Finished getting story img")
-                                }
-                            } receiveValue: { img in
-                                if let img = img {
-                                    usimp.posts[i].storyImage = img
-                                }
-                                
-                                if i == usimp.posts.count - 1 {
-                                    self!.observeStoriesAdditionHelper(for: uid, and: post)
-                                }
-                            }.store(in: &self!.cancellables)
+                        
+                        if usimp.posts[i].isImage {
+                            StoryContentService.shared.getStory(uid: usimp.uid, storyID: usimp.posts[i].pid, title: usimp.posts[i].title)
+                                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                                .receive(on: DispatchQueue.main)
+                                .sink { completion in
+                                    switch completion {
+                                    case .failure(let e):
+                                        print("StoriesDataStore: Failed to get story img")
+                                        print("StoriesDataStore-err: \(e)")
+                                    case .finished:
+                                        print("StoriesDataStore: Finished getting story img")
+                                    }
+                                } receiveValue: { img in
+                                    if let img = img {
+                                        usimp.posts[i].storyImage = img
+                                    }
+                                    
+                                    if i == usimp.posts.count - 1 {
+                                        self!.observeStoriesAdditionHelper(for: uid, and: post)
+                                    }
+                                }.store(in: &self!.cancellables)
+                        } else {
+                            
+                        }
                     }
                 }
                 
@@ -421,7 +426,9 @@ extension StoriesDataStore {
                                                         Post(
                                                             pid: post.pid,
                                                             uid: final[post.title]![i].uid,
-                                                            title: post.title
+                                                            title: post.title,
+                                                            isImage: post.isImage,
+                                                            caption: post.caption
                                                         )
                                                     )
                                                 }

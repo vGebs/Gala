@@ -20,7 +20,11 @@ struct MatchedStoryView: View {
                     
                     storyVM.showDemoStory = true
                 } else {
-                    storyVM.getMatchStoryImage(uid: story.uid, pid: story.posts[0].pid)
+                    if story.posts[0].isImage {
+                        storyVM.getMatchStoryImage(uid: story.uid, pid: story.posts[0].pid)
+                    } else {
+                        
+                    }
                     
                     storyVM.currentStory = story.id
                     storyVM.showMatchStory = true

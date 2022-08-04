@@ -196,13 +196,39 @@ extension StoryService_CoreData {
     
     private func bundleStory(cd: StoryCD) -> Post? {
         if let pid = cd.pid, let uid = cd.uid, let title = cd.title, let asset = cd.asset {
-            if let img = UIImage(data: asset) {
-                return Post(
-                    pid: pid,
-                    uid: uid,
-                    title: title,
-                    storyImage: img
-                )
+            
+            var newCaption: Caption?
+            
+            if let cap = cd.caption {
+                newCaption = Caption(captionText: cap, textBoxHeight: CGFloat(cd.textBoxHeight), yCoordinate: CGFloat(cd.yCoordinate))
+            }
+            
+            if cd.isImage {
+                if let img = UIImage(data: asset) {
+                    return Post(
+                        pid: pid,
+                        uid: uid,
+                        title: title,
+                        storyImage: img,
+                        isImage: cd.isImage,
+                        caption: newCaption
+                    )
+                } else {
+                    return nil
+                }
+            } else {
+                if let url = cd.vidURL {
+                    return Post(
+                        pid: pid,
+                        uid: uid,
+                        title: title,
+                        vidURL: URL(string: url),
+                        isImage: cd.isImage,
+                        caption: newCaption
+                    )
+                } else {
+                    return nil
+                }
             }
         }
         return nil

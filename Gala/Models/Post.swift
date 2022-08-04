@@ -89,6 +89,11 @@ struct Post: Identifiable {
     let title: String
     
     var storyImage: UIImage?
+    var vidURL: URL?
+    
+    var isImage: Bool
+    
+    var caption: Caption?
     
     var timeSincePost: String {
         let seconds = Int(pid.timeIntervalSinceNow)
