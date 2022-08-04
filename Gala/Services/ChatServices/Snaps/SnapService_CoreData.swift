@@ -237,6 +237,9 @@ extension SnapService_CoreData {
                 imgAssetData: cd.asset,
                 vidURL: URL(string: vidUrl),
                 isImage: cd.isImage,
+                caption: cd.caption,
+                textBoxHeight: CGFloat(cd.textBoxHeight),
+                yCoordinate: cd.yCoordinate,
                 docID: cd.docID!
             )
         } else {
@@ -247,6 +250,9 @@ extension SnapService_CoreData {
                 openedDate: cd.openedDate,
                 imgAssetData: cd.asset,
                 isImage: cd.isImage,
+                caption: cd.caption,
+                textBoxHeight: CGFloat(cd.textBoxHeight),
+                yCoordinate: CGFloat(cd.yCoordinate),
                 docID: cd.docID!
             )
         }
@@ -261,6 +267,15 @@ extension SnapService_CoreData {
         cd.snapID_timestamp = snap.snapID_timestamp
         cd.asset = snap.imgAssetData
         cd.vidURL = snap.vidURL?.absoluteString
+        cd.caption = snap.caption
+        
+        if let h = snap.textBoxHeight {
+            cd.textBoxHeight = Double(h)
+        }
+        
+        if let y = snap.yCoordinate {
+            cd.yCoordinate = Double(y)
+        }
     }
     
     func getSnapCD(with docID: String) -> SnapCD? {

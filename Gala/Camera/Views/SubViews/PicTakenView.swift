@@ -79,7 +79,6 @@ struct PicTakenView: View {
                         .foregroundColor(.black)
                         .opacity(0.6)
                     Text(text)
-//                        .frame(alignment: .center)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.white)
                         .font(.system(size: 18, weight: .regular, design: .rounded))
@@ -192,7 +191,7 @@ struct PicTakenView: View {
             }
             .sheet(isPresented: $sendPressed) {
                 //SendViewTest(sendPressed: $sendPressed)
-                SendView(text: $text, height: $height, isPresented: $sendPressed, camera: camera, viewModel: sendVM)
+                SendView(text: $text, height: $height, yCoordinate: $location.y, isPresented: $sendPressed, camera: camera, viewModel: sendVM)
             }
             .edgesIgnoringSafeArea(.bottom)
         }

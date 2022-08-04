@@ -2,15 +2,18 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="SnapCD" representedClassName="SnapCD" syncable="YES" codeGenerationType="class">
         <attribute name="asset" optional="YES" attributeType="Binary"/>
+        <attribute name="caption" optional="YES" attributeType="String"/>
         <attribute name="docID" attributeType="String"/>
         <attribute name="fromID" attributeType="String"/>
         <attribute name="isImage" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="openedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="snapID_timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="textBoxHeight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="toID" attributeType="String"/>
         <attribute name="vidURL" optional="YES" attributeType="String"/>
+        <attribute name="yCoordinate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="SnapCD" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="SnapCD" positionX="-63" positionY="-18" width="128" height="194"/>
     </elements>
 </model>

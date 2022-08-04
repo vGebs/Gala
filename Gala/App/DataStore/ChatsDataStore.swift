@@ -406,7 +406,13 @@ extension ChatsDataStore {
                                 var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: assetData, isImage: snap.isImage, docID: snap.docID)
                                                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-
+                                
+                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
+                                    newSnap.caption = cap
+                                    newSnap.textBoxHeight = height
+                                    newSnap.yCoordinate = y
+                                }
+                                
                                 SnapService_CoreData.shared.addSnap(snap: newSnap)
                                 
                                 newSnap.imgAssetData = nil
@@ -420,12 +426,18 @@ extension ChatsDataStore {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
                             } else if let vidURL = vidURL {
-                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
+                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-
-                                SnapService_CoreData.shared.addSnap(snap: newSnap)
           
+                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
+                                    newSnap.caption = cap
+                                    newSnap.textBoxHeight = height
+                                    newSnap.yCoordinate = y
+                                }
+                                
+                                SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                
                                 if let _ = self?.snaps[snap.fromID] {
                                     let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
                                     
@@ -435,9 +447,15 @@ extension ChatsDataStore {
                                     self?.snaps[snap.fromID] = [newSnap]
                                 }
                             } else {
-                                let newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: nil, isImage: snap.isImage, docID: snap.docID)
+                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: nil, isImage: snap.isImage, docID: snap.docID)
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                
+                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
+                                    newSnap.caption = cap
+                                    newSnap.textBoxHeight = height
+                                    newSnap.yCoordinate = y
+                                }
                                 
                                 if let _ = self?.snaps[snap.fromID] {
                                     let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})

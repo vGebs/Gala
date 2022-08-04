@@ -10,6 +10,7 @@ import SwiftUI
 struct SendView: View {
     @Binding var text: String
     @Binding var height: CGFloat
+    @Binding var yCoordinate: CGFloat
     @Binding var isPresented: Bool
     @ObservedObject var camera: CameraViewModel
     @ObservedObject var viewModel: SendViewModel
@@ -36,10 +37,10 @@ struct SendView: View {
                 Spacer()
                 Button(action: {
                     if let img = camera.image {
-                        self.viewModel.send(pic: img, caption: text, height: height)
+                        self.viewModel.send(pic: img, caption: text, height: height, yCoordinate: yCoordinate)
                         
                     } else if let vidURLPath = camera.videoURL {
-                        self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath))
+                        self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath), caption: text, height: height, yCoordinate: yCoordinate)
                     }
                     
                     self.camera.deleteAsset()
