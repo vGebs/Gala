@@ -89,8 +89,7 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
             
             do {
                 let data = try Data(contentsOf: vid)
-                sendSnap(to: selectedMatch, data, isImage: false, caption: caption)
-                
+                postStory(data, caption, isImage: false)
                 //postStory(vid: data, isImage: false, caption: caption, textBoxHeight: height, yCoordinate: yCoordinate)
             } catch {
                 print("SendViewModel: Failed to convert video to data")
@@ -124,7 +123,7 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     }
 
     internal func postStory(_ pic: UIImage, _ caption: Caption?) {
-        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: pic, caption: caption)
+        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, img: pic, isImage: true, caption: caption)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -139,7 +138,19 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
             .store(in: &cancellables)
     }
 
-    private func postStory(vid: Data, isImage: Bool, caption: String, textBoxHeight: CGFloat, yCoordinate: CGFloat) {
-        //StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: <#T##UIImage#>)
+    private func postStory(_ data: Data, _ caption: Caption?, isImage: Bool) {
+        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, vidData: data, isImage: false, caption: caption)
+            .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("SendViewModel: Failed to post story")
+                    print("SendViewModel-error: \(err)")
+                case .finished:
+                    print("SendViewModel: Successfully posted story")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
 }

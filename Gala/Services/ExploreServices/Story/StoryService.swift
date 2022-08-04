@@ -12,7 +12,7 @@ import FirebaseFirestore
 //This protocol will have to be expanded once video is working
 protocol StoryServiceProtocol {
     //User actions
-    func postStory(postID_date: Date, vibe: String, asset: UIImage, caption: Caption?) -> AnyPublisher<Void, Error>
+    func postStory(postID_date: Date, vibe: String, img: UIImage, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error>
     func deleteStory(storyID: Date, vibe: String) -> AnyPublisher<Void, Error>
 }
 
@@ -28,12 +28,34 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     static let shared = StoryService()
     private init() { }
     
-    func postStory(postID_date: Date, vibe: String, asset: UIImage, caption: Caption?) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, vibe: String, img: UIImage, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
                 
         return Future<Void, Error> { promise in
             Publishers.Zip(
-                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, caption: caption),
-                self.storyContentService.postStory(story: asset, name: "\(postID_date)")
+                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption),
+                self.storyContentService.postStory(story: img, name: "\(postID_date)")
+            )
+            .sink { completion in
+                switch completion {
+                case .failure(let err):
+                    print("StoryService: Failed to post story")
+                    promise(.failure(err))
+                case .finished:
+                    print("StoryService: Successfully posted story")
+                    promise(.success(()))
+                }
+            } receiveValue: { _ in }
+            .store(in: &self.cancellables)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func postStory(postID_date: Date, vibe: String, vidData: Data, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
+                
+        return Future<Void, Error> { promise in
+            Publishers.Zip(
+                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption),
+                self.storyContentService.postStory(story: vidData, name: "\(postID_date)")
             )
             .sink { completion in
                 switch completion {

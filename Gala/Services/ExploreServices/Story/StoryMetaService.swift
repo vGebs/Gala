@@ -22,7 +22,7 @@ class StoryMetaService: ObservableObject {
     static let shared = StoryMetaService()
     private init() {}
     
-    func postStory(postID_date: Date, vibe: String, caption: Caption?) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, vibe: String, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
         //Fetch stories from db, check how many there are
         // If there isnt any, make a new post
         // If there is some, update the doc
@@ -31,7 +31,7 @@ class StoryMetaService: ObservableObject {
         // else -> pushAnotherStory
         self.getMyStories()
             .flatMap { stories in
-                self.pushStory(postID_date, stories, vibe, caption)
+                self.pushStory(postID_date, stories, vibe, caption, isImage)
             }
             .eraseToAnyPublisher()
     }
@@ -113,35 +113,35 @@ class StoryMetaService: ObservableObject {
 
 extension StoryMetaService {
     
-    private func pushStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
+    private func pushStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String, _ caption: Caption?, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         if stories.count == 0 {
-            return self.pushFirstStory(postID, vibe, caption)
+            return self.pushFirstStory(postID, vibe, caption, isImage)
         } else {
-            return self.pushAnotherStory(postID, vibe, caption)
+            return self.pushAnotherStory(postID, vibe, caption, isImage)
         }
     }
     
-    private func pushFirstStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
+    private func pushFirstStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         if let caption = caption {
             if caption.captionText.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                return postFirstStoryWithCaption(postID_date, vibe, caption)
+                return postFirstStoryWithCaption(postID_date, vibe, caption, isImage)
             } else {
-                return postFirstStoryWithoutCaption(postID_date, vibe)
+                return postFirstStoryWithoutCaption(postID_date, vibe, isImage)
             }
         } else {
-            return postFirstStoryWithoutCaption(postID_date, vibe)
+            return postFirstStoryWithoutCaption(postID_date, vibe, isImage)
         }
     }
     
-    private func pushAnotherStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         if let caption = caption {
             if caption.captionText.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                return pushAnotherStoryWithCaption(postID_date, vibe, caption)
+                return pushAnotherStoryWithCaption(postID_date, vibe, caption, isImage)
             } else {
-                return pushAnotherStoryWithoutCaption(postID_date, vibe)
+                return pushAnotherStoryWithoutCaption(postID_date, vibe, isImage)
             }
         } else {
-            return pushAnotherStoryWithoutCaption(postID_date, vibe)
+            return pushAnotherStoryWithoutCaption(postID_date, vibe, isImage)
         }
     }
     
@@ -179,7 +179,7 @@ extension StoryMetaService {
 
 extension StoryMetaService {
     
-    private func postFirstStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption) -> AnyPublisher<Void, Error> {
+    private func postFirstStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -214,7 +214,8 @@ extension StoryMetaService {
                         "title": vibe,
                         "caption": caption.captionText,
                         "textBoxHeight": caption.textBoxHeight,
-                        "yCoordinate": caption.yCoordinate
+                        "yCoordinate": caption.yCoordinate,
+                        "isImage": isImage
                     ]
                 ],
                 "oldestStoryDate" : postID_date
@@ -230,7 +231,7 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func postFirstStoryWithoutCaption(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
+    private func postFirstStoryWithoutCaption(_ postID_date: Date, _ vibe: String, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -262,7 +263,8 @@ extension StoryMetaService {
                 "posts" : [
                     [
                         "id": postID_date,
-                        "title": vibe
+                        "title": vibe,
+                        "isImage": isImage
                     ]
                 ],
                 "oldestStoryDate" : postID_date
@@ -278,7 +280,7 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func pushAnotherStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -297,7 +299,8 @@ extension StoryMetaService {
                                 "title": vibe,
                                 "caption": caption.captionText,
                                 "textBoxHeight": caption.textBoxHeight,
-                                "yCoordinate": caption.yCoordinate
+                                "yCoordinate": caption.yCoordinate,
+                                "isImage": isImage
                             ]
                         ]
                     ),
@@ -316,7 +319,7 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    private func pushAnotherStoryWithoutCaption(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStoryWithoutCaption(_ postID_date: Date, _ vibe: String, _ isImage: Bool) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -332,7 +335,8 @@ extension StoryMetaService {
                         [
                             [
                                 "id": postID_date,
-                                "title": vibe
+                                "title": vibe,
+                                "isImage": isImage
                             ]
                         ]
                     ),

@@ -40,6 +40,26 @@ class StoryContentService: ObservableObject {
         }.eraseToAnyPublisher()
     }
     
+    func postStory(story: Data, name: String) -> AnyPublisher<Void, Error> {
+        
+        let storageRef = storage.reference()
+        let storyFolder = "Stories"
+        let storyRef = storageRef.child(storyFolder)
+        let myStoryRef = storyRef.child(AuthService.shared.currentUser!.uid)
+        let imgFileRef = myStoryRef.child("\(name)")
+        
+        return Future<Void, Error> { promise in
+            let _ = imgFileRef.putData(story, metadata: nil) { (metaData, error) in
+                if let error = error {
+                    print("StoryContentService: Failed to add story image")
+                    promise(.failure(error))
+                } else {
+                    return promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
     func deleteStory(storyID: Date) -> AnyPublisher<Void, Error> {
         let storageRef = storage.reference()
         let storyFolder = "Stories"
