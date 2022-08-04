@@ -22,7 +22,7 @@ class StoryMetaService: ObservableObject {
     static let shared = StoryMetaService()
     private init() {}
     
-    func postStory(postID_date: Date, vibe: String) -> AnyPublisher<Void, Error> {
+    func postStory(postID_date: Date, vibe: String, caption: Caption?) -> AnyPublisher<Void, Error> {
         //Fetch stories from db, check how many there are
         // If there isnt any, make a new post
         // If there is some, update the doc
@@ -31,7 +31,7 @@ class StoryMetaService: ObservableObject {
         // else -> pushAnotherStory
         self.getMyStories()
             .flatMap { stories in
-                self.pushStory(postID_date, stories, vibe)
+                self.pushStory(postID_date, stories, vibe, caption)
             }
             .eraseToAnyPublisher()
     }
@@ -97,7 +97,6 @@ class StoryMetaService: ObservableObject {
                                 
                                 if let idd = idFinal, let title = title {
                                     let storyWithVibe = StoryWithVibe(pid: idd, title: title)
-                                    //print(storyWithVibe)
                                     final.append(storyWithVibe)
                                 }
                             }
@@ -110,21 +109,128 @@ class StoryMetaService: ObservableObject {
     }
     
     func getStories() -> AnyPublisher<[UserPostSimple], Error> { self.getStories_() }
-    
-    
 }
 
 extension StoryMetaService {
     
-    private func pushStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String) ->AnyPublisher<Void, Error> {
+    private func pushStory(_ postID: Date, _ stories: [StoryWithVibe], _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
         if stories.count == 0 {
-            return self.pushFirstStory(postID, vibe)
+            return self.pushFirstStory(postID, vibe, caption)
         } else {
-            return self.pushAnotherStory(postID, vibe)
+            return self.pushAnotherStory(postID, vibe, caption)
         }
     }
     
-    private func pushFirstStory(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
+    private func pushFirstStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
+        if let caption = caption {
+            if caption.captionText.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                return postFirstStoryWithCaption(postID_date, vibe, caption)
+            } else {
+                return postFirstStoryWithoutCaption(postID_date, vibe)
+            }
+        } else {
+            return postFirstStoryWithoutCaption(postID_date, vibe)
+        }
+    }
+    
+    private func pushAnotherStory(_ postID_date: Date, _ vibe: String, _ caption: Caption?) -> AnyPublisher<Void, Error> {
+        if let caption = caption {
+            if caption.captionText.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                return pushAnotherStoryWithCaption(postID_date, vibe, caption)
+            } else {
+                return pushAnotherStoryWithoutCaption(postID_date, vibe)
+            }
+        } else {
+            return pushAnotherStoryWithoutCaption(postID_date, vibe)
+        }
+    }
+    
+    func updateStory(userCore: UserCore) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { [weak self] promise in
+            
+            let location = CLLocationCoordinate2D(
+                latitude: userCore.searchRadiusComponents.coordinate.lat,
+                longitude: userCore.searchRadiusComponents.coordinate.lng
+            )
+            
+            let hash = GFUtils.geoHash(forLocation: location)
+            
+            self!.db.collection("Stories").document(userCore.userBasic.uid).updateData([
+                "userCore.gender": userCore.userBasic.gender,
+                "userCore.sexuality" : userCore.userBasic.sexuality,
+                "userCore.location.geoHash" : hash,
+                "userCore.location.latitude" : userCore.searchRadiusComponents.coordinate.lat,
+                "userCore.location.longitude" : userCore.searchRadiusComponents.coordinate.lng,
+                "userCore.agePref.max" : userCore.ageRangePreference.maxAge,
+                "userCore.agePref.min" : userCore.ageRangePreference.minAge,
+                "userCore.willingToTravel" : userCore.searchRadiusComponents.willingToTravel
+            ]) { err in
+                if let err = err {
+                    print("StoryMetaService: Failed to update story doc w/ uid -> \(userCore.userBasic.uid)")
+                    promise(.failure(err))
+                } else {
+                    print("StoryMetaService: Finished updating story doc w/ uid -> \(userCore.userBasic.uid)")
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension StoryMetaService {
+    
+    private func postFirstStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption) -> AnyPublisher<Void, Error> {
+        let currentUserCore = UserCoreService.shared.currentUserCore!
+        return Future<Void, Error> { promise in
+            let lat: Double = LocationService.shared.coordinates.latitude
+            let long: Double = LocationService.shared.coordinates.longitude
+            
+            let location = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            let hash = GFUtils.geoHash(forLocation: location)
+            
+            //Because we need to query these posts, we need to also add the current UserCore
+            self.db.collection("Stories").document(currentUserCore.userBasic.uid).setData([
+                "userCore" : [
+                    "uid" : currentUserCore.userBasic.uid,
+                    "name" : currentUserCore.userBasic.name,
+                    "birthday" : currentUserCore.userBasic.birthdate.formatDate(),
+                    "gender" : currentUserCore.userBasic.gender,
+                    "sexuality" : currentUserCore.userBasic.sexuality,
+                    "agePref" : [
+                        "min" : currentUserCore.ageRangePreference.minAge,
+                        "max" : currentUserCore.ageRangePreference.maxAge,
+                    ],
+                    "willingToTravel" : currentUserCore.searchRadiusComponents.willingToTravel,
+                    "location" : [
+                        "geoHash" : hash,
+                        "longitude" : currentUserCore.searchRadiusComponents.coordinate.lng,
+                        "latitude" : currentUserCore.searchRadiusComponents.coordinate.lat,
+                    ]
+                ],
+                "posts" : [
+                    [
+                        "id": postID_date,
+                        "title": vibe,
+                        "caption": caption.captionText,
+                        "textBoxHeight": caption.textBoxHeight,
+                        "yCoordinate": caption.yCoordinate
+                    ]
+                ],
+                "oldestStoryDate" : postID_date
+            ]) { err in
+                if let err = err {
+                    print("StoryMetaService: Failed to post story meta")
+                    promise(.failure(err))
+                } else {
+                    print("StoryMetaService: Successfully posted story meta")
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    private func postFirstStoryWithoutCaption(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude
@@ -172,40 +278,45 @@ extension StoryMetaService {
         }.eraseToAnyPublisher()
     }
     
-    func updateStory(userCore: UserCore) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { [weak self] promise in
+    private func pushAnotherStoryWithCaption(_ postID_date: Date, _ vibe: String, _ caption: Caption) -> AnyPublisher<Void, Error> {
+        let currentUserCore = UserCoreService.shared.currentUserCore!
+        return Future<Void, Error> { promise in
+            let lat: Double = LocationService.shared.coordinates.latitude
+            let long: Double = LocationService.shared.coordinates.longitude
             
-            
-            
-            let location = CLLocationCoordinate2D(
-                latitude: userCore.searchRadiusComponents.coordinate.lat,
-                longitude: userCore.searchRadiusComponents.coordinate.lng
-            )
+            let location = CLLocationCoordinate2D(latitude: lat, longitude: long)
             
             let hash = GFUtils.geoHash(forLocation: location)
             
-            self!.db.collection("Stories").document(userCore.userBasic.uid).updateData([
-                "userCore.gender": userCore.userBasic.gender,
-                "userCore.sexuality" : userCore.userBasic.sexuality,
-                "userCore.location.geoHash" : hash,
-                "userCore.location.latitude" : userCore.searchRadiusComponents.coordinate.lat,
-                "userCore.location.longitude" : userCore.searchRadiusComponents.coordinate.lng,
-                "userCore.agePref.max" : userCore.ageRangePreference.maxAge,
-                "userCore.agePref.min" : userCore.ageRangePreference.minAge,
-                "userCore.willingToTravel" : userCore.searchRadiusComponents.willingToTravel
-            ]) { err in
-                if let err = err {
-                    print("StoryMetaService: Failed to update story doc w/ uid -> \(userCore.userBasic.uid)")
-                    promise(.failure(err))
-                } else {
-                    print("StoryMetaService: Finished updating story doc w/ uid -> \(userCore.userBasic.uid)")
-                    promise(.success(()))
+            self.db.collection("Stories").document(currentUserCore.userBasic.uid)
+                .updateData([
+                    "posts" : FieldValue.arrayUnion(
+                        [
+                            [
+                                "id": postID_date,
+                                "title": vibe,
+                                "caption": caption.captionText,
+                                "textBoxHeight": caption.textBoxHeight,
+                                "yCoordinate": caption.yCoordinate
+                            ]
+                        ]
+                    ),
+                    "userCore.location.geoHash" : hash,
+                    "userCore.location.latitude" : lat,
+                    "userCore.location.longitude" : long
+                ]) { err in
+                    if let err = err {
+                        print("StoryMetaService: Failed to push another story w/ id: \(postID_date)")
+                        promise(.failure(err))
+                    } else {
+                        print("StoryMetaService: Successfully pushed another story w/ id: \(postID_date)")
+                        promise(.success(()))
+                    }
                 }
-            }
         }.eraseToAnyPublisher()
     }
     
-    private func pushAnotherStory(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
+    private func pushAnotherStoryWithoutCaption(_ postID_date: Date, _ vibe: String) -> AnyPublisher<Void, Error> {
         let currentUserCore = UserCoreService.shared.currentUserCore!
         return Future<Void, Error> { promise in
             let lat: Double = LocationService.shared.coordinates.latitude

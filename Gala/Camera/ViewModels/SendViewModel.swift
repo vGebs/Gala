@@ -12,7 +12,7 @@ protocol SendViewModelProtocol {
     var vibes: [String] { get }
     
     func send(pic: UIImage, caption: Caption?)
-    func postStory(_ pic: UIImage)
+    func postStory(_ pic: UIImage, _ caption: Caption?)
 }
 
 class SendViewModel: ObservableObject, SendViewModelProtocol {
@@ -74,7 +74,8 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
     func send(pic: UIImage, caption: Caption?) {
         if selectedVibe != "" {
             //Post Story
-            postStory(pic)
+            postStory(pic, caption)
+            
         } else if selectedMatch != "" {
             //sendPic to
             let data = pic.jpegData(compressionQuality: compressionQuality)!
@@ -122,8 +123,8 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
             .store(in: &cancellables)
     }
 
-    internal func postStory(_ pic: UIImage) {
-        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: pic)
+    internal func postStory(_ pic: UIImage, _ caption: Caption?) {
+        StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: pic, caption: caption)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in

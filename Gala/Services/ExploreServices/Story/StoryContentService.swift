@@ -26,7 +26,7 @@ class StoryContentService: ObservableObject {
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
         let myStoryRef = storyRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = myStoryRef.child("\(name).png")
+        let imgFileRef = myStoryRef.child("\(name)")
         
         return Future<Void, Error> { promise in
             let _ = imgFileRef.putData(data, metadata: nil) { (metaData, error) in
@@ -45,7 +45,7 @@ class StoryContentService: ObservableObject {
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
         let myStoryRef = storyRef.child(AuthService.shared.currentUser!.uid)
-        let imgFileRef = myStoryRef.child("\(storyID).png")
+        let imgFileRef = myStoryRef.child("\(storyID)")
         
         return Future<Void, Error> { promise in
             imgFileRef.delete { err in
@@ -65,7 +65,7 @@ class StoryContentService: ObservableObject {
         let storyFolder = "Stories"
         let storyRef = storageRef.child(storyFolder)
         let myStoryRef = storyRef.child(uid)
-        let imgFileRef = myStoryRef.child("\(storyID).png")
+        let imgFileRef = myStoryRef.child("\(storyID)")
         
         return Future<UIImage?, Error> { promise in
             
