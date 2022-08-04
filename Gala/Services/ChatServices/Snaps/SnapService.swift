@@ -145,10 +145,11 @@ class SnapService: SnapServiceProtocol {
         
         let date = Date()
         return Future<Void, Error> { [weak self] promise in
-            Publishers.Zip(
-                self!.pushMeta(to, date, isImage, caption: caption),
-                self!.pushAsset(to, asset, date, isImage: isImage)
-            )
+            
+            self!.pushAsset(to, asset, date, isImage: isImage)
+                .flatMap{ _ in
+                    self!.pushMeta(to, date, isImage, caption: caption)
+                }
                 .sink { completion in
                     switch completion{
                     case .failure(let e):
@@ -157,7 +158,7 @@ class SnapService: SnapServiceProtocol {
                     case .finished:
                         print("SnapService: Successfully sent snap")
                     }
-                } receiveValue: { _, _ in }
+                } receiveValue: { _ in }
                 .store(in: &self!.cancellables)
         }.eraseToAnyPublisher()
     }
@@ -317,6 +318,7 @@ extension SnapService {
                 if let error = error {
                     promise(.failure(error))
                 } else {
+                    print("SnapService: Finished pushing snap asset")
                     return promise(.success(()))
                 }
             }

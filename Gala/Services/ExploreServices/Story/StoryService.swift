@@ -29,45 +29,43 @@ class StoryService: ObservableObject, StoryServiceProtocol {
     private init() { }
     
     func postStory(postID_date: Date, vibe: String, img: UIImage, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
-                
         return Future<Void, Error> { promise in
-            Publishers.Zip(
-                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption),
-                self.storyContentService.postStory(story: img, name: "\(postID_date)")
-            )
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("StoryService: Failed to post story")
-                    promise(.failure(err))
-                case .finished:
-                    print("StoryService: Successfully posted story")
-                    promise(.success(()))
+            self.storyContentService.postStory(story: img, name: "\(postID_date)")
+                .flatMap { _ in
+                    self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption)
                 }
-            } receiveValue: { _ in }
-            .store(in: &self.cancellables)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let err):
+                        print("StoryService: Failed to post story")
+                        promise(.failure(err))
+                    case .finished:
+                        print("StoryService: Successfully posted story")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
         }
         .eraseToAnyPublisher()
     }
     
     func postStory(postID_date: Date, vibe: String, vidData: Data, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
-                
         return Future<Void, Error> { promise in
-            Publishers.Zip(
-                self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption),
-                self.storyContentService.postStory(story: vidData, name: "\(postID_date)")
-            )
-            .sink { completion in
-                switch completion {
-                case .failure(let err):
-                    print("StoryService: Failed to post story")
-                    promise(.failure(err))
-                case .finished:
-                    print("StoryService: Successfully posted story")
-                    promise(.success(()))
+            self.storyContentService.postStory(story: vidData, name: "\(postID_date)")
+                .flatMap { _ in
+                    self.storyMetaService.postStory(postID_date: postID_date, vibe: vibe, isImage: isImage, caption: caption)
                 }
-            } receiveValue: { _ in }
-            .store(in: &self.cancellables)
+                .sink { completion in
+                    switch completion {
+                    case .failure(let err):
+                        print("StoryService: Failed to post story")
+                        promise(.failure(err))
+                    case .finished:
+                        print("StoryService: Successfully posted story")
+                        promise(.success(()))
+                    }
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
         }
         .eraseToAnyPublisher()
     }
