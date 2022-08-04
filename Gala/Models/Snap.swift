@@ -17,8 +17,12 @@ struct Snap: Identifiable {
     var imgAssetData: Data?
     var vidURL: URL?
     var isImage: Bool
-    var caption: String?
-    var textBoxHeight: CGFloat?
-    var yCoordinate: CGFloat?
+    var caption: Caption?
     let docID: String
+}
+
+struct Caption {
+    let captionText: String
+    let textBoxHeight: CGFloat
+    let yCoordinate: CGFloat
 }

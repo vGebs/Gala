@@ -29,22 +29,19 @@ struct SnapView: View {
                     videoPreview
                 }
                 
-                if let caption = snap.caption, let height = snap.textBoxHeight, let yCoord = snap.yCoordinate {
+                if let caption = snap.caption {
                     ZStack {
                         Rectangle()
                             .foregroundColor(.black)
                             .opacity(0.6)
-                        Text(caption)
+                        Text(caption.captionText)
                             .multilineTextAlignment(.center)
                             .foregroundColor(.white)
                             .font(.system(size: 18, weight: .regular, design: .rounded))
                     }
-                    .frame(height: height)
-                    .position(x: screenWidth / 2, y: yCoord)
-                } else {
-                    Text("poop")
+                    .frame(height: caption.textBoxHeight)
+                    .position(x: screenWidth / 2, y: caption.yCoordinate)
                 }
-                
             } else {
                 ProgressView()
             }

@@ -11,7 +11,7 @@ import Combine
 protocol SendViewModelProtocol {
     var vibes: [String] { get }
     
-    func send(pic: UIImage, caption: String?, height: CGFloat?, yCoordinate: CGFloat?)
+    func send(pic: UIImage, caption: Caption?)
     func postStory(_ pic: UIImage)
 }
 
@@ -71,37 +71,43 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
         return ""
     }
     
-    func send(pic: UIImage, caption: String?, height: CGFloat?, yCoordinate: CGFloat?) {
+    func send(pic: UIImage, caption: Caption?) {
         if selectedVibe != "" {
             //Post Story
             postStory(pic)
         } else if selectedMatch != "" {
             //sendPic to
             let data = pic.jpegData(compressionQuality: compressionQuality)!
-            if let caption = caption {
-                print("Caption bitch: \(caption)")
-            }
-            sendSnap(to: selectedMatch, data, isImage: true, caption: caption, textBoxHeight: height, yCoordinate: yCoordinate)
+            sendSnap(to: selectedMatch, data, isImage: true, caption: caption)
         }
     }
     
-    func send(vid: URL, caption: String?, height: CGFloat?, yCoordinate: CGFloat?) {
+    func send(vid: URL, caption: Caption?) {
         if selectedVibe != "" {
             //post story
-            print("Posting video story")
+            
+            do {
+                let data = try Data(contentsOf: vid)
+                sendSnap(to: selectedMatch, data, isImage: false, caption: caption)
+                
+                //postStory(vid: data, isImage: false, caption: caption, textBoxHeight: height, yCoordinate: yCoordinate)
+            } catch {
+                print("SendViewModel: Failed to convert video to data")
+            }
+            
         } else if selectedMatch != "" {
             //send video to match
             do {
                 let data = try Data(contentsOf: vid)
-                sendSnap(to: selectedMatch, data, isImage: false, caption: caption, textBoxHeight: height, yCoordinate: yCoordinate)
+                sendSnap(to: selectedMatch, data, isImage: false, caption: caption)
             } catch {
                 print("SendViewModel: Failed to convert video to data")
             }
         }
     }
     
-    internal func sendSnap(to: String, _ asset: Data, isImage: Bool, caption: String?, textBoxHeight: CGFloat?, yCoordinate: CGFloat?) {
-        SnapService.shared.sendSnap(to: to, asset: asset, isImage: isImage, caption: caption, textBoxHeight: textBoxHeight, yCoordinate: yCoordinate)
+    internal func sendSnap(to: String, _ asset: Data, isImage: Bool, caption: Caption?) {
+        SnapService.shared.sendSnap(to: to, asset: asset, isImage: isImage, caption: caption)
             .subscribe(on: DispatchQueue.global(qos: .userInitiated))
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -130,5 +136,9 @@ class SendViewModel: ObservableObject, SendViewModelProtocol {
                 }
             } receiveValue: { _ in }
             .store(in: &cancellables)
+    }
+
+    private func postStory(vid: Data, isImage: Bool, caption: String, textBoxHeight: CGFloat, yCoordinate: CGFloat) {
+        //StoryService.shared.postStory(postID_date: Date(), vibe: selectedVibe, asset: <#T##UIImage#>)
     }
 }

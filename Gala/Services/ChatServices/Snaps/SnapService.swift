@@ -12,7 +12,7 @@ import FirebaseFirestore
 import FirebaseStorage
 
 protocol SnapServiceProtocol {
-    func sendSnap(to: String, asset: Data, isImage: Bool, caption: String?, textBoxHeight: CGFloat?, yCoordinate: CGFloat?) -> AnyPublisher<Void, Error>
+    func sendSnap(to: String, asset: Data, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error>
 }
 
 class SnapService: SnapServiceProtocol {
@@ -57,13 +57,29 @@ class SnapService: SnapServiceProtocol {
                     if let snapID_timestamp = snapID_timestamp_?.dateValue() {
                         if let o = opened {
                             if let isImage = isImage {
-                                let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: caption, textBoxHeight: height, yCoordinate: yCoord, docID: docID)
-                                final.append(newSnap)
+                                
+                                if let cap = caption, let h = height, let y = yCoord {
+                                    let newCaption = Caption(captionText: cap, textBoxHeight: h, yCoordinate: y)
+                                    
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: newCaption, docID: docID)
+                                    final.append(newSnap)
+                                } else {
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: nil, docID: docID)
+                                    final.append(newSnap)
+                                }
                             }
                         } else {
                             if let isImage = isImage {
-                                let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, caption: caption, textBoxHeight: height, yCoordinate: yCoord, docID: docID)
-                                final.append(newSnap)
+                                
+                                if let cap = caption, let h = height, let y = yCoord {
+                                    let newCaption = Caption(captionText: cap, textBoxHeight: h, yCoordinate: y)
+                                    
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, caption: newCaption, docID: docID)
+                                    final.append(newSnap)
+                                } else {
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, caption: nil, docID: docID)
+                                    final.append(newSnap)
+                                }
                             }
                         }
                     }
@@ -125,12 +141,12 @@ class SnapService: SnapServiceProtocol {
             }
     }
     
-    func sendSnap(to: String, asset: Data, isImage: Bool, caption: String?, textBoxHeight: CGFloat?, yCoordinate: CGFloat?) -> AnyPublisher<Void, Error>{
+    func sendSnap(to: String, asset: Data, isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error>{
         
         let date = Date()
         return Future<Void, Error> { [weak self] promise in
             Publishers.Zip(
-                self!.pushMeta(to, date, isImage, caption: caption, textBoxHeight: textBoxHeight, yCoordinate: yCoordinate),
+                self!.pushMeta(to, date, isImage, caption: caption),
                 self!.pushAsset(to, asset, date, isImage: isImage)
             )
                 .sink { completion in
@@ -269,11 +285,11 @@ extension SnapService {
         }.eraseToAnyPublisher()
     }
     
-    private func pushMeta(_ to: String, _ date: Date, _ isImage: Bool, caption: String?, textBoxHeight: CGFloat?, yCoordinate: CGFloat?) -> AnyPublisher<Void, Error> {
+    private func pushMeta(_ to: String, _ date: Date, _ isImage: Bool, caption: Caption?) -> AnyPublisher<Void, Error> {
         
-        if let caption = caption, let height = textBoxHeight, let yCoord = yCoordinate{
-            if caption.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-                return pushMetaWithCaption(to, date, isImage, caption: caption, height: height, yCoordinate: yCoord)
+        if let caption = caption{
+            if caption.captionText.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                return pushMetaWithCaption(to, date, isImage, caption: caption)
             } else {
                 return pushMetaWithoutCaption(to, date, isImage)
             }
@@ -307,7 +323,7 @@ extension SnapService {
         }.eraseToAnyPublisher()
     }
     
-    private func pushMetaWithCaption(_ to: String, _ date: Date, _ isImage: Bool, caption: String, height: CGFloat, yCoordinate: CGFloat) -> AnyPublisher<Void, Error> {
+    private func pushMetaWithCaption(_ to: String, _ date: Date, _ isImage: Bool, caption: Caption) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
             self!.db.collection("Snaps")
                 .addDocument(data: [
@@ -315,9 +331,9 @@ extension SnapService {
                     "fromID": AuthService.shared.currentUser!.uid,
                     "fromName": UserCoreService.shared.currentUserCore!.userBasic.name,
                     "isImage": isImage,
-                    "caption": caption,
-                    "textBoxHeight": height,
-                    "yCoordinate": yCoordinate,
+                    "caption": caption.captionText,
+                    "textBoxHeight": caption.textBoxHeight,
+                    "yCoordinate": caption.yCoordinate,
                     "snapID_timestamp": date
                 ]){ err in
                     if let err = err {

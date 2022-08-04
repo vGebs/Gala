@@ -407,10 +407,15 @@ extension ChatsDataStore {
                                                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
                                 
-                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
-                                    newSnap.caption = cap
-                                    newSnap.textBoxHeight = height
-                                    newSnap.yCoordinate = y
+                                if let caption = snap.caption {
+                                    
+                                    let newCaption = Caption(
+                                        captionText: caption.captionText,
+                                        textBoxHeight: caption.textBoxHeight,
+                                        yCoordinate: caption.yCoordinate
+                                    )
+
+                                    newSnap.caption = newCaption
                                 }
                                 
                                 SnapService_CoreData.shared.addSnap(snap: newSnap)
@@ -430,10 +435,15 @@ extension ChatsDataStore {
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
           
-                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
-                                    newSnap.caption = cap
-                                    newSnap.textBoxHeight = height
-                                    newSnap.yCoordinate = y
+                                if let caption = snap.caption {
+                                    
+                                    let newCaption = Caption(
+                                        captionText: caption.captionText,
+                                        textBoxHeight: caption.textBoxHeight,
+                                        yCoordinate: caption.yCoordinate
+                                    )
+
+                                    newSnap.caption = newCaption
                                 }
                                 
                                 SnapService_CoreData.shared.addSnap(snap: newSnap)
@@ -451,10 +461,15 @@ extension ChatsDataStore {
                                 
                                 self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
                                 
-                                if let cap = snap.caption, let height = snap.textBoxHeight, let y = snap.yCoordinate {
-                                    newSnap.caption = cap
-                                    newSnap.textBoxHeight = height
-                                    newSnap.yCoordinate = y
+                                if let caption = snap.caption {
+                                    
+                                    let newCaption = Caption(
+                                        captionText: caption.captionText,
+                                        textBoxHeight: caption.textBoxHeight,
+                                        yCoordinate: caption.yCoordinate
+                                    )
+
+                                    newSnap.caption = newCaption
                                 }
                                 
                                 if let _ = self?.snaps[snap.fromID] {

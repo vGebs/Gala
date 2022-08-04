@@ -36,11 +36,18 @@ struct SendView: View {
             VStack{
                 Spacer()
                 Button(action: {
+                    
+                    var caption: Caption?
+                    
+                    if text.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+                        caption = Caption(captionText: text, textBoxHeight: height, yCoordinate: yCoordinate)
+                    }
+                    
                     if let img = camera.image {
-                        self.viewModel.send(pic: img, caption: text, height: height, yCoordinate: yCoordinate)
+                        self.viewModel.send(pic: img, caption: caption)
                         
                     } else if let vidURLPath = camera.videoURL {
-                        self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath), caption: text, height: height, yCoordinate: yCoordinate)
+                        self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath), caption: caption)
                     }
                     
                     self.camera.deleteAsset()
