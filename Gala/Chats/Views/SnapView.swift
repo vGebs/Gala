@@ -23,11 +23,16 @@ struct SnapView: View {
     var body: some View {
         ZStack {
             if let snap = snap {
-                if let _ = snap.imgAssetData {
+                if snap.isImage {
                     imagePreview
-                } else if let _ = snap.vidURL {
+                } else {
                     videoPreview
                 }
+//                if let _ = snap.imgAssetData {
+//
+//                } else if let _ = snap.vidURL {
+//                    videoPreview
+//                }
                 
                 if let caption = snap.caption {
                     ZStack {

@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import FirebaseFirestore
 import OrderedCollections
+import SwiftUI
 
 class ChatsDataStore: ObservableObject {
     
@@ -19,6 +20,7 @@ class ChatsDataStore: ObservableObject {
     @Published private(set) var matches: [MatchedUserCore] = []
     @Published private(set) var snaps: OrderedDictionary<String, [Snap]> = [:]
     @Published private(set) var messages: OrderedDictionary<String, [Message]> = [:] //Key = uid, value = [message]
+    @Published private(set) var tempMessages: [Message] = []
     
     private var cancellables: [AnyCancellable] = []
     
@@ -62,6 +64,18 @@ class ChatsDataStore: ObservableObject {
         snaps.removeAll()
         messages.removeAll()
         empty = true
+    }
+    
+    func getTempMessages(uid: String) {
+        if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
+            self.tempMessages = msgs
+        } else {
+            self.tempMessages = []
+        }
+    }
+    
+    func clearTempMessages() {
+        self.tempMessages = []
     }
     
     func unMatchUser(with uid: String) {
@@ -383,132 +397,129 @@ extension ChatsDataStore {
     }
     
     private func observeSnapsToMe() {
-        SnapService.shared.observeSnapsToMe() { [weak self] snaps, docChange in
+        SnapService.shared.observeSnapsToMe() { [weak self] snaps in
             
-            switch docChange {
-            case .added:
-                //if the snap is newly added
-                // we want to fetch the content and then add it to the array in the correct position
-                for snap in snaps {
-                    SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, isImage: snap.isImage)
-                        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                        .receive(on: DispatchQueue.main)
-                        .sink { completion in
-                            switch completion {
-                            case .failure(let e):
-                                print("ChatsDataStore: Failed to fetch snap with id: \(snap.snapID_timestamp)")
-                                print("ChatsDataStore-err: \(e)")
-                            case .finished:
-                                print("ChatsDataStore: Successfully fetched snap")
+            for snap in snaps {
+                if let change = snap.changeType {
+                    switch change {
+                    case .added:
+                        
+                        SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, isImage: snap.isImage)
+                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                            .receive(on: DispatchQueue.main)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let e):
+                                    print("ChatsDataStore: Failed to fetch snap with id: \(snap.snapID_timestamp)")
+                                    print("ChatsDataStore-err: \(e)")
+                                case .finished:
+                                    print("ChatsDataStore: Successfully fetched snap")
+                                }
+                            } receiveValue: { [weak self] imgData, vidURL in
+                                if let assetData = imgData {
+                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: assetData, isImage: snap.isImage, docID: snap.docID)
+                                    
+                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                    
+                                    if let caption = snap.caption {
+                                        
+                                        let newCaption = Caption(
+                                            captionText: caption.captionText,
+                                            textBoxHeight: caption.textBoxHeight,
+                                            yCoordinate: caption.yCoordinate
+                                        )
+                                        
+                                        newSnap.caption = newCaption
+                                    }
+                                    
+                                    SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                    
+                                    newSnap.imgAssetData = nil
+                                    
+                                    if let _ = self?.snaps[snap.fromID] {
+                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                        
+                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                        
+                                    } else {
+                                        self?.snaps[snap.fromID] = [newSnap]
+                                    }
+                                } else if let vidURL = vidURL {
+                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
+                                    
+                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                    
+                                    if let caption = snap.caption {
+                                        
+                                        let newCaption = Caption(
+                                            captionText: caption.captionText,
+                                            textBoxHeight: caption.textBoxHeight,
+                                            yCoordinate: caption.yCoordinate
+                                        )
+                                        
+                                        newSnap.caption = newCaption
+                                    }
+                                    
+                                    SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                    
+                                    if let _ = self?.snaps[snap.fromID] {
+                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                        
+                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                        
+                                    } else {
+                                        self?.snaps[snap.fromID] = [newSnap]
+                                    }
+                                } else {
+                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, isImage: snap.isImage, docID: snap.docID)
+                                    
+                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                    
+                                    if let caption = snap.caption {
+                                        
+                                        let newCaption = Caption(
+                                            captionText: caption.captionText,
+                                            textBoxHeight: caption.textBoxHeight,
+                                            yCoordinate: caption.yCoordinate
+                                        )
+                                        
+                                        newSnap.caption = newCaption
+                                    }
+                                    
+                                    if let _ = self?.snaps[snap.fromID] {
+                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                        
+                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                        
+                                    } else {
+                                        self?.snaps[snap.fromID] = [newSnap]
+                                    }
+                                }
                             }
-                        } receiveValue: { [weak self] imgData, vidURL in
-                            if let assetData = imgData {
-                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: assetData, isImage: snap.isImage, docID: snap.docID)
-                                                                
-                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-                                
-                                if let caption = snap.caption {
-                                    
-                                    let newCaption = Caption(
-                                        captionText: caption.captionText,
-                                        textBoxHeight: caption.textBoxHeight,
-                                        yCoordinate: caption.yCoordinate
-                                    )
-
-                                    newSnap.caption = newCaption
-                                }
-                                
-                                SnapService_CoreData.shared.addSnap(snap: newSnap)
-                                
-                                newSnap.imgAssetData = nil
-                                
-                                if let _ = self?.snaps[snap.fromID] {
-                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                    
-                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                    
-                                } else {
-                                    self?.snaps[snap.fromID] = [newSnap]
-                                }
-                            } else if let vidURL = vidURL {
-                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
-                                
-                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-          
-                                if let caption = snap.caption {
-                                    
-                                    let newCaption = Caption(
-                                        captionText: caption.captionText,
-                                        textBoxHeight: caption.textBoxHeight,
-                                        yCoordinate: caption.yCoordinate
-                                    )
-
-                                    newSnap.caption = newCaption
-                                }
-                                
-                                SnapService_CoreData.shared.addSnap(snap: newSnap)
-                                
-                                if let _ = self?.snaps[snap.fromID] {
-                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                    
-                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                    
-                                } else {
-                                    self?.snaps[snap.fromID] = [newSnap]
-                                }
-                            } else {
-                                var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID_timestamp: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: nil, isImage: snap.isImage, docID: snap.docID)
-                                
-                                self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-                                
-                                if let caption = snap.caption {
-                                    
-                                    let newCaption = Caption(
-                                        captionText: caption.captionText,
-                                        textBoxHeight: caption.textBoxHeight,
-                                        yCoordinate: caption.yCoordinate
-                                    )
-
-                                    newSnap.caption = newCaption
-                                }
-                                
-                                if let _ = self?.snaps[snap.fromID] {
-                                    let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                    
-                                    self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                    
-                                } else {
-                                    self?.snaps[snap.fromID] = [newSnap]
-                                }
-                            }
-                        }
-                        .store(in: &self!.cancellables)
-                }
-            case .modified:
-                //cycle through the snaps received and the snaps we have,
-                // if there is a match, replace the snap with the new one
-                for snap in snaps {
-                    if let _ = self?.snaps[snap.fromID] {
-                        for i in 0..<(self?.snaps[snap.fromID]!.count)! {
-                            if self?.snaps[snap.fromID]![i].snapID_timestamp == snap.snapID_timestamp {
-                                self?.snaps[snap.fromID]![i] = snap
+                            .store(in: &self!.cancellables)
+                        
+                    case .modified:
+                        SnapService_CoreData.shared.updateSnap(snap: snap)
+                        
+                        if let _ = self?.snaps[snap.fromID] {
+//                            for i in 0..<(self?.snaps[snap.fromID]!.count)! {
+//                                if self?.snaps[snap.fromID]![i].docID == snap.docID {
+//                                    self?.snaps[snap.fromID]![i] = snap
+//                                    print("ChatsDataStore: modified snap with id -> \(snap.docID)")
+//                                }
+//                            }
+                            
+                            //test this
+                            if let i = self?.snaps[snap.fromID]?.firstIndex(where: { $0.docID == snap.docID }) {
+                                self?.snaps[snap.fromID]?[i] = snap
                                 print("ChatsDataStore: modified snap with id -> \(snap.docID)")
                             }
                         }
-                    }
-                }
-            case .removed:
-                //cycle through the snaps received and the snaps we have,
-                // if there is a match, remove that snap
-                for snap in snaps {
-                    if let _ = self?.snaps[snap.fromID] {
-                        for i in 0..<self!.snaps[snap.fromID]!.count {
-                            if self!.snaps[snap.fromID]![i].docID == snap.docID {
-                                SnapService_CoreData.shared.deleteSnap(docID: self!.snaps[snap.fromID]![i].docID)
-                                self!.snaps[snap.fromID]!.remove(at: i)
-                                SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
-                                return
-                            }
+                    case .removed:
+                        SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
+                        
+                        if let _ = self?.snaps[snap.fromID] {
+                            self?.snaps[snap.fromID] = self?.snaps[snap.fromID]?.filter { $0.docID != snap.docID }
                         }
                     }
                 }
@@ -533,49 +544,39 @@ extension ChatsDataStore {
     }
     
     private func observeSnapsFromMe() {
-        SnapService.shared.observerSnapsfromMe { [weak self] snaps, docChange in
+        SnapService.shared.observerSnapsfromMe { [weak self] snaps in
             
-            switch docChange {
-            case .added:
-                // if the snap is newly added,
-                // add it in the correct position (we do not need to pull the image because it is from us.
-                for snap in snaps {
-                    self?.setNewLastMessage(uid: snap.toID, date: snap.snapID_timestamp)
+            for snap in snaps {
+                if let change = snap.changeType {
+                    switch change {
+                    case .added:
+                        self?.setNewLastMessage(uid: snap.toID, date: snap.snapID_timestamp)
 
-                    if let _ = self?.snaps[snap.toID] {
-                        let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                        SnapService_CoreData.shared.addSnap(snap: snap)
                         
-                        self?.snaps[snap.toID]?.insert(snap, at: insertIndex!)
+                        if let _ = self?.snaps[snap.toID] {
+                            let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                            
+                            self?.snaps[snap.toID]?.insert(snap, at: insertIndex!)
+                            
+                        } else {
+                            self?.snaps[snap.toID] = [snap]
+                        }
+                    case .modified:
                         
-                    } else {
-                        self?.snaps[snap.toID] = [snap]
-                    }
-                }
-            case .modified:
-                //cycle through the snaps received and the snaps we have,
-                // if there is a match, replace the snap with the new one
-                for snap in snaps {
-                    if let _ = self?.snaps[snap.toID] {
-                        for i in 0..<(self?.snaps[snap.toID]!.count)! {
-                            if self?.snaps[snap.toID]![i].snapID_timestamp == snap.snapID_timestamp {
-                                self?.snaps[snap.toID]![i] = snap
+                        SnapService_CoreData.shared.updateSnap(snap: snap)
+                        
+                        if let _ = self?.snaps[snap.toID] {
+                            if let i = self?.snaps[snap.toID]?.firstIndex(where: { $0.docID == snap.docID }) {
+                                self?.snaps[snap.toID]?[i] = snap
                                 print("ChatsDataStore: modified snap with id -> \(snap.docID)")
                             }
                         }
-                    }
-                }
-            case .removed:
-                //cycle through the snaps received and the snaps we have,
-                // if there is a match, remove that snap
-                for snap in snaps {
-                    if let _ = self?.snaps[snap.toID] {
-                        for i in 0..<(self?.snaps[snap.toID]!.count)! {
-                            if self?.snaps[snap.toID]![i].snapID_timestamp == snap.snapID_timestamp {
-                                self?.snaps[snap.toID]!.remove(at: i)
-                                SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
-                                print("ChatsDataStore: removed snap with id -> \(snap.docID)")
-                                return
-                            }
+                    case .removed:
+                        SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
+                        
+                        if let _ = self?.snaps[snap.toID] {
+                            self?.snaps[snap.toID] = self?.snaps[snap.toID]!.filter { $0.docID != snap.docID }
                         }
                     }
                 }
@@ -597,98 +598,141 @@ extension ChatsDataStore {
     }
     
     private func observeChatsFromMe() {
-        MessageService_Firebase.shared.observeChatsFromMe() { [weak self] messages, change in
-            switch change {
-            case .added:
-                //we want to only store the most recent message for the receipt
-                // everything else is stored in core data
-                
-                for message in messages {
-                    
-                    MessageService_CoreData.shared.addMessage(msg: message)
-                    
-                    self?.setNewLastMessage(uid: message.toID, date: message.time)
-                    self?.checkForAnyOpenedSnapsAndDelete(message.toID)
-                    
-                    if let _ = self?.messages[message.toID] {
-                        let insertIndex = self?.messages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                        self?.messages[message.toID]?.insert(message, at: insertIndex!)
+        MessageService_Firebase.shared.observeChatsFromMe() { [weak self] messages in
+            
+            for message in messages {
+                if let change = message.changeType {
+                    switch change {
+                    case .added:
+                        MessageService_CoreData.shared.addMessage(msg: message)
                         
-                        //After each insertion we will then delete all other values in the array, only leaving the most recent
-                        if let last = self?.messages[message.fromID]?.last {
-                            self?.messages[message.fromID] = [last]
+                        self?.setNewLastMessage(uid: message.toID, date: message.time)
+                        self?.checkForAnyOpenedSnapsAndDelete(message.toID)
+                        
+                        if let _ = self?.messages[message.toID] {
+                            let insertIndex = self?.messages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                            self?.messages[message.toID]?.insert(message, at: insertIndex!)
+                            
+                            //After each insertion we will then delete all other values in the array, only leaving the most recent
+                            if let last = self?.messages[message.toID]?.last {
+                                self?.messages[message.toID] = [last]
+                            }
+                            
+                            print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
+                            
+                        } else {
+                            self?.messages[message.toID] = [message]
+                            print("ChatsDataStore: Fetched message from me (created): \(message.message)")
                         }
+                    case .modified:
                         
-                        print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
+                        MessageService_CoreData.shared.updateMessage(message: message)
                         
-                    } else {
-                        self?.messages[message.toID] = [message]
-                        print("ChatsDataStore: Fetched message from me (created): \(message.message)")
-                    }
-                }
-            case .modified:
-                for message in messages {
-                    MessageService_CoreData.shared.updateMessage(message: message)
-                    
-                    if let _ = self?.messages[message.toID] {
-                        for i in 0..<(self?.messages[message.toID]!.count)! {
-                            if self?.messages[message.toID]![i].docID == message.docID {
-                                print("ChatsDataStore: Modified message")
-                                self?.messages[message.toID]![i] = message
+                        if let _ = self?.messages[message.toID] {
+                            for i in 0..<self!.messages[message.toID]!.count {
+                                if self?.messages[message.toID]![i].docID == message.docID {
+                                    self?.messages[message.toID]![i] = message
+                                    print("ChatsDataStore: Modified message")
+                                }
                             }
                         }
+                        
+                        for i in 0..<self!.tempMessages.count {
+                            if self?.tempMessages[i].docID == message.docID {
+                                self?.tempMessages[i] = message
+                            }
+                        }
+                        
+                    case .removed:
+                        
+                        MessageService_CoreData.shared.deleteMessage(with: message.docID)
+                        
+                        self?.tempMessages = self!.tempMessages.filter { $0.docID != message.docID }
+                        
+                        if let _ = self?.messages[message.toID] {
+                            self?.messages[message.toID] = self?.messages[message.toID]!
+                                .filter { $0.docID != message.docID }
+                        }
                     }
-                }
-            case .removed:
-                for message in messages {
-                    MessageService_CoreData.shared.deleteMessage(with: message.docID)
                 }
             }
         }
     }
     
     private func observeChatsToMe() {
-        MessageService_Firebase.shared.observeChatsToMe() { [weak self] messages, change in
-            switch change {
-            case .added:
-                for message in messages {
-                    self?.setNewLastMessage(uid: message.fromID, date: message.time)
-                    
-                    MessageService_CoreData.shared.addMessage(msg: message)
-                    
-                    if let _ = self?.messages[message.fromID] {
-                        let insertIndex = self?.messages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+        MessageService_Firebase.shared.observeChatsToMe() { [weak self] messages in
+            
+            for message in messages {
+                if let change = message.changeType {
+                    switch change {
+                    case .added:
                         
-                        self?.messages[message.fromID]?.insert(message, at: insertIndex!)
+                        self?.setNewLastMessage(uid: message.fromID, date: message.time)
                         
-                        //After each insertion we will then delete all other values in the array, only leaving the most recent
-                        if let last = self?.messages[message.fromID]?.last {
-                            self?.messages[message.fromID] = [last]
+                        MessageService_CoreData.shared.addMessage(msg: message)
+                        
+                        if let _ = self?.messages[message.fromID] {
+                            let insertIndex = self?.messages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                            
+                            self?.messages[message.fromID]?.insert(message, at: insertIndex!)
+                            
+                            //After each insertion we will then delete all other values in the array, only leaving the most recent
+                            if let last = self?.messages[message.fromID]?.last {
+                                self?.messages[message.fromID] = [last]
+                            }
+                            
+                            print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
+                        } else {
+                            self?.messages[message.fromID] = [message]
+                            print("ChatsDataStore: Fetched message to me (created): \(message.message)")
                         }
                         
-                        print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
-                    } else {
-                        self?.messages[message.fromID] = [message]
-                        print("ChatsDataStore: Fetched message to me (created): \(message.message)")
-                    }
-                }
-            case .modified:
-                for message in messages {
-                    print("Modified message to me")
-                    if let _ = self?.messages[message.fromID] {
+                        var isCurrentConvo = false
+                        
+                        for i in 0..<self!.tempMessages.count {
+                            if self?.tempMessages[i].fromID == message.fromID || self?.tempMessages[i].toID == message.fromID {
+                                isCurrentConvo = true
+                            }
+                        }
+                        
+                        if isCurrentConvo {
+                            let insertIndex = self?.tempMessages.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                            
+                            self?.tempMessages.insert(message, at: insertIndex!)
+                        }
+                        
+                    case .modified:
                         
                         MessageService_CoreData.shared.updateMessage(message: message)
                         
-                        for i in 0..<(self?.messages[message.fromID]!.count)! {
-                            if self?.messages[message.fromID]![i].docID == message.docID {
-                                self?.messages[message.fromID]![i] = message
-                                print("ChatsDataStore: Modified message")
+                        if let _ = self?.messages[message.fromID] {
+                            for i in 0..<(self?.messages[message.fromID]!.count)! {
+                                if self?.messages[message.fromID]![i].docID == message.docID {
+                                    self?.messages[message.fromID]![i] = message
+                                    print("ChatsDataStore: Modified message")
+                                }
                             }
+                        }
+                        
+                        for i in 0..<self!.tempMessages.count {
+                            if self?.tempMessages[i].docID == message.docID {
+                                self?.tempMessages[i] = message
+                            }
+                        }
+                        
+                    case .removed:
+                        
+                        MessageService_CoreData.shared.deleteMessage(with: message.docID)
+                        
+                        self?.tempMessages = self!.tempMessages.filter { $0.docID != message.docID }
+
+                        //because we are only keeping the most recent message from each person, this filter shouldn't do much, unless it is deleted the most recent snap
+                        if let _ = self?.messages[message.fromID] {
+                            self?.messages[message.fromID] = self?.messages[message.fromID]!
+                                .filter { $0.docID != message.docID }
                         }
                     }
                 }
-            case .removed:
-                print("")
             }
         }
     }

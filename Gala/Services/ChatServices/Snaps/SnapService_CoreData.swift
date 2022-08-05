@@ -241,7 +241,7 @@ extension SnapService_CoreData {
             return Snap(
                 fromID: cd.fromID!,
                 toID: cd.toID!,
-                snapID_timestamp: cd.snapID_timestamp!,
+                snapID: cd.snapID_timestamp!,
                 openedDate: cd.openedDate,
                 imgAssetData: cd.asset,
                 vidURL: URL(string: vidUrl),
@@ -262,7 +262,7 @@ extension SnapService_CoreData {
             return Snap(
                 fromID: cd.fromID!,
                 toID: cd.toID!,
-                snapID_timestamp: cd.snapID_timestamp!,
+                snapID: cd.snapID_timestamp!,
                 openedDate: cd.openedDate,
                 imgAssetData: cd.asset,
                 isImage: cd.isImage,
@@ -293,8 +293,9 @@ extension SnapService_CoreData {
     
     func getSnapCD(with docID: String) -> SnapCD? {
         let fetchRequest: NSFetchRequest<SnapCD> = SnapCD.fetchRequest()
-        let predicate = NSPredicate(format: "docID == %@", docID)
-        fetchRequest.predicate = predicate
+        let docIDpredicate = NSPredicate(format: "docID == %@", docID)
+        //let toIDPredicate = NSPredicate(format: "toID == %@", AuthService.shared)
+        fetchRequest.predicate = docIDpredicate
         
         do {
             let snap = try persistentContainer.viewContext.fetch(fetchRequest)

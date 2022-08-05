@@ -44,19 +44,24 @@ class ChatsViewModel: ObservableObject {
     
     init() {
         DataStore.shared.chats.$matches
-            .sink(receiveValue: { [weak self] matches in
+            .sink { [weak self] matches in
                 self?.matches = matches
-            }).store(in: &subs)
+            }.store(in: &subs)
 
         DataStore.shared.chats.$snaps
-            .sink(receiveValue: { [weak self] snaps in
+            .sink { [weak self] snaps in
                 self?.snaps = snaps
-            }).store(in: &subs)
+            }.store(in: &subs)
             
         DataStore.shared.chats.$messages
-            .sink(receiveValue: { [weak self] messages in
+            .sink { [weak self] messages in
                 self?.matchMessages = messages
-            }).store(in: &subs)
+            }.store(in: &subs)
+        
+        DataStore.shared.chats.$tempMessages
+            .sink { [weak self] messages in
+                self?.tempMessages = messages
+            }.store(in: &subs)
     }
     
     func getDemoMatches() {
@@ -91,11 +96,7 @@ class ChatsViewModel: ObservableObject {
     }
     
     func getTempMessages(uid: String) {
-        if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
-            self.tempMessages = msgs
-        } else {
-            self.tempMessages = []
-        }
+        DataStore.shared.chats.getTempMessages(uid: uid)
     }
     
     func getSnap(for uid: String) {
@@ -105,7 +106,6 @@ class ChatsViewModel: ObservableObject {
         if tempCounter < snaps.count {
             if let snap = SnapService_CoreData.shared.getSnap(with: snaps[tempCounter].docID) {
                 self.tempSnap = snap
-                
                 let mostRecent: Snap? = getMostRecentSnap(for: uid)
                 
                 if let mostRecent = mostRecent {
@@ -369,10 +369,14 @@ extension ChatsViewModel {
             }
             
             //we got nothing, so set the temp messages to nil
-            tempMessages = []
+            clearTempMessages()
         }
         
         return ConvoPressType.viewChat
+    }
+    
+    func clearTempMessages() {
+        DataStore.shared.chats.clearTempMessages()
     }
         
     func convoReceipt(for uid: String) -> ConvoPreviewType {
@@ -695,7 +699,11 @@ extension ChatsViewModel {
     private func getMostRecentMessage(for uid: String) -> Message? {
         
         if let msgs = self.matchMessages[uid] {
-            return msgs[msgs.count - 1]
+            if msgs.count > 0 {
+                return msgs[msgs.count - 1]
+            } else {
+                return nil
+            }
         }
         
         return nil

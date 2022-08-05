@@ -14,8 +14,8 @@ protocol MessageServiceProtocol {
     
     func sendMessage(message: String, toID: String) -> void
     func openMessage(message: Message) -> void
-    func observeChatsFromMe(completion: @escaping ([Message], DocumentChangeType) -> Void)
-    func observeChatsToMe(completion: @escaping ([Message], DocumentChangeType) -> Void)
+    func observeChatsFromMe(completion: @escaping ([Message]) -> Void)
+    func observeChatsToMe(completion: @escaping ([Message]) -> Void)
 }
 
 class MessageService_Firebase: MessageServiceProtocol {
@@ -70,7 +70,7 @@ class MessageService_Firebase: MessageServiceProtocol {
 }
 
 extension MessageService_Firebase {
-    func observeChatsFromMe(completion: @escaping ([Message], DocumentChangeType) -> Void) {
+    func observeChatsFromMe(completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
             //.whereField("timestamp", isGreaterThan: date)
@@ -83,7 +83,6 @@ extension MessageService_Firebase {
                 }
                 
                 var final: [Message] = []
-                var documentChangeType: DocumentChangeType = .added
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -96,28 +95,21 @@ extension MessageService_Firebase {
                     
                     if let date = timestamp?.dateValue() {
                         if let o = opened {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID, changeType: change.type)
                             
                             final.append(message)
                         } else {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, docID: change.document.documentID, changeType: change.type)
                             
                             final.append(message)
                         }
                     }
-                    
-                    if change.type == .modified {
-                        documentChangeType = .modified
-                        
-                    } else if change.type == .removed {
-                        documentChangeType = .removed
-                    }
                 })
-                completion(final, documentChangeType)
+                completion(final)
             }
     }
     
-    func observeChatsToMe(completion: @escaping ([Message], DocumentChangeType) -> Void) {
+    func observeChatsToMe(completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
             //.whereField("timestamp", isGreaterThan: date)
@@ -130,7 +122,6 @@ extension MessageService_Firebase {
                 }
                 
                 var final: [Message] = []
-                var documentChangeType: DocumentChangeType = .added
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -143,24 +134,17 @@ extension MessageService_Firebase {
                     
                     if let date = timestamp?.dateValue() {
                         if let o = opened {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: change.document.documentID, changeType: change.type)
                             
                             final.append(message)
                         } else {
-                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, openedDate: nil, docID: change.document.documentID)
+                            let message = Message(message: message, toID: toID, fromID: fromID, time: date, docID: change.document.documentID, changeType: change.type)
                             
                             final.append(message)
                         }
                     }
-                    
-                    if change.type == .modified {
-                        documentChangeType = .modified
-                        
-                    } else if change.type == .removed {
-                        documentChangeType = .removed
-                    }
                 })
-                completion(final, documentChangeType)
+                completion(final)
             }
     }
 }

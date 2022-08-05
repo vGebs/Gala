@@ -26,7 +26,7 @@ class SnapService: SnapServiceProtocol {
 
     private init() {}
     
-    func observeSnapsToMe(completion: @escaping ([Snap], DocumentChangeType) -> Void) {
+    func observeSnapsToMe(completion: @escaping ([Snap]) -> Void) {
         db.collection("Snaps")
             .whereField("toID", isEqualTo: String(AuthService.shared.currentUser!.uid))
             .order(by: "snapID_timestamp")
@@ -37,7 +37,6 @@ class SnapService: SnapServiceProtocol {
                 }
                 
                 var final: [Snap] = []
-                var docChange: DocumentChangeType = .added
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -61,10 +60,10 @@ class SnapService: SnapServiceProtocol {
                                 if let cap = caption, let h = height, let y = yCoord {
                                     let newCaption = Caption(captionText: cap, textBoxHeight: h, yCoordinate: y)
                                     
-                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: newCaption, docID: docID)
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: newCaption, docID: docID, changeType: change.type)
                                     final.append(newSnap)
                                 } else {
-                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, caption: nil, docID: docID)
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage, docID: docID, changeType: change.type)
                                     final.append(newSnap)
                                 }
                             }
@@ -74,29 +73,22 @@ class SnapService: SnapServiceProtocol {
                                 if let cap = caption, let h = height, let y = yCoord {
                                     let newCaption = Caption(captionText: cap, textBoxHeight: h, yCoordinate: y)
                                     
-                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, caption: newCaption, docID: docID)
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, isImage: isImage, caption: newCaption, docID: docID, changeType: change.type)
                                     final.append(newSnap)
                                 } else {
-                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage, caption: nil, docID: docID)
+                                    let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, isImage: isImage, docID: docID, changeType: change.type)
                                     final.append(newSnap)
                                 }
                             }
                         }
                     }
-                    
-                    if change.type == .modified {
-                        docChange = .modified
-                        
-                    } else if change.type == .removed {
-                        docChange = .removed
-                    }
                 })
                 
-                completion(final, docChange)
+                completion(final)
             }
     }
     
-    func observerSnapsfromMe(completion: @escaping ([Snap], DocumentChangeType) -> Void) {
+    func observerSnapsfromMe(completion: @escaping ([Snap]) -> Void) {
         db.collection("Snaps")
             .whereField("fromID", isEqualTo: String(AuthService.shared.currentUser!.uid))
             .order(by: "snapID_timestamp")
@@ -107,7 +99,6 @@ class SnapService: SnapServiceProtocol {
                 }
                 
                 var final: [Snap] = []
-                var documentChangeType: DocumentChangeType = .added
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -121,23 +112,16 @@ class SnapService: SnapServiceProtocol {
 
                     if let snapID_timestamp = snapID_timestamp_?.dateValue() {
                         if let o = openedDate{
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage!, docID: docID)
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage!, docID: docID, changeType: change.type)
                             final.append(newSnap)
                         } else {
-                            let newSnap = Snap(fromID: fromID, toID: toID, snapID_timestamp: snapID_timestamp, openedDate: nil, isImage: isImage!, docID: docID)
+                            let newSnap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, isImage: isImage!, docID: docID, changeType: change.type)
                             final.append(newSnap)
                         }
                     }
-                    
-                    if change.type == .modified {
-                        documentChangeType = .modified
-                        
-                    } else if change.type == .removed {
-                        documentChangeType = .removed
-                    }
                 })
                 
-                completion(final, documentChangeType)
+                completion(final)
             }
     }
     
