@@ -24,7 +24,8 @@ class SnapService_CoreData {
     }
     
     func addSnap(snap: Snap) {
-        if let _ = getSnapCD(with: snap.docID) {
+        //when we are querying for snaps, we need to query by the toID, fromID, & docID
+        if let _ = getSnapCD(with: snap.docID, toID: snap.toID, fromID: snap.fromID) {
             print("SnapService_CoreData: tried to re-add snap")
         } else {
             do {
@@ -43,17 +44,17 @@ class SnapService_CoreData {
         }
     }
     
-    func getSnap(with docID: String) -> Snap? {
-        if let snap = getSnapCD(with: docID) {
+    func getSnap(_ snap: Snap) -> Snap? {
+        if let snap = getSnapCD(with: snap.docID, toID: snap.toID, fromID: snap.fromID) {
             return bundleSnap(cd: snap)
         } else {
-            print("SnapService_CoreData: No snap with docID -> \(docID)")
+            print("SnapService_CoreData: No snap with docID -> \(snap.docID)")
             return nil
         }
     }
     
-    func updateSnap(snap: Snap) {
-        if let snapCD = getSnapCD(with: snap.docID) {
+    func updateSnap(_ snap: Snap) {
+        if let snapCD = getSnapCD(with: snap.docID, toID: snap.toID, fromID: snap.fromID) {
             bundleSnapCD(snap: snap, cd: snapCD)
             do {
                 try persistentContainer.viewContext.save()
@@ -82,17 +83,17 @@ class SnapService_CoreData {
         }
     }
     
-    func deleteSnap(docID: String) {
-        if let snap = getSnapCD(with: docID) {
+    func deleteSnap(_ snap: Snap) {
+        if let snap = getSnapCD(with: snap.docID, toID: snap.toID, fromID: snap.fromID) {
             
             persistentContainer.viewContext.delete(snap)
 
             do {
                 try persistentContainer.viewContext.save()
-                print("SnapService_CoreData: Deleted snap with docID -> \(docID)")
+                print("SnapService_CoreData: Deleted snap with docID -> \(String(describing: snap.docID))")
                 return
             } catch {
-                print("SnapService_CoreData: Could not delete snap with docID -> \(docID)")
+                print("SnapService_CoreData: Could not delete snap with docID -> \(String(describing: snap.docID))")
                 return
             }
         }
@@ -291,11 +292,18 @@ extension SnapService_CoreData {
         }
     }
     
-    func getSnapCD(with docID: String) -> SnapCD? {
+    func getSnapCD(with docID: String, toID: String, fromID: String) -> SnapCD? {
         let fetchRequest: NSFetchRequest<SnapCD> = SnapCD.fetchRequest()
         let docIDpredicate = NSPredicate(format: "docID == %@", docID)
-        //let toIDPredicate = NSPredicate(format: "toID == %@", AuthService.shared)
-        fetchRequest.predicate = docIDpredicate
+        let toIDPredicate = NSPredicate(format: "toID == %@", toID)
+        let fromIDPredicate = NSPredicate(format: "fromID == %@", fromID)
+        
+        let logicalANDPredicate = NSCompoundPredicate(
+            type: .and,
+            subpredicates: [docIDpredicate, fromIDPredicate, toIDPredicate]
+        )
+        
+        fetchRequest.predicate = logicalANDPredicate
         
         do {
             let snap = try persistentContainer.viewContext.fetch(fetchRequest)

@@ -129,69 +129,70 @@ extension ChatsDataStore {
     
     private func observeMatches() {
         
-        if let matches = getMatchesFromCD() {
-            for match in matches {
-                getMatchProfile(match)
-                observeMatchUserCore(for: match)
-                observeProfileImage(for: match)
-            }
-        }
+//        if let matches = getMatchesFromCD() {
+//            for match in matches {
+//                getMatchProfile(match)
+//                observeMatchUserCore(for: match)
+//                observeProfileImage(for: match)
+//            }
+//        }
         
-        MatchService_Firebase.shared.observeMatches() { [weak self] matches, change in
-            switch change {
-            case .added:
-                
-                var alreadyAdded: [String: Match] = [:]
-                
-                for match in matches {
-                    for alreadyAddedMatch in self!.matches {
-                        if match.docID == alreadyAddedMatch.matchDocID {
-                            // it is already added, so flag it
-                            alreadyAdded[match.docID] = match
+        MatchService_Firebase.shared.observeMatches() { [weak self] matches in
+            
+            var alreadyAdded: [String: Match] = [:]
+            
+            for match in matches {
+                if let change = match.changeType{
+                    switch change {
+                    case .added:
+                        
+                        for alreadyAddedMatch in self!.matches {
+                            if match.docID == alreadyAddedMatch.matchDocID {
+                                // it is already added, so flag it
+                                alreadyAdded[match.docID] = match
+                            }
+                        }
+                        
+                        if alreadyAdded[match.docID] == nil {
+                            MatchService_CoreData.shared.addMatch(match: match)
+                            self!.getMatchProfile(match)
+                            self!.observeMatchUserCore(for: match)
+                            self!.observeProfileImage(for: match)
+                        }
+                        
+                    case .modified:
+                        //A match should never be modified, it should only be added and removed
+                        print("")
+                        
+                    case .removed:
+                        for i in 0..<self!.matches.count {
+                            
+                            if self!.matches[i].uc.userBasic.uid == match.matchedUID {
+                                
+                                //Call these functions async
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    MatchService_CoreData.shared.deleteMatch(for: match.matchedUID)
+                                }
+                                
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    MessageService_CoreData.shared.deleteMessages(from: match.matchedUID)
+                                }
+                                
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    ProfileService.shared.deleteProfile(for: match.matchedUID)
+                                }
+                                
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    SnapService_CoreData.shared.deleteSnaps(from: match.matchedUID)
+                                }
+                                
+                                print("ChatsDataStore: removing user with uid -> \(match.matchedUID)")
+                                self!.matches.remove(at: i)
+                                return
+                            }
                         }
                     }
                 }
-                
-                for match in matches {
-                    if alreadyAdded[match.docID] == nil {
-                        MatchService_CoreData.shared.addMatch(match: match)
-                        self!.getMatchProfile(match)
-                        //for each match, we want to observe their UserCore
-                        self!.observeMatchUserCore(for: match)
-                        self!.observeProfileImage(for: match)
-                    }
-                }
-                
-            case .removed:
-                for i in 0..<self!.matches.count {
-                    for m in matches {
-                        if self!.matches[i].uc.userBasic.uid == m.matchedUID {
-                            
-                            //Call these functions async
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                MatchService_CoreData.shared.deleteMatch(for: m.matchedUID)      //DONE
-                            }
-                            
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                MessageService_CoreData.shared.deleteMessages(from: m.matchedUID)//DONE
-                            }
-                            
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                ProfileService.shared.deleteProfile(for: m.matchedUID)           //DONE
-                            }
-                            
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                SnapService_CoreData.shared.deleteSnaps(from: m.matchedUID)      //
-                            }
-                            
-                            print("ChatsDataStore: removing user with uid -> \(m.matchedUID)")
-                            self!.matches.remove(at: i)
-                            return
-                        }
-                    }
-                }
-            case .modified:
-                print("")
             }
         }
     }
@@ -499,7 +500,7 @@ extension ChatsDataStore {
                             .store(in: &self!.cancellables)
                         
                     case .modified:
-                        SnapService_CoreData.shared.updateSnap(snap: snap)
+                        SnapService_CoreData.shared.updateSnap(snap)
                         
                         if let _ = self?.snaps[snap.fromID] {
 //                            for i in 0..<(self?.snaps[snap.fromID]!.count)! {
@@ -516,7 +517,7 @@ extension ChatsDataStore {
                             }
                         }
                     case .removed:
-                        SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
+                        SnapService_CoreData.shared.deleteSnap(snap)
                         
                         if let _ = self?.snaps[snap.fromID] {
                             self?.snaps[snap.fromID] = self?.snaps[snap.fromID]?.filter { $0.docID != snap.docID }
@@ -552,7 +553,7 @@ extension ChatsDataStore {
                     case .added:
                         self?.setNewLastMessage(uid: snap.toID, date: snap.snapID_timestamp)
 
-                        SnapService_CoreData.shared.addSnap(snap: snap)
+                        //SnapService_CoreData.shared.addSnap(snap: snap)
                         
                         if let _ = self?.snaps[snap.toID] {
                             let insertIndex = self?.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
@@ -562,9 +563,10 @@ extension ChatsDataStore {
                         } else {
                             self?.snaps[snap.toID] = [snap]
                         }
+                        
                     case .modified:
                         
-                        SnapService_CoreData.shared.updateSnap(snap: snap)
+                        //SnapService_CoreData.shared.updateSnap(snap)
                         
                         if let _ = self?.snaps[snap.toID] {
                             if let i = self?.snaps[snap.toID]?.firstIndex(where: { $0.docID == snap.docID }) {
@@ -572,8 +574,9 @@ extension ChatsDataStore {
                                 print("ChatsDataStore: modified snap with id -> \(snap.docID)")
                             }
                         }
+                        
                     case .removed:
-                        SnapService_CoreData.shared.deleteSnap(docID: snap.docID)
+                        //SnapService_CoreData.shared.deleteSnap(snap)
                         
                         if let _ = self?.snaps[snap.toID] {
                             self?.snaps[snap.toID] = self?.snaps[snap.toID]!.filter { $0.docID != snap.docID }

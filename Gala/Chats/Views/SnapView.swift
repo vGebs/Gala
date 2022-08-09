@@ -13,9 +13,7 @@ protocol SnapProtocol {
 }
 
 struct SnapView: View {
-    //@State var counter: Int = 0
     @Binding var show: Bool
-    //var snaps: [Snap]
     var snapViewModel: ChatsViewModel
     var uid: String
     @Binding var snap: Snap?
@@ -28,11 +26,6 @@ struct SnapView: View {
                 } else {
                     videoPreview
                 }
-//                if let _ = snap.imgAssetData {
-//
-//                } else if let _ = snap.vidURL {
-//                    videoPreview
-//                }
                 
                 if let caption = snap.caption {
                     ZStack {

@@ -49,7 +49,7 @@ class MatchService_Firebase {
         }.eraseToAnyPublisher()
     }
     
-    func observeMatches(completion: @escaping ([Match], DocumentChangeType) -> Void) { //fromDate: Timestamp,
+    func observeMatches(completion: @escaping ([Match]) -> Void) { //fromDate: Timestamp,
         db.collection("Matches")
             .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
             .addSnapshotListener { documentSnapshot, error in
@@ -59,58 +59,24 @@ class MatchService_Firebase {
                 }
                 
                 var finalMatches: [Match] = []
-                var documentChangeType: DocumentChangeType = .added
                 
                 documentSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
                     let timestamp = data["time"] as? Timestamp
                     
-                    if change.type == .added {
-                        if let matchDate = timestamp?.dateValue(){
-                            if let uids = data["matched"] as? [String] {
-                                for uid in uids {
-                                    if uid != AuthService.shared.currentUser!.uid {
-                                        let match = Match(matchedUID: uid, timeMatched: matchDate, docID: change.document.documentID)
-                                        finalMatches.append(match)
-                                        print("MatchService: Added new match: \(uid)")
-                                    }
-                                }
-                            }
-                        }
-                    }
                     
-                    if change.type == .removed {
-                        if let matchDate = timestamp?.dateValue(){
-                            if let uids = data["matched"] as? [String] {
-                                for uid in uids {
-                                    if uid != AuthService.shared.currentUser!.uid {
-                                        let match = Match(matchedUID: uid, timeMatched: matchDate, docID: change.document.documentID)
-                                        finalMatches.append(match)
-                                        print("MatchService: removed match: \(uid)")
-                                    }
+                    if let matchDate = timestamp?.dateValue(){
+                        if let uids = data["matched"] as? [String] {
+                            for uid in uids {
+                                if uid != AuthService.shared.currentUser!.uid {
+                                    let match = Match(matchedUID: uid, timeMatched: matchDate, docID: change.document.documentID, changeType: change.type)
+                                    finalMatches.append(match)
                                 }
                             }
                         }
-                        
-                        documentChangeType = .removed
-                    }
-                    
-                    if change.type == .modified {
-                        if let matchDate = timestamp?.dateValue(){
-                            if let uids = data["matched"] as? [String] {
-                                for uid in uids {
-                                    if uid != AuthService.shared.currentUser!.uid {
-                                        let match = Match(matchedUID: uid, timeMatched: matchDate, docID: change.document.documentID)
-                                        finalMatches.append(match)
-                                        print("MatchService: Added new match: \(uid)")
-                                    }
-                                }
-                            }
-                        }
-                        documentChangeType = .modified
                     }
                 })
-                completion(finalMatches, documentChangeType)
+                completion(finalMatches)
             }
     }
     

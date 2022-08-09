@@ -104,7 +104,7 @@ class ChatsViewModel: ObservableObject {
         let snaps = getUnopenedSnaps(from: uid)
         
         if tempCounter < snaps.count {
-            if let snap = SnapService_CoreData.shared.getSnap(with: snaps[tempCounter].docID) {
+            if let snap = SnapService_CoreData.shared.getSnap(snaps[tempCounter]) {
                 self.tempSnap = snap
                 let mostRecent: Snap? = getMostRecentSnap(for: uid)
                 
@@ -119,6 +119,8 @@ class ChatsViewModel: ObservableObject {
                 }
                 
                 self.tempCounter += 1
+            } else {
+                print("Whats good")
             }
         }
     }
