@@ -219,7 +219,7 @@ extension LikesService {
         }.eraseToAnyPublisher()
     }
     
-    func observeBasicLikes(completion: @escaping ([Like], DocumentChangeType) -> Void) {
+    func observeBasicLikes(completion: @escaping ([Like]) -> Void) {
         db.collection("Likes")
             .whereField("likedUID", isEqualTo: AuthService.shared.currentUser!.uid)
             .whereField("basicLike", isEqualTo: true)
@@ -230,7 +230,6 @@ extension LikesService {
                     return
                 }
                 
-                var docChange: DocumentChangeType = .added
                 var f: [Like] = []
                 
                 if let snap = snap {
@@ -250,21 +249,14 @@ extension LikesService {
                                 likedUID: likedUID,
                                 nameOfLiker: name,
                                 birthdayOfLiker: birthdayOfLiker,
-                                storyID: nil
+                                changeType: change.type
                             )
 
                             f.append(newLike)
                         }
-                        
-                        if change.type == .modified {
-                            docChange = .modified
-                            
-                        } else if change.type == .removed {
-                            docChange = .removed
-                        }
                     })
                 }
-                completion(f, docChange)
+                completion(f)
             }
     }
 }
@@ -308,7 +300,7 @@ extension LikesService {
         }.eraseToAnyPublisher()
     }
     
-    func observeLikesForPost(pid: Date, completion: @escaping ([Like], DocumentChangeType) -> Void) {
+    func observeLikesForPost(pid: Date, completion: @escaping ([Like]) -> Void) {
 
         let timestamp = Timestamp(date: pid)
         
@@ -323,7 +315,6 @@ extension LikesService {
                 }
                 
                 var returns: [Like] = []
-                var docChange: DocumentChangeType = .removed
 
                 docSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -342,27 +333,21 @@ extension LikesService {
                             likedUID: likedUID,
                             nameOfLiker: name,
                             birthdayOfLiker: birthdayOfLiker,
-                            storyID: finalPid
+                            storyID: finalPid,
+                            changeType: change.type
                         )
                         print("new like here bitch")
                         returns.append(newLike)
                     }
-                    
-                    if change.type == .modified {
-                        docChange = .modified
-                        
-                    } else if change.type == .added {
-                        docChange = .added
-                    }
                 })
                 
-                completion(returns, docChange)
+                completion(returns)
             }
     }
 }
 
 extension LikesService {
-    func observeStoriesILiked(completion: @escaping ([SimpleStoryLike], DocumentChangeType) -> Void) {
+    func observeStoriesILiked(completion: @escaping ([SimpleStoryLike]) -> Void) {
         db.collection("Likes")
             .whereField("likerUID", isEqualTo: AuthService.shared.currentUser!.uid)
             .addSnapshotListener { docSnapshot, err in
@@ -372,7 +357,6 @@ extension LikesService {
                 }
                 
                 var returns: [SimpleStoryLike] = []
-                var docChange: DocumentChangeType = .added
 
                 docSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -383,24 +367,17 @@ extension LikesService {
                         let pid = data["postID"] as? Timestamp
                         
                         if let finalPid = pid?.dateValue() {
-                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID)
+                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID, changeType: change.type)
                             returns.append(simpleLike)
                         }
                     }
-                    
-                    if change.type == .modified {
-                        docChange = .modified
-                        
-                    } else if change.type == .removed {
-                        docChange = .removed
-                    }
                 })
                 
-                completion(returns, docChange)
+                completion(returns)
             }
     }
     
-    func observeIfILikedThisUser(uid: String, completion: @escaping ([SimpleStoryLike], DocumentChangeType) -> Void) {
+    func observeIfILikedThisUser(uid: String, completion: @escaping ([SimpleStoryLike]) -> Void) {
         db.collection("Likes")
             .whereField("likerUID", isEqualTo: AuthService.shared.currentUser!.uid)
             .whereField("likedUID", isEqualTo: uid)
@@ -411,7 +388,6 @@ extension LikesService {
                 }
                 
                 var returns: [SimpleStoryLike] = []
-                var docChange: DocumentChangeType = .removed
 
                 docSnapshot?.documentChanges.forEach({ change in
                     let data = change.document.data()
@@ -422,20 +398,13 @@ extension LikesService {
                         let pid = data["postID"] as? Timestamp
                         
                         if let finalPid = pid?.dateValue() {
-                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID)
+                            let simpleLike = SimpleStoryLike(likedUID: likedUID, pid: finalPid, docID: docID, changeType: change.type)
                             returns.append(simpleLike)
                         }
                     }
-                    
-                    if change.type == .modified {
-                        docChange = .modified
-                        
-                    } else if change.type == .added {
-                        docChange = .added
-                    }
                 })
                 
-                completion(returns, docChange)
+                completion(returns)
             }
     }
 }

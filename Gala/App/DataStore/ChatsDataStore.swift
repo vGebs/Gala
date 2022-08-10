@@ -25,11 +25,11 @@ class ChatsDataStore: ObservableObject {
     private var cancellables: [AnyCancellable] = []
     
     private init() {
-        self.initializer()
+        //self.initializer()
         
-//        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
-//            self?.initializer()
-//        }
+        let _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] timer in
+            self?.initializer()
+        }
     }
     
     public func initializer() {

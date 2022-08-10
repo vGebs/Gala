@@ -98,31 +98,25 @@ extension StoriesDataStore {
     }
     
     private func observeStoriesILiked() {
-        LikesService.shared.observeStoriesILiked { [weak self] storyLikes, change in
-            switch change {
-                
-            case .added:
-                for like in storyLikes {
-                    print("StoriesDataStore: added like")
-                    self?.postsILiked.append(like)
-                }
-                
-            case .modified:
-                for like in storyLikes {
-                    for i in 0..<(self?.postsILiked.count)! {
-                        if like.docID == (self?.postsILiked[i].docID)! {
+        LikesService.shared.observeStoriesILiked { [weak self] storyLikes in
+            
+            for like in storyLikes {
+                if let change = like.changeType {
+                    switch change {
+                    case .added:
+                        
+                        self?.postsILiked.append(like)
+                        print("StoriesDataStore: added like")
+                    case .modified:
+                        
+                        if let i = self?.postsILiked.firstIndex(where: { $0.docID == like.docID }) {
                             self?.postsILiked[i] = like
+                            print("StoriesDataStore: modified like with id -> \(like.docID)")
                         }
-                    }
-                }
-                
-            case .removed:
-                for story in storyLikes {
-                    for i in 0..<(self?.postsILiked.count)! {
-                        if story.docID == self?.postsILiked[i].docID {
-                            self?.postsILiked.remove(at: i)
-                            break
-                        }
+                    case .removed:
+                        
+                        self?.postsILiked = self!.postsILiked.filter { $0.docID != like.docID }
+                        print("StoriesDataStore: removed like with docID -> \(like.docID)")
                     }
                 }
             }

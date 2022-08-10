@@ -75,40 +75,42 @@ class StoryViewable: ObservableObject, Identifiable {
             }.store(in: &cancellables)
 
         
-        LikesService.shared.observeLikesForPost(pid: pid) { [weak self] likes, change in
-            switch change {
-            case .added:
-                for like in likes {
-                    ProfileService.shared.getProfile(uid: like.likerUID)
-                        .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                        .receive(on: DispatchQueue.main)
-                        .sink { completion in
-                            switch completion {
-                            case .failure(let e):
-                                print("StoryViewable: failed to fetch userCore and img")
-                                print("StoryViewable-err: \(e)")
-                            case .finished:
-                                print("StoryViewable: Successfully fetched userCore and img")
-                            }
-                        } receiveValue: { [weak self] uc, img in
-                            if let uc = uc, let img = img {
-                                let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: img)
-                                self?.likes.append(newLike)
-                            } else if let uc = uc {
-                                let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: nil)
-                                self?.likes.append(newLike)
-                            }
-                        }.store(in: &self!.cancellables)
-                }
-            case .modified:
-                print("")
-            case .removed:
-                for like in likes {
-                    for i in 0..<(self?.likes.count)! {
-                        if like.likerUID == self?.likes[i].like.likerUID {
-                            self?.likes.remove(at: i)
-                            break
+        LikesService.shared.observeLikesForPost(pid: pid) { [weak self] likes in
+            
+            for like in likes {
+                if let change = like.changeType {
+                    switch change {
+                    case .added:
+                        ProfileService.shared.getProfile(uid: like.likerUID)
+                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                            .receive(on: DispatchQueue.main)
+                            .sink { completion in
+                                switch completion {
+                                case .failure(let e):
+                                    print("StoryViewable: failed to fetch userCore and img")
+                                    print("StoryViewable-err: \(e)")
+                                case .finished:
+                                    print("StoryViewable: Successfully fetched userCore and img")
+                                }
+                            } receiveValue: { [weak self] uc, img in
+                                if let uc = uc, let img = img {
+                                    let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: img)
+                                    self?.likes.append(newLike)
+                                } else if let uc = uc {
+                                    let newLike = LikeWithProfile(like: like, userCore: uc, profileImg: nil)
+                                    self?.likes.append(newLike)
+                                }
+                            }.store(in: &self!.cancellables)
+                    case .modified:
+                        
+                        if let i = self?.likes.firstIndex(where: { $0.like.likerUID == like.likerUID }) {
+                            self?.likes[i].like = like
+                            print("Story: modified like")
                         }
+                        
+                    case .removed:
+                        self?.likes = self!.likes.filter { $0.like.likerUID != like.likerUID }
+                        print("Story: removed like")
                     }
                 }
             }

@@ -73,14 +73,18 @@ class UserPostSimple: Identifiable, ObservableObject {
     }
     
     func observeIfILikedThisUser() {
-        LikesService.shared.observeIfILikedThisUser(uid: uid) { [weak self] storyLikes, change in
-            switch change {
-            case .added:
-                self?.liked = true
-            case .modified:
-                self?.liked = true
-            case .removed:
-                self?.liked = false
+        LikesService.shared.observeIfILikedThisUser(uid: uid) { [weak self] storyLikes in
+            for storylike in storyLikes {
+                if let change = storylike.changeType {
+                    switch change {
+                    case .added:
+                        self?.liked = true
+                    case .modified:
+                        self?.liked = true
+                    case .removed:
+                        self?.liked = false
+                    }
+                }
             }
         }
     }
