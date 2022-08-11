@@ -219,6 +219,34 @@ class ChatsViewModel: ObservableObject {
             } receiveValue: { _ in }
             .store(in: &subs)
     }
+    
+    func snapsAreOpened(for uid: String) -> Bool {
+        if let snaps = snaps[uid] {
+            for snap in snaps {
+                if snap.openedDate == nil && snap.toID == AuthService.shared.currentUser!.uid {
+                    return false
+                }
+            }
+            
+            return true
+        } else {
+            return true
+        }
+    }
+    
+    func messagesAreOpened(for uid: String) -> Bool {
+        if let messages = matchMessages[uid] {
+            for message in messages {
+                if message.openedDate == nil && message.toID == AuthService.shared.currentUser!.uid {
+                    return false
+                }
+            }
+            
+            return true
+        } else {
+            return true
+        }
+    }
 }
 
 extension ChatsViewModel {

@@ -147,23 +147,31 @@ struct ConvoPreview: View {
                                 profileImg: ucMatch.profileImg
                             )
                             
-                            if let snaps = chatsViewModel.snaps[ucMatch.uc.userBasic.uid] {
-                                var allOpened = true
-                                for snap in snaps {
-                                    if snap.openedDate == nil {
-                                        allOpened = false
-                                    }
-                                }
-                                
-                                if allOpened {
-                                    chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
-                                }
-                            } else if let messages = chatsViewModel.matchMessages[ucMatch.uc.userBasic.uid]{
+//                            if let snaps = chatsViewModel.snaps[ucMatch.uc.userBasic.uid] {
+//                                var allOpened = true
+//                                for snap in snaps {
+//                                    if snap.openedDate == nil {
+//                                        allOpened = false
+//                                    }
+//                                }
+//
+//                                if allOpened {
+//                                    chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
+//                                }
+//                            } else
+                            
+                            if let messages = chatsViewModel.matchMessages[ucMatch.uc.userBasic.uid]{
                                 if !messages.isEmpty {
                                     if messages[messages.count - 1].openedDate == nil {
                                         chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
                                     }
                                 }
+                            }
+                            
+                            //if all chats and snaps are opened or nil, check to see if we have a notification from that user and remove it
+                            
+                            if chatsViewModel.snapsAreOpened(for: ucMatch.uc.userBasic.uid) && chatsViewModel.messagesAreOpened(for: ucMatch.uc.userBasic.uid) {
+                                chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
                             }
                             
                             self.showChat = true
