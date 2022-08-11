@@ -133,16 +133,3 @@ class NotificationService {
         }.eraseToAnyPublisher()
     }
 }
-
-
-//i need to test the new system
-
-//1. log out of sav
-//2. make sav 'loggedin' in firestore
-//3. send sav a message from demi and vaughn
-//4. send sav a snap from demi and vaughn
-
-//1. Test open all messages first
-//2. test opening all snaps first **WORKS**
-//3. test just opening snaps
-//4. test just opening messages **WORKS**

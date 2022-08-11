@@ -80,13 +80,25 @@ class MatchService_Firebase {
             }
     }
     
-    func unMatchUser(with docID: String) -> AnyPublisher<Void, Error> {
+    func unMatchUser(with docID: String, and uid: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
-            self!.db.collection("Matches").document(docID).delete() { err in
+            self!.db.collection("Matches").document(docID).delete() { [weak self] err in
                 if let e = err {
                     promise(.failure(e))
                 } else {
                     promise(.success(()))
+                    //if we unmatch we want to remove notifications from that user
+                    NotificationService.shared.removeNotification(uid)
+                        .sink { completion in
+                            switch completion {
+                            case .finished:
+                                print("MatchService_Firebase: finished removing notification from unMatched user")
+                            case .failure(let e):
+                                print("MatchService_Firebase: Failed to remove notification for UID -> \(uid)")
+                                print("MatchService_Firebase-err: \(e)")
+                            }
+                        } receiveValue: { _ in }
+                        .store(in: &self!.cancellables)
                 }
             }
         }.eraseToAnyPublisher()
