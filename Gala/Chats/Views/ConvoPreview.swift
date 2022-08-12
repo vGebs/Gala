@@ -160,9 +160,11 @@ struct ConvoPreview: View {
 //                                }
 //                            } else
                             
+                            
+                            //if the last message was to me and has not been opened, remove the notification
                             if let messages = chatsViewModel.matchMessages[ucMatch.uc.userBasic.uid]{
                                 if !messages.isEmpty {
-                                    if messages[messages.count - 1].openedDate == nil {
+                                    if messages[messages.count - 1].openedDate == nil && messages[messages.count - 1].toID == AuthService.shared.currentUser!.uid{
                                         chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
                                     }
                                 }
@@ -171,6 +173,7 @@ struct ConvoPreview: View {
                             //if all chats and snaps are opened or nil, check to see if we have a notification from that user and remove it
                             
                             if chatsViewModel.snapsAreOpened(for: ucMatch.uc.userBasic.uid) && chatsViewModel.messagesAreOpened(for: ucMatch.uc.userBasic.uid) {
+                                
                                 chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
                             }
                             
@@ -352,7 +355,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].snapID_timestamp.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(chatsViewModel.snaps[ucMatch.uc.userBasic.uid]![chatsViewModel.snaps[ucMatch.uc.userBasic.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()
@@ -437,7 +440,7 @@ struct ConvoPreview: View {
                 .foregroundColor(.accent)
             Image(systemName: "circlebadge.fill")
                 .font(.system(size: 5, weight: .regular, design: .rounded))
-            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].time.timeIntervalSinceNow)))
+            Text(secondsToHoursMinutesSeconds_(Int(messages[ucMatch.uc.userBasic.uid]![messages[ucMatch.uc.userBasic.uid]!.count - 1].openedDate!.timeIntervalSinceNow)))
                 .font(.system(size: 13, weight: .regular, design: .rounded))
                 .foregroundColor(.accent)
             Spacer()

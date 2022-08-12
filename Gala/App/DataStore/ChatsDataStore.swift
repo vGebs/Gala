@@ -406,100 +406,126 @@ extension ChatsDataStore {
                 if let change = snap.changeType {
                     switch change {
                     case .added:
-                        
-                        SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, isImage: snap.isImage)
-                            .subscribe(on: DispatchQueue.global(qos: .userInteractive))
-                            .receive(on: DispatchQueue.main)
-                            .sink { completion in
-                                switch completion {
-                                case .failure(let e):
-                                    print("ChatsDataStore: Failed to fetch snap with id: \(snap.snapID_timestamp)")
-                                    print("ChatsDataStore-err: \(e)")
-                                case .finished:
-                                    print("ChatsDataStore: Successfully fetched snap")
+                        if snap.openedDate == nil {
+                            SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, isImage: snap.isImage)
+                                .subscribe(on: DispatchQueue.global(qos: .userInteractive))
+                                .receive(on: DispatchQueue.main)
+                                .sink { completion in
+                                    switch completion {
+                                    case .failure(let e):
+                                        print("ChatsDataStore: Failed to fetch snap with id: \(snap.snapID_timestamp)")
+                                        print("ChatsDataStore-err: \(e)")
+                                    case .finished:
+                                        print("ChatsDataStore: Successfully fetched snap")
+                                    }
+                                } receiveValue: { [weak self] imgData, vidURL in
+                                    if let assetData = imgData {
+                                        var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: assetData, isImage: snap.isImage, docID: snap.docID)
+                                        
+                                        self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                        
+                                        if let caption = snap.caption {
+                                            
+                                            let newCaption = Caption(
+                                                captionText: caption.captionText,
+                                                textBoxHeight: caption.textBoxHeight,
+                                                yCoordinate: caption.yCoordinate
+                                            )
+                                            
+                                            newSnap.caption = newCaption
+                                        }
+                                        
+                                        SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                        
+                                        newSnap.imgAssetData = nil
+                                        
+                                        if let _ = self?.snaps[snap.fromID] {
+                                            let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                            
+                                            self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                            
+                                        } else {
+                                            self?.snaps[snap.fromID] = [newSnap]
+                                        }
+                                    } else if let vidURL = vidURL {
+                                        var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
+                                        
+                                        self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                        
+                                        if let caption = snap.caption {
+                                            
+                                            let newCaption = Caption(
+                                                captionText: caption.captionText,
+                                                textBoxHeight: caption.textBoxHeight,
+                                                yCoordinate: caption.yCoordinate
+                                            )
+                                            
+                                            newSnap.caption = newCaption
+                                        }
+                                        
+                                        SnapService_CoreData.shared.addSnap(snap: newSnap)
+                                        
+                                        if let _ = self?.snaps[snap.fromID] {
+                                            let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                            
+                                            self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                            
+                                        } else {
+                                            self?.snaps[snap.fromID] = [newSnap]
+                                        }
+                                    } else {
+                                        var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, isImage: snap.isImage, docID: snap.docID)
+                                        
+                                        self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                                        
+                                        if let caption = snap.caption {
+                                            
+                                            let newCaption = Caption(
+                                                captionText: caption.captionText,
+                                                textBoxHeight: caption.textBoxHeight,
+                                                yCoordinate: caption.yCoordinate
+                                            )
+                                            
+                                            newSnap.caption = newCaption
+                                        }
+                                        
+                                        if let _ = self?.snaps[snap.fromID] {
+                                            let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                            
+                                            self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                            
+                                        } else {
+                                            self?.snaps[snap.fromID] = [newSnap]
+                                        }
+                                    }
                                 }
-                            } receiveValue: { [weak self] imgData, vidURL in
-                                if let assetData = imgData {
-                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, imgAssetData: assetData, isImage: snap.isImage, docID: snap.docID)
-                                    
-                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-                                    
-                                    if let caption = snap.caption {
-                                        
-                                        let newCaption = Caption(
-                                            captionText: caption.captionText,
-                                            textBoxHeight: caption.textBoxHeight,
-                                            yCoordinate: caption.yCoordinate
-                                        )
-                                        
-                                        newSnap.caption = newCaption
-                                    }
-                                    
-                                    SnapService_CoreData.shared.addSnap(snap: newSnap)
-                                    
-                                    newSnap.imgAssetData = nil
-                                    
-                                    if let _ = self?.snaps[snap.fromID] {
-                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                        
-                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                        
-                                    } else {
-                                        self?.snaps[snap.fromID] = [newSnap]
-                                    }
-                                } else if let vidURL = vidURL {
-                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, vidURL: vidURL, isImage: snap.isImage, docID: snap.docID)
-                                    
-                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-                                    
-                                    if let caption = snap.caption {
-                                        
-                                        let newCaption = Caption(
-                                            captionText: caption.captionText,
-                                            textBoxHeight: caption.textBoxHeight,
-                                            yCoordinate: caption.yCoordinate
-                                        )
-                                        
-                                        newSnap.caption = newCaption
-                                    }
-                                    
-                                    SnapService_CoreData.shared.addSnap(snap: newSnap)
-                                    
-                                    if let _ = self?.snaps[snap.fromID] {
-                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                        
-                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                        
-                                    } else {
-                                        self?.snaps[snap.fromID] = [newSnap]
-                                    }
-                                } else {
-                                    var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, isImage: snap.isImage, docID: snap.docID)
-                                    
-                                    self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
-                                    
-                                    if let caption = snap.caption {
-                                        
-                                        let newCaption = Caption(
-                                            captionText: caption.captionText,
-                                            textBoxHeight: caption.textBoxHeight,
-                                            yCoordinate: caption.yCoordinate
-                                        )
-                                        
-                                        newSnap.caption = newCaption
-                                    }
-                                    
-                                    if let _ = self?.snaps[snap.fromID] {
-                                        let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
-                                        
-                                        self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
-                                        
-                                    } else {
-                                        self?.snaps[snap.fromID] = [newSnap]
-                                    }
-                                }
+                                .store(in: &self!.cancellables)
+                        } else {
+                            var newSnap = Snap(fromID: snap.fromID, toID: snap.toID, snapID: snap.snapID_timestamp, openedDate: snap.openedDate, isImage: snap.isImage, docID: snap.docID)
+                            
+                            self?.setNewLastMessage(uid: snap.fromID, date: snap.snapID_timestamp)
+                            
+                            if let caption = snap.caption {
+                                
+                                let newCaption = Caption(
+                                    captionText: caption.captionText,
+                                    textBoxHeight: caption.textBoxHeight,
+                                    yCoordinate: caption.yCoordinate
+                                )
+                                
+                                newSnap.caption = newCaption
                             }
-                            .store(in: &self!.cancellables)
+                            
+                            if let _ = self?.snaps[snap.fromID] {
+                                let insertIndex = self?.snaps[snap.fromID]!.insertionIndexOf(newSnap, isOrderedBefore: {$0.snapID_timestamp < $1.snapID_timestamp})
+                                
+                                self?.snaps[snap.fromID]?.insert(newSnap, at: insertIndex!)
+                                
+                            } else {
+                                self?.snaps[snap.fromID] = [newSnap]
+                            }
+                        }
+                        
                         
                     case .modified:
                         SnapService_CoreData.shared.updateSnap(snap)
