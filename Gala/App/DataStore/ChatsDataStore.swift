@@ -68,7 +68,28 @@ class ChatsDataStore: ObservableObject {
     
     func getTempMessages(uid: String) {
         if let msgs = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
-            self.tempMessages = msgs
+            //we need to filter out outdated messages
+            
+            var oldOpenedMessage: Date?
+            
+            for message in msgs {
+                if message.openedDate != nil {
+                    if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                        if oldOpenedMessage == nil {
+                            oldOpenedMessage = message.openedDate
+                        } else if oldOpenedMessage! < message.openedDate! {
+                            oldOpenedMessage = message.openedDate
+                        }
+                    }
+                }
+            }
+            
+            if let o = oldOpenedMessage {
+                self.tempMessages = msgs.filter { $0.time > o }
+            } else {
+                self.tempMessages = msgs
+            }
+            
         } else {
             self.tempMessages = []
         }
@@ -498,6 +519,28 @@ extension ChatsDataStore {
                                             self?.snaps[snap.fromID] = [newSnap]
                                         }
                                     }
+                                    
+                                    var oldOpenedMessage: Date?
+                                    
+                                    if let messages = self?.messages[snap.fromID] {
+                                        for message in messages {
+                                            if message.openedDate != nil {
+                                                if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                                                    if oldOpenedMessage == nil {
+                                                        oldOpenedMessage = message.openedDate
+                                                    } else if oldOpenedMessage! < message.openedDate! {
+                                                        oldOpenedMessage = message.openedDate
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        //now we filter out all messages older than the oldOpenedDate
+                                        if let newestOpenedMessage = oldOpenedMessage {
+                                            self!.checkForAnyOpenedMessagesAndDelete(snap.fromID, date: newestOpenedMessage, docID: "")
+                                        }
+                                    }
+                                    
                                 }
                                 .store(in: &self!.cancellables)
                         } else {
@@ -531,12 +574,6 @@ extension ChatsDataStore {
                         SnapService_CoreData.shared.updateSnap(snap)
                         
                         if let _ = self?.snaps[snap.fromID] {
-//                            for i in 0..<(self?.snaps[snap.fromID]!.count)! {
-//                                if self?.snaps[snap.fromID]![i].docID == snap.docID {
-//                                    self?.snaps[snap.fromID]![i] = snap
-//                                    print("ChatsDataStore: modified snap with id -> \(snap.docID)")
-//                                }
-//                            }
                             
                             //test this
                             if let i = self?.snaps[snap.fromID]?.firstIndex(where: { $0.docID == snap.docID }) {
@@ -592,6 +629,29 @@ extension ChatsDataStore {
                             self?.snaps[snap.toID] = [snap]
                         }
                         
+                        //we added the new snap, now we need to make sure there isnt any messages left that are older than 24hrs
+                        var oldOpenedMessage: Date?
+                        
+                        if let messages = self?.messages[snap.toID] {
+                            for message in messages {
+                                if message.openedDate != nil {
+                                    if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                                        if oldOpenedMessage == nil {
+                                            oldOpenedMessage = message.openedDate
+                                        } else if oldOpenedMessage! < message.openedDate! {
+                                            oldOpenedMessage = message.openedDate
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            //now we filter out all messages older than the oldOpenedDate
+                            if let newestOpenedMessage = oldOpenedMessage {
+                                self!.checkForAnyOpenedMessagesAndDelete(snap.toID, date: newestOpenedMessage, docID: "")
+                            }
+                        }
+                        
+                        
                     case .modified:
                         
                         //SnapService_CoreData.shared.updateSnap(snap)
@@ -608,6 +668,7 @@ extension ChatsDataStore {
                         
                         if let _ = self?.snaps[snap.toID] {
                             self?.snaps[snap.toID] = self?.snaps[snap.toID]!.filter { $0.docID != snap.docID }
+                            print("ChatsDataStore: Removed snap with docID: \(snap.docID)")
                         }
                     }
                 }
@@ -624,6 +685,17 @@ extension ChatsDataStore {
         
         getMostRecentMessagesCD()
         
+//        1. Is it opened?
+//             - if no, add it
+//             - if yes, #2
+//        2. How long ago was it opened?
+//             - if it is less than 24hrs, keep it
+//             - else #3
+//        3. Is it the most recent message/snap
+//             - if its not, delete it
+//             - if it is,
+//                  - remove all messages that are older than the openedDate
+//                  - then add it
         observeChatsFromMe()
         observeChatsToMe()
     }
@@ -635,26 +707,56 @@ extension ChatsDataStore {
                 if let change = message.changeType {
                     switch change {
                     case .added:
-                        MessageService_CoreData.shared.addMessage(msg: message)
                         
-                        self?.setNewLastMessage(uid: message.toID, date: message.time)
-                        self?.checkForAnyOpenedSnapsAndDelete(message.toID)
-                        
-                        if let _ = self?.messages[message.toID] {
-                            let insertIndex = self?.messages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                            self?.messages[message.toID]?.insert(message, at: insertIndex!)
+                        if let openedDate = message.openedDate {
+                            //it is opened, now is it older than 24hrs
+
+                            if let diff = Calendar.current.dateComponents([.hour], from: openedDate, to: Date()).hour, diff >= 24 {
+                                //it is older than 24hrs
+                                //check to see if it was the last form of communication, is so, we add it
+                                if self!.isMostRecent(message.time, uid: message.toID) {
+                                    //if it is the most recent, we delete all open messages
+                                    self?.checkForAnyOpenedMessagesAndDelete(message.toID, date: openedDate, docID: message.docID)
+                                    //we then add it
+                                    self?.addNewMessageFromMe(message)
+                                } else {
+                                    self?.deleteMessage(message)
+                                }
+                                
+                            } else {
+                                //it is not older than 24hrs, keep it (we keep messages for 24 hours then delete them)
+                                //if we get a new message in chat while the app is opened, we must check if there is any outstanding openedChats and delete them
+                                self?.checkForAnyOpenedMessagesAndDelete(message.toID, date: message.time, docID: message.docID)
+                                self!.addNewMessageFromMe(message)
+                            }
+
+                        } else {
+                            //before we add a new message that hasnt been opened, we have to make sure that there is no opened messages older than 24hrs and if there is, delete that message and all messages that are sent before the opened date
                             
-                            //After each insertion we will then delete all other values in the array, only leaving the most recent
-                            if let last = self?.messages[message.toID]?.last {
-                                self?.messages[message.toID] = [last]
+                            var oldOpenedMessage: Date?
+                            
+                            if let messages = self?.messages[message.toID] {
+                                for message in messages {
+                                    if message.openedDate != nil {
+                                        if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                                            if oldOpenedMessage == nil {
+                                                oldOpenedMessage = message.openedDate
+                                            } else if oldOpenedMessage! < message.openedDate! {
+                                                oldOpenedMessage = message.openedDate
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                //now we filter out all messages older than the oldOpenedDate
+                                if let newestOpenedMessage = oldOpenedMessage {
+                                    self!.checkForAnyOpenedMessagesAndDelete(message.toID, date: newestOpenedMessage, docID: message.docID)
+                                }
                             }
                             
-                            print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
-                            
-                        } else {
-                            self?.messages[message.toID] = [message]
-                            print("ChatsDataStore: Fetched message from me (created): \(message.message)")
+                            self!.addNewMessageFromMe(message)
                         }
+                        
                     case .modified:
                         
                         MessageService_CoreData.shared.updateMessage(message: message)
@@ -698,38 +800,51 @@ extension ChatsDataStore {
                     switch change {
                     case .added:
                         
-                        self?.setNewLastMessage(uid: message.fromID, date: message.time)
-                        
-                        MessageService_CoreData.shared.addMessage(msg: message)
-                        
-                        if let _ = self?.messages[message.fromID] {
-                            let insertIndex = self?.messages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+                        if let openedDate = message.openedDate { //DONE
+                            //it is opened, now is it older than 24hrs
+
+                            if let diff = Calendar.current.dateComponents([.hour], from: openedDate, to: Date()).hour, diff >= 24 {
+                                //it is older than 24hrs
+                                //check to see if it was the last form of communication, is so, we add it
+                                if self!.isMostRecent(message.time, uid: message.fromID) {
+                                    //if it is the most recent, we delete all open messages
+                                    self?.checkForAnyOpenedMessagesAndDelete(message.fromID, date: openedDate, docID: message.docID)
+                                    //we then add it
+                                    self?.addNewMessageToMe(message)
+                                } else {
+                                    self?.deleteMessage(message)
+                                }
+                                
+                            } else { //DONE
+                                //it is not older than 24hrs, keep it (we keep messages for 24 hours then delete them)
+                                self!.addNewMessageToMe(message)
+                            }
+
+                        } else { //DONE
+                            //before we add a new message that hasnt been opened, we have to make sure that there is no opened messages older than 24hrs and if there is, delete that message and all messages that are sent before the opened date
                             
-                            self?.messages[message.fromID]?.insert(message, at: insertIndex!)
+                            var oldOpenedMessage: Date?
                             
-                            //After each insertion we will then delete all other values in the array, only leaving the most recent
-                            if let last = self?.messages[message.fromID]?.last {
-                                self?.messages[message.fromID] = [last]
+                            if let messages = self?.messages[message.fromID] {
+                                for message in messages {
+                                    if message.openedDate != nil {
+                                        if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                                            if oldOpenedMessage == nil {
+                                                oldOpenedMessage = message.openedDate
+                                            } else if oldOpenedMessage! < message.openedDate! {
+                                                oldOpenedMessage = message.openedDate
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                //now we filter out all messages older than the oldOpenedDate
+                                if let newestOpenedMessage = oldOpenedMessage {
+                                    self!.checkForAnyOpenedMessagesAndDelete(message.fromID, date: newestOpenedMessage, docID: message.docID)
+                                }
                             }
                             
-                            print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
-                        } else {
-                            self?.messages[message.fromID] = [message]
-                            print("ChatsDataStore: Fetched message to me (created): \(message.message)")
-                        }
-                        
-                        var isCurrentConvo = false
-                        
-                        for i in 0..<self!.tempMessages.count {
-                            if self?.tempMessages[i].fromID == message.fromID || self?.tempMessages[i].toID == message.fromID {
-                                isCurrentConvo = true
-                            }
-                        }
-                        
-                        if isCurrentConvo {
-                            let insertIndex = self?.tempMessages.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
-                            
-                            self?.tempMessages.insert(message, at: insertIndex!)
+                            self!.addNewMessageToMe(message)
                         }
                         
                     case .modified:
@@ -822,6 +937,128 @@ extension ChatsDataStore {
         }
         
         matches = matches.reversed()
+    }
+    
+    private func addNewMessageFromMe(_ message: Message) {
+        MessageService_CoreData.shared.addMessage(msg: message)
+        
+        self.setNewLastMessage(uid: message.toID, date: message.time)
+        self.checkForAnyOpenedSnapsAndDelete(message.toID)
+        
+        if let _ = self.messages[message.toID] {
+            let insertIndex = self.messages[message.toID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+            self.messages[message.toID]?.insert(message, at: insertIndex)
+            
+            //After each insertion we will then delete all other values in the array, only leaving the most recent
+            if let last = self.messages[message.toID]?.last {
+                self.messages[message.toID] = [last]
+            }
+            
+            print("ChatsDataStore: Fetched message from me (appended): \(message.message)")
+            
+        } else {
+            self.messages[message.toID] = [message]
+            print("ChatsDataStore: Fetched message from me (created): \(message.message)")
+        }
+    }
+    
+    private func addNewMessageToMe(_ message: Message) {
+        self.setNewLastMessage(uid: message.fromID, date: message.time)
+        
+        MessageService_CoreData.shared.addMessage(msg: message)
+        
+        if let _ = self.messages[message.fromID] {
+            let insertIndex = self.messages[message.fromID]!.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+            
+            self.messages[message.fromID]?.insert(message, at: insertIndex)
+            
+            //After each insertion we will then delete all other values in the array, only leaving the most recent
+            if let last = self.messages[message.fromID]?.last {
+                self.messages[message.fromID] = [last]
+            }
+            
+            print("ChatsDataStore: Fetched message to me (appended): \(message.message)")
+        } else {
+            self.messages[message.fromID] = [message]
+            print("ChatsDataStore: Fetched message to me (created): \(message.message)")
+        }
+        
+        var isCurrentConvo = false
+        
+        for i in 0..<self.tempMessages.count {
+            if self.tempMessages[i].fromID == message.fromID || self.tempMessages[i].toID == message.fromID {
+                isCurrentConvo = true
+            }
+        }
+        
+        if isCurrentConvo {
+            let insertIndex = self.tempMessages.insertionIndexOf(message, isOrderedBefore: { $0.time < $1.time })
+            
+            self.tempMessages.insert(message, at: insertIndex)
+        }
+    }
+    
+    private func isMostRecent(_ time: Date, uid: String) -> Bool {
+        
+        func isMessageMoreRecent(_ time: Date, uid: String) -> Bool {
+            
+            if let msgs = self.messages[uid] {
+                for msg in msgs {
+                    if msg.time > time {
+                        //the message is newer, so remove all opened messages
+                        return false
+                    }
+                }
+                return true
+            }
+            return true
+        }
+        
+        func isMoreRecentSnap(_ time: Date, uid: String) -> Bool {
+            if let snaps = self.snaps[uid] {
+                for snap in snaps {
+                    if snap.snapID_timestamp > time {
+                        //the message is newer, so remove all opened messages
+                        return false
+                    }
+                }
+                return true
+            }
+            return true
+        }
+        
+        let val = isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
+        
+        print("isMostRecent: \(val ? "True" : "false")")
+        
+        return isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
+    }
+    
+    private func deleteMessage(_ message: Message) {
+        MessageService_Firebase.shared.deleteMessage(message: message)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("ChatsDataStore: Finished deleting old message")
+                case .failure(let e):
+                    print("ChatsDataStore: Failed to delete old message")
+                    print("ChatsDataStore-err: \(e)")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+    
+    private func checkForAnyOpenedMessagesAndDelete(_ uid: String, date: Date, docID: String) {
+        //Delete all messages that have a time sent older than the lastOpenedDate
+        
+        if let _ = self.messages[uid] {
+            let toBeDeleted = self.messages[uid]!.filter { $0.time < date }
+            for message in toBeDeleted {
+                if message.docID != docID {
+                    self.deleteMessage(message)
+                }
+            }
+        }
     }
     
     private func checkForAnyOpenedSnapsAndDelete(_ toUID: String) {

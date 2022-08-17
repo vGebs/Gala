@@ -51,6 +51,20 @@ class MessageService_Firebase: MessageServiceProtocol {
         }.eraseToAnyPublisher()
     }
     
+    func deleteMessage(message: Message) -> void {
+        return Future<Void, Error> { [weak self] promise in
+            self?.db.collection("Messages").document(message.docID).delete() { err in
+                if let e = err {
+                    print("MessageService_Firebase: Failed to delete Message")
+                    print("MessageService_Firebase-err: \(e)")
+                    promise(.failure(e))
+                }
+                
+                promise(.success(()))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
     func openMessage(message: Message) -> void {
         //we want to open the last message only since we are only checking the value of the most recent message
         return Future<Void, Error> { [weak self] promise in

@@ -368,7 +368,7 @@ exports.everyMinuteSchedule = functions.pubsub.schedule('* * * * *').onRun((cont
     //  3. Delete old snaps (24 hrs after opened)    
     //  4. Delete any old stories (24 hrs)
 
-    deleteOldMessages()
+    //deleteOldMessages()
     deleteOldRecentlyJoinedUsers()
     deleteOldStories()
     return;
