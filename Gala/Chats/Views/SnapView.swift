@@ -14,18 +14,15 @@ protocol SnapProtocol {
 
 struct SnapView: View {
     @Binding var show: Bool
-    var snapViewModel: ChatsViewModel
+    @ObservedObject var snapViewModel: ChatsViewModel
     var uid: String
     @Binding var snap: Snap?
     
     var body: some View {
         ZStack {
             if let snap = snap {
-                if snap.isImage {
-                    imagePreview
-                } else {
-                    videoPreview
-                }
+                
+                snapPreview
                 
                 if let caption = snap.caption {
                     ZStack {
@@ -46,58 +43,35 @@ struct SnapView: View {
         }
     }
     
-    var videoPreview: some View {
-        assetSnapView(snap: snap!, vm: snapViewModel) {
+    var snapPreview: some View {
+        assetSnapView(snap: snap!) {
             if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
                 show = false
             } else {
                 snapViewModel.getSnap(for: uid)
             }
         } onDisappear: {
-            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
-                //we have viewed all the snaps
-                
-                if let snaps = snapViewModel.matchMessages[uid] {
-                    if snaps[snaps.count - 1].openedDate != nil {
+            if !show {
+                if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
+                    //we have viewed all the snaps
+                    
+                    if let snaps = snapViewModel.matchMessages[uid] {
+                        if snaps[snaps.count - 1].openedDate != nil {
+                            snapViewModel.removeNotification(uid)
+                        }
+                    } else {
                         snapViewModel.removeNotification(uid)
                     }
-                } else {
-                    snapViewModel.removeNotification(uid)
                 }
-            }
-            
-            snapViewModel.clearSnaps(for: uid)
-        }
-    }
-    
-    var imagePreview: some View {
-        assetSnapView(snap: snap!, vm: snapViewModel) {
-            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
-                show = false
-            } else {
-                snapViewModel.getSnap(for: uid)
-            }
-        } onDisappear: {
-            if snapViewModel.tempCounter == snapViewModel.getUnopenedSnaps(from: uid).count {
-                //we have viewed all the snaps
                 
-                if let snaps = snapViewModel.matchMessages[uid] {
-                    if snaps[snaps.count - 1].openedDate != nil {
-                        snapViewModel.removeNotification(uid)
-                    }
-                } else {
-                    snapViewModel.removeNotification(uid)
-                }
+                snapViewModel.clearSnaps(for: uid)
             }
-            
-            snapViewModel.clearSnaps(for: uid)
         }
     }
 }
 
 struct assetSnapView: View {
     var snap: Snap
-    var vm: ChatsViewModel
     var onTap: () -> Void
     var onDisappear: () -> Void
 

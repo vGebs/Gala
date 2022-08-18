@@ -119,8 +119,6 @@ class ChatsViewModel: ObservableObject {
                 }
                 
                 self.tempCounter += 1
-            } else {
-                print("Whats good")
             }
         }
     }

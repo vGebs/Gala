@@ -147,20 +147,6 @@ struct ConvoPreview: View {
                                 profileImg: ucMatch.profileImg
                             )
                             
-//                            if let snaps = chatsViewModel.snaps[ucMatch.uc.userBasic.uid] {
-//                                var allOpened = true
-//                                for snap in snaps {
-//                                    if snap.openedDate == nil {
-//                                        allOpened = false
-//                                    }
-//                                }
-//
-//                                if allOpened {
-//                                    chatsViewModel.removeNotification(ucMatch.uc.userBasic.uid)
-//                                }
-//                            } else
-                            
-                            
                             //if the last message was to me and has not been opened, remove the notification
                             if let messages = chatsViewModel.matchMessages[ucMatch.uc.userBasic.uid]{
                                 if !messages.isEmpty {
