@@ -1,123 +1,113 @@
 //
 //  NavBar.swift
-//  Gala_Final
+//  Gala
 //
-//  Created by Vaughn on 2021-05-03.
+//  Created by Vaughn on 2022-08-18.
 //
 
 import SwiftUI
+import Combine
 
-struct NavBarNN: View {
-    
+struct NavBar: View {
     @Binding var offset: CGFloat
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        
-        ZStack {
-            Color.black
-            
-            HStack{
-                Spacer()
-                //MessagesView
-                ZStack {
-                    Color.black
-                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+        VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.black)
+                    .opacity(0.85)
+                
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke()
+                    .foregroundColor(.accent)
+                
+                HStack {
                     
-                    HStack {
-                        Image(systemName: "message")
-                            .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                            //.foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        Image(systemName: "poweron")
-                            .font(.system(size: 10, weight: .light, design: .rounded))
-                            .foregroundColor(Color(.systemTeal))
-                            .opacity(self.offset == 0 ? 1 : 0)
-                        //.opacity(offset == screenWidth ? 1 : 0)
-                    }
-                }
-                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                .onTapGesture {
-                    withAnimation{
-                        if self.offset != 0 {
-                            simpleSuccess()
+                    Image(systemName: "message")
+                        .font(.system(
+                            size: 21,
+                            weight: self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? .bold : .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(self.offset >= 0 && self.offset < (screenWidth - screenWidth * 0.5) ? .primary : .white)
+                        .padding(.leading)
+                        .onTapGesture {
+                            withAnimation{
+                                self.offset = 0
+                            }
                         }
-                        
-                        self.offset = 0
-                    }
-                }
-
-                Spacer()
-        //CameraView
-                ZStack {
-                    Color.black
-                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
                     
-                    HStack {
-                        Image(systemName: "camera")
-                            .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                            //.foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        Image(systemName: "poweron")
-                            .font(.system(size: 10, weight: .light, design: .rounded))
-                            .opacity(offset == screenWidth ? 1 : 0)
-                        //.opacity(self.offset == screenWidth * 2 ? 1 : 0)
-                            .foregroundColor(Color(.systemTeal))
-
-                    }
-                }
-                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                .onTapGesture {
-                    withAnimation{
-                        if self.offset != screenWidth {
-                            simpleSuccess()
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == 0 ? 1 : 0)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth ? 1 : 0)
+                    
+                    Image(systemName: "camera")
+                        .font(.system(
+                                size: 21,
+                                weight: self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? .bold : .light,
+                                design: .rounded
+                        ))
+                        .foregroundColor(self.offset >= screenWidth * 0.5 && self.offset < ((screenWidth * 2) - screenWidth * 0.5) ? .primary : .white)
+                        .onTapGesture {
+                            withAnimation{
+                                self.offset = screenWidth
+                            }
                         }
-                        
-                        self.offset = screenWidth
-                    }
-                }
                     
-                Spacer()
-        //ExploreView
-                ZStack {
-                    Color.black
-                        .frame(width: screenWidth / 5.5, height: screenWidth / 8)
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth ? 1 : 0)
                     
-                    HStack {
-                        Image(systemName: "person.2")
-                            .font(.system(size: 21, weight: .light, design: .rounded))
-                            .foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        //.foregroundColor(self.offset >= ((screenWidth * 3) - screenWidth * 0.5) && self.offset < ((screenWidth * 4) - screenWidth * 0.5) ? Color(.systemTeal) : .accent)
-                        
-                        Image(systemName: "poweron")
-                            .font(.system(size: 10, weight: .light, design: .rounded))
-                            .opacity(self.offset == screenWidth * 2 ? 1 : 0)
-                        //.opacity(self.offset == screenWidth * 3 ? 1 : 0)
-                            .foregroundColor(Color(.systemTeal))
-
-                    }
-                }
-                .frame(width: screenWidth / 5.5, height: screenWidth / 8)
-                .onTapGesture {
-                    withAnimation {
-                        if self.offset != screenWidth * 2 {
-                            simpleSuccess()
+                    Spacer()
+                    
+                    Image(systemName: "poweron")
+                        .font(.system(
+                            size: 11,
+                            weight: .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(.white)
+                        .opacity(offset == screenWidth * 2 ? 1 : 0)
+                    
+                    Image(systemName: "person.2")
+                        .font(.system(
+                            size: 21,
+                            weight: self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? .bold : .light,
+                            design: .rounded
+                        ))
+                        .foregroundColor(self.offset >= ((screenWidth * 2) - screenWidth * 0.5) && self.offset < ((screenWidth * 3) - screenWidth * 0.5) ? .primary : .white)
+                        .padding(.trailing)
+                        .onTapGesture {
+                            withAnimation {
+                                self.offset = screenWidth * 2
+                            }
                         }
-                        
-                        self.offset = screenWidth * 2
-                    }
                 }
-                Spacer()
             }
+            .frame(width: screenWidth * 0.6, height: screenWidth / 8)
         }
-        .frame(width: screenWidth, height: screenWidth / 8)
-    }
-    
-    func simpleSuccess(){
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.success)
     }
 }
+

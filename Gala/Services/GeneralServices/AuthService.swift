@@ -15,7 +15,6 @@ protocol AuthServiceProtocol {
     func createAcountWithEmail(email: String, password: String) -> AnyPublisher<Void, Error>
     func signIn(email: String, password: String) -> AnyPublisher<UserCore?, Error>
     func logout() -> AnyPublisher<Void, Error>
-    func observeAuthChanges() -> AnyPublisher<User?, Never>
 }
 
 class AuthService: AuthServiceProtocol{
@@ -69,10 +68,6 @@ class AuthService: AuthServiceProtocol{
             }
         }
         .eraseToAnyPublisher()
-    }
-    
-    func observeAuthChanges() -> AnyPublisher<User?, Never> {
-        Publishers.AuthPublisher().eraseToAnyPublisher()
     }
 }
 
