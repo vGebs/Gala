@@ -6,6 +6,119 @@ const db = admin.firestore();
 
 //FCM Payload info: https://customer.io/docs/push-custom-payloads/#fcm-custom-push-payload
 
+exports.onMatchDeletion = functions.firestore.document("Matches/{docID}")
+    .onDelete(async (snap, context) => {
+        const snapDoc = snap.data();
+
+        //we need to get the UIDs from the array
+
+        let matchedArray = snapDoc.matched;
+        let uid1 = "";
+        let uid2 = "";
+
+        for (let i = 0; i < matchedArray.length; i++) {
+            if (i == 0) {
+                uid1 = matchedArray[i];
+            } else if (i == 1) {
+                uid2 = matchedArray[i];
+            }
+        }
+
+        console.log("User 1 uid: " + uid1);
+        console.log("User 2 uid: " + uid2);
+
+        let messageCollection = db.collection("Messages");
+        let snapsCollection = db.collection("Snaps");
+
+        if (uid1 != "" && uid2 != "") {
+            //we then need to fetch all messages:
+            // to user1 - from user2
+            // to user2 - from user1
+
+            try {
+                const toUser1Query = await messageCollection.where("toID", "==", uid1).where("fromID", "==", uid2).get();
+
+                toUser1Query.forEach((doc) => {
+                    //we now have to delete all messages 
+                    let docID = doc.id;
+
+                    messageCollection.doc(docID).delete();
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to fetch messages to UID1 -> " + uid1);
+                console.log("onMatchDeletion-err: " + e);
+            }
+
+            try {
+                const toUser2Query = await messageCollection.where("toID", "==", uid2).where("fromID", "==", uid1).get();
+
+                toUser2Query.forEach((doc) => {
+                    //we now have to delete all messages 
+                    let docID = doc.id;
+
+                    messageCollection.doc(docID).delete();
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to fetch messages to UID2 -> " + uid2);
+                console.log("onMatchDeletion-err: " + e);
+            }
+
+            //we then need to fetch all snaps
+            // to user1 - from user2
+            // to user2 - from user1
+
+            try {
+                const toUser1Query = await snapsCollection.where("toID", "==", uid1).where("fromID", "==", uid2).get();
+
+                //we then to delete all snap docs
+                toUser1Query.forEach((doc) => {
+                    let docID = doc.id;
+
+                    snapsCollection.doc(docID).delete();
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to fetch snaps to UID1 -> " + uid1);
+                console.log("onMatchDeletion-err: " + e);
+            }
+
+            try {
+                const toUser2Query = await snapsCollection.where("toID", "==", uid2).where("fromID", "==", uid1).get();
+
+                //we then to delete all snap docs
+                toUser2Query.forEach((doc) => {
+                    let docID = doc.id;
+
+                    snapsCollection.doc(docID).delete();
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to fetch snaps to UID2 -> " + uid2);
+                console.log("onMatchDeletion-err: " + e);
+            }
+
+
+            //we then need to delete the snap asset folder for that user 
+            //Delete: Snaps/user1UID/user2UID
+            //Delete: Snaps/user2UID/user1UID
+            try {
+                await admin.storage().bucket("gala-e23aa.appspot.com").deleteFiles({
+                    prefix: `Snaps/${uid1}/${uid2}`
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to delete snap assets to UID1 -> " + uid1);
+                console.log("onMatchDeletion-err: " + e);
+            }
+
+            try {
+                await admin.storage().bucket("gala-e23aa.appspot.com").deleteFiles({
+                    prefix: `Snaps/${uid2}/${uid1}`
+                });
+            } catch (e) {
+                console.log("onMatchDeletion: Failed to delete snap assets to UID2 -> " + uid2);
+                console.log("onMatchDeletion-err: " + e);
+            }
+        }
+    })
+
 exports.snapNotification = functions.firestore.document("Snaps/{docID}")
     .onCreate(async (snap, context) => {
         //on new snap we need to send a notification to the toID

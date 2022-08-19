@@ -428,7 +428,7 @@ extension ChatsDataStore {
                     switch change {
                     case .added:
                         if snap.openedDate == nil {
-                            SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, isImage: snap.isImage)
+                            SnapService.shared.fetchSnapAsset(snapID: snap.snapID_timestamp, fromID: snap.fromID, isImage: snap.isImage)
                                 .subscribe(on: DispatchQueue.global(qos: .userInteractive))
                                 .receive(on: DispatchQueue.main)
                                 .sink { completion in
