@@ -176,20 +176,25 @@ class SnapService: SnapServiceProtocol {
                 }
             } else {
                
-                let saveToUrl = getDocumentsDirectory().appendingPathComponent("\(UUID().uuidString).mov")
+                let saveToUrl = getDocumentsDirectory().appendingPathComponent("\(fromID)/\(snapID).mov")
                 
-                imgFileRef.write(toFile: saveToUrl) { url, error in
-                    if let e = error {
-                        promise(.failure(e))
-                    } else {
-                        if let url = url {
-                            print("SnapService: Successfully wrote video to url: \(url)")
-                            promise(.success((nil, url)))
+                //if !FileManager.default.fileExists(atPath: saveToUrl.path) {
+                    imgFileRef.write(toFile: saveToUrl) { url, error in
+                        if let e = error {
+                            promise(.failure(e))
                         } else {
-                            promise(.success((nil, nil)))
+                            if let url = url {
+                                print("SnapService: Successfully wrote video to url: \(url)")
+                                promise(.success((nil, url)))
+                            } else {
+                                promise(.success((nil, nil)))
+                            }
                         }
                     }
-                }
+//                } else {
+//                    print("we already have the video")
+//                    promise(.success((nil, saveToUrl)))
+//                }
             }
         }.eraseToAnyPublisher()
     }
