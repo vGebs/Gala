@@ -33,6 +33,7 @@ struct CameraBtn: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         tap = false
                     }
+                    AppState.shared.showSnapPreview = true
                 }
             }
             .gesture(longPress)
@@ -76,6 +77,7 @@ struct CameraBtn: View {
                     self.timeRemaining = 100
                 }
                 camera.stopRecording()
+                AppState.shared.showSnapPreview = true
             }
     }
         

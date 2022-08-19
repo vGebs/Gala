@@ -31,7 +31,7 @@ struct ContentView: View {
                 chatView
             }
             
-            if camera.image != nil || camera.videoURL != nil {
+            if (camera.image != nil || camera.videoURL != nil) && AppState.shared.showSnapPreview == true {
                 PicTakenView(camera: camera, sendPressed: $camera.sendPressed)
             }
         }

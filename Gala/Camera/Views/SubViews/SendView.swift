@@ -50,10 +50,10 @@ struct SendView: View {
                         self.viewModel.send(vid: URL(fileURLWithPath: vidURLPath), caption: caption)
                     }
                     
-                    self.camera.deleteAsset()
                     self.viewModel.selectedVibe = ""
                     self.viewModel.selectedMatch = ""
                     self.isPresented = false
+                    AppState.shared.showSnapPreview = false
                 }){
                     postButton
                 }

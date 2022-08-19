@@ -306,6 +306,11 @@ extension SnapService {
         
         return Future<Void, Error> { promise in
             let _ = imgFileRef.putData(asset, metadata: nil) { (metaData, error) in
+                
+                if !isImage {
+                    AppState.shared.cameraVM!.deleteAsset()
+                }
+                
                 if let error = error {
                     promise(.failure(error))
                 } else {

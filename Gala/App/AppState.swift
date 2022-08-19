@@ -26,6 +26,8 @@ class AppState: ObservableObject {
     @Published var signUpPageActive = false
     @Published var createAccountPressed = false
     
+    @Published var showSnapPreview = false
+    
     //ProfileInfo for passing of data
     @Published var profileInfo: ProfileViewInfo = ProfileViewInfo(name: "", age: Date(), email: "")
     

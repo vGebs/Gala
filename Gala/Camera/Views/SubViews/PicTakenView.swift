@@ -60,16 +60,18 @@ struct PicTakenView: View {
             }
             
             if let url = camera.videoURL {
-                VStack {
-                    PlayerView(url: url)
-                        .frame(height: screenHeight * 0.91)
-                        .cornerRadius(20)
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                            self.showTextEditor.toggle()
-                        }
-                    
-                    Spacer()
+                if !sendPressed {
+                    VStack {
+                        PlayerView(url: url)
+                            .frame(height: screenHeight * 0.91)
+                            .cornerRadius(20)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                self.showTextEditor.toggle()
+                            }
+                        
+                        Spacer()
+                    }
                 }
             }
             
@@ -100,7 +102,10 @@ struct PicTakenView: View {
             
             VStack{
                 HStack{
-                    Button(action: { camera.deleteAsset() }){
+                    Button(action: {
+                        camera.deleteAsset()
+                        AppState.shared.showSnapPreview = false
+                    }){
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
                                 .foregroundColor(.black)
