@@ -265,11 +265,11 @@ extension SnapService {
             self?.db.collection("Snaps").document(snap.docID)
                 .updateData(["openedDate": Date()]) { err in
                     if let e = err {
-                        print("ChatService: Failed to update document")
-                        print("ChatService-err: \(e)")
+                        print("SnapService: Failed to update document")
+                        print("SnapService-err: \(e)")
                         promise(.failure(e))
                     } else {
-                        print("ChatService: Successfully updated document")
+                        print("SnapService: Successfully updated document")
                         promise(.success(()))
                     }
                 }

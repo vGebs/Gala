@@ -14,8 +14,8 @@ protocol MessageServiceProtocol {
     
     func sendMessage(message: String, toID: String) -> void
     func openMessage(message: Message) -> void
-    func observeChatsFromMe(completion: @escaping ([Message]) -> Void)
-    func observeChatsToMe(completion: @escaping ([Message]) -> Void)
+    func observeChatsFromMe(olderThan date: Date, completion: @escaping ([Message]) -> Void)
+    func observeChatsToMe(olderThan date: Date, completion: @escaping ([Message]) -> Void)
 }
 
 class MessageService_Firebase: MessageServiceProtocol {
@@ -40,11 +40,11 @@ class MessageService_Firebase: MessageServiceProtocol {
                     "timestamp": Date()
                 ]){ err in
                     if let err = err {
-                        print("ChatService: Failed to send message to id: \(toID)")
-                        print("ChatService-Error: \(err.localizedDescription)")
+                        print("MessageService_Firebase: Failed to send message to id: \(toID)")
+                        print("MessageService_Firebase-Error: \(err.localizedDescription)")
                         promise(.failure(err))
                     } else {
-                        print("ChatService: Successfully send message to user with id: \(toID)")
+                        print("MessageService_Firebase: Successfully send message to user with id: \(toID)")
                         promise(.success(()))
                     }
                 }
@@ -71,11 +71,11 @@ class MessageService_Firebase: MessageServiceProtocol {
             self?.db.collection("Messages").document(message.docID)
                 .updateData(["openedDate": Date()]) { err in
                     if let e = err {
-                        print("ChatService: Failed to update document")
-                        print("ChatService-err: \(e)")
+                        print("MessageService_Firebase: Failed to update document")
+                        print("MessageService_Firebase-err: \(e)")
                         promise(.failure(e))
                     } else {
-                        print("ChatService: Successfully updated document")
+                        print("MessageService_Firebase: Successfully updated document")
                         promise(.success(()))
                     }
                 }
@@ -84,15 +84,15 @@ class MessageService_Firebase: MessageServiceProtocol {
 }
 
 extension MessageService_Firebase {
-    func observeChatsFromMe(completion: @escaping ([Message]) -> Void) {
+    func observeChatsFromMe(olderThan date: Date, completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
-            //.whereField("timestamp", isGreaterThan: date)
+            .whereField("timestamp", isGreaterThanOrEqualTo: date)
             .order(by: "timestamp")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
-                    print("ChatsDataStore: Failed to observe chats from me")
-                    print("ChatsDataStore-err: \(error!)")
+                    print("MessageService_Firebase: Failed to observe chats from me")
+                    print("MessageService_Firebase-err: \(error!)")
                     return
                 }
                 
@@ -123,15 +123,15 @@ extension MessageService_Firebase {
             }
     }
     
-    func observeChatsToMe(completion: @escaping ([Message]) -> Void) {
+    func observeChatsToMe(olderThan date: Date, completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
-            //.whereField("timestamp", isGreaterThan: date)
+            .whereField("timestamp", isGreaterThanOrEqualTo: date)
             .order(by: "timestamp")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
-                    print("ChatsDataStore: Failed to observe chats from me")
-                    print("ChatsDataStore-err: \(error!)")
+                    print("MessageService_Firebase: Failed to observe chats from me")
+                    print("MessageService_Firebase-err: \(error!)")
                     return
                 }
                 
@@ -160,6 +160,41 @@ extension MessageService_Firebase {
                 })
                 completion(final)
             }
+    }
+    
+    func observeMessage(for docID: String, completion: @escaping (Message?) -> Void) {
+        db.collection("Messages").document(docID).addSnapshotListener { documentSnapshot, error in
+            guard let doc = documentSnapshot else {
+                print("MessageService_Firebase: Failed to observe chats from me")
+                print("MessageService_Firebase-err: \(error!)")
+                return
+            }
+            
+            if doc.exists {
+                var message: Message?
+                if let data = doc.data() {
+                    let fromID = data["fromID"] as? String ?? ""
+                    let toID = data["toID"] as? String ?? ""
+                    let messageText = data["message"] as? String ?? ""
+                    let opened = data["openedDate"] as? Timestamp
+                    let timestamp = data["timestamp"] as? Timestamp
+                    
+                    if let date = timestamp?.dateValue() {
+                        if let o = opened {
+                            message = Message(message: messageText, toID: toID, fromID: fromID, time: date, openedDate: o.dateValue(), docID: doc.documentID)
+                            
+                        } else {
+                            message = Message(message: messageText, toID: toID, fromID: fromID, time: date, docID: doc.documentID)
+                            
+                        }
+                    }
+                }
+                
+                completion(message)
+            } else {
+                completion(nil)
+            }
+        }
     }
 }
 

@@ -682,8 +682,20 @@ extension ChatsDataStore {
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
     private func observeChats() {
+        //we are setting the most recent message for all of our matches
+        setMostRecentMessagesFromCD()
         
-        getMostRecentMessagesCD()
+        //As we enter the app, we should check for messages in core data that have been opened for longer that 24hrs, we then delete all messages that are older than 24hrs
+        
+        if let matches = getMatchesFromCD() {
+            for match in matches {
+                //we also need to get observe every most recent message from that user
+                deleteOutDatedMessages(for: match.matchedUID)
+                if let mostRecentMessage = MessageService_CoreData.shared.getMostRecentMessage(for: match.matchedUID){
+                    observeMessage(mostRecentMessage)
+                }
+            }
+        }
         
 //        1. Is it opened?
 //             - if no, add it
@@ -696,12 +708,113 @@ extension ChatsDataStore {
 //             - if it is,
 //                  - remove all messages that are older than the openedDate
 //                  - then add it
-        observeChatsFromMe()
-        observeChatsToMe()
+        
+        if let newestMessageDate = getNewestMessageDate() {
+            observeChatsFromMe(olderThan: newestMessageDate)
+            observeChatsToMe(olderThan: newestMessageDate)
+        } else {
+            observeChatsFromMe(olderThan: Date("2020-06-12"))
+            observeChatsToMe(olderThan: Date("2020-06-12"))
+        }
     }
     
-    private func observeChatsFromMe() {
-        MessageService_Firebase.shared.observeChatsFromMe() { [weak self] messages in
+    private func observeMessage(_ msg: Message) {
+        MessageService_Firebase.shared.observeMessage(for: msg.docID) { [weak self] message in
+            if let message = message {
+                //update
+                MessageService_CoreData.shared.updateMessage(message: message)
+                if message.fromID == AuthService.shared.currentUser!.uid {
+                    if let messages = self?.messages[message.toID] {
+                        for i in 0..<messages.count {
+                            if messages[i].docID == msg.docID {
+                                self?.messages[message.toID]![i] = message
+                            }
+                        }
+                    } else {
+                        self?.messages[message.toID] = [message]
+                    }
+                } else {
+                    if let messages = self?.messages[message.fromID] {
+                        for i in 0..<messages.count {
+                            if messages[i].docID == msg.docID {
+                                self?.messages[message.fromID]![i] = message
+                            }
+                        }
+                    } else {
+                        self?.messages[message.fromID] = [message]
+                    }
+                }
+            } else {
+                //remove
+                MessageService_CoreData.shared.deleteMessage(with: msg.docID)
+                if msg.fromID == AuthService.shared.currentUser!.uid {
+                    if let _ = self?.messages[msg.toID] {
+                        self?.messages[msg.toID] = self?.messages[msg.toID]!.filter { $0.docID != msg.docID }
+                        self?.tempMessages = self!.tempMessages.filter { $0.docID != msg.docID }
+                    }
+                } else {
+                    if let _ = self?.messages[msg.fromID] {
+                        self?.messages[msg.fromID] = self?.messages[msg.fromID]!.filter { $0.docID != msg.docID }
+                        self?.tempMessages = self!.tempMessages.filter { $0.docID != msg.docID }
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    private func deleteOutDatedMessages(for uid: String) {
+        var oldOpenedMessage: Date?
+        var docID: String?
+        if let messages = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
+            for message in messages {
+                if message.openedDate != nil {
+                    if let diff = Calendar.current.dateComponents([.hour], from: message.openedDate!, to: Date()).hour, diff >= 24 {
+                        if oldOpenedMessage == nil {
+                            oldOpenedMessage = message.openedDate
+                            docID = message.docID
+                        } else if oldOpenedMessage! < message.openedDate! {
+                            oldOpenedMessage = message.openedDate
+                            docID = message.docID
+                        }
+                    }
+                }
+            }
+            
+            //now we filter out all messages older than the oldOpenedDate
+            if let newestOpenedMessage = oldOpenedMessage {
+                self.checkForAnyOpenedMessagesAndDelete(uid, date: newestOpenedMessage, docID: docID!)
+            }
+        }
+    }
+    
+    private func getNewestMessageDate() -> Date? {
+        if let messages = MessageService_CoreData.shared.getAllMessages() {
+            var newestDate: Date?
+            
+            //we want to get the most recent message, openedDate does not matter
+            // OpenedDate does not matter because we are querying for chats that have a greater sent date
+            // We also need to be able to observe the most recent chat for updates because we only care about listening in on the most recent message
+            // we only care about listening to the most recent message because if it is read/opened we need to update the object so we know which messages to delete in the future
+            
+            for message in messages {
+                if newestDate == nil {
+                    newestDate = message.time
+                } else {
+                    if newestDate! < message.time {
+                        newestDate = message.time
+                    }
+                }
+            }
+            
+            return newestDate
+        } else {
+            return nil
+        }
+    }
+    
+    private func observeChatsFromMe(olderThan date: Date) {
+        MessageService_Firebase.shared.observeChatsFromMe(olderThan: date) { [weak self] messages in
             
             for message in messages {
                 if let change = message.changeType {
@@ -792,8 +905,8 @@ extension ChatsDataStore {
         }
     }
     
-    private func observeChatsToMe() {
-        MessageService_Firebase.shared.observeChatsToMe() { [weak self] messages in
+    private func observeChatsToMe(olderThan date: Date) {
+        MessageService_Firebase.shared.observeChatsToMe(olderThan: date) { [weak self] messages in
             
             for message in messages {
                 if let change = message.changeType {
@@ -883,7 +996,7 @@ extension ChatsDataStore {
         }
     }
     
-    private func getMostRecentMessagesCD() {
+    private func setMostRecentMessagesFromCD() {
         //we want to fetch all messages and place only the newest element in the array
         if let messages = MessageService_CoreData.shared.getAllMessages() {
             for message in messages {
@@ -1027,9 +1140,7 @@ extension ChatsDataStore {
             return true
         }
         
-        let val = isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
-        
-        print("isMostRecent: \(val ? "True" : "false")")
+        //let val = isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
         
         return isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
     }
@@ -1044,21 +1155,32 @@ extension ChatsDataStore {
                     print("ChatsDataStore: Failed to delete old message")
                     print("ChatsDataStore-err: \(e)")
                 }
-            } receiveValue: { _ in }
+            } receiveValue: { _ in
+                MessageService_CoreData.shared.deleteMessage(with: message.docID)
+            }
             .store(in: &cancellables)
     }
     
     private func checkForAnyOpenedMessagesAndDelete(_ uid: String, date: Date, docID: String) {
         //Delete all messages that have a time sent older than the lastOpenedDate
         
-        if let _ = self.messages[uid] {
-            let toBeDeleted = self.messages[uid]!.filter { $0.time < date }
+        if let messages = MessageService_CoreData.shared.getAllMessages(fromUserWith: uid) {
+            let toBeDeleted = messages.filter { $0.time < date }
             for message in toBeDeleted {
                 if message.docID != docID {
                     self.deleteMessage(message)
                 }
             }
         }
+        
+//        if let _ = self.messages[uid] {
+//            let toBeDeleted = self.messages[uid]!.filter { $0.time < date }
+//            for message in toBeDeleted {
+//                if message.docID != docID {
+//                    self.deleteMessage(message)
+//                }
+//            }
+//        }
     }
     
     private func checkForAnyOpenedSnapsAndDelete(_ toUID: String) {
