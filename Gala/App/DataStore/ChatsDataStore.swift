@@ -98,42 +98,6 @@ class ChatsDataStore: ObservableObject {
     func clearTempMessages() {
         self.tempMessages = []
     }
-    
-    func unMatchUser(with uid: String) {
-        var docID: String = ""
-        
-        for match in matches {
-            if match.uc.userBasic.uid == uid {
-                docID = match.matchDocID
-            }
-        }
-        
-        if docID != "" {
-            MatchService_Firebase.shared.unMatchUser(with: docID, and: uid)
-                .subscribe(on: DispatchQueue.global(qos: .userInitiated))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case .failure(let e):
-                        print("ChatsDataStore: Failed to unMatch user with uid: \(uid)")
-                        print("ChatsDataStore-err: \(e)")
-                    case .finished:
-                        print("ChatsDataStore: Finished unMatching from user w/ uid -> \(uid)")
-                    }
-                } receiveValue: { _ in
-                    
-                    let matchedStories = DataStore.shared.stories.matchedStories
-                    
-                    for i in 0..<matchedStories.count {
-                        if matchedStories[i].uid == uid {
-                            DataStore.shared.stories.matchedStories.remove(at: i)
-                            return
-                        }
-                    }
-                }
-                .store(in: &cancellables)
-        }
-    }
 }
 
 
@@ -152,13 +116,13 @@ extension ChatsDataStore {
     
     private func observeMatches() {
         
-//        if let matches = getMatchesFromCD() {
-//            for match in matches {
-//                getMatchProfile(match)
-//                observeMatchUserCore(for: match)
-//                observeProfileImage(for: match)
-//            }
-//        }
+        if let matches = getMatchesFromCD() {
+            for match in matches {
+                getMatchProfile(match)
+                observeMatchUserCore(for: match)
+                observeProfileImage(for: match)
+            }
+        }
         
         MatchService_Firebase.shared.observeMatches() { [weak self] matches in
             
@@ -193,25 +157,25 @@ extension ChatsDataStore {
                             if self!.matches[i].uc.userBasic.uid == match.matchedUID {
                                 
                                 //Call these functions async
-                                DispatchQueue.global(qos: .userInitiated).async {
+                                DispatchQueue.global(qos: .userInteractive).async {
                                     MatchService_CoreData.shared.deleteMatch(for: match.matchedUID)
                                 }
                                 
-                                DispatchQueue.global(qos: .userInitiated).async {
+                                DispatchQueue.global(qos: .userInteractive).async {
                                     MessageService_CoreData.shared.deleteMessages(from: match.matchedUID)
                                 }
                                 
-                                DispatchQueue.global(qos: .userInitiated).async {
+                                DispatchQueue.global(qos: .userInteractive).async {
                                     ProfileService.shared.deleteProfile(for: match.matchedUID)
                                 }
                                 
-                                DispatchQueue.global(qos: .userInitiated).async {
+                                DispatchQueue.global(qos: .userInteractive).async {
                                     SnapService_CoreData.shared.deleteSnaps(from: match.matchedUID)
                                 }
                                 
                                 print("ChatsDataStore: removing user with uid -> \(match.matchedUID)")
                                 self!.matches.remove(at: i)
-                                return
+                                break
                             }
                         }
                     }
@@ -412,16 +376,137 @@ extension ChatsDataStore {
 //MARK: - Observe Snaps ------------------------------------------------------------------------------------------->
 //MARK: ----------------------------------------------------------------------------------------------------------->
 extension ChatsDataStore {
+    private func observeSnap(_ snap: Snap) {
+        SnapService.shared.observeSnap(snap.docID) { [weak self] snapReturn in
+            if let s = snapReturn {
+                //it is there so update it
+                if s.openedDate != nil {
+                    SnapService_CoreData.shared.updateSnap(s)
+                }
+                
+                if s.fromID == AuthService.shared.currentUser!.uid {
+                    if let _ = self?.snaps[s.toID] {
+                        if let i = self?.snaps[s.toID]?.firstIndex(where: { $0.docID == s.docID }) {
+                            self?.snaps[s.toID]?[i] = s
+                            print("ChatsDataStore: modified snap with id -> \(s.docID)")
+                        }
+                    }
+                    
+                } else {
+                    if let _ = self?.snaps[s.fromID] {
+                        if let i = self?.snaps[s.fromID]?.firstIndex(where: { $0.docID == s.docID }) {
+                            self?.snaps[s.fromID]?[i] = s
+                            print("ChatsDataStore: modified snap with id -> \(s.docID)")
+                        }
+                    }
+                }
+            } else {
+                //it is not there, so remove it
+                SnapService_CoreData.shared.deleteSnap(snap)
+                if snap.fromID == AuthService.shared.currentUser!.uid {
+                    if let _ = self?.snaps[snap.toID] {
+                        self?.snaps[snap.toID] = self!.snaps[snap.toID]!.filter { $0.docID != snap.docID }
+                    }
+                } else {
+                    if let _ = self?.snaps[snap.fromID] {
+                        self?.snaps[snap.fromID] = self!.snaps[snap.fromID]!.filter { $0.docID != snap.docID }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func removeOutDatedSnaps(for uid: String) {
+        if let _ = snaps[uid] {
+            //we need to get the most recent snap
+
+            if let mostRecentSnap = SnapService_CoreData.shared.getMostRecentSnap(for: uid) {
+
+                let final = self.snaps[uid]!.filter { $0.docID == mostRecentSnap.docID || $0.openedDate == nil }
+                let toBeDeleted = self.snaps[uid]!.filter { $0.docID != mostRecentSnap.docID && $0.openedDate != nil }
+
+                self.snaps[uid] = final
+
+                for snap in toBeDeleted {
+                    print("deleted outdated snap")
+                    self.deleteSnap(snap)
+                }
+            }
+        }
+    }
+    
+    private func getAllSnapsfromCD() {
+        if let snaps = SnapService_CoreData.shared.getAllSnaps(with: AuthService.shared.currentUser!.uid) {
+            for snap in snaps {
+                
+                if snap.fromID == AuthService.shared.currentUser!.uid {
+                    //snap is from me
+                    if let _ = self.snaps[snap.toID] {
+                        
+                        let insertIndex = self.snaps[snap.toID]!.insertionIndexOf(snap, isOrderedBefore: { $0.snapID_timestamp < $1.snapID_timestamp })
+                        
+                        self.snaps[snap.toID]?.insert(snap, at: insertIndex)
+                        
+                        //after we insert, we need to delete any opened snaps (assuming there it is not the most recent)
+                        removeOutDatedSnaps(for: snap.toID)
+                    } else {
+                        self.snaps[snap.toID] = [snap]
+                    }
+                } else {
+                    if let _ = self.snaps[snap.fromID] {
+                        let insertIndex = self.snaps[snap.fromID]!.insertionIndexOf(snap, isOrderedBefore: { $0.snapID_timestamp < $1.snapID_timestamp })
+                        
+                        self.snaps[snap.fromID]?.insert(snap, at: insertIndex)
+                        
+                        //after we insert, we need to delete any opened snaps (assuming there it is not the most recent)
+                        removeOutDatedSnaps(for: snap.fromID)
+                    } else {
+                        self.snaps[snap.fromID] = [snap]
+                    }
+                }
+            }
+        }
+    }
+    
     private func observeSnaps() {
         
         //before we observe all snaps, we need to fetch all the snaps we can from core data
         
-        observeSnapsToMe()
-        observeSnapsFromMe()
+        getAllSnapsfromCD()
+        
+        if let matches = getMatchesFromCD() {
+            for match in matches {
+                //we also need to get observe every most recent message from that user
+                //deleteOutDatedMessages(for: match.matchedUID)
+                if let mostRecentSnap = SnapService_CoreData.shared.getMostRecentSnap(for: match.matchedUID){
+                    observeSnap(mostRecentSnap)
+                }
+            }
+        }
+        
+        if let newestSnapDate = getNewestSnapDate() {
+            let calendar = Calendar.current
+            let queryDate = calendar.date(byAdding: .second, value: 1, to: newestSnapDate)
+            
+            observeSnapsToMe(newerThan: queryDate!)
+            observeSnapsFromMe(newerThan: queryDate!)
+            
+        } else {
+            observeSnapsToMe(newerThan: Date("2020-06-12"))
+            observeSnapsFromMe(newerThan: Date("2020-06-12"))
+        }
     }
     
-    private func observeSnapsToMe() {
-        SnapService.shared.observeSnapsToMe() { [weak self] snaps in
+    private func getNewestSnapDate() -> Date? {
+        if let mostRecentSnap = SnapService_CoreData.shared
+            .getMostRecentSnap(for: AuthService.shared.currentUser!.uid) {
+            return mostRecentSnap.snapID_timestamp
+        }
+        return nil
+    }
+    
+    private func observeSnapsToMe(newerThan date: Date) {
+        SnapService.shared.observeSnapsToMe(newerThan: date) { [weak self] snaps in
             
             for snap in snaps {
                 if let change = snap.changeType {
@@ -609,8 +694,8 @@ extension ChatsDataStore {
             .store(in: &cancellables)
     }
     
-    private func observeSnapsFromMe() {
-        SnapService.shared.observerSnapsfromMe { [weak self] snaps in
+    private func observeSnapsFromMe(newerThan date: Date) {
+        SnapService.shared.observerSnapsfromMe(newerThan: date) { [weak self] snaps in
             
             for snap in snaps {
                 if let change = snap.changeType {
@@ -710,11 +795,15 @@ extension ChatsDataStore {
 //                  - then add it
         
         if let newestMessageDate = getNewestMessageDate() {
-            observeChatsFromMe(olderThan: newestMessageDate)
-            observeChatsToMe(olderThan: newestMessageDate)
+            
+            let calendar = Calendar.current
+            let queryDate = calendar.date(byAdding: .second, value: 1, to: newestMessageDate)
+            
+            observeChatsFromMe(newerThan: queryDate!)
+            observeChatsToMe(newerThan: queryDate!)
         } else {
-            observeChatsFromMe(olderThan: Date("2020-06-12"))
-            observeChatsToMe(olderThan: Date("2020-06-12"))
+            observeChatsFromMe(newerThan: Date("2020-06-12"))
+            observeChatsToMe(newerThan: Date("2020-06-12"))
         }
     }
     
@@ -813,8 +902,8 @@ extension ChatsDataStore {
         }
     }
     
-    private func observeChatsFromMe(olderThan date: Date) {
-        MessageService_Firebase.shared.observeChatsFromMe(olderThan: date) { [weak self] messages in
+    private func observeChatsFromMe(newerThan date: Date) {
+        MessageService_Firebase.shared.observeChatsFromMe(newerThan: date) { [weak self] messages in
             
             for message in messages {
                 if let change = message.changeType {
@@ -905,8 +994,8 @@ extension ChatsDataStore {
         }
     }
     
-    private func observeChatsToMe(olderThan date: Date) {
-        MessageService_Firebase.shared.observeChatsToMe(olderThan: date) { [weak self] messages in
+    private func observeChatsToMe(newerThan date: Date) {
+        MessageService_Firebase.shared.observeChatsToMe(newerThan: date) { [weak self] messages in
             
             for message in messages {
                 if let change = message.changeType {
@@ -1140,8 +1229,6 @@ extension ChatsDataStore {
             return true
         }
         
-        //let val = isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
-        
         return isMessageMoreRecent(time, uid: uid) && isMoreRecentSnap(time, uid: uid)
     }
     
@@ -1172,15 +1259,6 @@ extension ChatsDataStore {
                 }
             }
         }
-        
-//        if let _ = self.messages[uid] {
-//            let toBeDeleted = self.messages[uid]!.filter { $0.time < date }
-//            for message in toBeDeleted {
-//                if message.docID != docID {
-//                    self.deleteMessage(message)
-//                }
-//            }
-//        }
     }
     
     private func checkForAnyOpenedSnapsAndDelete(_ toUID: String) {

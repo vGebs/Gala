@@ -26,8 +26,9 @@ class SnapService: SnapServiceProtocol {
 
     private init() {}
     
-    func observeSnapsToMe(completion: @escaping ([Snap]) -> Void) {
+    func observeSnapsToMe(newerThan date: Date, completion: @escaping ([Snap]) -> Void) {
         db.collection("Snaps")
+            .whereField("snapID_timestamp", isGreaterThan: date)
             .whereField("toID", isEqualTo: String(AuthService.shared.currentUser!.uid))
             .order(by: "snapID_timestamp")
             .addSnapshotListener { documentSnapshot, error in
@@ -88,8 +89,9 @@ class SnapService: SnapServiceProtocol {
             }
     }
     
-    func observerSnapsfromMe(completion: @escaping ([Snap]) -> Void) {
+    func observerSnapsfromMe(newerThan date: Date, completion: @escaping ([Snap]) -> Void) {
         db.collection("Snaps")
+            .whereField("snapID_timestamp", isGreaterThan: date)
             .whereField("fromID", isEqualTo: String(AuthService.shared.currentUser!.uid))
             .order(by: "snapID_timestamp")
             .addSnapshotListener { documentSnapshot, error in
@@ -122,6 +124,45 @@ class SnapService: SnapServiceProtocol {
                 })
                 
                 completion(final)
+            }
+    }
+    
+    func observeSnap(_ docID: String, completion: @escaping (Snap?) -> Void) {
+        db.collection("Snaps").document(docID)
+            .addSnapshotListener { documentSnapshot, err in
+                if let e = err {
+                    print("SnapService: Failed to observe snap with docID: \(docID)")
+                    print("SnapService-err: \(e)")
+                }
+                
+                guard let doc = documentSnapshot else {
+                    print("SnapService_Firebase: Failed to observe chats from me")
+                    print("SnapService_Firebase-err: \(err!)")
+                    return
+                }
+                
+                if doc.exists {
+                    var snap: Snap?
+                    if let data = doc.data() {
+                        let toID = data["toID"] as? String ?? ""
+                        let fromID = data["fromID"] as? String ?? ""
+                        let openedDate = data["openedDate"] as? Timestamp
+                        let isImage = data["isImage"] as? Bool
+                        let snapID_timestamp_ = data["snapID_timestamp"] as? Timestamp
+                        
+                        if let snapID_timestamp = snapID_timestamp_?.dateValue() {
+                            if let o = openedDate{
+                                snap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, openedDate: o.dateValue(), isImage: isImage!, docID: docID)
+                            } else {
+                                snap = Snap(fromID: fromID, toID: toID, snapID: snapID_timestamp, isImage: isImage!, docID: docID)
+                            }
+                        }
+                    }
+                    
+                    completion(snap)
+                } else {
+                    completion(nil)
+                }
             }
     }
     
@@ -244,6 +285,10 @@ class SnapService: SnapServiceProtocol {
     
     func deleteMeta(snap: Snap) -> AnyPublisher<Void, Error> {
         return Future<Void, Error> { [weak self] promise in
+            
+            //This function will need to be here when we have the optimized snap service up and running
+            SnapService_CoreData.shared.deleteSnap(snap)
+            
             self!.db.collection("Snaps").document(snap.docID).delete() { err in
                 if let e = err {
                     print("SnapService: Failed to delete snap meta")

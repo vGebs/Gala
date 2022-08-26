@@ -400,7 +400,39 @@ final class ProfileViewModel: ObservableObject {
         if let uid = uid {
             print("ProfileViewModel unmatch user with id: \(uid)")
 
-            DataStore.shared.chats.unMatchUser(with: uid)
+            var docID: String = ""
+            
+            for match in DataStore.shared.chats.matches {
+                if match.uc.userBasic.uid == uid {
+                    docID = match.matchDocID
+                }
+            }
+            
+            if docID != "" {
+                MatchService_Firebase.shared.unMatchUser(with: docID, and: uid)
+                    .subscribe(on: DispatchQueue.global(qos: .userInitiated))
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .failure(let e):
+                            print("ChatsDataStore: Failed to unMatch user with uid: \(uid)")
+                            print("ChatsDataStore-err: \(e)")
+                        case .finished:
+                            print("ChatsDataStore: Finished unMatching from user w/ uid -> \(uid)")
+                        }
+                    } receiveValue: { _ in
+                        
+                        let matchedStories = DataStore.shared.stories.matchedStories
+                        
+                        for i in 0..<matchedStories.count {
+                            if matchedStories[i].uid == uid {
+                                DataStore.shared.stories.matchedStories.remove(at: i)
+                                return
+                            }
+                        }
+                    }
+                    .store(in: &cancellables)
+            }
         }
     }
 }

@@ -70,16 +70,30 @@ class SnapService_CoreData {
     }
     
     func getAllSnaps(with uid: String) -> [Snap]? {
-        if let snaps = getAllSnapsCD(for: uid) {
-            var final: [Snap] = []
-            for snap in snaps {
-                final.append(bundleSnap(cd: snap))
+        if uid == AuthService.shared.currentUser!.uid {
+            if let snaps = getAllSnapsFeaturingCurrentUser() {
+                var final: [Snap] = []
+                for snap in snaps {
+                    final.append(bundleSimpleSnap(cd: snap))
+                }
+                print("SnapService_CoreData: Got snaps with uid -> \(uid)")
+                return final
+            } else {
+                print("SnapService_CoreData: No messages with uid -> \(uid)")
+                return nil
             }
-            print("SnapService_CoreData: Got snaps with uid -> \(uid)")
-            return final
         } else {
-            print("SnapService_CoreData: No messages with uid -> \(uid)")
-            return nil
+            if let snaps = getAllSnapsCD(for: uid) {
+                var final: [Snap] = []
+                for snap in snaps {
+                    final.append(bundleSnap(cd: snap))
+                }
+                print("SnapService_CoreData: Got snaps with uid -> \(uid)")
+                return final
+            } else {
+                print("SnapService_CoreData: No messages with uid -> \(uid)")
+                return nil
+            }
         }
     }
     
@@ -224,9 +238,73 @@ extension SnapService_CoreData {
             return nil
         }
     }
+    
+    private func getAllSnapsFeaturingCurrentUser() -> [SnapCD]? {
+        let fetchRequest: NSFetchRequest<SnapCD> = SnapCD.fetchRequest()
+        let fromIDPredicate = NSPredicate(format: "fromID == %@", AuthService.shared.currentUser!.uid)
+        let toIDPredicate = NSPredicate(format: "toID == %@", AuthService.shared.currentUser!.uid)
+        let logicalANDPredicate = NSCompoundPredicate(type: .or, subpredicates: [fromIDPredicate, toIDPredicate])
+
+        let sectionSortDescriptor = NSSortDescriptor(key: "snapID_timestamp", ascending: true)
+        let sortDescriptors = [sectionSortDescriptor]
+        
+        fetchRequest.predicate = logicalANDPredicate
+        fetchRequest.sortDescriptors = sortDescriptors
+        
+        do {
+            let snaps = try persistentContainer.viewContext.fetch(fetchRequest)
+            return snaps
+        } catch {
+            print("MessageService_CoreData: Could not find messages for current user")
+            return nil
+        }
+    }
 }
 
 extension SnapService_CoreData {
+    
+    func bundleSimpleSnap(cd: SnapCD) -> Snap {
+        if let vidUrl = cd.vidURL {
+            
+            var caption: Caption?
+            
+            if let cap = cd.caption {
+                let hh = CGFloat(cd.textBoxHeight)
+                let yy = CGFloat(cd.yCoordinate)
+                caption = Caption(captionText: cap, textBoxHeight: hh, yCoordinate: yy)
+            }
+            
+            return Snap(
+                fromID: cd.fromID!,
+                toID: cd.toID!,
+                snapID: cd.snapID_timestamp!,
+                openedDate: cd.openedDate,
+                vidURL: URL(string: vidUrl),
+                isImage: cd.isImage,
+                caption: caption,
+                docID: cd.docID!
+            )
+        } else {
+            
+            var caption: Caption?
+            
+            if let cap = cd.caption {
+                let hh = CGFloat(cd.textBoxHeight)
+                let yy = CGFloat(cd.yCoordinate)
+                caption = Caption(captionText: cap, textBoxHeight: hh, yCoordinate: yy)
+            }
+            
+            return Snap(
+                fromID: cd.fromID!,
+                toID: cd.toID!,
+                snapID: cd.snapID_timestamp!,
+                openedDate: cd.openedDate,
+                isImage: cd.isImage,
+                caption: caption,
+                docID: cd.docID!
+            )
+        }
+    }
     
     func bundleSnap(cd: SnapCD) -> Snap {
         if let vidUrl = cd.vidURL {
@@ -313,6 +391,102 @@ extension SnapService_CoreData {
                 return nil
             }
         } catch {
+            return nil
+        }
+    }
+}
+
+extension SnapService_CoreData {
+    
+    func getMostRecentSnap(for uid: String) -> Snap? {
+        let fetchRequest: NSFetchRequest<SnapCD> = SnapCD.fetchRequest()
+        let fromIDPredicate = NSPredicate(format: "toID == %@", uid)
+        let toIDPredicate = NSPredicate(format: "fromID == %@", uid)
+        let logicalOrPredicate = NSCompoundPredicate(type: .or, subpredicates: [fromIDPredicate, toIDPredicate])
+        
+        fetchRequest.predicate = logicalOrPredicate
+        
+        do {
+            let snaps = try persistentContainer.viewContext.fetch(fetchRequest)
+            if snaps.count > 0 {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy/MM/dd HH:mm"
+                let timestamp: Date = formatter.date(from: "1997/06/12 07:30")!
+                
+                var newestSnapDate: Date = timestamp
+                var newestSnap: Snap?
+                
+                for snap in snaps {
+                    if snap.snapID_timestamp! > newestSnapDate {
+                        newestSnapDate = snap.snapID_timestamp!
+                        
+                        if let captionText = snap.caption {
+                            if let vidURL = snap.vidURL {
+                                newestSnap = Snap(
+                                    fromID: snap.fromID!,
+                                    toID: snap.toID!,
+                                    snapID: snap.snapID_timestamp!,
+                                    openedDate: snap.openedDate,
+                                    imgAssetData: snap.asset,
+                                    vidURL: URL(string: vidURL),
+                                    isImage: snap.isImage,
+                                    caption: Caption(
+                                        captionText: captionText,
+                                        textBoxHeight: snap.textBoxHeight,
+                                        yCoordinate: snap.yCoordinate
+                                    ),
+                                    docID: snap.docID!
+                                )
+                            } else {
+                                newestSnap = Snap(
+                                    fromID: snap.fromID!,
+                                    toID: snap.toID!,
+                                    snapID: snap.snapID_timestamp!,
+                                    openedDate: snap.openedDate,
+                                    imgAssetData: snap.asset,
+                                    isImage: snap.isImage,
+                                    caption: Caption(
+                                        captionText: captionText,
+                                        textBoxHeight: snap.textBoxHeight,
+                                        yCoordinate: snap.yCoordinate
+                                    ),
+                                    docID: snap.docID!
+                                )
+                            }
+                        } else {
+                            if let vidURL = snap.vidURL {
+                                newestSnap = Snap(
+                                    fromID: snap.fromID!,
+                                    toID: snap.toID!,
+                                    snapID: snap.snapID_timestamp!,
+                                    openedDate: snap.openedDate,
+                                    imgAssetData: snap.asset,
+                                    vidURL: URL(string: vidURL),
+                                    isImage: snap.isImage,
+                                    docID: snap.docID!
+                                )
+                            } else {
+                                newestSnap = Snap(
+                                    fromID: snap.fromID!,
+                                    toID: snap.toID!,
+                                    snapID: snap.snapID_timestamp!,
+                                    openedDate: snap.openedDate,
+                                    imgAssetData: snap.asset,
+                                    isImage: snap.isImage,
+                                    docID: snap.docID!
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                return newestSnap
+            }
+            
+            return nil
+            
+        } catch {
+            print("MessageService_CoreData: Failed getting getting all messages")
             return nil
         }
     }

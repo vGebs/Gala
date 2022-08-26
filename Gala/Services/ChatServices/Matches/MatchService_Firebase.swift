@@ -51,7 +51,7 @@ class MatchService_Firebase {
     
     func observeMatches(completion: @escaping ([Match]) -> Void) { //fromDate: Timestamp,
         db.collection("Matches")
-            .whereField("matched", arrayContains: String(AuthService.shared.currentUser!.uid))
+            .whereField("matched", arrayContains: AuthService.shared.currentUser!.uid)
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
                     print("MatchService: Error fetching document: \(error!)")

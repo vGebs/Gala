@@ -14,8 +14,8 @@ protocol MessageServiceProtocol {
     
     func sendMessage(message: String, toID: String) -> void
     func openMessage(message: Message) -> void
-    func observeChatsFromMe(olderThan date: Date, completion: @escaping ([Message]) -> Void)
-    func observeChatsToMe(olderThan date: Date, completion: @escaping ([Message]) -> Void)
+    func observeChatsFromMe(newerThan date: Date, completion: @escaping ([Message]) -> Void)
+    func observeChatsToMe(newerThan date: Date, completion: @escaping ([Message]) -> Void)
 }
 
 class MessageService_Firebase: MessageServiceProtocol {
@@ -84,10 +84,10 @@ class MessageService_Firebase: MessageServiceProtocol {
 }
 
 extension MessageService_Firebase {
-    func observeChatsFromMe(olderThan date: Date, completion: @escaping ([Message]) -> Void) {
+    func observeChatsFromMe(newerThan date: Date, completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("fromID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .whereField("timestamp", isGreaterThanOrEqualTo: date)
+            .whereField("timestamp", isGreaterThan: date)
             .order(by: "timestamp")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
@@ -123,10 +123,10 @@ extension MessageService_Firebase {
             }
     }
     
-    func observeChatsToMe(olderThan date: Date, completion: @escaping ([Message]) -> Void) {
+    func observeChatsToMe(newerThan date: Date, completion: @escaping ([Message]) -> Void) {
         db.collection("Messages")
             .whereField("toID", isEqualTo: AuthService.shared.currentUser!.uid)
-            .whereField("timestamp", isGreaterThanOrEqualTo: date)
+            .whereField("timestamp", isGreaterThan: date)
             .order(by: "timestamp")
             .addSnapshotListener { documentSnapshot, error in
                 guard let  _ = documentSnapshot?.documents else {
