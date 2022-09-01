@@ -12,7 +12,17 @@ const postStory = async (story) => {
 }
 
 const getStory = async (uid, pid) => {
+    try {
+        const queryParams =  {
+            uid: uid,
+            pid: pid
+        }
+        const returnedStory = await Story.find(queryParams).exec();
 
+        return returnedStory[0];
+    } catch (e) {
+        throw e;
+    }
 }
 
 const getStories = async (uid) => {

@@ -1,8 +1,15 @@
 const mongoose = require("mongoose");
 
 const story = new mongoose.Schema({
-    uid: String,
-    pid: Date,
+    uid: {
+        type: String,
+        required: true
+    },
+    pid: {
+        type: Date,
+        required: true,
+        unique: true
+    },
     title: String,
     caption: String,
     textBoxHeight: Number,
