@@ -1,13 +1,14 @@
 const userCoreService = require("../services/UserCoreService");
+const UserCore = require("../models/UserCore");
 
 const createUserCore = async (req, res) => {
-    
+
     const userCore = bundleUserCore(req);
 
     try {
         await userCoreService.createUser(userCore);
         res.status(200).send();
-    } catch(e) {
+    } catch (e) {
         const payload = {
             error: "Failed to create UserCore",
             description: e
@@ -18,46 +19,64 @@ const createUserCore = async (req, res) => {
 
 const getUserCore = async (req, res) => {
     const uid = req.body.uid;
-
-    try {
-        const returnedUser = await userCoreService.getUser(uid);
-        res.status(200).send(returnedUser);
-    } catch(e) {
+    if (uid) {
+        try {
+            const returnedUser = await userCoreService.getUser(uid);
+            res.status(200).send(returnedUser);
+        } catch (e) {
+            const payload = {
+                error: "Failed to get user core",
+                description: e
+            };
+            res.status(500).send(payload);
+        }
+    } else {
         const payload = {
-            error: "Failed to get user core",
-            description: e
+            error: "Failed to enter uid"
         };
         res.status(500).send(payload);
     }
 };
 
 const updateUserCore = async (req, res) => {
-    const userCore = bundleUserCore(req);
+    const userCore = UserCore.bundleUserCore(req);
+    if (userBasicIsFilled(userCore.userBasic)) {
+        try {
+            await userCoreService.updateUser(userCore);
+            res.status(200).send();
+        } catch (e) {
+            const payload = {
+                error: "Failed to update userCore",
+                description: e
+            };
 
-    try {
-        await userCoreService.updateUser(userCore);
-        res.status(200).send();
-    } catch(e) {
+            res.status(500).send(payload);
+        }
+    } else {
         const payload = {
-            error: "Failed to update userCore",
-            description: e
+            error: "Failed to enter userBasic info"
         };
-
         res.status(500).send(payload);
     }
 };
 
 const deleteUserCore = async (req, res) => {
     const uid = req.body.uid;
-
-    try {
-        await userCoreService.deleteUser(uid);
-        res.status(200).send();
-    } catch(e) {
+    if (uid) {
+        try {
+            await userCoreService.deleteUser(uid);
+            res.status(200).send();
+        } catch (e) {
+            const payload = {
+                error: "Failed to delete userCore",
+                description: e
+            };
+            res.status(500).send(payload);
+        }
+    } else {
         const payload = {
-            error: "Failed to delete userCore",
-            description: e
-        };   
+            error: "Failed to enter uid"
+        };
         res.status(500).send(payload);
     }
 };
@@ -67,6 +86,14 @@ module.exports = {
     getUserCore,
     updateUserCore,
     deleteUserCore
+}
+
+const userBasicIsFilled = (userBasic) => {
+    if (userBasic.uid && userBasic.name && userBasic.birthdate && userBasic.gender && userBasic.sexuality) {
+        return true
+    } else {
+        return false
+    }
 }
 
 const bundleUserCore = (req) => {

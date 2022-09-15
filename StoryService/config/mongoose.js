@@ -1,6 +1,6 @@
 module.exports = function (mongoose) {
 
-    const url = ``;
+    const url = `mongodb+srv://vGebs:ildiwcgSWNpEnu50@test.wt7kbzk.mongodb.net/?retryWrites=true&w=majority`;
 
     const connectionParams = {
         useNewUrlParser: true,

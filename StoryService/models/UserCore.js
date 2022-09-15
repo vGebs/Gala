@@ -68,4 +68,4 @@ const UserCoreSchema = new mongoose.Schema({
 
 const UserCore = new mongoose.model("UserCore", UserCoreSchema)
 
-module.exports = UserCore;
+module.exports = UserCore
