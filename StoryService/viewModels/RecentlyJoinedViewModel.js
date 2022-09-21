@@ -49,21 +49,21 @@ module.exports = {
 const bundleUserCore = (req) => {
     const userCore = {
         userBasic: {
-            uid: req.body.userBasic.uid,
-            name: req.body.userBasic.name,
-            birthdate: req.body.userBasic.birthdate,
-            gender: req.body.userBasic.gender,
-            sexuality: req.body.userBasic.sexuality,
-            dateJoined: req.body.userBasic.dateJoined
+            uid: req.body.UserCore.userBasic.uid,
+            name: req.body.UserCore.userBasic.name,
+            birthdate: req.body.UserCore.userBasic.birthdate,
+            gender: req.body.UserCore.userBasic.gender,
+            sexuality: req.body.UserCore.userBasic.sexuality,
+            dateJoined: req.body.UserCore.userBasic.dateJoined
         },
         ageRangePreference: {
-            maxAge: req.body.ageRangePreference.maxAge,
-            minAge: req.body.ageRangePreference.minAge,
+            maxAge: req.body.UserCore.ageRangePreference.maxAge,
+            minAge: req.body.UserCore.ageRangePreference.minAge,
         },
         searchRadiusComponents: {
-            willingToTravel: req.body.searchRadiusComponents.willingToTravel,
+            willingToTravel: req.body.UserCore.searchRadiusComponents.willingToTravel,
             location: {
-                coordinates: req.body.searchRadiusComponents.location.coordinates
+                coordinates: req.body.UserCore.searchRadiusComponents.location.coordinates
             }
         }
     }

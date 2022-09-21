@@ -22,58 +22,139 @@ const getRecents = async (currentUserCore, matches) => {
         if (sexualityAndGender == "StraightMale") {
             queryParams = {
                 "userBasic.gender": "female",
-                "userBasic.sexuality": { $in: ["straight", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["straight", "bisexual"]
+                }
             };
-        } else if (sexualityAndGender == "StraightFemale"){
+        } else if (sexualityAndGender == "StraightFemale") {
             queryParams = {
                 "userBasic.gender": "male",
-                "userBasic.sexuality": { $in: ["straight", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["straight", "bisexual"]
+                }
             };
         } else if (sexualityAndGender == "GayMale") {
             queryParams = {
                 "userBasic.gender": "male",
-                "userBasic.sexuality": { $in: ["gay", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["gay", "bisexual"]
+                }
             };
         } else if (sexualityAndGender == "GayFemale") {
             queryParams = {
                 "userBasic.gender": "female",
-                "userBasic.sexuality": { $in: ["gay", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["gay", "bisexual"]
+                }
             };
         } else if (sexualityAndGender == "BiMale") {
             queryParams = {
                 "userBasic.gender": "male",
-                "userBasic.sexuality": { $in: ["gay", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["gay", "bisexual"]
+                }
             };
 
             queryParams2 = {
                 "userBasic.gender": "female",
-                "userBasic.sexuality": { $in: ["straight", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["straight", "bisexual"]
+                }
             };
 
         } else if (sexualityAndGender == "BiFemale") {
+
             queryParams = {
                 "userBasic.gender": "female",
-                "userBasic.sexuality": { $in: ["gay", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["gay", "bisexual"]
+                }
             };
 
             queryParams2 = {
                 "userBasic.gender": "male",
-                "userBasic.sexuality": { $in: ["straight", "bisexual"] }
+                "userBasic.sexuality": {
+                    $in: ["straight", "bisexual"]
+                }
             };
         }
 
         if (queryParams2 === undefined) {
+            queryParams["userBasic.uid"] = {
+                $nin: notInArray
+            };
+
+            // queryParams["searchRadiusComponents.location"] = {
+            //     $near: {
+            //         geometry: {
+            //             type: "Point",
+            //             coordinates: [
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
+            //             ],
+            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
+            //             $minDistance: 0
+            //         }
+            //     }
+            // }
+            
             const recentResults = await UserCore.find(queryParams);
             return recentResults;
         } else {
+            queryParams["userBasic.uid"] = {
+                $nin: notInArray
+            };
+
+            // queryParams["searchRadiusComponents.location"] = {
+            //     $near: {
+            //         geometry: {
+            //             type: "Point",
+            //             coordinates: [
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
+            //             ],
+            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
+            //             $minDistance: 0
+            //         }
+            //     }
+            // }
+
+            queryParams2["userBasic.uid"] = {
+                $nin: notInArray
+            };
+
+            // queryParams2["searchRadiusComponents.location"] = {
+            //     $near: {
+            //         geometry: {
+            //             type: "Point",
+            //             coordinates: [
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
+            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
+            //             ],
+            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
+            //             $minDistance: 0
+            //         }
+            //     }
+            // }
+
             const [first, second] = await Promise.all([
                 UserCore.find(queryParams),
                 UserCore.find(queryParams2)
             ]);
-            first.concat(second);
-            return first;
+            let final = first.concat(second);
+            return final;
+            
+            // let q1 = UserCore.find(queryParams);
+            // let q2 = UserCore.find(queryParams2);
+            // let results = [await q1, await q2];
+            // let q1Final = results[0];
+            // let q2Final = results[1];
+
+            // let final = q1Final.concat
         }
     } catch (e) {
+        console.log("getRecents: failed");
+        console.log(e);
         throw e;
     }
 };
@@ -86,6 +167,7 @@ const viewRecentlyJoinedProfile = async (currentUser, userViewed) => {
         }
         const view = new RecentlyJoinedView(payload);
         await view.save();
+        console.log("RecentlyJoinedUserService: Successfully added new view from");
     } catch (e) {
         throw e;
     }
@@ -97,7 +179,22 @@ module.exports = {
 };
 
 const fetchAllViewedProfiles = async (uid) => {
+    try {
+        let queryParams = {
+            "viewerUID": uid
+        };
 
+        let profiles = await RecentlyJoinedView.find(queryParams);
+        let returnedUIDs = [];
+
+        for (i = 0; i < profiles.length; i++) {
+            returnedUIDs.push(profiles[i].viewedUID);
+        }
+
+        return returnedUIDs;
+    } catch (e) {
+        throw e
+    }
 };
 
 const SexualityAndGender_Enum = {
