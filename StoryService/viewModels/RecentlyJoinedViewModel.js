@@ -5,10 +5,11 @@ const getRecents = async (req, res) => {
 
     const userCore = bundleUserCore(req);
     const matches = req.body.matches;
+    const localSearch = req.body.localSearch;
 
     if (userCore.userBasic.uid) {
         try {
-            const returnedRecents = await recentlyJoinedService.getRecents(userCore, matches);
+            const returnedRecents = await recentlyJoinedService.getRecents(userCore, matches, localSearch);
             res.status(200).send(returnedRecents);
         } catch (e) {
             const payload = {
