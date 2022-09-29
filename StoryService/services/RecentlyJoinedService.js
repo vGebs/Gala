@@ -86,6 +86,8 @@ const getRecents = async (currentUserCore, matches) => {
                 $nin: notInArray
             };
 
+            const currentDate = new Date();
+
             queryParams["userBasic.dateJoined"] = {
                 $gt: currentDate.getDate() - 7 
             };
@@ -113,7 +115,6 @@ const getRecents = async (currentUserCore, matches) => {
             };
 
             const currentDate = new Date();
-            const dateJoined = currentUserCore.userBasic.dateJoined
             //greater than 7 days ago
 
             queryParams["userBasic.dateJoined"] = {
