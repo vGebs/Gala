@@ -86,6 +86,10 @@ const getRecents = async (currentUserCore, matches) => {
                 $nin: notInArray
             };
 
+            queryParams["userBasic.dateJoined"] = {
+                $gt: currentDate.getDate() - 7 
+            };
+
             queryParams["searchRadiusComponents.location"] = {
                 $nearSphere: {
                     $geometry: {
@@ -108,8 +112,20 @@ const getRecents = async (currentUserCore, matches) => {
                 $nin: notInArray
             };
 
+            const currentDate = new Date();
+            const dateJoined = currentUserCore.userBasic.dateJoined
+            //greater than 7 days ago
+
+            queryParams["userBasic.dateJoined"] = {
+                $gt: currentDate.getDate() - 7 
+            };
+
             queryParams2["userBasic.uid"] = {
                 $nin: notInArray
+            };
+
+            queryParams2["userBasic.dateJoined"] = {
+                $gt: currentDate.getDate() - 7 
             };
 
             queryParams["searchRadiusComponents.location"] = {

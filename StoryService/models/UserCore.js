@@ -50,7 +50,11 @@ const UserBasicSchema = new mongoose.Schema({
         required: true,
         unique: false
     },
-    dateJoined: Date,
+    dateJoined: {
+        type: Date,
+        required: true,
+        unique: false
+    },
     _id: false
 });
 
