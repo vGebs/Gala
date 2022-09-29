@@ -1,6 +1,8 @@
 const UserCore = require("../models/UserCore");
 const RecentlyJoinedView = require("../models/RecentlyJoinedView")
 
+// GeoQuery: https://dev.to/vcpablo/4-ways-to-find-geojson-data-in-mongodb-14pb
+
 const getRecents = async (currentUserCore, matches) => {
     //We need to first fetch:
     //  1. Our matches
@@ -84,58 +86,59 @@ const getRecents = async (currentUserCore, matches) => {
                 $nin: notInArray
             };
 
-            // queryParams["searchRadiusComponents.location"] = {
-            //     $near: {
-            //         geometry: {
-            //             type: "Point",
-            //             coordinates: [
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
-            //             ],
-            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
-            //             $minDistance: 0
-            //         }
-            //     }
-            // }
-            
+            queryParams["searchRadiusComponents.location"] = {
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[0]),
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[1])
+                        ]
+                    },
+                    $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000,
+                    $minDistance: 0
+                }
+            };
+
             const recentResults = await UserCore.find(queryParams);
+
             return recentResults;
         } else {
             queryParams["userBasic.uid"] = {
                 $nin: notInArray
             };
 
-            // queryParams["searchRadiusComponents.location"] = {
-            //     $near: {
-            //         geometry: {
-            //             type: "Point",
-            //             coordinates: [
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
-            //             ],
-            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
-            //             $minDistance: 0
-            //         }
-            //     }
-            // }
-
             queryParams2["userBasic.uid"] = {
                 $nin: notInArray
             };
 
-            // queryParams2["searchRadiusComponents.location"] = {
-            //     $near: {
-            //         geometry: {
-            //             type: "Point",
-            //             coordinates: [
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[0], 
-            //                 currentUserCore.searchRadiusComponents.location.coordinates[1]
-            //             ],
-            //             $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000, //turning km to meters
-            //             $minDistance: 0
-            //         }
-            //     }
-            // }
+            queryParams["searchRadiusComponents.location"] = {
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[0]),
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[1])
+                        ]
+                    },
+                    $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000,
+                    $minDistance: 0
+                }
+            };
+
+            queryParams2["searchRadiusComponents.location"] = {
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[0]),
+                            parseFloat(currentUserCore.searchRadiusComponents.location.coordinates[1])
+                        ]
+                    },
+                    $maxDistance: currentUserCore.searchRadiusComponents.willingToTravel * 1000,
+                    $minDistance: 0
+                }
+            };
 
             const [first, second] = await Promise.all([
                 UserCore.find(queryParams),
@@ -143,14 +146,6 @@ const getRecents = async (currentUserCore, matches) => {
             ]);
             let final = first.concat(second);
             return final;
-            
-            // let q1 = UserCore.find(queryParams);
-            // let q2 = UserCore.find(queryParams2);
-            // let results = [await q1, await q2];
-            // let q1Final = results[0];
-            // let q2Final = results[1];
-
-            // let final = q1Final.concat
         }
     } catch (e) {
         console.log("getRecents: failed");
