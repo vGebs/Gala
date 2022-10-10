@@ -1,9 +1,10 @@
 const recentlyJoinedService = require("../services/RecentlyJoinedService");
 const UserCore = require("../models/UserCore");
+const helpers = require("../services/helpers");
 
 const getRecents = async (req, res) => {
 
-    const userCore = bundleUserCore(req);
+    const userCore = helpers.bundleUserCore(req);
     const matches = req.body.matches;
     const localSearch = req.body.localSearch;
 
@@ -45,29 +46,3 @@ module.exports = {
     getRecents,
     viewRecentlyJoinedProfile
 };
-
-
-const bundleUserCore = (req) => {
-    const userCore = {
-        userBasic: {
-            uid: req.body.UserCore.userBasic.uid,
-            name: req.body.UserCore.userBasic.name,
-            birthdate: req.body.UserCore.userBasic.birthdate,
-            gender: req.body.UserCore.userBasic.gender,
-            sexuality: req.body.UserCore.userBasic.sexuality,
-            dateJoined: req.body.UserCore.userBasic.dateJoined
-        },
-        ageRangePreference: {
-            maxAge: req.body.UserCore.ageRangePreference.maxAge,
-            minAge: req.body.UserCore.ageRangePreference.minAge,
-        },
-        searchRadiusComponents: {
-            willingToTravel: req.body.UserCore.searchRadiusComponents.willingToTravel,
-            location: {
-                coordinates: req.body.UserCore.searchRadiusComponents.location.coordinates
-            }
-        }
-    }
-
-    return userCore
-}

@@ -118,5 +118,9 @@ const bundleUserCore = (req) => {
         }
     }
 
+    if (req.body.mostRecentStory) {
+        userCore["mostRecentStory"] = req.body.mostRecentStory
+    }
+
     return userCore
 }

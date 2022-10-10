@@ -1,4 +1,6 @@
+const Story = require("../models/Story");
 const UserCore = require("../models/UserCore");
+const helpers = require("../services/helpers");
 
 const createUser = async (userCore) => {
     try {
@@ -52,9 +54,82 @@ const deleteUser = async (uid) => {
     }
 };
 
+const getUsersWithPosts = async (userCore, matchUIDs, localSearch) => {
+    //return = [userCore]
+
+    if (userCore) {
+        try {
+            let queryParams = helpers.gatherQueryParamsForLocal(userCore, localSearch);
+
+            if(queryParams.length == 1) {
+                let queryParams1 = queryParams[0];
+
+                const notIn = matchUIDs.push(userCore["userBasic.uid"]);
+
+                queryParams1["userBasic.uid"] = {
+                    $nin: notIn
+                };
+
+                queryParams1["mostRecentStory"] = {
+                    $exists: true
+                };
+
+                const users = await Story.find(queryParams1).limit(30);
+
+                return users;
+
+            } else if (queryParams.length == 2){
+                let queryParams1 = queryParams[0];
+                let queryParams2 = queryParams[1];
+
+                const notIn = matchUIDs.push(userCore["userBasic.uid"]);
+
+                queryParams1["userBasic.uid"] = {
+                    $nin: notIn
+                };
+
+                queryParams2["userBasic.uid"] = {
+                    $nin: notIn
+                };
+
+                queryParams1["mostRecentStory"] = {
+                    $exists: true
+                };
+
+                queryParams2["mostRecentStory"] = {
+                    $exists: true
+                };
+
+                const [first, second] = await Promise.all([
+                    UserCore.find(queryParams1).limit(15),
+                    UserCore.find(queryParams2).limit(15)
+                ]);
+
+                let final = first.concat(second);
+                return final;
+            }
+        } catch(e) {
+            console.log("UserCoreService error: " + e);
+            payload = {
+                error: "UserCoreService/getUsersWithPosts: Failed to fetch users with post",
+                description: e
+            };
+
+            throw payload;
+        }
+    } else {
+        const payload = {
+            error: "UserCoreService/getUsersWithPosts: Empty UserCore"
+        };
+
+        throw e;
+    }
+};
+
 module.exports = {
     createUser,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUsersWithPosts
 }

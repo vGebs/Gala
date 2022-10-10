@@ -67,7 +67,11 @@ const UserCoreSchema = new mongoose.Schema({
         }
     },
     ageRangePreference: AgeRangePreferenceSchema,
-    userBasic: UserBasicSchema
+    userBasic: UserBasicSchema,
+    mostRecentStory: {
+        type: Date,
+        required: false
+    } 
 }); 
 
 const UserCore = new mongoose.model("UserCore", UserCoreSchema)

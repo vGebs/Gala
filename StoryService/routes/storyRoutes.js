@@ -5,6 +5,7 @@ const storyViewModel = require("../viewModels/StoryViewModel");
 
 router.post("/story/postStory", storyViewModel.postStory);
 router.post("/story/getStory", storyViewModel.getStory);
-router.post("/story/getStories", storyViewModel.getStories);
+router.post("/story/getExploreStories", storyViewModel.getExploreStories);
+router.post("/story/getMatchStories", storyViewModel.getMatchStories);
 
 module.exports = router
