@@ -69,6 +69,37 @@ const getStory = async (req, res) => {
     }
 }
 
+const deleteStory = async (req, res) => {
+    const uid = req.body.uid;
+    const pid = req.body.pid;
+
+    if (uid && pid) {
+        try {
+            await storyService.deleteStory(uid, pid);
+
+            const payload = {
+                description: "StoryViewModel/deleteStory: Success"
+            };
+
+            res.status(200).send(payload);
+
+        } catch (e) {
+            const payload = {
+                error: "StoryViewModel/deleteStory: Failed to delete story",
+                description: e
+            };
+
+            res.status(500).send(payload);
+        }
+    } else {
+        const payload = {
+            error: "StoryViewModel/deleteStory: Failed to enter pid and uid"
+        };
+
+        res.status(500).send(payload);
+    }
+};
+
 const getExploreStories = async (req, res) => {
     // ok, so we are going to be making the story system
     // 1. Region search (on or off[off being global])
@@ -172,7 +203,7 @@ const viewStory = async (req, res) => {
         };
 
         res.status(200).send(payload);
-    } catch(e) {
+    } catch (e) {
         const payload = {
             error: "StoryViewModel/viewStory: Failed to view story",
             description: e
@@ -185,6 +216,7 @@ const viewStory = async (req, res) => {
 module.exports = {
     postStory,
     getStory,
+    deleteStory,
     getExploreStories,
     getMatchStories,
     viewStory

@@ -7,6 +7,7 @@ const postStory = async (story) => {
 
         await newStory.save();
         console.log("StoryService: Successfully posted story");
+        return;
     } catch (e) {
         throw e
     }
@@ -22,6 +23,24 @@ const getStory = async (uid, pid) => {
 
         return returnedStory[0];
     } catch (e) {
+        throw e;
+    }
+}
+
+const deleteStory = async (uid, pid) => {
+    try {
+        const queryParams = {
+            "uid": {
+                $eq: uid
+            },
+            "pid": {
+                $eq: pid
+            }
+        }
+
+        await Story.deleteOne(queryParams);
+        return;
+    } catch(e) {
         throw e;
     }
 }
@@ -78,6 +97,7 @@ const viewStory = async (storyView) => {
 module.exports = {
     postStory,
     getStory,
+    deleteStory,
     getStoriesForUser,
     viewStory
 }
