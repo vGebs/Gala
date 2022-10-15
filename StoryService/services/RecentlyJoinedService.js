@@ -28,10 +28,11 @@ const getRecents = async (currentUserCore, matches, localSearch) => {
                 $nin: notInArray
             };
 
-            const currentDate = new Date();
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(new Date().getDate() - 7);
 
             queryParams1["userBasic.dateJoined"] = {
-                $gt: currentDate.getDate() - 7
+                $gt: sevenDaysAgo
             };
 
             const recentResults = await UserCore.find(queryParams1);
@@ -46,11 +47,11 @@ const getRecents = async (currentUserCore, matches, localSearch) => {
                 $nin: notInArray
             };
 
-            const currentDate = new Date();
-            //greater than 7 days ago
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(new Date().getDate() - 7);
 
             queryParams1["userBasic.dateJoined"] = {
-                $gt: currentDate.getDate() - 7
+                $gt: sevenDaysAgo
             };
 
             queryParams2["userBasic.uid"] = {
@@ -58,7 +59,7 @@ const getRecents = async (currentUserCore, matches, localSearch) => {
             };
 
             queryParams2["userBasic.dateJoined"] = {
-                $gt: currentDate.getDate() - 7
+                $gt: sevenDaysAgo
             };
 
             const [first, second] = await Promise.all([

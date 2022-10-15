@@ -3,7 +3,7 @@ const bundleUserCore = (req) => {
         userBasic: {
             uid: req.body.UserCore.userBasic.uid,
             name: req.body.UserCore.userBasic.name,
-            birthdate: req.body.UserCore.userBasic.birthdate,
+            birthdate: new Date(req.body.UserCore.userBasic.birthdate),
             gender: req.body.UserCore.userBasic.gender,
             sexuality: req.body.UserCore.userBasic.sexuality,
             dateJoined: req.body.UserCore.userBasic.dateJoined
@@ -107,6 +107,33 @@ const gatherQueryParamsForLocal = (currentUserCore, localSearch) => {
             };
         }
 
+        //we need to now make sure that the current user's age falls in the age range
+        //  of the users we are fetching
+
+        const currentUserDOB = currentUserCore.userBasic.birthdate;
+        const currentUserAge = getAge(currentUserDOB);
+
+        queryParams["ageRangePreference.maxAge"] = {
+            $gte: currentUserAge
+        };
+
+        queryParams["ageRangePreference.minAge"] = {
+            $lte: currentUserAge
+        };
+
+        //we also need to make sure the users we are fetching are within our age range
+
+        const minAge = currentUserCore.ageRangePreference.minAge;
+        const maxAge = currentUserCore.ageRangePreference.maxAge;
+
+        const minAgeDate = currentDateMinusYears(minAge);
+        const maxAgeDate = currentDateMinusYears(maxAge + 1);
+
+        queryParams["userBasic.birthdate"] = {
+            $lte: minAgeDate,
+            $gt: maxAgeDate
+        };
+
         return [queryParams];
     } else {
 
@@ -139,6 +166,46 @@ const gatherQueryParamsForLocal = (currentUserCore, localSearch) => {
                 }
             };
         }
+
+        //we need to now make sure that the current user's age falls in the age range
+        //  of the users we are fetching
+
+        const currentUserDOB = currentUserCore.userBasic.birthdate;
+        const currentUserAge = getAge(currentUserDOB);
+
+        queryParams["ageRangePreference.maxAge"] = {
+            $gte: currentUserAge
+        };
+
+        queryParams["ageRangePreference.minAge"] = {
+            $lte: currentUserAge
+        };
+
+        queryParams2["ageRangePreference.maxAge"] = {
+            $gte: currentUserAge
+        };
+
+        queryParams2["ageRangePreference.minAge"] = {
+            $lte: currentUserAge
+        };
+
+        //we also need to make sure the users we are fetching are within our age range
+
+        const minAge = currentUserCore.ageRangePreference.minAge;
+        const maxAge = currentUserCore.ageRangePreference.maxAge;
+
+        const minAgeDate = currentDateMinusYears(minAge);
+        const maxAgeDate = currentDateMinusYears(maxAge + 1);
+
+        queryParams["userBasic.birthdate"] = {
+            $lte: minAgeDate,
+            $gt: maxAgeDate
+        };
+
+        queryParams2["userBasic.birthdate"] = {
+            $lte: minAgeDate,
+            $gt: maxAgeDate
+        };
 
         return [queryParams, queryParams2];
     }
@@ -186,4 +253,25 @@ const SexualityAndGender_Enum = {
 
     BiMale: "BiMale",
     BiFemale: "BiFemale"
+};
+
+const getAge = (dob) => {
+    var month_diff = Date.now() - dob.getTime();  
+      
+    //convert the calculated difference in date format  
+    var age_dt = new Date(month_diff);   
+      
+    //extract year from date      
+    var year = age_dt.getUTCFullYear();  
+      
+    //now calculate the age of the user  
+    var age = Math.abs(year - 1970);
+    return age;
+};
+
+const currentDateMinusYears = (years) => {
+    var date = new Date();
+    date.setYear(date.getFullYear() - years);
+
+    return date;
 };
