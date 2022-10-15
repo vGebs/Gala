@@ -111,7 +111,7 @@ const getExploreStories = async (req, res) => {
             })
 
             res.status(200).send(results);
-            
+
         } else {
             res.status.send(200).send({});
         }
@@ -127,13 +127,65 @@ const getExploreStories = async (req, res) => {
     }
 };
 
-const getMatchStories = async () => {
+const getMatchStories = async (req, res) => {
 
+    const matchUserCores = req.body.matchUserCores;
+
+    try {
+
+        var asyncCalls = []
+
+        for (var i = 0; i < matchUserCores.length; i++) {
+            asyncCalls.push(storyService.getStoriesForUser(matchUserCores[i]));
+        }
+
+        const promise = await Promise.all(asyncCalls);
+
+        //Filter empty objects out
+        const results = promise.filter(element => {
+            if (Object.keys(element).length !== 0) {
+                return true;
+            }
+            return false;
+        })
+
+        console.log("StoryViewModel/getMatchStories: Successful")
+        res.status(200).send(results);
+
+    } catch (e) {
+        const payload = {
+            error: "StoryViewModel/getMatchStories: Failed to fetch match stories",
+            description: e
+        };
+        res.status(500).send(payload);
+    }
 };
+
+const viewStory = async (req, res) => {
+    const storyView = req.body.storyView
+
+    try {
+        await storyService.viewStory(storyView);
+
+        const payload = {
+            description: "Successfully viewed story"
+        };
+
+        res.status(200).send(payload);
+    } catch(e) {
+        const payload = {
+            error: "StoryViewModel/viewStory: Failed to view story",
+            description: e
+        };
+
+        res.status(500).send(payload);
+    }
+}
 
 module.exports = {
     postStory,
     getStory,
     getExploreStories,
-    getMatchStories
+    getMatchStories,
+    viewStory
 };

@@ -1,4 +1,5 @@
 const Story = require("../models/Story");
+const StoryView = require("../models/StoryView");
 
 const postStory = async (story) => {
     try {
@@ -25,23 +26,20 @@ const getStory = async (uid, pid) => {
     }
 }
 
-const getExploreStories = async (uid, matchUIDs, localSearch) => {
-
-}
-
 const getStoriesForUser = async (userCore) => {
     if (userCore) {
         try {
 
             let queryParams = {
-                "userBasic.uid": userCore.userBasic.uid
+                "uid": {
+                    $eq: userCore.userBasic.uid
+                }
             };
 
             const posts = await Story.find(queryParams).exec();
 
             if (posts.length > 0) {
                 userCore["posts"] = posts
-                console.log(userCore);
 
                 return userCore;
             } else {
@@ -65,14 +63,21 @@ const getStoriesForUser = async (userCore) => {
     }
 }
 
-const getMatchStories = async (uid, matchUIDs) => {
+const viewStory = async (storyView) => {
+    try {
+        const newStoryView = new StoryView(storyView);
 
+        await newStoryView.save()
+
+        console.log("StoryService: Successfully viewed story");
+    } catch (e) {
+        throw e
+    }
 }
 
 module.exports = {
     postStory,
     getStory,
-    getExploreStories,
     getStoriesForUser,
-    getMatchStories
+    viewStory
 }

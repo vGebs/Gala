@@ -8,7 +8,7 @@ const story = new mongoose.Schema({
     pid: {
         type: Date,
         required: true,
-        unique: true
+        unique: false
     },
     title: String,
     caption: String,
@@ -16,6 +16,6 @@ const story = new mongoose.Schema({
     yCoordinate: Number
 }); 
 
-const Story = new mongoose.model("Story", story)
+const Story = new mongoose.model("Story", story);
 
 module.exports = Story
