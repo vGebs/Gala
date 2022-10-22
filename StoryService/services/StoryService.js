@@ -1,5 +1,6 @@
 const Story = require("../models/Story");
 const StoryView = require("../models/StoryView");
+const userCoreService = require("../services/UserCoreService");
 
 const postStory = async (story) => {
     try {
@@ -45,10 +46,39 @@ const deleteStory = async (uid, pid) => {
     }
 }
 
+const getUsersWithStoriesIveSeen = async (userCore) => {
+    //we want to fetch 11 users who still have stories we have seen
+
+    try {
+        const queryParams = {
+            viewerUID: {
+                $eq: userCore.userBasic.uid
+            }
+        };
+
+        const views = await StoryView.find(queryParams).limit(11);
+
+        var asyncCalls = [];
+
+        for(var i = 0; i < views.length; i++) {
+            asyncCalls.push(userCoreService.getUser(views[i].viewedUID));
+        }
+
+        if (asyncCalls.length > 0) {
+            const promise = await Promise.all(asyncCalls);
+            return promise;
+        } else {
+            return [];
+        }
+
+    } catch(e) {
+        throw e;
+    }
+}
+
 const getStoriesForUser = async (userCore) => {
     if (userCore) {
         try {
-
             let queryParams = {
                 "uid": {
                     $eq: userCore.userBasic.uid
@@ -56,11 +86,19 @@ const getStoriesForUser = async (userCore) => {
             };
 
             const posts = await Story.find(queryParams).exec();
-
+            
             if (posts.length > 0) {
                 userCore["posts"] = posts
 
-                return userCore;
+                const newUserCore = {
+                    userBasic: userCore.userBasic,
+                    searchRadiusComponents: userCore.searchRadiusComponents,
+                    ageRangePreference: userCore.ageRangePreference,
+                    mostRecentStory: userCore.mostRecentStory,
+                    posts: posts
+                };
+
+                return newUserCore;
             } else {
                 return {};
             }
@@ -98,6 +136,7 @@ module.exports = {
     postStory,
     getStory,
     deleteStory,
+    getUsersWithStoriesIveSeen,
     getStoriesForUser,
     viewStory
 }

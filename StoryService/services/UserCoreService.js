@@ -54,8 +54,7 @@ const deleteUser = async (uid) => {
     }
 };
 
-const getUsersWithPosts = async (userCore, matchUIDs, localSearch) => {
-    //return = [userCore]
+const getUsersWithPosts = async (userCore, ninUIDs, localSearch, limit) => {
 
     if (userCore) {
         try {
@@ -64,17 +63,15 @@ const getUsersWithPosts = async (userCore, matchUIDs, localSearch) => {
             if(queryParams.length == 1) {
                 let queryParams1 = queryParams[0];
 
-                const notIn = matchUIDs.push(userCore["userBasic.uid"]);
-
                 queryParams1["userBasic.uid"] = {
-                    $nin: notIn
+                    $nin: ninUIDs
                 };
 
                 queryParams1["mostRecentStory"] = {
                     $exists: true
                 };
 
-                const users = await Story.find(queryParams1).limit(30);
+                const users = await UserCore.find(queryParams1).limit(limit);
 
                 return users;
 
@@ -82,7 +79,7 @@ const getUsersWithPosts = async (userCore, matchUIDs, localSearch) => {
                 let queryParams1 = queryParams[0];
                 let queryParams2 = queryParams[1];
 
-                const notIn = matchUIDs.push(userCore["userBasic.uid"]);
+                const notIn = ninUIDs.push(userCore["userBasic.uid"]);
 
                 queryParams1["userBasic.uid"] = {
                     $nin: notIn
@@ -101,8 +98,8 @@ const getUsersWithPosts = async (userCore, matchUIDs, localSearch) => {
                 };
 
                 const [first, second] = await Promise.all([
-                    UserCore.find(queryParams1).limit(15),
-                    UserCore.find(queryParams2).limit(15)
+                    UserCore.find(queryParams1).limit(Math.round((limit) / 2)),
+                    UserCore.find(queryParams2).limit(Math.round((limit) / 2))
                 ]);
 
                 let final = first.concat(second);

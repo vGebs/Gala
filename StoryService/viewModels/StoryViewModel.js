@@ -107,9 +107,11 @@ const getExploreStories = async (req, res) => {
     //  a. we need to know if they have posted, so we need to add a new field to userCore
     //  b. we do not want to fetch match stories here
     //  c. we also dont want to see stories we have already seen
-    //      option 3:
-    //          - We view every story by noting the uid of user watched and the postID(date).
-    //          - We fetch all of the current users view and fetch
+    //      - We view every story by noting the uid of user watched and the postID(date).
+    //      - We fetch all of the current users view and fetch
+    //      - We want to see some stories we have already seen but didnt dislike/like
+    //      - so we need to fetch 19 users with stories we havent seen
+    //      - we also need to fetch 11 users with stories we have seen but didnt like/dislike
     // 3. once we get 30 users who have posted, we need to fetch their stories
     //  a. fetch all stories with uid as such
     // 4. once we get all the stories for that particular user, we package the 
@@ -121,13 +123,30 @@ const getExploreStories = async (req, res) => {
     const localSearch = req.body.localSearch;
 
     try {
-        const usersWithPosts = await userCoreService.getUsersWithPosts(userCore, matchUIDs, localSearch);
+        const usersWeHaveSeen = await storyService.getUsersWithStoriesIveSeen(userCore);
+
+        //we want to add matchUIDS and usersWeHaveSeen to a nin array
+        var ninUIDs = [];
+        for (var i = 0; i < usersWeHaveSeen.length; i++) {
+            ninUIDs.push(usersWeHaveSeen[i].userBasic.uid)
+        }
+        ninUIDs = ninUIDs.concat(matchUIDs);
+        ninUIDs.push(userCore.userBasic.uid);
+
+        var usersWeHaventSeen;
+
+        if (usersWeHaveSeen.length == 11) {
+            usersWeHaventSeen = await userCoreService.getUsersWithPosts(userCore, ninUIDs, localSearch, 30);
+        } else {
+            const limit = 30 - usersWeHaveSeen.length;
+            usersWeHaventSeen = await userCoreService.getUsersWithPosts(userCore, ninUIDs, localSearch, limit);
+        }
+
+        const getStoriesForUsers = usersWeHaveSeen.concat(usersWeHaventSeen);
 
         var asyncCalls = [];
-
-        //we have all of the account, now fetch the stories
-        for (var i = 0; i < usersWithPosts.length; i++) {
-            asyncCalls.push(storyService.getStoriesForUser(usersWithPosts[i]));
+        for (var i = 0; i < getStoriesForUsers.length; i++) {
+            asyncCalls.push(storyService.getStoriesForUser(getStoriesForUsers[i]))
         }
 
         if (asyncCalls.length > 0) {
@@ -144,7 +163,7 @@ const getExploreStories = async (req, res) => {
             res.status(200).send(results);
 
         } else {
-            res.status.send(200).send({});
+            res.status(200).send({message: "No Stories"});
         }
 
     } catch (e) {
